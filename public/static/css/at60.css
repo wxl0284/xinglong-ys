@@ -58,6 +58,9 @@ div.notCheck {color:#d0d0d0;}
 
 #devsNav a.borderBtm {border-bottom:3px solid #fff;color:#fff;}
 
-#gimbalInfo ul li {margin-right:8px;}
+.properUl {margin-left:100px;}
+
+ul.properUl li {margin-left:16px;margin-right:8px;width:226px;margin-bottom:13px;}
+ul.properUl li span {color:#00B5EE;}
 
 #gimbalSbmt {width:135px;height:32px;font-size:18px;margin-left:535px;}
