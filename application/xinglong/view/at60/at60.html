@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset='utf-8'>
+    <title>60CM望远镜</title>
+     {load href='/static/css/common-1.css'}
+     {load href='/static/css/at60.css'}
+     {load href='/static/plugin/easyui-1.3.5/themes/default/easyui.css'}
+     {load href='/static/plugin/easyui-1.3.5/themes/icon.css'}
+     {load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
+     {load href='/static/plugin/easyui-1.3.5/jquery.easyui.min.js'}
+     {load href='/static/plugin/easyui-1.3.5/locale/easyui-lang-zh_CN.js'}
+     {load href='/static/js/at60.js'}
+</head>
+<body>
+	<header>
+		<div class='pos_r'>
+		   <img class='pos_a' src='/static/images-0/logo1.png'/>
+			   <p class='pos_a'><a href="{:url('xinglong/control/front')}">首页&nbsp;&nbsp;&nbsp;&nbsp;</a><span>欢迎!&nbsp;&nbsp;{$Request.cookie.login ?? ''}&nbsp;</span></p>
+			   <div class='pos_a'><a href='/xinglong/control/logout'>&nbsp;&nbsp;&nbsp;退出&nbsp;&nbsp;&nbsp;</a></div> 
+		</div>
+	</header>
+	<img src='/static/images-1/top.jpg' />
+    <div id='all'>
+        <div id='timeInfo'>
+			<span id='title_1'>时间信息</span>
+			<table id='time'>
+				<tr>
+					<td>日期:&nbsp;&nbsp;<span>2017.7.11</span></td>
+					<td>北京时:&nbsp;&nbsp;<span>10:56:36:20</span></td>
+					<td>历元:&nbsp;&nbsp;<span>J2000</span></td>
+				</tr>
+				<tr>
+					<td>恒星时:&nbsp;&nbsp;<span>10:56:36:20</span></td>
+					<td>晨光始:&nbsp;&nbsp;<span>10:56:36:20</span></td>
+					<td>昏影终:&nbsp;&nbsp;<span>10:56:36:20</span></td>
+				</tr>
+            </table>
+		</div>
+        <div id='atPos'>
+            <span>望远镜位置信息</span>
+        </div>
+        <div id='posInfo' class='pos_r'><!--重要信息区域-->
+            <div id='atPic' width='170' height='505'>
+                <img src='/static/images-1/location_1.png' width='264'/>
+                <img src='/static/images-0/location.png' style='position:relative;left:28px;'/>
+            </div>
+            <div id='atInfo' class='pos_a'>
+                   <table class='fr'>
+                       <tr>
+                          <td>当前状态:<span style='color:red;'>跟踪中</span>
+                          </td>
+						  <td>跟踪误差（角秒）:<span>12.345</span>
+                          </td>
+                       </tr>
+                       <tr>
+                          <td>当前时角:<span>222</span>
+                          </td>
+						  <td>镜盖状态:<span>开</span>
+                          </td>
+                       </tr>
+                       <tr> 
+                          <td>当前赤经:<span>12.345</span>
+                          </td>
+                          <td>当前赤纬:<span>12.345</span>
+                          </td>
+                       </tr>
+                       <tr>
+                          <td>目标名:<span>abcd</span>
+                          </td>
+						  <td>目标类型:<span>恒星</span>
+                          </td>
+                       </tr>
+                       <tr>
+                          <td>目标赤经:<span>12.345</span>
+                          </td>
+                          <td>目标赤纬:<span>12.345</span>
+                          </td>
+                       </tr>
+					   <tr>
+                          <td>当前方位:<span>12.345</span>
+                          </td>
+                          <td>目标俯仰:<span>12.345</span>
+                          </td>
+                       </tr>
+					   <tr>
+                          <td>赤经速度:<span>12.345</span>
+                          </td>
+                          <td>赤纬速度:<span>12.345</span>
+                          </td>
+                       </tr>
+					   <tr>
+						  <td>当前消旋位置:<span>12.345</span>
+                          </td>
+                          <td>目标消旋位置:<span>12.345</span>
+                          </td>
+					   </tr>
+					   <tr>
+						 <td>轴1跟踪误差（角秒）:<span>12.345</span>
+                          </td>
+                          <td>轴2跟踪误差（角秒）:<span>12.345</span>
+                          </td> 
+					   </tr>
+					   <tr>
+						  <td>轴3跟踪误差（角秒）:<span>12.345</span>
+                          </td>
+					   </tr>					   
+                  </table>                
+            </div>
+        </div> <!--重要信息区域结束-->
+        <div id='devsInfo' class='pos_r'>
+            <div class='childDev'>
+                <div class='border txt-cntr '>调焦位置</div>
+                <div class='border'><img src='/static/images-1/focus.png' width='226px;'/></div>
+            </div>
+            <div class='childDev'>
+                <div class='border txt-cntr '>滤光片位置</div>
+                <div class='border'><img src='/static/images-1/filter.png' width='226px;' /></div>
+            </div>
+            <div class='childDev'>
+                <div class='border txt-cntr '>CCD温度</div>
+                <div class='border'><img src='/static/images-1/ccdTemp.png' width='226px;' /></div>
+            </div>
+            <div class='childDev'>
+                <div class='border txt-cntr '>CCD曝光完成（%）</div>
+                <div class='border'><img src='/static/images-1/ccdExpo.png' width='226px;' /></div>
+            </div>
+            <div class='childDev pos_a'>
+                <div class='border txt-cntr '>各设备状态信息</div>
+                <div class='border' style='width:226px;height:198px;overflow:hidden;padding-left:3px;'>
+				转台状态正常<br />
+				ccd状态正常<br />
+			
+				ccd状态正常<br />
+				转台状态正常<br />
+				ccd状态正常<br />
+				</div>
+            </div>
+        </div>
+        
+        <div id='devsNav'><!--望远镜子设备导航:js用code/public/static/js/dev1.js-->
+            <table>
+                <tr>
+                  <td><a href='#'>操作计划</a></td><td><a href='#'>观测图像</a></td><td><a name='gimbalInfo' class='borderBtm' href='#'>转台</a></td><td><a name='ccdInfo' href='#'>CCD</a></td><td><a name='focusInfo' href='#'>调焦器</a></td><td><a name='domeInfo' href='#'>圆顶</a></td><td><a name='filterInfo' href='#'>滤光片</a></td><td><a href='#'>数据处理</a></td><td><a href='#'>光谱终端</a></td><td><a href='#'>导星</a></td>
+                </tr>
+            </table>
+        </div><!--望远镜子设备导航结束-->
+        <div id='gimbalInfo' class='display'><!--转台指令和属性-->
+            <div><!--转台指令-->
+				<br />
+               <input id='takeOver' type='button' value='接管望远镜' />&nbsp;&nbsp;&nbsp;&nbsp;
+			   权限：
+			    <select name="role">
+					<option value="role1">抢占</option>
+					<option value="role2">禁止抢占</option>
+				</select>
+               &nbsp;&nbsp;&nbsp;&nbsp;接管起始时间:<input class="easyui-datetimebox" editable=false style="width:139px">
+               &nbsp;&nbsp;&nbsp;&nbsp;接管结束时间:<input class="easyui-datetimebox" editable=false style="width:139px">
+               &nbsp;&nbsp;&nbsp;&nbsp;<input id='takeOver1' type='button' value='放弃接管' />
+               &nbsp;&nbsp;&nbsp;&nbsp;<input id='takeOver0' type='button' value='望远镜未占用' style='color:green;'/>
+               <div><!--按钮型指令-->
+			   <br />
+                   <input id='gimbalConnect' type='button' value='连接望远镜' />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input id='gimbalDisConnect' type='button' value='断开望远镜' />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                   <input id='gimbalFindhome' type='button' value='找  零' />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                   <input id='gimbalPark' type='button' value='复 位' />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                
+                   <input id='gimbalStop' type='button' value='停 止' />
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				   
+                   <input id='gimbalEmergenceStop' type='button' value='急 停' />                
+               </div>
+			   <br />
+			   <div><!--带参数型指令-->
+				   <form id='at60Gimbal'>
+				      <div style='width:673px;'>
+					   <input type='radio' name='command' value='1' />&nbsp;跟踪恒星<br />
+					   赤经：<input type="text" name='rightAscension' />
+					   赤纬：<input type="text" name='declination' />
+					  历元：<select name="epoch" style='width:69px;'>
+						       <option value="0">real</option>
+							   <option value="1">J2000</option>
+							   <option value="2">B1950</option>
+							   <option value="3">J2050</option>
+						    </select>
+					   &nbsp;&nbsp;跟踪速度：<select name="speed" style='width:56px;'>
+								   <option value="0">恒星</option>
+								   <option value="1">太阳</option>
+								   <option value="2">月亮</option>
+								   <option value="3">彗星</option>
+						         </select>
+
+					  </div>
+					  <br />
+					  <div style='width:397px;'>
+					   <input type='radio' name='command' value='2' />&nbsp;设置目标名称<br />
+					   目标名称：<input type="text" name='objectName' />
+					  目标类型：<select name="objectType" style='width:79px;'>
+						           <option value="0">恒星</option>
+								   <option value="1">太阳</option>
+								   <option value="2">月亮</option>
+								   <option value="3">彗星</option>
+								   <option value="4">行星</option>
+								   <option value="5">卫星</option>
+								   <option value="6">固定位置</option>
+						    </select>
+						
+					  </div>
+					  <br />
+					  <div style='width:397px;'>
+					   <input type='radio' name='command' value='3' />&nbsp;指向固定位置<br />
+					   方位：<input type="text" name='azimuth' />
+					   俯仰：<input type="text" name='elevation' />
+					  </div>
+                      <br />
+					  <div style='width:298px;'>
+					   <input type='radio' name='command' value='4' />&nbsp;轴3指向固定位置
+					   <input type="text" name='slewDerotator' />
+					  </div>
+                      <br />
+					  <div style='width:190px;'>
+					   <input type='radio' name='command' value='5' />&nbsp;设置轴3工作模式<br />
+					   模式：<select id='at60Axis3' name="mode" style='width:129px;'>
+						           <option value="0">不消旋</option>
+								   <option value="1">偏差消旋</option>
+								   <option value="2">始终指向同一角度</option>
+						    </select>
+					   <span class='displayNo'>起偏角：<input type="text" name='polarizingAngle' /></span>
+					  </div>
+                       <br />
+					  <div style='width:397px;'>
+                           <input type='radio' name='command' value='6' />&nbsp;速度修正
+                           <br />
+                           轴：<input type="text" name='axis' />
+                           修正值：<input type="text" name='correction' />
+					  </div>
+                      <br />
+					  <div style='width:397px;'>
+                           <input type='radio' name='command' value='7' />&nbsp;恒速运动
+                           <br />
+                           轴：<input type="text" name='FixedMoveAxis' />
+                           速度：<input type="text" name='FixedMoveSpeed' />
+					  </div>
+                      <br />
+					  <div style='width:397px;'>
+                           <input type='radio' name='command' value='8' />&nbsp;位置修正
+                           <br />
+                           轴：<input type="text" name='PositionCorrectAxis' />
+                           速度：<input type="text" name='PositionCorrectVal' />
+					  </div>
+                      <br />
+					  <div style='width:152px;'>
+                           <input type='radio' name='command' value='9' />&nbsp;镜盖操作&nbsp;&nbsp;<select name="openCover" style='width:50px;'>
+						           <option value="1">开</option>
+								   <option value="2">关</option>
+								   <option value="0">停</option>
+						    </select>
+                          
+					  </div>
+                      <br />
+					  <div style='width:164px;'>
+                           <input type='radio' name='command' value='10' />&nbsp;焦点切换镜&nbsp;&nbsp;<select name="setFocusType" style='width:50px;'>
+						           <option value="1">1</option>
+								   <option value="2">2</option>
+								   <option value="3">3</option>
+								   <option value="-1">停</option>
+						    </select>
+                          
+					  </div>
+                      <br />
+					  <div style='width:275px;'>
+                           <input type='radio' name='command' value='11' />&nbsp;保存同步数据&nbsp;&nbsp;<input type="text" name='saveSyncData' />
+					  </div>
+                      <br />
+					  <div style='width:243px;'>
+                           <input type='radio' name='command' value='12' />&nbsp;跟踪卫星&nbsp;&nbsp;<input type="text" name='trackStar' />
+					  </div>
+                      <br />
+					  <div style='width:243px;'>
+                           <input type='radio' name='command' value='13' />&nbsp;属性设置&nbsp;&nbsp;<input type="text" name='configProp' />
+					  </div>
+                      <br />
+					   <input id='gimbalSbmt' class='border' type="button" value="确认提交指令">
+				   </form>
+			   </div><!--带参数型指令 结束-->
+            </div><!--转台指令 结束-->
+            <hr />
+            <div><!--转台固定属性-->
+                <span style='color:green;'>转台固定属性:</span><br />
+                <ul>
+                    <li class='li fl'>经度:12.12.12.12 </li>
+                    <li class='li fl'>  纬度:12.12.12.12 </li>
+                    <li class='li fl'>  口径:12.12.12.12 </li>
+                    <li class='li fl'> 类型:12.12.12.12  </li>
+                    <li class='li fl'> 焦点类型:12.12.12.12 </li>
+                    <li class='li fl'>焦比:12.12.12.12 </li>
+                    <li class='li fl'>焦距:12.12.12.12</li>
+                    <li class='li fl'>轴1最大速度:12.12.12.12</li>
+                    <li class='li fl'> 轴2最大速度:12.12.12.12</li>
+                    <li class='li fl'> 轴2复位位置:12.12.12.12  </li>
+                    <li class='li fl'>  轴3复位位置:12.12.12.12 </li>
+                    <li class='li fl'> 是否有第3轴:12.12.12.12 </li>
+                    <li class='li fl'> 俯仰最低值:12.12.12.12 </li>
+                    <li class='li fl'> 温度传感器数目:12.12.12.12</li>
+                </ul>
+            </div><!--转台固定属性结束-->
+             <hr class="clear"/>
+            <div><!--转台可变属性-->
+                <span style='color:green;'>转台可变属性:</span><br />
+                <ul>
+                    <li class='li fl'> 时间戳:12.12.12.12  </li>
+                    <li class='li fl'>  当前恒星时:12.12.12.12  </li>
+                    <li class='li fl'>  当前时角:12.12.12.12  </li>
+                    <li class='li fl'>当前赤经:12.12.12.12 </li>
+                    <li class='li fl'>   当前赤纬:12.12.12.12 </li>
+                    <li class='li fl'>  当前J2000赤经:12.12.12.12 </li>
+                    <li class='li fl'> 当前J2000赤纬:12.12.12.12  </li>
+                    <li class='li fl'> 当前方位:12.12.12.12 </li>
+                    <li class='li fl'>  当前俯仰:12.12.12.12</li>
+                    <li class='li fl'> 当前消旋位置:12.12.12.12   </li>
+                    <li class='li fl'>  目标赤经:12.12.12.12   </li>
+                    <li class='li fl'>  目标赤纬:12.12.12.12   </li>
+                    <li class='li fl'> 目标J2000赤经:12.12.12.12</li>
+                    <li class='li fl'> 目标J2000赤纬:12.12.12.12</li>
+                </ul>
+            </div><!--转台 可变属性结束-->
+        </div><!--转台指令和属性 结束-->
+        <div id='ccdInfo' class='displayNo'><!--ccd 指令和属性-->
+            <div><!--ccd指令-->
+               <span>CCD操作指令:</span><br />
+               <input id='ccdConnect' type='button' value='连接CCD' />
+               <input id='ccdDisConnect' type='button' value='断开CCD' />
+               <input id='ccdStopExpose' type='button' value='停止曝光' />
+               <input id='ccdAbortExpose' type='button' value='终止曝光' />
+			   <br />
+			   <div><!--带参数型指令-->
+				   <form id='at60Ccd'>
+				      <div>
+					   <input type='radio' name='command' value='1' />&nbsp;设置制冷温度：
+					   <input type="text" name='temperature' placeholder=''/>
+					  </div>
+					  <br />
+					  <div>
+					   <input type='radio' name='command' value='2' />&nbsp;设置曝光策略<br />
+					   数据有效标志位：<input type="text" name='validFlag' placeholder='整数'/>
+					   起始时刻：<input type="text" name='startTime' placeholder='整数' />
+					   曝光时间：<input type="text" name='duration' placeholder='整数' />
+					   延迟时间：<input type="text" name='delay' placeholder='整数' />
+					   拍摄目标名称：<input type="text" name='objectName' placeholder='数字字母' />
+					   拍摄目标类型：<select name="objectType" style='width:75px;'>
+										   <option value="0">恒星</option>
+										 
+										   <option value="2">月亮</option>
+										   <option value="3">彗星</option>
+										   <option value="4">行星</option>
+										   <option value="5">卫星</option>
+										   <option value="6">固定位置</option>
+										   <option value="7">本底</option>
+										   <option value="8">暗流</option>
+										   <option value="9">平场</option>
+									 </select>
+						拍摄目标赤经：<input type="text" name='objectRightAscension' placeholder='小数' />
+						拍摄目标赤纬：<input type="text" name='objectDeclination' placeholder='小数' />
+						拍摄目标历元：<select name="objectEpoch" style='width:69px;'>
+									   <option value="0">real</option>
+									   <option value="1">J2000</option>
+									   <option value="2">B1950</option>
+									   <option value="3">J2050</option>
+									</select>
+						当前拍摄波段：<input type="text" name='objectBand' placeholder='数字字母' />
+						拍摄波段滤光片系统：<select name="objectFilter" style='width:69px;'>
+									   <option value="0">Johnshon-Bessel</option>
+									   <option value="1">Sloan</option>
+									   <option value="2">Strömgrem</option>
+									   <option value="3">其它</option>
+									</select>
+						是否保存图像：<select name="isSaveImage" style='width:69px;'>
+									   <option value="1">是</option>
+									   <option value="2">否</option>
+									</select>
+						气象数据采集时间：<input type="text" name='weatherGatherTime' placeholder='整数' />
+						温度：<input type="text" name='temperature1' placeholder='小数' />
+						湿度：<input type="text" name='humidity' placeholder='小数' />
+						风速：<input type="text" name='windSpeed' placeholder='小数' />
+						气压：<input type="text" name='pressure' placeholder='小数' />
+						天气状态采集时间：<input type="text" name='skyGatherTime' placeholder='整数' />
+						天气状态：<input type="text" name='skyState' placeholder='整数' />
+						云量<input type="text"  name='clouds' placeholder='整数' />
+						视宁度采集时间<input type="text" name='seeingGatherTime' placeholder='整数' />
+						视宁度<input type="text" name='seeing' placeholder='小数' />
+						粉尘采集时间<input type="text" name='dustGatherTime' placeholder='小数' />
+						粉尘<input type="text" name='dust' placeholder='小数' />
+						AMS<input type="text" name='AMS' placeholder='小数' />
+						消光系数采集时间<input type="text" name='extinctionGatherTime' placeholder='整数' />
+						赤经<input type="text" name='rightAscension' placeholder='小数' />
+						赤纬<input type="text" name='declination' placeholder='小数' />
+						波段<input type="text" name='band' placeholder='字母数字' />
+						消光系数1<input type="text" name='extinctionFactor1' placeholder='小数' />
+						消光系数2<input type="text" name='extinctionFactor2' placeholder='小数' />
+						消光系数3<input type="text" name='extinctionFactor3' placeholder='小数' />
+						望远镜赤经<input type="text" name='telescopeRightAscension' placeholder='小数' />
+						望远镜赤纬<input type="text" name='telescopeDeclination' placeholder='小数' />
+						焦距<input type="text" name='focusLength' placeholder='小数' />
+						帧数<input type="text" name='frameNum' placeholder='整数' />
+					  </div>
+					  <br />
+					  <div>
+					   <input type='radio' name='command' value='3' />&nbsp;开始曝光<br />
+					   是否读取帧序号：<input type="text" name='isReadFrameSeq' />
+					   帧序号：<input type="text" name='frameSequence' />
+					  </div>
+                      <br />
+					  <div>
+					   <input type='radio' name='command' value='4' />&nbsp;设置增益<br />
+					   增益模式：<input type="text" name='mode' />
+					   增益档位：<input type="text" name='gear' />
+					  </div>
+                      <br />
+					  <div>
+					   <input type='radio' name='command' value='5' />&nbsp;设置读出速度模式值
+					   <input type="text" name='ReadSpeedMode' placeholder='整数' />				   
+					  </div>
+                       <br />
+					  <div>
+                           <input type='radio' name='command' value='6' />&nbsp;设置转移速度值
+					   <input type="text" name='SetTransferSpeed' placeholder='整数' />	
+					  </div>
+                      <br />
+					  <div>
+                           <input type='radio' name='command' value='7' />&nbsp;设置Bin
+                           <br />
+                           BinX：<input type="text" name='BinX' />
+                           BinY：<input type="text" name='BinY' />
+					  </div>
+                      <br />
+					  <div>
+                           <input type='radio' name='command' value='8' />&nbsp;设置Roi
+                           <br />
+                           startX：<input type="text" name='startX' />
+                           startY：<input type="text" name='startY' />
+                           ImageW：<input type="text" name='imageWidth' />
+                           imageHeight：<input type="text" name='imageHeight' />
+					  </div>
+                      <br />
+					  <div>
+                           <input type='radio' name='command' value='9' />&nbsp;设置快门&nbsp;&nbsp;<select name="shutter" style='width:118px;'>
+						           <option value="0">GlobalShutter</option>
+								   <option value="1">RollingShutter</option>
+						    </select>
+					  </div>
+                      <br />
+					  <div>
+                           <input type='radio' name='command' value='10' />&nbsp;设置帧转移&nbsp;&nbsp;<input type="text" name='isFullFrame' />                          
+					  </div>
+                      <br />
+					  <div>
+                           <input type='radio' name='command' value='11' />&nbsp; 设置SetEM<br />
+						   isEM<input type="text" name='isEM' />						   
+						   eMValue<input type="text" name='eMValue' />						   
+					  </div>
+                      <br />
+					  <div>
+                           <input type='radio' name='command' value='12' />&nbsp;设置CMOS noise filter&nbsp;&nbsp;<input type="text" name='isNoiseFilter' />
+					  </div>
+                      <br />
+					  <div>
+                           <input type='radio' name='command' value='13' />&nbsp;设置Base line<br />isBaseline<input type="text" name='isBaseline' />
+						   baselineValue<input type="text" name='baselineValue' />
+					  </div>
+					  <br />
+					  <div>
+                           <input type='radio' name='command' value='14' />&nbsp;设置Over Scan&nbsp;&nbsp;<input type="text" name='isOverScan' />
+					  </div>
+                      <br />
+					   <input id='ccdSbmt' type="button" value="确认提交指令">
+				   </form>
+			   </div><!--带参数型指令 结束-->
+            </div><!--ccd指令 结束-->
+            <hr />
+            <div><!--ccd固定属性-->
+                <span style='color:green;'>CCD固定属性:</span><br />
+                <ul>
+                    <li class='li fl'>经度:12.12.12.12 </li>
+                    <li class='li fl'>  纬度:12.12.12.12 </li>
+                    <li class='li fl'>  口径:12.12.12.12 </li>
+                    <li class='li fl'> 类型:12.12.12.12  </li>
+                    <li class='li fl'> 焦点类型:12.12.12.12 </li>
+                    <li class='li fl'>焦比:12.12.12.12 </li>
+                    <li class='li fl'>焦距:12.12.12.12</li>
+                    <li class='li fl'>轴1最大速度:12.12.12.12</li>
+                    <li class='li fl'> 轴2最大速度:12.12.12.12</li>
+                    <li class='li fl'> 轴2复位位置:12.12.12.12  </li>
+                    <li class='li fl'>  轴3复位位置:12.12.12.12 </li>
+                    <li class='li fl'> 是否有第3轴:12.12.12.12 </li>
+                    <li class='li fl'> 俯仰最低值:12.12.12.12 </li>
+                    <li class='li fl'> 温度传感器数目:12.12.12.12</li>
+                </ul>
+            </div><!--CCD固定属性结束-->
+             <hr class="clear"/>
+            <div><!--CCD可变属性-->
+                <span style='color:green;'>CCD可变属性:</span><br />
+                <ul>
+                    <li class='li fl'> 时间戳:12.12.12.12  </li>
+                    <li class='li fl'>  当前恒星时:12.12.12.12  </li>
+                    <li class='li fl'>  当前时角:12.12.12.12  </li>
+                    <li class='li fl'>当前赤经:12.12.12.12 </li>
+                    <li class='li fl'>   当前赤纬:12.12.12.12 </li>
+                    <li class='li fl'>  当前J2000赤经:12.12.12.12 </li>
+                    <li class='li fl'> 当前J2000赤纬:12.12.12.12  </li>
+                    <li class='li fl'> 当前方位:12.12.12.12 </li>
+                    <li class='li fl'>  当前俯仰:12.12.12.12</li>
+                    <li class='li fl'> 当前消旋位置:12.12.12.12   </li>
+                    <li class='li fl'>  目标赤经:12.12.12.12   </li>
+                    <li class='li fl'>  目标赤纬:12.12.12.12   </li>
+                    <li class='li fl'> 目标J2000赤经:12.12.12.12</li>
+                    <li class='li fl'> 目标J2000赤纬:12.12.12.12</li>
+                </ul>
+            </div><!--CCD 可变属性结束-->
+        </div><!--ccd 指令和属性结束-->
+
+		 <div id='focusInfo' class='displayNo'><!--调焦器 指令和属性-->
+            <div><!--调焦器指令-->
+               <span>调焦器操作指令:</span><br />
+               <input id='focusConnect' type='button' value='连接调焦器' />
+               <input id='focusDisConnect' type='button' value='断开调焦器' />
+			   <input id='focusFindHome' type='button' value='找 零' />
+               <input id='focusStop' type='button' value='停止运动' />
+			   <br />
+			   <div><!--带参数型指令-->
+				   <form id='at60Focus'>
+				      <div>
+					   <input type='radio' name='command' value='1' />&nbsp;设置目标位置&nbsp;&nbsp;
+					   <input type="text" name='setPosition' placeholder=''/>
+					  </div>
+					  <br />
+					  <div>
+					   <input type='radio' name='command' value='2' />&nbsp;设置恒速转动&nbsp;&nbsp;
+					  <input type="text" name='speed' placeholder=''/>
+					  </div>
+					  <br />
+					  <div>
+					   <input type='radio' name='command' value='3' />&nbsp;使能温度补偿&nbsp;&nbsp;
+					   <input type="text" name='enable' />
+					  </div>
+                      <br />
+					  <div>
+					   <input type='radio' name='command' value='4' />&nbsp;温度补偿系数&nbsp;&nbsp;
+					   <input type="text" name='coefficient' />
+					  </div>
+                      <br />
+					   <input id='focusSbmt' type="button" value="确认提交指令">
+				   </form>
+			   </div><!--带参数型指令 结束-->
+            </div><!--调焦器指令 结束-->
+            <hr />
+            <div><!--调焦器固定属性-->
+                <span style='color:green;'>调焦器固定属性:</span><br />
+                <ul>
+                    <li class='li fl'>经度:12.12.12.12 </li>
+                    <li class='li fl'>  纬度:12.12.12.12 </li>
+                    <li class='li fl'>  口径:12.12.12.12 </li>
+                    <li class='li fl'> 类型:12.12.12.12  </li>
+                    <li class='li fl'> 焦点类型:12.12.12.12 </li>
+                    <li class='li fl'>焦比:12.12.12.12 </li>
+                    <li class='li fl'>焦距:12.12.12.12</li>
+                    <li class='li fl'>轴1最大速度:12.12.12.12</li>
+                    <li class='li fl'> 轴2最大速度:12.12.12.12</li>
+                    <li class='li fl'> 轴2复位位置:12.12.12.12  </li>
+                    <li class='li fl'>  轴3复位位置:12.12.12.12 </li>
+                    <li class='li fl'> 是否有第3轴:12.12.12.12 </li>
+                    <li class='li fl'> 俯仰最低值:12.12.12.12 </li>
+                    <li class='li fl'> 温度传感器数目:12.12.12.12</li>
+                </ul>
+            </div><!--调焦器固定属性结束-->
+             <hr class="clear"/>
+            <div><!--调焦器可变属性-->
+                <span style='color:green;'>调焦器可变属性:</span><br />
+                <ul>
+                    <li class='li fl'> 时间戳:12.12.12.12  </li>
+                    <li class='li fl'>  当前恒星时:12.12.12.12  </li>
+                    <li class='li fl'>  当前时角:12.12.12.12  </li>
+                    <li class='li fl'>当前赤经:12.12.12.12 </li>
+                    <li class='li fl'>   当前赤纬:12.12.12.12 </li>
+                    <li class='li fl'>  当前J2000赤经:12.12.12.12 </li>
+                    <li class='li fl'> 当前J2000赤纬:12.12.12.12  </li>
+                    <li class='li fl'> 当前方位:12.12.12.12 </li>
+                    <li class='li fl'>  当前俯仰:12.12.12.12</li>
+                    <li class='li fl'> 当前消旋位置:12.12.12.12   </li>
+                    <li class='li fl'>  目标赤经:12.12.12.12   </li>
+                    <li class='li fl'>  目标赤纬:12.12.12.12   </li>
+                    <li class='li fl'> 目标J2000赤经:12.12.12.12</li>
+                    <li class='li fl'> 目标J2000赤纬:12.12.12.12</li>
+                </ul>
+            </div><!--调焦器 可变属性结束-->
+        </div><!--调焦器 指令和属性结束-->
+		<div id='domeInfo' class='displayNo'><!--圆顶 指令和属性-->
+            <div><!--圆顶指令-->
+               <span>随动圆顶操作指令:</span><br />
+               <input id='sDomeConnect' type='button' value='连接圆顶' />
+               <input id='sDomeDisConnect' type='button' value='断开圆顶' />
+               <input id='sDomeStop' type='button' value='停止运动' />
+               <input id='sDomeScuttle' type='button' value='打开天窗' />
+               <input id='sDomeScuttleClose' type='button' value='关闭天窗' /><br />
+			   <span>全开圆顶操作指令:</span><br />
+               <input id='fDomeConnect' type='button' value='连接圆顶' />
+			   打开圆顶：<select name="openDome" style='width:90px;'>
+										<option value="">请选择</option>
+									   <option value="0">关闭</option>
+									   <option value="1">打开</option>
+									   <option value="2">停止运动</option>
+						 </select>
+			   <br />
+			   <div><!--带参数型指令-->
+				   <form id='at60Dome'>
+				      <div>
+					   <input type='radio' name='command' value='1' />&nbsp;设置目标方位&nbsp;&nbsp;
+					   <input type="text" name='domePosition' placeholder='0-360'/>
+					  </div>
+					  <br />
+					  <div>
+					   <input type='radio' name='command' value='2' />&nbsp;设置转动速度&nbsp;&nbsp;
+					  <input type="text" name='RotateSpeed' placeholder='数字'/>
+					  </div>
+					  <br />
+					  <div>
+					   <input type='radio' name='command' value='3' />&nbsp;设置风帘位置&nbsp;&nbsp;
+					   <input type="text" name='shadePosition' placeholder='0-90' />
+					  </div>
+                      <br />
+					  <div>
+					   <input type='radio' name='command' value='4' />&nbsp;控制风帘运动&nbsp;&nbsp;
+					   <select name="shadeAction" style='width:90px;'>
+						   <option value="1">向上</option>
+						   <option value="2">向下</option>
+						   <option value="3">停止</option>
+						 </select>
+					  </div>
+                      <br />
+					   <input id='domeSbmt' type="button" value="确认提交指令">
+				   </form>
+			   </div><!--带参数型指令 结束-->
+            </div><!--圆顶指令 结束-->
+            <hr />
+            <div><!--圆顶固定属性-->
+                <span style='color:green;'>圆顶固定属性:</span><br />
+                <ul>
+                    <li class='li fl'>经度:12.12.12.12 </li>
+                    <li class='li fl'>  纬度:12.12.12.12 </li>
+                    <li class='li fl'>  口径:12.12.12.12 </li>
+                    <li class='li fl'> 类型:12.12.12.12  </li>
+                    <li class='li fl'> 焦点类型:12.12.12.12 </li>
+                    <li class='li fl'>焦比:12.12.12.12 </li>
+                    <li class='li fl'>焦距:12.12.12.12</li>
+                    <li class='li fl'>轴1最大速度:12.12.12.12</li>
+                    <li class='li fl'> 轴2最大速度:12.12.12.12</li>
+                    <li class='li fl'> 轴2复位位置:12.12.12.12  </li>
+                    <li class='li fl'>  轴3复位位置:12.12.12.12 </li>
+                    <li class='li fl'> 是否有第3轴:12.12.12.12 </li>
+                    <li class='li fl'> 俯仰最低值:12.12.12.12 </li>
+                    <li class='li fl'> 温度传感器数目:12.12.12.12</li>
+                </ul>
+            </div><!--圆顶固定属性结束-->
+             <hr class="clear"/>
+            <div><!--圆顶可变属性-->
+                <span style='color:green;'>圆顶可变属性:</span><br />
+                <ul>
+                    <li class='li fl'> 时间戳:12.12.12.12  </li>
+                    <li class='li fl'>  当前恒星时:12.12.12.12  </li>
+                    <li class='li fl'>  当前时角:12.12.12.12  </li>
+                    <li class='li fl'>当前赤经:12.12.12.12 </li>
+                    <li class='li fl'>   当前赤纬:12.12.12.12 </li>
+                    <li class='li fl'>  当前J2000赤经:12.12.12.12 </li>
+                    <li class='li fl'> 当前J2000赤纬:12.12.12.12  </li>
+                    <li class='li fl'> 当前方位:12.12.12.12 </li>
+                    <li class='li fl'>  当前俯仰:12.12.12.12</li>
+                    <li class='li fl'> 当前消旋位置:12.12.12.12   </li>
+                    <li class='li fl'>  目标赤经:12.12.12.12   </li>
+                    <li class='li fl'>  目标赤纬:12.12.12.12   </li>
+                    <li class='li fl'> 目标J2000赤经:12.12.12.12</li>
+                    <li class='li fl'> 目标J2000赤纬:12.12.12.12</li>
+                </ul>
+            </div><!--圆顶 可变属性结束-->
+        </div><!--圆顶 指令和属性结束-->
+		<div id='filterInfo' class='displayNo'><!--滤光片 指令和属性-->
+            <div><!--滤光片指令-->
+               <span>滤光片操作指令:</span><br />
+               <input id='filterConnect' type='button' value='连接滤光片' />
+               <input id='filterDisConnect' type='button' value='断开滤光片' />
+               <input id='filterFindHome' type='button' value='找 零' />
+			    滤光片位置：<select id='filterPosi' name="filterPos" style='width:90px;'>
+										<option value="">请选择</option>
+									   <option value="0">0</option>
+									   <option value="1">1</option>
+									   <option value="2">2</option>
+									   <option value="3">3</option>
+						 </select>
+				<input id='filterPosBtn' type='button' value='提交滤光片位置' />
+			   <br />
+			  
+            </div><!--滤光片指令 结束-->
+            <hr />
+            <div><!--滤光片固定属性-->
+                <span style='color:green;'>滤光片固定属性:</span><br />
+                <ul>
+                    <li class='li fl'> 轴2最大速度:12.12.12.12</li>
+                    <li class='li fl'> 轴2复位位置:12.12.12.12  </li>
+                    <li class='li fl'>  轴3复位位置:12.12.12.12 </li>
+                    <li class='li fl'> 是否有第3轴:12.12.12.12 </li>
+                    <li class='li fl'> 俯仰最低值:12.12.12.12 </li>
+                    <li class='li fl'> 温度传感器数目:12.12.12.12</li>
+                </ul>
+            </div><!--滤光片 固定属性结束-->
+             <hr class="clear"/>
+            <div><!--滤光片可变属性-->
+                <span style='color:green;'>滤光片可变属性:</span><br />
+                <ul>
+                    <li class='li fl'>  当前俯仰:12.12.12.12</li>
+                    <li class='li fl'> 当前消旋位置:12.12.12.12   </li>
+                    <li class='li fl'>  目标赤经:12.12.12.12   </li>
+                    <li class='li fl'>  目标赤纬:12.12.12.12   </li>
+                    <li class='li fl'> 目标J2000赤经:12.12.12.12</li>
+                    <li class='li fl'> 目标J2000赤纬:12.12.12.12</li>
+                </ul>
+            </div><!--滤光片 可变属性结束-->
+        </div><!--滤光片 指令和属性结束-->
+    </div>
+</body>
+</html>

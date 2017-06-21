@@ -1,0 +1,36 @@
+/*首页样式*/
+.bar {background-color:#eeeeee; height:50px;margin-top:5px;margin-bottom:15px;}
+
+div.bar {line-height:50px;}
+header {height:50px;background-color:#3479c5;}
+
+header div {width:1200px;margin:0 auto;line-height:50px;color:#eaf1f9;font-size:14px;}
+
+header img {top:10px;}
+
+header p {display:inline-block;right:82px;font-size:14px;}
+
+header p a {color:#eaf1f9;}
+
+header div div {border:1px solid #fff; font-size:14px; text-align:center;
+			right:0px;top:12px; width:78px; height:26px;line-height:26px;}
+
+header div div a {color:#eaf1f9;}
+
+.barMrg {color:#3479c5;margin-left:10px; margin-right:6px;} /*分割横栏 左边竖条*/
+
+div.bar a {margin-right:6px; color:#a9a9a9;}
+
+#weather {top:0px;left:691px; width:246px;height:347px;
+    background-color:#71BBE3;color:#fff;}
+
+#weather table {margin:0 auto;}
+    
+#weather table tr {line-height:40px;}
+
+#weather table tr th {width:106px;}
+
+#notice {top:0px;right:0px; width:248px;height:347px;}
+
+#atMap img.pos_a {left:30px;}
+    

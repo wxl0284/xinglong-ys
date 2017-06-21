@@ -1,0 +1,63 @@
+/*首页样式*/
+header {height:50px;background-color:#3479c5;}
+
+header div {width:1200px;margin:0 auto;line-height:50px;color:#eaf1f9;font-size:14px;}
+
+header img {top:10px;}
+
+header p {display:inline-block;right:82px;font-size:14px;}
+
+header p a {color:#eaf1f9;}
+
+header div div {border:1px solid #fff; font-size:14px; text-align:center;
+			right:0px;top:12px; width:78px; height:26px;line-height:26px;}
+
+header div div a {color:#eaf1f9;}
+
+#timeInfo {text-align:center;}
+
+#title_1 {font-size:30px;}
+
+#time {margin:26px auto;}
+
+#time td {text-align:left; width:190px;padding-right:50px;}
+
+#time td span {color:#00B5EE}
+
+#atPos {height:30px;text-align:center;font-size:30px;margin-top:16px;margin-bottom:30px;}
+
+#atInfo {top:0px;right:0px;width:806px;}
+
+#atInfo table {/* margin-left:200px; */}
+
+#atInfo table td {text-align:left;width:240px;margin-left:10px;}
+
+#atInfo table td span {color:#00B5EE}
+
+#devsInfo {margin:20px auto;}
+
+#devsInfo .childDev {display:inline-block;width:228px;margin-right:4px;margin-left:4px;}
+
+#devsInfo div.txt-cntr {margin-bottom:12px;}
+
+#devsInfo div.pos_a {top:0.2px;}
+
+#devsNav {height:40px;background-color:#3578c6;}
+
+#devsNav table {margin:0 auto;}
+
+#devsNav table tr{line-height:40px;}
+
+#devsNav table td{width:95px;text-align:center;}
+
+#devsNav table td a{color:#ccc;padding-bottom:4px;}
+
+div.notCheck {color:#d0d0d0;}
+
+.hover {background-color:#3578c6;color:#fff;border:0;}
+
+#devsNav a.borderBtm {border-bottom:3px solid #fff;color:#fff;}
+
+#gimbalInfo ul li {margin-right:8px;}
+
+#gimbalSbmt {width:135px;height:32px;font-size:18px;margin-left:535px;}
