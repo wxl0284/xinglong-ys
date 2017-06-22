@@ -1975,10 +1975,10 @@ class At60 extends Controller
 		//上传文件验证
 		$result = $this->validate(
 				['file' => $file],
-				['file' => 'file|require|fileExt:txt|fileSize:1024|fileMime:text/plain'],
+				['file' => 'file|require|fileExt:txt|fileSize:4096|fileMime:text/plain'],
 				['file.require' => '请选择上传文件',
 				 'file.fileExt' => '文件后缀名必须为txt',
-				 'file.fileSize' => '文件大小超出1k',
+				 'file.fileSize' => '文件大小超出限制',
 				 'file.fileMime' => '文件格式或文件内容不符合要求']);
 		if (true !== $result)
 		{

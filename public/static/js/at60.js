@@ -216,15 +216,17 @@
     //验证转台 表单指令数据
 	function checkGimbal ()
 	{
-		if ($('input[value="1"]').prop('checked')) //验证跟踪恒星 指令数据
+		var msg = ''; //定义错误提示
+		var formElemt = $('#at60Gimbal');
+		if (formElemt.find("input['value='1']").prop('checked')) //验证跟踪恒星 指令数据
 		{
-			var rightAscension = $('input[name="rightAscension"]').val();
-			var declination = $('input[name="declination"]').val();
-			var epoch = $('select[name="epoch"]').val();
-			var speed = $('select[name="speed"]').val();
+			var rightAscension = formElemt.find('input[name="rightAscension"]').val();
+			var declination = formElemt.find('input[name="declination"]').val();
+			var epoch = formElemt.find('select[name="epoch"]').val();
+			var speed = formElemt.find('select[name="speed"]').val();
 			//定义各指令数据格式
 			var reg = new RegExp("^[a-zA-Z0-9_]{6,10}$");
-			var msg = ''; //定义错误提示
+			
 			/* if (数据1未通过) //验证未通过
 			{
 				msg += '提示信息1\n';
@@ -843,5 +845,4 @@
         });
 	});
 	
-
 })

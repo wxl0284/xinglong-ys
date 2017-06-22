@@ -290,6 +290,21 @@ class Control extends Controller
 		]);
 		return view('weather');
     }
+	
+	//更多气象信息 页面 ////////////////////////////////////////////
+    public function weatherMore1 ()
+    {
+		//未登录
+        if (!Cookie::has('login'))
+        {
+            $request = Request::instance();
+            Cookie::set('url', $request->url());
+            $this->error('请完成登录后，再进行相关操作！', '/');
+        } 
+		
+		
+		return view('weather1');
+    }
     
     //退出  ////////////////////////////////////////////////
     public function logout ()

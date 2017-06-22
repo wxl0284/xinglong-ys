@@ -63,4 +63,7 @@ div.notCheck {color:#d0d0d0;}
 ul.properUl li {margin-left:16px;margin-right:8px;width:226px;margin-bottom:13px;}
 ul.properUl li span {color:#00B5EE;}
 
-#gimbalSbmt {width:135px;height:32px;font-size:18px;margin-left:535px;}
+.submitBtn {width:135px;height:32px;font-size:18px;margin-left:535px;}
+
+#exposStratic span {width:295px;float:left;padding-bottom:13px;margin-right:4px;}
+
