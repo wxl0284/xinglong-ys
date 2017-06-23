@@ -2034,19 +2034,19 @@ class At60 extends Controller
 				{
 					return '第'.($k+1).'行计划参数的数量错误';
 				}else{
-					$plan['plan'.$k]['target'] = trim($row[0]);
-					$plan['plan'.$k]['type'] = trim($row[1]);
-					$plan['plan'.$k]['rightAscension'] = trim($row[2]);
-					$plan['plan'.$k]['declination'] = trim($row[3]);
-					$plan['plan'.$k]['epoch'] = trim($row[4]);
-					$plan['plan'.$k]['exposureTime'] = trim($row[5]);
-					$plan['plan'.$k]['delayTime'] = trim($row[6]);
-					$plan['plan'.$k]['exposureCount'] = trim($row[7]);
-					$plan['plan'.$k]['filter'] = trim($row[8]);
-					$plan['plan'.$k]['gain'] = trim($row[9]);
-					$plan['plan'.$k]['bin'] = trim($row[10]);
-					$plan['plan'.$k]['readout'] = trim($row[11]);
-					$plan['plan'.$k]['id'] = $k+1;
+					$plan["plan".$k]["target"] = trim($row[0]);
+					$plan["plan".$k]["type"] = trim($row[1]);
+					$plan["plan".$k]["rightAscension"] = trim($row[2]);
+					$plan["plan".$k]["declination"] = trim($row[3]);
+					$plan["plan".$k]["epoch"] = trim($row[4]);
+					$plan["plan".$k]["exposureTime"] = trim($row[5]);
+					$plan["plan".$k]["delayTime"] = trim($row[6]);
+					$plan["plan".$k]["exposureCount"] = trim($row[7]);
+					$plan["plan".$k]["filter"] = trim($row[8]);
+					$plan["plan".$k]["gain"] = trim($row[9]);
+					$plan["plan".$k]["bin"] = trim($row[10]);
+					$plan["plan".$k]["readout"] = trim($row[11]);
+					$plan["plan".$k]["id"] = $k+1;
 				}
 
 			}
