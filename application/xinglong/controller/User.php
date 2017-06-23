@@ -35,7 +35,7 @@ class User extends Controller
 			$keyword = '';
 		}
 		
-		$userList =Db::table('atccsuser')->where('username', 'like', '%'.$keyword.'%')->order('id desc')->paginate(10, false, ['query' => ['keyword' => $keyword]]);
+		$userList =Db::table('atccsuser')->where('username', 'like', '%'.$keyword.'%')->order('id desc')->paginate(1, false, ['query' => ['keyword' => $keyword]]);
 		$this->assign('userList', $userList);
 		return view('userIndex');
 	}

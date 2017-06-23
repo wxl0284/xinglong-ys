@@ -22,9 +22,26 @@ header div div a {color:#eaf1f9;}
 #cloudPic span {font-size:23px;}
 
 #cloudPic img {width:395px;}
-
-#cloudPic a.border {width:158px;height:41px;font-size:18px;display:inline-block;
+					
+a.border {width:158px;height:41px;font-size:18px;display:inline-block;
 					line-height:43px;color:#7A7A7A;}
 
-a.hover {background-color:#3578c6;border:0;}
+a.hover {background-color:#3578c6;border:1px solid #3578c6;}
+
+#table2 {margin-top:36px;text-align:center;}
+
+#table2 span {font-size:23px;}
+
+#table2 table {width:578px; color:#fff;}
+
+#table2 table th{height:46px; background-color:#47A5F6;}
+
+#table2 table td{height:43px; background-color:#73B9F7;}
+
+#icons {width:750px;margin:0 auto;}
+
+#icons img {width:188px;margin:15px 28px;}
+
+#icons span {margin-left:71px;margin-right:62px;}
+
     

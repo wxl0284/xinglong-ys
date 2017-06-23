@@ -4,9 +4,34 @@
 	<meta charset='utf-8'>
 	<title>云量图片</title>
 	{load href='/static/css/common-1.css'}
-    {load href='/static/css/weather1.css'}
+    {load href='/static/css/clouds.css'}
 </head>
 <body>
-	展示云量图片
+	<header>
+	     <div class='pos_r'>
+	       <img class='pos_a' src='/static/images-0/logo1.png'/>
+		   <p class='pos_a'><a href="{:url('xinglong/control/front')}">首页&nbsp;&nbsp;&nbsp;&nbsp;</a><span>欢迎!&nbsp;&nbsp;{$Request.cookie.login ?? ''}&nbsp;</span></p>
+		   <div class='pos_a'><a href='/xinglong/control/logout'>&nbsp;&nbsp;&nbsp;退出&nbsp;&nbsp;&nbsp;</a></div> 
+	    </div>
+	</header>
+	<img src='/static/images-1/top.jpg' />
+	<div id='all'>
+	  <div id='main'>
+		<br /><span >云量相机图片</span><br /><br />
+		<img class='cloudPic' src='/static/images-1/clouds_2.png' />
+		<img class='cloudPic' src='/static/images-1/clouds_2.png' />
+		<img class='cloudPic' src='/static/images-1/clouds_2.png' />
+		<img class='cloudPic' src='/static/images-1/clouds_2.png' />
+		<img class='cloudPic' src='/static/images-1/clouds_2.png' />
+		<img class='cloudPic' src='/static/images-1/clouds_2.png' />
+		<img class='cloudPic' src='/static/images-1/clouds_2.png' />
+		<img class='cloudPic' src='/static/images-1/clouds_2.png' />
+		<img class='cloudPic' src='/static/images-1/clouds_2.png' />
+		<img class='cloudPic' src='/static/images-1/clouds_2.png' />
+		<img class='cloudPic' src='/static/images-1/clouds_2.png' />
+		<img class='cloudPic' src='/static/images-1/clouds_2.png' />
+		<br /><br /><img src='/static/images-1/page.png' />
+	  </div>
+	</div>
 </body>
 </html>
