@@ -81,7 +81,7 @@
 					   <tr>
                           <td>当前方位:<span>12.345</span>
                           </td>
-                          <td>目标俯仰:<span>12.345</span>
+                          <td>当前俯仰:<span>12.345</span>
                           </td>
                        </tr>
 					   <tr>
@@ -129,12 +129,11 @@
             <div class='childDev pos_a'>
                 <div class='border txt-cntr '>各设备状态信息</div>
                 <div class='border' style='width:226px;height:198px;overflow:hidden;padding-left:3px;'>
-				转台状态正常<br />
-				ccd状态正常<br />
-			
-				ccd状态正常<br />
-				转台状态正常<br />
-				ccd状态正常<br />
+				<span id='gimbalStatus'>{$gimbalError ?? '转台状态暂未获取'}</span><br />
+				<span id='ccdStatus'>{$ccdError ?? 'ccd状态暂未获取'}</span><br />
+				<span id='focusStatus'>{$focusError ?? '调焦器状态暂未获取'}</span><br />
+				<span id='slaveDomeStatus'>{$slaveDomeError ?? '圆顶状态暂未获取'}</span><br />
+				<span id='filterStatus'>{$filterError ?? '滤光片状态暂未获取'}</span><br />
 				</div>
             </div>
         </div>

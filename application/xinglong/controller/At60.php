@@ -5,6 +5,7 @@ use think\Controller;
 use think\Session;
 use think\Request;
 use think\Cookie;
+use think\Db;
 
 //1号望远镜控制器
 class At60 extends Controller
@@ -28,7 +29,7 @@ class At60 extends Controller
     //显示1号望远控制镜页面////////////////////////////////////////
     public function index ()
     {
-        return view('at60');  
+		return view('at60');
     }
     
     //at60 望远镜 接管指令////////////////////////////////////////////

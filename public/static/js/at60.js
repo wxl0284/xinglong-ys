@@ -30,7 +30,27 @@
         });
      
     }); */
-    
+	
+	//ajax 实时更新60cm望远镜子设备状态数据///////////////////////////
+	
+		
+	function getStatus()
+	{
+		$.ajax({
+			type : 'post',
+            url : '/xinglong/at60status/devsStatus',           
+            success:  function (info) {
+               var info = eval( '(' + info +')' );
+				$('#gimbalStatus').html(info.gimbalStatus);
+				$('#ccdStatus').html(info.ccdStatus);
+				$('#focusStatus').html(info.focusStatus);
+				$('#slaveDomeStatus').html(info.slaveDomeStatus);
+				$('#filterStatus').html(info.filterStatus);
+            },
+		});
+	}
+	setInterval (getStatus,100000); 
+	
     //望远镜 子设备导航栏 js事件 ////////////////////////////
     $('#devsNav table').on('click', 'a', function (){
         var btm = $('#devsNav a.borderBtm').not($(this));  //排除自己被多次点击时的情况
