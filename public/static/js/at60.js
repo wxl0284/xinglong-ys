@@ -3,44 +3,15 @@
 */
 
  $(function () {
-    //接管望远镜按钮 js事件
-   /*  var flag = 0;
-    $('#takeOver').click(function () {
-       var e = $('#takeOver');
-       flag ++;
-       if (e.val() == '接管望远镜') val = 1;
-       if (e.val() == '取消接管')   val = 0;
-        $.ajax({
-            type : 'post',
-            url : '/xinglong/dev1/at60SendMsg',
-            data : {takeOver:val,},             
-            success:  function (info) {
-               alert(info);
-                if (flag % 2 == 1)
-                {
-                    e.val('取消接管');
-                }else if(flag % 2 == 0){
-                    e.val('接管望远镜');
-                }
-        
-            },
-              error:  function () {
-               alert('网络异常,请再次点击：接管按钮!');
-            },
-        });
-     
-    }); */
-	
-	//ajax 实时更新60cm望远镜子设备状态数据///////////////////////////
-	
-		
-	function getStatus()
+ 	//ajax 实时更新60cm望远镜子设备状态数据///////////////////////////		
+	/*function getStatus()
 	{
 		$.ajax({
 			type : 'post',
             url : '/xinglong/at60status/devsStatus',           
             success:  function (info) {
                var info = eval( '(' + info +')' );
+				//console.log(info);return;
 				$('#gimbalStatus').html(info.gimbalStatus);
 				$('#ccdStatus').html(info.ccdStatus);
 				$('#focusStatus').html(info.focusStatus);
@@ -49,7 +20,7 @@
             },
 		});
 	}
-	setInterval (getStatus,100000); 
+	setInterval (getStatus,1000); */
 	
     //望远镜 子设备导航栏 js事件 ////////////////////////////
     $('#devsNav table').on('click', 'a', function (){

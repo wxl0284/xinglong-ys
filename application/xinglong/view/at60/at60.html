@@ -365,7 +365,7 @@
 										   <option value="9">平场</option>
 									 </select></span>
 						<span>拍摄目标赤经：<input type="text" name='objectRightAscension' placeholder='小数' /></span>
-						<span>拍摄目标赤纬：<input type="text" class='expInpt' name='objectDeclination' placeholder='小数' /></span>
+						<span>拍摄目标赤纬：<input type="text" name='objectDeclination' placeholder='小数' /></span>
 						<span>拍摄目标历元：<select name="objectEpoch" style='width:69px;'>
 									   <option value="0">real</option>
 									   <option value="1">J2000</option>
@@ -631,9 +631,9 @@
             <div><!--圆顶可变属性-->
                 <span style='color:green;'>圆顶可变属性:</span><br /><br />
                 <ul class='properUl'>
-                   <li class='li fl'>天窗状态:&nbsp;&nbsp;<span>123456</span></li>
-                   <li class='li fl'>风帘状态:&nbsp;&nbsp;<span>123456</span></li>
                    <li class='li fl'>当前状态:&nbsp;&nbsp;<span>123456</span></li>
+				   <li class='li fl'>天窗状态:&nbsp;&nbsp;<span>123456</span></li>
+                   <li class='li fl'>风帘状态:&nbsp;&nbsp;<span>123456</span></li>
                    <li class='li fl'>错误标识:&nbsp;&nbsp;<span>123456</span></li>
                 </ul>
             </div><!--圆顶 可变属性结束-->
@@ -677,7 +677,7 @@
             </div><!--滤光片 可变属性结束-->
         </div><!--滤光片 指令和属性结束-->
 		<div id='planInfo' class='displayNo'><!--观测计划表格 开始-->
-			 <table id="dg" title="表格测试" >  </table>
+			 <table id="dg" title="计划表格" >  </table>
 			<div id="toolbar">
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-more" plain="true" onclick="importPlan()">导入计划</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="addPlan()">添加计划</a>

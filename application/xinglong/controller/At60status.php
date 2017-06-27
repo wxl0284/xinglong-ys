@@ -58,6 +58,11 @@ class At60status extends Controller
 		$status['elevation'] = $gimbalStatus['elevation']; //当前俯仰
 		$status['RightAscensionSpeed'] = 12.3; //赤经速度
 		$status['declinationSpeed'] = 12.5; //赤纬速度
+		$status['derotatorPositon'] = $gimbalStatus['derotatorPositon']; //当前消旋位置
+		$status['targetDerotatorPosition'] = $gimbalStatus['targetDerotatorPosition']; //目标消旋位置
+		$status['axis1TrackError'] = $gimbalStatus['axis1TrackError']; //轴1跟踪误差
+		$status['axis2TrackError'] = $gimbalStatus['axis2TrackError']; //轴2跟踪误差
+		$status['axis3TrackError'] = $gimbalStatus['axis3TrackError']; //轴3跟踪误差
 		
 		//读取ccd状态数据///////////////////////////////////////////
 		$ccdStatus = Db::table('at60ccdstatus')->order('id desc')->find();
@@ -68,36 +73,54 @@ class At60status extends Controller
 			$ccdError = '其他情况';
 		}
 		$status['ccdStatus'] = $ccdError;
+		$status['ccdCurStatus'] = $ccdStatus['curstatus'];  //ccd可变属性：当前状态
+		$status['ccdBaseline'] = $ccdStatus['baseline'];  //ccd可变属性：baseline值
+		$status['ccdReadOutMode'] = $ccdStatus['readMode'];  //ccd可变属性：读出模式
+		$status['ccdObserveBand'] = $ccdStatus['band'];  //ccd可变属性：当前拍摄波段
+		$status['J2000RightAscension'] = $ccdStatus['J2000RightAscension'];  //ccd可变属性：当前拍摄目标赤经
+		$status['J2000Declination'] = $ccdStatus['J2000Declination'];  //ccd可变属性：当前拍摄目标赤纬
+		
 		
 		//读取调焦器状态数据///////////////////////////////////////////
-		$filterStatus = Db::table('at60ccdstatus')->order('id desc')->find();
-		if ($filterStatus['error'] === '0')
+		$focusStatus = Db::table('at60focusstatus')->order('id desc')->find();
+		if ($focusStatus['error'] === '0')
 		{
 			$focusError = '调焦器状态正常';
 		}else{
 			$focusError = '其他情况';
 		}
-		$status['focusStatus'] = $focusError;
+		$status['focusStatus'] = $focusError;  //是否正常
+		$status['focusPosition'] = $focusStatus['position'];  //当前位置
+		$status['focusIsHomed'] = $focusStatus['isHomed'];  //找零状态
+		$status['focusIsTCompensation'] = $focusStatus['isTCompensation'];  //是否进行温度补偿
+		$status['focusTCompenensation'] = $focusStatus['TCompenensation'];  //温度补偿系数
 		
 		//读取圆顶状态数据///////////////////////////////////////////
-		$slaveDomeStatus = Db::table('at60ccdstatus')->order('id desc')->find();
+		$slaveDomeStatus = Db::table('at60slavedomestatus')->order('id desc')->find();
 		if ($slaveDomeStatus['error'] === '0')
 		{
 			$slaveDomeError = '圆顶状态正常';
 		}else{
 			$slaveDomeError = '其他情况';
 		}
-		$status['slaveDomeStatus'] = $slaveDomeError;
+		$status['slaveDomeStatus'] = $slaveDomeError; //圆顶：是否正常
+		$status['slaveDomeCurstatus'] = $slaveDomeStatus['curstatus']; //当前状态
+		$status['slaveDomeScuttleStatus'] = $slaveDomeStatus['scuttleStatus']; //天窗状态
+		$status['slaveDomeShadeStatus'] = $slaveDomeStatus['shadeStatus']; //风帘状态
+		$status['slaveDomeErrorStatus'] = $slaveDomeStatus['errorString']; //错误标识
 		
 		//读取滤光片状态数据///////////////////////////////////////////
-		$filterStatus = Db::table('at60ccdstatus')->order('id desc')->find();
+		$filterStatus = Db::table('at60filterstatus')->order('id desc')->find();
 		if ($filterStatus['error'] === '0')
 		{
 			$filterError = '滤光片状态正常';
 		}else{
 			$filterError = '其他情况';
 		}
-		$status['filterStatus'] = $filterError;
+		$status['filterStatus'] = $filterError; //滤光片 是否正常
+		$status['filterIsHomed'] = $filterStatus['isHomed']; //是否找零
+		$status['filterCurstatus'] = $filterStatus['curstatus']; //当前状态
+		$status['filterErrorStatus'] = $filterStatus['errorString']; //错误标识
 		
 		return json_encode($status);
 	}
