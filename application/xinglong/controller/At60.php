@@ -1956,7 +1956,7 @@ class At60 extends Controller
     }
 	
 	
-	//导入计划文件
+	//导入计划文件/////////////////////////////////////////////////
 	public function importPlan ()
 	{
 		//判断权限和登录
@@ -2053,15 +2053,10 @@ class At60 extends Controller
 			}
 			return json_encode($plan);
 			
-			
-			
-			
-			//if ($planData) return $planData;
-			
 		}else{// 上传失败获取错误信息
 			return $file->getError();
 		}		
-	}
+	}//导入计划文件 结束//////////////////////////////////////////////
 	
 	//获取计划数据 验证并发送计划数据//////////////////////////////////////
 	public function savePlan ()
