@@ -2061,11 +2061,11 @@ class At60 extends Controller
 	//获取计划数据 验证并发送计划数据//////////////////////////////////////
 	public function savePlan ()
 	{
-		//判断权限和登录
-		if (!Session::has('login'))
+		//为了避免重新登录时 重新填写计划数据 忽略此项判断 仅验证权限一项
+		/* if (!Session::has('login'))
 		{
 			return '为确保操作者为同一人，请再次登录！';
-		}
+		} */
 
 		/*if (!Session::has('role'))
 		{

@@ -76,16 +76,16 @@
 			if(editRow != undefined)
 			{
 				table.datagrid('endEdit', editRow);
-				//取消第一次选中的行
-				//table.datagrid('unSelectRow', index);
-				table.datagrid('uncheckRow', index);
+				editRow = undefined;
+				table.datagrid('unselectRow', index);
 			}
 			
 			if(editRow == undefined)
 			{
 				//获取当前选中的行索引
 				var index = table.datagrid('getRowIndex', rows[0]);
-				a = table.datagrid('beginEdit', index);
+				table.datagrid('beginEdit', index);
+				table.datagrid('unselectRow', index);
 				editRow = index;
 			}
 		}else{
@@ -98,6 +98,12 @@
 	{
 		//将第一行设为 结束编辑
 		table.datagrid('endEdit', editRow);
+		var res = table.datagrid('validateRow', editRow); //验证编辑的行
+		if (!res)
+		{
+			alert('请检查第' + (editRow+1) + '行数据!');return;
+			
+		}
 		table.datagrid('enableDnd');//编辑保存后启用拖放
 
 	}
@@ -221,12 +227,12 @@
 			},
 
 			columns:[[
-			{field:'id', title:'id', width:5, checkbox:true},
+			{field:'id', title:'id', width:5, checkbox:true,},
 			{field:'target', title:'观测目标名', width:120,
 				editor:{
 					type:'validatebox',
-					options:{required:true}
-				}
+					options:{required:true,missingMessage:'目标名必填!'},
+				},
 			},
 			{field:'type', title:'目标类型', width:100,
 				formatter:function(value){
@@ -242,20 +248,20 @@
 						valueField:'typeId',
 						textField:'name',
 						data:targetType,
-						required:true
-					}
-				}
+						required:true,
+					},
+				},
 			},
 			{field:'rightAscension', title:'赤经', width:80,
 				editor:{
 					type:'numberbox',
-					options:{required:true}
-				}
+					options:{required:true,},
+				},
 			},
 			{field:'declination', title:'赤纬', width:80,
 				editor:{
 					type:'numberbox',
-					options:{required:true}
+					options:{required:true,},
 			}},
 			{field:'epoch', title:'历元', width:80,
 				formatter:function(value){
@@ -271,24 +277,24 @@
 						valueField:'epochId',
 						textField:'name',
 						data:epochData,
-						required:true
-					}
-				}
+						required:true,
+					},
+				},
 			},
 			{field:'exposureTime', title:'曝光时间', width:80,
 				editor:{
 					type:'numberbox',
-					options:{required:true}}
+					options:{required:true,},},
 			},
 			{field:'delayTime', title:'delayTime', width:80,
 				editor:{
 					type:'numberbox',
-					options:{required:true}}
+					options:{required:true,},},
 			},
 			{field:'exposureCount', title:'曝光数量', width:80,
 				editor:{
 					type:'numberbox',
-					options:{required:true}}
+					options:{required:true,},},
 			},
 			{field:'filter', title:'滤光片', width:80,
 				formatter:function(value){
@@ -304,24 +310,24 @@
 						valueField:'filterId',
 						textField:'name',
 						data:filterData,
-						required:true
-					}
-				}
+						required:true,
+					},
+				},
 			},
 			{field:'gain', title:'增益', width:80,
 				editor:{
 					type:'numberbox',
-					options:{required:true}}
+					options:{required:true,},},
 			},
 			{field:'bin', title:'Bin', width:80,
 				editor:{
 					type:'numberbox',
-					options:{required:true}}
+					options:{required:true,},},
 			},
 			{field:'readout', title:'读出速度', width:80,
 				editor:{
 					type:'numberbox',
-					options:{required:true}}
+					options:{required:true,},},
 			},
 			{field:'del', title:'删除', width:80,
 				formatter:function(value,row,index){
@@ -330,7 +336,6 @@
 			},
 		]],
 		onAfterEdit: function (rowIndex, rowData, changes){
-			//table.datagrid('unSelectAll');
 			editRow = undefined;
 		},
 	});

@@ -52,6 +52,7 @@ class User extends Controller
 		//权限和是否登录的判断
 		if (!Session::has('login'))
 		{
+			Cookie::set('url', $this->request->url());
 			return '为确保操作者为同一人，请再次登录！';
 		}
 	
@@ -119,6 +120,7 @@ class User extends Controller
 		//权限和是否登录的判断
 		if (!Session::has('login'))
 		{
+			Cookie::set('url', $this->request->url());
 			$this->error('为确保操作者为同一人，请再次登录！', '/');
 		}
 	
@@ -146,6 +148,7 @@ class User extends Controller
 		//权限和是否登录的判断
 		if (!Session::has('login'))
 		{
+			Cookie::set('url', $this->request->url());
 			$this->error('为确保操作者为同一人，请再次登录！', '/');
 		}
 	
@@ -225,6 +228,7 @@ class User extends Controller
 		//权限和是否登录的判断
 		if (!Session::has('login'))
 		{
+			Cookie::set('url', $this->request->url());
 			$this->error('为确保操作者为同一人，请再次登录！', '/');
 		}
 	
@@ -255,6 +259,7 @@ class User extends Controller
 		//权限和是否登录的判断
 		if (!Session::has('login'))
 		{
+			Cookie::set('url', $this->request->url());
 			$this->error('为确保操作者为同一人，请再次登录！', '/');
 		}
 	
@@ -344,4 +349,10 @@ class User extends Controller
 			$this->error('网络异常，请重新提交!');
 		}
 	}
+	
+	public function test()
+	{
+		halt(input());
+	}
+	
 }

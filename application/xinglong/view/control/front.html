@@ -8,93 +8,62 @@
 	 {load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
 </head>
 <body>
-	<header>
+	<img src='/static/images-1/top.jpg' style='width:100%'/>
+	<header class='pos_r'>
 	    <div class='pos_r'>
-	        <img class='pos_a' src='/static/images-0/logo1.png'/>
-		   <p class='pos_a'><a href="{:url('xinglong/control/front')}">首页&nbsp;&nbsp;&nbsp;&nbsp;</a><a href='/xinglong/user'>用户管理&nbsp;&nbsp;&nbsp;&nbsp;</a><a href='/xinglong/user/passwd'>修改密码&nbsp;&nbsp;&nbsp;&nbsp;</a><span>欢迎!&nbsp;&nbsp;{$Request.cookie.login ?? ''}&nbsp;</span></p>
+	      <img class='pos_a' src='/static/images-0/logo1.png'/>
+		   <p class='pos_a'><a href="{:url('xinglong/control/front')}">首页&nbsp;&nbsp;&nbsp;&nbsp;</a><a href='/xinglong/user'>用户管理&nbsp;&nbsp;&nbsp;&nbsp;</a> <a href='/xinglong/user/passwd'>修改密码&nbsp;&nbsp;&nbsp;&nbsp;</a><span>欢迎!&nbsp;&nbsp;{$Request.cookie.login ?? ''}&nbsp;</span></p>
 		   <div class='pos_a'><a href='/xinglong/control/logout'>&nbsp;&nbsp;&nbsp;退出&nbsp;&nbsp;&nbsp;</a></div> 
 	    </div>
 	</header>
-	<img src='/static/images-1/top.jpg' />
 	<div id='all'>
-	   <div class='bar'><!--气象信息 横栏-->
-	      <span class='barMrg'>|</span> <span>气象信息</span>
-		  <a href='/xinglong/control/weatherMore1' class='fr'>
-			<span>更多</span>
-		    <img src='/static/images-0/more.png' />
-		  </a>
-	   </div>
-        <div class='pos_r'><!--天气-->
-            <div style='height:349px;'>
-                {$wxytError	??	''}
-				{if	condition="isset($cloudPic)"}
-                <img {$cloudPic} width='680' height='349' alt='卫星云图'/>
+		<br />
+		<div id='weather' class='center'>
+			<span style='font-size:20px;'>{$weatherError	??	''}</span>
+			<span class='title_text'>天 气 预 报</span><br />
+			<span id='weatherD'><?php echo date('Y.m.d',time());?></span>
+			<br />
+			<a class='border1 more' href="{:url('control/weatherMore1')}">查看更多</a><br /><br />
+			<table class='center_mrg'>
+				{if	condition="isset($day)"}
+				  <tr>
+					<td>白天</td>
+					<td><img src='{$dayPic}' /><span>{$weatherDay}</span></td>
+					<td><img src='/static/images-1/temp.png' /><span style='padding-right:80px;'>{$tmpDay}</span></td>
+					<td><img src='/static/images-1/wind.jpg' /><span>{$windDay}</span></td>
+					<td><img src='/static/images-1/wind.jpg' /><span>{$windPowerDay}</span></td>
+				  </tr>
+				  <tr ><td colspan='5'><div style='height:33px;'></div></td></tr>
+				  <tr>
+					<td>夜晚</td>
+					<td><img src='{$nightPic}' /><span>{$weatherNight}</span></td>
+					<td><img src='/static/images-1/temp.png' /><span style='padding-right:80px;'>{$tmpNight}</span></td>
+					<td><img src='/static/images-1/wind.jpg' /><span>{$windNight}</span></td>
+					<td><img src='/static/images-1/wind.jpg' /><span>{$windPowerNight}</span></td>
+				  </tr>
 				{/if}
-            </div>
-            <div id='weather' class='pos_a border'>
-                {$weatherError	??	''}
-                <table>
-                    {if	condition="isset($day)"}
-                    <tr><th colspan='2'><?php echo date('m月d日',time());?></th></tr>
-                    <tr><th>白天</th><th>夜晚</th></tr>
-                    <tr><th><img src='{$dayPic}' /></th><th><img src='{$nightPic}' /></th></tr>
-                    <tr>
-                    <th>{$weatherDay}</th>
-                    <th>{$weatherNight}</th>
-                    </tr>
-                    <tr>
-                    <th>{$tmpDay}</th>
-                    <th>{$tmpNight}</th>
-                    </tr>
-                    <tr>
-                    <th>{$windDay}</th>
-                    <th>{$windNight}</th>
-                    </tr>
-                    <tr>
-                    <th>{$windPowerDay}</th>
-                    <th>{$windPowerNight}</th>
-                    </tr>
-                    {/if}
-                    {if	condition="isset($night)"}<!--夜晚天气-->
-                    <tr><th colspan='2'><?php echo date('m月d日',time());?></th></tr>
-                    <tr>
-                    <th colspan='2'>
-                    <img src='{$nightPic}' /></th>
-                    </tr>
-                    <tr>
-                    <th colspan='2'>{$weatherNight}</th>
-                    </tr>
-                    <tr>
-                    <th colspan='2'>{$tmpNight}</th>
-                    </tr>
-                    <tr>
-                    <th colspan='2'>{$windNight}</th>
-                    </tr>
-                    <tr>
-                    <th colspan='2'>{$windPowerNight}</th>
-                    </tr>
-                    {/if}
-                </table>
-            </div>
-            <div id='notice' class='pos_a border'> <!--公告栏-->
-                公告栏:<br />每10分钟更新一次，最新动态在第一条
-				<br />每10分钟更新一次，最新动态在第一条
-            </div>
-        </div>
-		<div class='bar'><!--望远镜布局 横栏-->
-	      <span class='barMrg'>|</span> <span>云图照片</span>
-	    </div>
-		<img src='/static/images-1/front_clouds.png' alt='云量图' width='1200' />
-		<div class='bar'><!--望远镜布局 横栏-->
-	      <span class='barMrg'>|</span> <span>天文望远镜布局</span>
-	   </div>
-        <div id='atMap' style='text-align:center;' class='pos_r'>
-			<!--<img src='/static/images-0/north.png' class='pos_a' />-->
-          <a href='/xinglong/at60'> <img src='/static/images-1/map.png' width='1602px' alt='望远镜分布图' /></a>
-        </div>
-    </div>
-	<!-- <div class='border' style='text-align:center;width:1200px;margin:10px auto;'>
-	   中科院国家天文台
-	</div> -->
+				{if	condition="isset($night)"}
+				  <tr>
+					<td>夜晚</td>
+					<td><img src='{$nightPic}' />{$weatherNight}</td>
+					<td><img src='/static/images-1/temp.png' /><span style='padding-right:80px;'>{$tmpNight}</span></td>
+					<td><img src='/static/images-1/wind.jpg' /><span>{$windNight}</span></td>
+					<td><img src='/static/images-1/wind.jpg' /><span>{$windPowerNight}</span></td>
+				  </tr>
+				{/if}
+			</table>
+		</div><!--天气预报结束-->
+		<br />
+		<div id='notice' class='center'><!--公告栏开始-->
+			<span class='title_text'>公 告 栏</span>
+			<ul class='center_mrg' style='width:95%;'>
+				<li class='frontLi fl '><span>用户admin在使用60CM望远镜 2017.07.03</span></li>
+				<li class='frontLi fl'><span>用户atccs在使用85CM望远镜 2017.07.03</span></li>
+				<li class='frontLi fl'><span>用户admin在使用60CM望远镜 2017.07.03</span></li>
+				<li class='frontLi fl'><span>用户atccs在使用85CM望远镜 2017.07.03</span></li>
+				<div class='clear'></div>
+			</ul>
+		</div><!--公告栏开始-->
+	</div>	   
 </body>
 </html>
