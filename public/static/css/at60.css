@@ -31,7 +31,7 @@ header div div a {color:#eaf1f9;}
 
 #atPic img {width:264px;}
 
-#atInfo {top:0px;right:0px;width:620px;}
+#atInfo {top:0px;right:0px;width:560px;}
 
 #atInfo table {margin-top:20px;}
 
@@ -47,21 +47,21 @@ header div div a {color:#eaf1f9;}
 
 #devsInfo div.pos_a {top:0.2px;}
 
-#devsNav {height:40px;background-color:#3578c6;}
+#devsNav {height:40px;}
 
 #devsNav table {margin:0 auto;}
 
 #devsNav table tr{line-height:40px;}
 
-#devsNav table td{width:95px;text-align:center;}
+#devsNav table td{width:110px;text-align:center;}
 
-#devsNav table td a{color:#ccc;padding-bottom:4px;}
+#devsNav table td a{color:#000;padding-bottom:11px;}
 
 div.notCheck {color:#d0d0d0;}
 
 .hover {background-color:#3578c6;color:#fff;border:0;}
 
-#devsNav a.borderBtm {border-bottom:3px solid #fff;color:#fff;}
+#devsNav a.borderBtm {border-bottom:3px solid #0D69FC;font-weight:bold;}
 
 .properUl {margin-left:100px;}
 
@@ -76,5 +76,8 @@ footer {background-color:#656565;height:41px;}
 
 footer span {color:#fff;line-height:41px;font-size:13px;}
 
+#devsInfo span.pos_r {top:-40px;}
 
+#devsInfo img.pos_a {left:8px; top:28px;}
 
+#planInfo {margin-top:12px;margin-bottom:22px;}
