@@ -9,7 +9,7 @@
 </head>
 <body>
 	<img src='/static/images-1/top.jpg' style='width:100%'/>
-	<header class='pos_r'>
+	<header class='pos_r' style='width:1200px;'>
 	    <div class='pos_r'>
 	      <img class='pos_a' src='/static/images-0/logo1.png'/>
 		   <p class='pos_a'><a href="{:url('xinglong/control/front')}">首页&nbsp;&nbsp;&nbsp;&nbsp;</a><a href='/xinglong/user'>用户管理&nbsp;&nbsp;&nbsp;&nbsp;</a> <a href='/xinglong/user/passwd'>修改密码&nbsp;&nbsp;&nbsp;&nbsp;</a><span>欢迎!&nbsp;&nbsp;{$Request.cookie.login ?? ''}&nbsp;</span></p>
@@ -52,8 +52,13 @@
 				  </tr>
 				{/if}
 			</table>
-		</div><!--天气预报结束-->
-		<br />
+		</div><!--天气预报结束--><br />
+	</div>
+	<div id='map' class='center'>
+		<span class='title_text'>望 远 镜 布 局</span><br /><br />
+		<a href='/xinglong/at60'> <img src='/static/images-1/map.png' alt='望远镜分布图' style='width:100%;'/></a>	
+	</div><br />
+	<div id='all_1'>
 		<div id='notice' class='center'><!--公告栏开始-->
 			<span class='title_text'>公 告 栏</span>
 			<ul class='center_mrg' style='width:95%;'>
@@ -63,7 +68,10 @@
 				<li class='frontLi fl'><span>用户atccs在使用85CM望远镜 2017.07.03</span></li>
 				<div class='clear'></div>
 			</ul>
-		</div><!--公告栏开始-->
-	</div>	   
+		</div><!--公告栏开始 -->
+	</div><br />
+	<footer class='center'>
+		<span>中科院国家天文台兴隆观测基地</span>
+	</footer>
 </body>
 </html>

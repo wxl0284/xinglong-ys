@@ -1,10 +1,7 @@
 /*首页样式*/
-.bar {background-color:#eeeeee; height:50px;margin-top:5px;margin-bottom:15px;}
-
-div.bar {line-height:50px;}
 header {height:50px;background-color:#64B2E0;top:-6px;}
 
-header div {width:81.25%;margin:0 auto;line-height:50px;color:#eaf1f9;font-size:14px;}
+header div {width:1200px;margin:0 auto;line-height:50px;color:#eaf1f9;font-size:14px;}
 
 header img {top:10px;}
 
@@ -16,10 +13,6 @@ header div div {border:1px solid #fff; font-size:14px; text-align:center;
 			right:0px;top:12px; width:78px; height:26px;line-height:26px;}
 
 header div div a {color:#eaf1f9;}
-
-.barMrg {color:#3479c5;margin-left:10px; margin-right:6px;} /*分割横栏 左边竖条*/
-
-div.bar a {margin-right:6px; color:#a9a9a9;}
 
 .center {text-align:center;}
 
@@ -34,23 +27,19 @@ div.bar a {margin-right:6px; color:#a9a9a9;}
 
 #weather table td {width:198px;}
 
-#weather table td span {padding-top:16px;display:inline-block;font-size:13px;
-				/* position:relative;left:- */}
+#weather table td span {padding-top:16px;display:inline-block;font-size:13px;}
 
 #weather table td img {background-color:#64B2E0;float:left;}
 
-li.frontLi {list-style-type:disc;color:#64B2E0; 
-			/* display:inline-block; */width:430px;}
+li.frontLi {list-style-type:disc;color:#64B2E0; width:430px;}
 
+#notice {background-color:#F9F9F9;}
 #notice li span {color:#000;}
 
-/* #weather table {margin:0 auto;}
-    
-#weather table tr {line-height:40px;}
+#map {color:#000;}
 
-#weather table tr th {width:106px;}
+#all_1 {width:1200px; margin: 0 auto;}
 
-#notice {top:0px;right:0px; width:248px;height:347px;}
+footer {background-color:#656565;height:41px;}
 
-#atMap img.pos_a {left:30px;} */
-    
+footer span {color:#fff;line-height:41px;font-size:13px;}   

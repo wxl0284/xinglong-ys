@@ -1,5 +1,8 @@
-/*首页样式*/
-header {height:50px;background-color:#3479c5;}
+/*60CM样式*/
+.bar {background-color:#eeeeee; height:50px;margin-top:5px;margin-bottom:15px;}
+
+div.bar {line-height:50px;}
+header {height:50px;background-color:#64B2E0;top:-6px;}
 
 header div {width:1200px;margin:0 auto;line-height:50px;color:#eaf1f9;font-size:14px;}
 
@@ -14,23 +17,23 @@ header div div {border:1px solid #fff; font-size:14px; text-align:center;
 
 header div div a {color:#eaf1f9;}
 
+.center {text-align:center;}
+
+.center_mrg {margin:0 auto;}
+
+.title_text {font-size:21px;}
+
 #timeInfo {text-align:center;}
 
-#title_1 {font-size:30px;}
+#time {margin:18px auto;}
 
-#time {margin:26px auto;}
+#time td {align:center; width:190px;padding-right:50px;}
 
-#time td {text-align:left; width:190px;padding-right:50px;}
+#atPic img {width:22%;}
 
-#time td span {color:#00B5EE}
+#atInfo {top:0px;right:0px;width:50%;}
 
-#atPos {height:30px;text-align:center;font-size:30px;margin-top:16px;margin-bottom:30px;}
-
-#atInfo {top:0px;right:0px;width:806px;}
-
-#atInfo table {/* margin-left:200px; */}
-
-#atInfo table td {text-align:left;width:240px;margin-left:10px;}
+#atInfo table td {text-align:left;width:240px;margin-left:10px;font-size:13px;}
 
 #atInfo table td span {color:#00B5EE}
 
@@ -66,4 +69,8 @@ ul.properUl li span {color:#00B5EE;}
 .submitBtn {width:135px;height:32px;font-size:18px;margin-left:535px;}
 
 #exposStratic span {width:295px;float:left;padding-bottom:13px;margin-right:4px;}
+
+footer {background-color:#656565;height:41px;}
+
+footer span {color:#fff;line-height:41px;font-size:13px;}
 
