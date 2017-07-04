@@ -29,11 +29,13 @@ header div div a {color:#eaf1f9;}
 
 #time td {align:center; width:190px;padding-right:50px;}
 
-#atPic img {width:22%;}
+#atPic img {width:264px;}
 
-#atInfo {top:0px;right:0px;width:50%;}
+#atInfo {top:0px;right:0px;width:620px;}
 
-#atInfo table td {text-align:left;width:240px;margin-left:10px;font-size:13px;}
+#atInfo table {margin-top:20px;}
+
+#atInfo table td {text-align:left;width:240px;margin-left:10px;font-size:13px;line-height:21px;}
 
 #atInfo table td span {color:#00B5EE}
 
@@ -73,4 +75,6 @@ ul.properUl li span {color:#00B5EE;}
 footer {background-color:#656565;height:41px;}
 
 footer span {color:#fff;line-height:41px;font-size:13px;}
+
+
 

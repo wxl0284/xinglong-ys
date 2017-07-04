@@ -106,35 +106,48 @@
 					   </tr>					   
                   </table>                
             </div>
-        </div> <!--重要信息区域结束-->
-        <div id='devsInfo' class='pos_r'>
+        </div> <!--重要信息区域-->
+        <div id='devsInfo' class='pos_r center'>
             <div class='childDev'>
-                <div class='border txt-cntr '>调焦位置</div>
-                <div class='border'><img src='/static/images-1/focus.png' width='226px;'/></div>
-            </div>
-            <div class='childDev'>
-                <div class='border txt-cntr '>滤光片位置</div>
-                <div class='border'><img src='/static/images-1/filter.png' width='226px;' /></div>
+               <img src='/static/images-1/focus.png' width='100px;'/>
+				<br />调焦位置
             </div>
             <div class='childDev'>
-                <div class='border txt-cntr '>CCD温度</div>
-                <div class='border'><img src='/static/images-1/ccdTemp.png' width='226px;' /></div>
+                <img src='/static/images-1/filter.png' width='100px;'/>
+				<br />滤光片位置
             </div>
             <div class='childDev'>
-                <div class='border txt-cntr '>CCD曝光完成（%）</div>
-                <div class='border'><img src='/static/images-1/ccdExpo.png' width='226px;' /></div>
+                <img src='/static/images-1/ccdTemp.png' width='100px;' /><br />CCD温度
             </div>
-            <div class='childDev pos_a'>
-                <div class='border txt-cntr '>各设备状态信息</div>
-                <div class='border' style='width:226px;height:198px;overflow:hidden;padding-left:3px;'>
-				<span id='gimbalStatus'>{$gimbalError ?? '转台状态暂未获取'}</span><br />
-				<span id='ccdStatus'>{$ccdError ?? 'ccd状态暂未获取'}</span><br />
-				<span id='focusStatus'>{$focusError ?? '调焦器状态暂未获取'}</span><br />
-				<span id='slaveDomeStatus'>{$slaveDomeError ?? '圆顶状态暂未获取'}</span><br />
-				<span id='filterStatus'>{$filterError ?? '滤光片状态暂未获取'}</span><br />
-				</div>
+            <div class='childDev'>
+                <img src='/static/images-1/ccdExpo.png' width='100px;' /><br />CCD曝光率(%)
             </div>
-        </div>
+            <div class='childDev'>
+				<img src='/static/images-1/ccdExpo.png' width='100px;' />
+                <br />设备状态信息
+            </div>
+			<img class='center_mrg' src='/static/images-1/line.png' width='970px;' style='display:block;'/>
+			<div class='inline pos_r' style='left:-260px;top:10px;'>
+				<img src='/static/images-1/zt.png' />
+				转台
+			</div>
+			<div class='inline pos_r' style='left:-120px;top:10px;'>
+				<img src='/static/images-1/ccd.png' />
+				CCD
+			</div>
+			<div class='inline pos_r' style='left:20px;top:10px;'>
+				<img src='/static/images-1/tjq.png' />
+				调焦器
+			</div>
+			<div class='inline pos_r' style='left:150px;top:10px;'>
+				<img src='/static/images-1/yd.png' />
+				圆顶
+			</div>
+			<div class='inline pos_r' style='left:288px;top:10px;'>
+				<img src='/static/images-1/lgp.png' />
+				滤光片
+			</div>
+        </div><!--重要信息区域 结束-->
         
         <div id='devsNav'><!--望远镜子设备导航:js用code/public/static/js/dev1.js-->
             <table>
