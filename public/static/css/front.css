@@ -14,12 +14,6 @@ header div div {border:1px solid #fff; font-size:14px; text-align:center;
 
 header div div a {color:#eaf1f9;}
 
-.center {text-align:center;}
-
-.center_mrg {margin:0 auto;}
-
-.title_text {font-size:21px;}
-
 #weatherD {color:#CCA07C;}
 
 .more {display:inline-block;width:68px;font-size:11px;color:#64B2E0;
@@ -38,8 +32,4 @@ li.frontLi {list-style-type:disc;color:#64B2E0; width:565px;}
 
 #map {color:#000;}
 
-#all_1 {width:1200px; margin: 0 auto;}
-
-footer {background-color:#656565;height:41px;}
-
-footer span {color:#fff;line-height:41px;font-size:13px;}   
+#all_1 {width:1200px; margin: 0 auto;}  

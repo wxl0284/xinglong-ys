@@ -19,11 +19,11 @@
 	<div id='all'>
 		<br />
 		<div id='weather' class='center'>
-			<span style='font-size:20px;'>{$weatherError	??	''}</span>
+			<span style='font-size:20px;'>{$weatherError ??	''}</span>
 			<span class='title_text'>天 气 预 报</span><br />
 			<span id='weatherD'><?php echo date('Y.m.d',time());?></span>
 			<br />
-			<a class='border1 more' href="{:url('control/weatherMore1')}">查看更多</a><br /><br />
+			<a class='border1 more' href="{:url('control/weatherMore')}">显示详情</a><br /><br />
 			<table class='center_mrg'>
 				{if	condition="isset($day)"}
 				  <tr>

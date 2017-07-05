@@ -83,33 +83,9 @@ class Control extends Controller
             $request = Request::instance();
             Cookie::set('url', $request->url());
             $this->error('请完成登录后，再进行相关操作！', '/');
-        } 
-		
-        //获取卫星云图图片 
-        if ($wxyt = Cache::get('wxyt'))    //缓存有效
-        {
-            preg_match('/<img id="imgpath"([\s\S]){50,260}不存在！\'">/', $wxyt, $match);
-            preg_match('/src="http:\/\/([\s\S]){50,200}\d+"/', $match[0], $match1);
-            $cloudPic = $match1[0];
-        }else{//从网络抓取数据
-            $a = file_get_contents('http://www.nmc.cn/publish/satellite/fy2.htm');
-            //写入缓存
-            if ($a)
-            {//抓取成功
-                Cache::set('wxyt', $a, 3600);
-				
-				$wxyt = Cache::get('wxyt');
-				preg_match('/<img id="imgpath"([\s\S]){50,260}不存在！\'">/', $wxyt, $match);
-				preg_match('/src="http:\/\/([\s\S]){50,200}\d+"/', $match[0], $match1);
-				$cloudPic = $match1[0];
-            }else{//抓取失败
-                $wxytError = '网络异常，暂未获取卫星云图!';
-				$cloudPic  = null;
-            }
-              
         }
         
-        //获取天气预报数据
+        //获取天气预报数据////////////////////////////////////////
         if ($weathStr = Cache::get('weather'))
         {
             //获取当天预报数据的html,$match[0]
@@ -208,7 +184,8 @@ class Control extends Controller
                 $weatherError = '网络异常，暂未获取天气预报!';
             }
             
-        }
+        }//天气预报获取ok////////////////////////////////////////
+		
         //白天 天气数据模板赋值
         if (isset($day))
         {
@@ -255,14 +232,12 @@ class Control extends Controller
         {
            $this->assign('cloudPic', $cloudPic); 
         }
-        
-        
-        
+		
         return view('front');
     }
 	
 	//更多气象信息 页面 ////////////////////////////////////////////
-    public function weatherMore ()
+    public function weatherMore1 ()
     {
 		//未登录
         if (!Cookie::has('login'))
@@ -292,17 +267,54 @@ class Control extends Controller
     }
 	
 	//更多气象信息 页面 ////////////////////////////////////////////
-    public function weatherMore1 ()
+    public function weatherMore ()
     {
-		//未登录
+		//未登录////////////////////////////////////////////////
         if (!Cookie::has('login'))
         {
             $request = Request::instance();
             Cookie::set('url', $request->url());
             $this->error('请完成登录后，再进行相关操作！', '/');
-        } 
+        }
 		
+		//获取卫星云图图片///////////////////////////////////////////// 
+        if ($wxyt = Cache::get('wxyt'))    //缓存有效
+        {
+            preg_match('/<img id="imgpath"([\s\S]){50,260}不存在！\'">/', $wxyt, $match);
+            preg_match('/src="http:\/\/([\s\S]){50,200}\d+"/', $match[0], $match1);
+            $cloudPic = $match1[0];
+        }else{//从网络抓取数据
+            $a = file_get_contents('http://www.nmc.cn/publish/satellite/fy2.htm');
+            //写入缓存
+            if ($a)
+            {//抓取成功
+                Cache::set('wxyt', $a, 3600);
+				
+				$wxyt = Cache::get('wxyt');
+				preg_match('/<img id="imgpath"([\s\S]){50,260}不存在！\'">/', $wxyt, $match);
+				preg_match('/src="http:\/\/([\s\S]){50,200}\d+"/', $match[0], $match1);
+				$cloudPic = $match1[0];
+            }else{//抓取失败
+                $wxytError = '网络异常，暂未获取卫星云图!';
+				$cloudPic  = null;
+            }
+              
+        } //气象云图获取ok//////////////////////////////////////////
 		
+		//获取其他数据信息///////////////////////////////////////////
+		
+		//云图错误
+        if (isset($wxytError))
+        {
+           $this->assign('wxytError', $wxytError);
+        }
+        
+        //卫星云图赋值
+        if (isset($cloudPic))
+        {
+           $this->assign('cloudPic', $cloudPic); 
+        }
+
 		return view('weather1');
     }
     

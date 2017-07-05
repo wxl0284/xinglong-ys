@@ -15,6 +15,12 @@ input.command {width:103px; margin-right:7px;}  /*input框公共样式*/
 
 .display {display:block;}
 
+.center {text-align:center;}
+
+.center_mrg {margin:0 auto;}
+
+.title_text {font-size:21px;}
+
 .inline {display:inline-block;}
 
 .displayNo {display:none;}
@@ -30,3 +36,7 @@ li {list-style-type:none;}
 .border1 {border: 1px solid #64B2E0;border-radius:4px;}
 
 #all {width:1200px; margin: 0 auto;}
+
+footer {background-color:#656565;height:41px;}
+
+footer span {color:#fff;line-height:41px;font-size:13px;} 

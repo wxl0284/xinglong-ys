@@ -1,8 +1,5 @@
-/*首页样式*/
-.bar {background-color:#eeeeee; height:50px;margin-top:5px;margin-bottom:15px;}
-
-div.bar {line-height:50px;}
-header {height:50px;background-color:#3479c5;}
+/*气象信息 more 样式*/
+header {height:50px;background-color:#64B2E0;top:-6px;}
 
 header div {width:1200px;margin:0 auto;line-height:50px;color:#eaf1f9;font-size:14px;}
 
@@ -17,7 +14,34 @@ header div div {border:1px solid #fff; font-size:14px; text-align:center;
 
 header div div a {color:#eaf1f9;}
 
-#cloudPic {text-align:center;}
+.more {display:inline-block;width:68px;font-size:11px;color:#64B2E0;
+			line-height:23px;}
+
+#cloud_1 img, #cloud_2 img {width:570px;}
+
+#cloud_1 p, #cloud_2 p {width:100px; margin:0 auto;}
+
+#cloud_1 {width:570px;}
+
+#cloud_2 {right:0;top:0;}
+
+#all {margin-top:22px;}
+
+#tb_1 {width:570px;}
+
+#tb_2 {right:0;top:0;}
+
+.leng_1 {width:189px;}
+
+.leng_2 {width:379px;}
+
+table th {background-color:#2FB0F4; color:#fff;font-size:16px;}
+
+table td {background-color:#73B9F7; color:#fff;font-size:16px;}
+
+tr {height:43px;}
+
+/* #cloudPic {text-align:center;}
 
 #cloudPic span {font-size:23px;}
 
@@ -43,5 +67,5 @@ a.hover {background-color:#3578c6;border:1px solid #3578c6;}
 #icons img {width:188px;margin:15px 28px;}
 
 #icons span {margin-left:71px;margin-right:62px;}
-
+ */
     

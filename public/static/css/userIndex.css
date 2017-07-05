@@ -1,8 +1,5 @@
 /*用户管理页面样式*/
-.bar {background-color:#eeeeee; height:50px;margin-top:35px;margin-bottom:15px;}
-
-div.bar {line-height:50px;}
-header {height:50px;background-color:#3479c5;}
+header {height:50px;background-color:#64B2E0;top:-6px;}
 
 header div {width:1200px;margin:0 auto;line-height:50px;color:#eaf1f9;font-size:14px;}
 
@@ -17,14 +14,33 @@ header div div {border:1px solid #fff; font-size:14px; text-align:center;
 
 header div div a {color:#eaf1f9;}
 
-#user {width:700px; text-align:center; margin: 0 auto;font-size:20px;}
+#user {width:900px; text-align:center; margin: 0 auto;}
 
-#user table {margin: 0 auto;width:660px; border:0;border-collapse: collapse;}
+#user table {margin:0 auto;width:898px;border-collapse: collapse;}
 
-th, td{width:200px;border:1px solid #ccc;}
+td{width:200px;border:1px solid #ccc;height:30px;}
 
 #paging {margin:0 auto;}
 
 #paging ul {float:left;position:relative;left:50%;}
 
-ul li {float:left;position:relative; right:50%; padding:6px;}   
+ul li {float:left;position:relative; right:50%; padding:6px;}
+
+.title_text {font-size:21px;}
+ 
+#user form {width:250px;margin-right:-20px;}
+
+#user a.fl.border1 {width:100px;height:33px;line-height:33px} 
+
+#keywd {height:33px;border-radius:4px;}
+
+#user input.border1 {width:60px;height:33px;line-height:33px;color:#64B2E0;background-color:#fff;}
+
+footer {position:absolute;bottom:0px;width:100%}
+
+#t1 td {font-size:18px;background-color:#eee;}
+
+#paging li {border:1px solid #ccc;margin:12px 5px 10px 5px;width:14px;height:14px;
+			background-color:#EFEFEF;text-align:center;line-height:14px;font-size:17px;}
+			
+#paging li.active {color:#fff;background-color:#55ADDD;}
