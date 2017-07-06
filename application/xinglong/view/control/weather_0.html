@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset='utf-8'>
+        <title>兴隆台</title>
+		{load href='/static/css/log.css'}
+		{load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
+		{load href='/static/plugin/echarts.js'}
+		
+    </head>
+    <body style='text-align:center;'>
+        <img src='/static/images-0/weatherMore.jpg' width='1200' />
+		<div><!--各类图表 开始-->
+		   <div id='temperature' style='width:900px;height:280px;margin:0 auto;'><!--温度图-->
+		   </div>
+		   <div id='windSpeed' style='width:900px;height:280px;margin:10px auto;'><!--风速图-->
+		   </div>
+		   <div id='tempHumid' style='width:900px;height:280px;margin:10px auto;'><!--温度湿度图-->
+		   </div>
+		   <script>
+			//温度图 js//////////////////////////////////////////
+				var tempaChart = echarts.init(document.getElementById('temperature'));
+				var tempaData = {$tempaData};	//在模板中直接使用php分配过来的变量
+				var optionTempa = {
+					title: {
+						text: '兴隆基地气温（℃）',
+					},
+					tooltip: {
+						trigger: 'axis'
+					},
+					grid: {
+						left: '3%',
+						right: '4%',
+						bottom: '3%',
+						containLabel: true
+					},
+					xAxis: {
+						type: 'category',
+						boundaryGap: false,
+						data: ['8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00']
+					},
+					yAxis: {
+						type: 'value'
+					},	
+				   series: [
+						{
+							name:'温度',
+							type:'line',
+							data:tempaData	
+						}
+					]	
+					
+				}; 
+				tempaChart.setOption(optionTempa);
+	    //风速图 js////////////////////////////////////////////////
+			var windSpeedChart = echarts.init(document.getElementById('windSpeed'));
+			var windSpeedData1 = {$windData2}; //在模板中直接使用php分配过来的变量aa
+			var windSpeedData2 = {$windData10}; //在模板中直接使用php分配过来的变量aa
+			var optionWind = {
+				title: {
+					text: '风速图（米/秒）',
+				},
+				  legend: {
+					data:['2分钟平均','10分钟平均'],
+				},
+				tooltip: {
+					trigger: 'axis'
+				},
+				grid: {
+					left: '3%',
+					right: '4%',
+					bottom: '3%',
+					containLabel: true
+				},
+				xAxis: {
+					type: 'category',
+					boundaryGap: false,
+					data: ['8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00']
+				},
+				yAxis: {
+					type: 'value'
+				},	
+			    series: [
+					{
+						name:'2分钟平均',
+						type:'line',
+						data:windSpeedData1	
+					},
+					{
+						name:'10分钟平均',
+						type:'line',
+						data:windSpeedData2	
+					},
+				]	
+			};
+			windSpeedChart.setOption(optionWind);
+		//温度湿度图 js////////////////////////////////////////////////
+			var tempaHumidChart = echarts.init(document.getElementById('tempHumid'));
+			var tmpData = {$tmpData}; //在模板中直接使用php分配过来的变量
+			var dewPointData = {$dewPointData}; //在模板中直接使用php分配过来的变量
+			var humiData = {$humiData}; //在模板中直接使用php分配过来的变量
+			var optionTmpHumi = {
+				title: {
+					text: '温度（℃）',
+				},
+				  legend: {
+					data:['温度','露点温度','湿度'],
+				},
+				tooltip: {
+					trigger: 'axis'
+				},
+				grid: {
+					left: '3%',
+					right: '4%',
+					bottom: '3%',
+					containLabel: true
+				},
+				xAxis: {
+					type: 'category',
+					boundaryGap: false,
+					data: ['8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00'],
+					//axisTick: {
+                    //    alignWithLabel: true
+                    //}
+				},
+				yAxis: [
+				   {type: 'value',
+					name: '温度',
+					position: 'left',
+				   },
+				   {type: 'value',
+					name: '温度（%）',
+					position: 'right',				   
+				   }
+				], 	
+			    series: [
+					{
+						name:'温度',
+						type:'line',
+						data:tmpData	
+					},
+					{
+						name:'露点温度',
+						type:'line',
+						itemStyle:{normal:{color:'#c220df'}},
+						data:dewPointData	
+					},
+					{
+						name:'湿度',
+						type:'line',
+						yAxisIndex: 1,
+						data:humiData	
+					},
+				]
+			};
+			tempaHumidChart.setOption(optionTmpHumi);
+		   </script>
+		</div><!--各类图表 结束-->
+    </body>
+</html>

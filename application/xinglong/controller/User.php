@@ -333,7 +333,7 @@ class User extends Controller
 		{
 			if(md5($passwd) !== $oldPaswd)
 			{
-				$this->error('您输入的原密码与正在使用的密码不一致!');
+				$this->error('您输入的原密码错误!');
 			}else{
 				$res = $user->where('username', $username)
 				     ->update(['password'=>md5($passwdNew)]);
@@ -348,11 +348,6 @@ class User extends Controller
 		}else{
 			$this->error('网络异常，请重新提交!');
 		}
-	}
-	
-	public function test()
-	{
-		halt(input());
 	}
 	
 }
