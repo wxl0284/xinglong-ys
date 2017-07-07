@@ -22,6 +22,21 @@
 	}
 	setInterval (getStatus,1000); */
 	
+	//接管 弹窗代码////////////////////////////////////////////////
+	$('#takeOverBtn').click(function () {
+		$('#panel').removeClass('displayNo');
+		$('#takeOverPanel').window({
+			title : '接管望远镜',
+			width : 410,
+			height : 300,
+			collapsible : false,
+			minimizable : false,
+			maximizable : false,
+			
+		});
+	});
+	//接管 弹窗代码 结束////////////////////////////////////////////////
+	
     //望远镜 子设备导航栏 js事件 ////////////////////////////
     $('#devsNav table').on('click', 'a', function (){
         var btm = $('#devsNav a.borderBtm').not($(this));  //排除自己被多次点击时的情况
@@ -37,9 +52,9 @@
         display.addClass('displayNo');
         dev.removeClass('displayNo');
         dev.addClass('display');
-    }); 
+    }); ///////////////////////////////////////////////////////
     
-    //接管望远镜按钮 js事件 
+    /*//接管望远镜按钮 js事件 ////////////////////////////////////////////
      $('#takeOver').click(function () {
        //var e = $(this);
    
@@ -63,10 +78,27 @@
             },
         });
      
-    });
+    });/////////////////////////////////////////////////////////////*/
+	
+	//每个设备 指令导航栏 nav下span 点击事件/////////////////////////
+	var navSpan = $('nav span');
+	var divs = $('form div');//获取页面指令表单中所有div
+	$('nav').on('click', 'span', function() {
+		$(this).addClass('active');
+		navSpan.not($(this)).removeClass('active');
+		
+		//显示或隐藏相应指令 
+		var divID = $(this).attr('name');
+		divID = '#' + divID;
+		commandDiv = $(divID);
+		divs.not(commandDiv).hide();//隐藏其他相应指令
+		commandDiv.show();//显示相应指令		
+	});//每个设备 指令导航栏 nav下span 点击事件  结束/////////////////////////
 	
 	//转台 连接按钮js事件/////////////////////////////////
     $('#gimbalConnect').click(function () {
+		$(this).addClass('btnClick');
+		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
         $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60GimbalSendData',
@@ -86,6 +118,8 @@
 	
 	//转台 断开连接按钮 js事件/////////////////////////////////
     $('#gimbalDisConnect').click(function () {
+		$(this).addClass('btnClick');
+		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
         $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60GimbalSendData',
@@ -105,6 +139,8 @@
 	
 	//转台 找零按钮js事件//////////////////////////////////
     $('#gimbalFindhome').click(function () {
+		$(this).addClass('btnClick');
+		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
         $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60GimbalSendData',
@@ -124,6 +160,8 @@
     
 	//转台 复位按钮 js事件////////////////////////////////////
     $('#gimbalPark').click(function () {
+		$(this).addClass('btnClick');
+		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
         $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60GimbalSendData',
@@ -143,6 +181,8 @@
 	 
 	//转台 停止按钮 js事件///////////////////////////////////
     $('#gimbalStop').click(function () {
+		$(this).addClass('btnClick');
+		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
         $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60GimbalSendData',
@@ -162,6 +202,8 @@
 	
 	//转台 急停按钮 js事件/////////////////////////////////////
     $('#gimbalEmergenceStop').click(function () {
+		$(this).addClass('btnClick');
+		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
         $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60GimbalSendData',
@@ -177,7 +219,7 @@
                alert('网络异常,请再次点击：急停按钮!');
             },
         });
-    }); 
+    });/////////////////////////////////////////// 
 	
 	//转台 带参数指令  js事件////////////////////////////////////////////////
 	var gimbalForm = $('#at60Gimbal');
@@ -192,7 +234,7 @@
          
      });
 	 
-    //转台 轴3工作模式 仅对模式2有效 js事件/////////////////
+    //转台 轴3工作模式 仅对模式2有效 js事件////////////////////////////
 	$('#at60Axis3').change(function (){
         var e = $(this).next('span');
        if ($(this).val() == 2)
@@ -204,7 +246,7 @@
        }
     });
     
-    //验证转台 表单指令数据
+    //验证转台 表单指令数据///////////////////////////////////////////
 	function checkGimbal ()
 	{
 		var msg = ''; //定义错误提示

@@ -1,7 +1,4 @@
 /*60CM样式*/
-.bar {background-color:#eeeeee; height:50px;margin-top:5px;margin-bottom:15px;}
-
-div.bar {line-height:50px;}
 header {height:50px;background-color:#64B2E0;top:-6px;}
 
 header div {width:1200px;margin:0 auto;line-height:50px;color:#eaf1f9;font-size:14px;}
@@ -75,3 +72,43 @@ footer span {color:#fff;line-height:41px;font-size:13px;}
 #devsInfo img.pos_a {left:8px; top:28px;}
 
 #planInfo {margin-top:12px;margin-bottom:22px;}
+
+#takeOverBtn {top:240px;left:98px;width:60px;background-color:#64B2E0;color:#fff;cursor:pointer;}
+
+#panel {left:300px;}
+
+#takeOverPanel td {height:40px;width:160px;font-size:15px;}
+
+#takeOverPanel table {padding-right:75px;}
+
+#takeOverPanel table a {height:22px;cursor:pointer;line-height:22px;}
+
+#doTakeOver {background-color:#64B2E0;width:100px;color:#fff;}
+
+#noTakeOver {color:#64B2E0;width:66px;}
+
+#gimbalInfo nav {margin-top:20px;}
+
+#gimbalInfo nav span {line-height:30px;display:inline-block;
+			margin-right:2px;padding:0 3px;cursor:pointer;}
+			
+nav span {background-color:#ECEEE6;}/*指令按钮导航栏 未点击 样式*/
+
+.active{font-weight:bold;background-color:#9F9F9E;}/*指令按钮导航栏  点击后样式*/
+
+#up, #down {border:2px solid #ccc;margin-top:20px;}
+
+#btnsGimbal {width:700px;margin-top:20px;}
+
+.btnCommand {padding:0 10px;line-height:30px;font-size:15px;
+	color:#64B2E0;background-color:#fff;cursor:pointer;}/*按钮型不带参数指令 未点击 样式*/
+
+.btnClick {background-color:#64B2E0;color:#fff;}/*按钮型不带参数指令 点击后样式*/
+
+#btnsGimbal input {margin-right:28px;}
+
+form input[type='radio'], form div {display:none;}
+
+.hide {display:none}/*隐藏某个指令输入框*/
+
+.show {display:block}/*某个指令输入框*/

@@ -15,15 +15,17 @@ input.command {width:103px; margin-right:7px;}  /*input框公共样式*/
 
 .display {display:block;}
 
+.displayNo {display:none;}
+
 .center {text-align:center;}
+
+.text_r {text-align:right;}
 
 .center_mrg {margin:0 auto;}
 
 .title_text {font-size:21px;}
 
 .inline {display:inline-block;}
-
-.displayNo {display:none;}
 
 .pos_r {position:relative;}
 
