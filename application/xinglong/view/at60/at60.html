@@ -193,12 +193,11 @@
           <div id='gimbalInfo' class='display'><!--转台指令和属性-->
              <nav class='center'><!--转台指令好导航-->
 			    <span name='trackStar'>跟踪恒星</span>	<span name='targetName'>设置目标名称</span>
-				<span>指向固定位置</span>  <span>轴3指向固定位置</span>
-				<span>轴3工作模式</span>  <span>速度修正</span>
-				<span>恒速运动</span>  <span>位置修正</span>
-				<span>镜盖操作</span>  <span>焦点切换镜</span>
-				<span>保存同步数据</span>  <span>跟踪卫星</span>
-				<span>属性设置</span>
+				<span name='poitFix'>指向固定位置</span>  <span name='slewDerotator'>轴3指向固定位置</span>
+				<span name='axis3Mode'>轴3工作模式</span>  <span name='speedX'>速度修正</span>
+				<span name='speedF'>恒速运动</span>  <span name='positionX'>位置修正</span>
+				<span name='coverOp'>镜盖操作</span>  <span name='focusOp'>焦点切换镜</span>
+				<span name='saveData'>保存同步数据</span>  <span name='trackS'>跟踪恒星</span>	<span name='PropCfg'>属性设置</span>
 			 </nav>
 			 <div id='up'><!--指令和可变属性-->
 				<div id='btnsGimbal' class='center_mrg center'>
@@ -210,29 +209,32 @@
                    <input id='gimbalEmergenceStop' class='border1 btnCommand' type='button' value='急 停' />
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
-				<form id='at60Gimbal'>
-					<div id='trackStar' class='center'>
+				<form id='at60Gimbal' class='center command'>
+					<div id='trackStar'>
 					   <input type='radio' name='command' value='1' />
 					   赤经：<input type="text" name='rightAscension' placeholder='0-24'/>
 					   赤纬：<input type="text" name='declination' placeholder='-90-90'/>
 					  历元：<select name="epoch" style='width:69px;'>
+								<option value="" selected='selected'>请选择</option>
 						       <option value="0">real</option>
 							   <option value="1">J2000</option>
 							   <option value="2">B1950</option>
 							   <option value="3">J2050</option>
 						    </select>
-					   &nbsp;&nbsp;跟踪速度：
-					   <select name="speed" style='width:56px;'>
+					  跟踪速度：
+					   <select name="speed" style='width:66px;'>
+					       <option value="" selected='selected'>请选择</option>
 						   <option value="0">恒星</option>
 						   <option value="1">太阳</option>
 						   <option value="2">月亮</option>
 						   <option value="3">彗星</option>
 						</select>
 					</div>
-					<div id='targetName' class='center'>
-					   <input type='radio' name='command' value='2' />&nbsp;设置目标名称<br />
+					<div id='targetName'>
+					   <input type='radio' name='command' value='2' />
 					   目标名称：<input type="text" name='objectName' />
-					  目标类型：<select name="objectType" style='width:79px;'>
+					  目标类型：<select name="objectType" style='width:81px;'>
+						           <option value="" selected='selected'>请选择</option>
 						           <option value="0">恒星</option>
 								   <option value="1">太阳</option>
 								   <option value="2">月亮</option>
@@ -241,13 +243,100 @@
 								   <option value="5">卫星</option>
 								   <option value="6">固定位置</option>
 						    </select>
-						
 					  </div>
+					<div id='poitFix'>
+						   <input type='radio' name='command' value='3' />
+						   方位：<input type="text" name='azimuth' />
+						   俯仰：<input type="text" name='elevation' />
+					</div>
+					<div id='slewDerotator'>
+					   <input type='radio' name='command' value='4' />轴3指向固定位置：
+					   <input type="text" name='slewDerotator' />
+					</div>
+					<div id='axis3Mode'>
+					   <input type='radio' name='command' value='5' />
+					   模式：<select id='at60Axis3' name="mode" style='width:129px;'>
+						           <option value="" selected='selected'>请选择</option>
+						           <option value="0">不消旋</option>
+								   <option value="1">偏差消旋</option>
+								   <option value="2">始终指向同一角度</option>
+						    </select>
+					   <span class='displayNo'>起偏角：<input type="text" name='polarizingAngle' /></span>
+					</div>
+					<div id='speedX'>
+                           <input type='radio' name='command' value='6' />
+                           轴：<input type="text" name='axis' />
+                           修正值：<input type="text" name='correction' />
+					</div>
+					<div id='speedF'>
+                           <input type='radio' name='command' value='7' />
+                           轴：<input type="text" name='FixedMoveAxis' />
+                           速度：<input type="text" name='FixedMoveSpeed' />
+					</div>
+					<div id='positionX'>
+                           <input type='radio' name='command' value='8' />
+                           轴：<input type="text" name='PositionCorrectAxis' />
+                           速度：<input type="text" name='PositionCorrectVal' />
+					</div>
+					<div id='coverOp'>
+                           <input type='radio' name='command' value='9' />镜盖操作：
+						   <select name="openCover" style='width:56px;'>
+						           <option value="" selected='selected'>选择</option>
+						           <option value="1">开</option>
+								   <option value="2">关</option>
+								   <option value="0">停</option>
+						    </select>                        
+					</div>
+					<div id='focusOp'>
+                           <input type='radio' name='command' value='10' />焦点切换镜：
+						   <select name="setFocusType" style='width:56px;'>
+								<option value="" selected='selected'>选择</option>
+						        <option value="1">1</option>
+							    <option value="2">2</option>
+							    <option value="3">3</option>
+							    <option value="-1">停</option>
+						    </select>
+                          
+					</div>
+					<div id='saveData'>
+                           <input type='radio' name='command' value='11' />保存同步数据：
+						   <input type="text" name='saveSyncData' />
+					</div>
+					<div id='trackS'>
+                           <input type='radio' name='command' value='12' />跟踪恒星：
+						   <input type="text" name='trackStar' />
+					</div>
+					<div id='PropCfg'>
+                           <input type='radio' name='command' value='13' />属性设置：
+						   <input type="text" name='configProp' />
+					</div>
+					<br><input id='ccdSbmt' class='border submitBtn' type="button" value="确认提交指令">
 				</form>
-			 </div><!--指令和可变属性 结束-->
-			 <div id='down'><!--固定属性-->
-				sdfdsf<br>sdfsf
-			 </div><!--固定属性 结束-->
+			  <br><hr style='width:98%;' class='center_mrg'><br>
+			  <div><!--转台可变属性-->
+                <span style='color:green;'>转台可变属性:</span><br /><br />
+                <ul class='properUl'>
+                    <li class='li fl'> 时间戳:&nbsp;&nbsp;<span>12345678</span></li>
+                    <li class='li fl'>  当前恒星时:&nbsp;&nbsp;<span>12345678</span></li>
+                    <li class='li fl'>  当前时角:&nbsp;&nbsp;<span>12345678</span></li>
+                    <li class='li fl'>当前赤经:&nbsp;&nbsp;<span>12345678</span></li>
+                    <li class='li fl'>   当前赤纬:&nbsp;&nbsp;<span>12345678</span></li>
+                    <li class='li fl'>  当前J2000赤经:&nbsp;&nbsp;<span>12345678</span></li>
+                    <li class='li fl'> 当前J2000赤纬:&nbsp;&nbsp;<span>12345678</span> </li>
+                    <li class='li fl'> 当前方位:&nbsp;&nbsp;<span>12345678</span></li>
+                    <li class='li fl'>  当前俯仰:&nbsp;&nbsp;<span>12345678</span></li>
+                    <li class='li fl'> 当前消旋位置:&nbsp;&nbsp;<span>12345678</span></li>
+                    <li class='li fl'>  目标赤经:&nbsp;&nbsp;<span>12345678</span></li>
+                    <li class='li fl'>  目标赤纬:&nbsp;&nbsp;<span>12345678</span></li>
+                    <li class='li fl'> 目标J2000赤经:&nbsp;&nbsp;<span>12345678</span></li>
+                    <li class='li fl'> 目标J2000赤纬:&nbsp;&nbsp;<span>12345678</span></li>
+                    <li class='li fl'> 目标消旋位置:&nbsp;&nbsp;<span>12345678</span></li>
+                </ul><div class='clear'></div>
+             </div><!--转台 可变属性结束-->
+		  </div><!--指令和可变属性 结束-->
+		 <div id='down'><!--固定属性-->
+			sdfdsf<br>sdfsf
+		 </div><!--固定属性 结束-->
           </div><!--转台 可变属性结束-->
         </div><!--转台指令和属性 结束-->
     </div>

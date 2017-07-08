@@ -41,7 +41,7 @@ class Control extends Controller
         }
         
         //判断登录用户名和密码有效性 用预处理 防止sql注入
-		$userData = Db::query('SELECT * FROM atccsuser WHERE username=?',[$username]);
+		$userData = Db::query('SELECT * FROM user WHERE username=?',[$username]);
 		
 		if (!$userData) //用户名不存在
         {

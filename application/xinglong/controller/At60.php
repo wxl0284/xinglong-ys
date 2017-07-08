@@ -330,13 +330,13 @@ class At60 extends Controller
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
 			echo '指向固定位置指令：' .udpSend($sendMsg);
-		}elseif (($slewDerotator=trim(input('slewDerotator'))) !== '') 
+		}elseif (input('command') == 4) 
 		{//轴3指向固定位置
 			$length = 48 + 8;    //该结构体总长度
 			$headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device);
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=6);
-			
+			$slewDerotator=trim(input('slewDerotator'));
 			if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $slewDerotator))
 			{
 				echo '轴3指向固定位置必须为数字！';return;
