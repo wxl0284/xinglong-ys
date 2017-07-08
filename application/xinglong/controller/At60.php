@@ -1115,7 +1115,7 @@ class At60 extends Controller
 			//socket发送数据        
 			$sendMsg = $headInfo . $sendMsg;
 			echo '设置增益指令：' .udpSend($sendMsg);	
-		}elseif (input('ReadSpeedMode') !== '')   //读出速度模式值
+		}elseif (input('command') == 5)   //读出速度模式值
 		{
 			$length = 48 + 2;      //该结构体总长度
 			$headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device);
@@ -1133,7 +1133,7 @@ class At60 extends Controller
 			//socket发送数据        
 			$sendMsg = $headInfo . $sendMsg;
 			echo '设置读出速度模式指令：' .udpSend($sendMsg);	
-		}elseif (input('SetTransferSpeed') !== '') //转移速度模式值
+		}elseif (input('command') == 6) //转移速度模式值
 		{
 			$length = 48 + 2;      //该结构体总长度
 			$headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device);
@@ -1258,7 +1258,7 @@ class At60 extends Controller
 			//socket发送数据        
 			$sendMsg = $headInfo . $sendMsg;
 			echo '设置快门指令：'. udpSend($sendMsg);
-		}elseif (input('isFullFrame') !== '')     //设置帧转移
+		}elseif (input('command') == 10)     //设置帧转移
 		{
 			$length = 48 + 2;      //该结构体总长度
 			$headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device);

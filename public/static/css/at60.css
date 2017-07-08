@@ -54,14 +54,14 @@ div.notCheck {color:#d0d0d0;}
 
 #devsNav a.borderBtm {border-bottom:3px solid #0D69FC;font-weight:bold;}
 
-.properUl {margin-left:100px;}
+.properUl {margin-left:22px;}
 
-ul.properUl li {margin-left:16px;margin-right:8px;width:226px;margin-bottom:13px;}
+ul.properUl li {margin-right:8px;width:226px;margin-bottom:13px;}
 ul.properUl li span {color:#00B5EE;}
 
-.submitBtn {width:135px;height:32px;font-size:18px;/* margin-left:535px; */}
+.submitBtn {width:135px;height:32px;font-size:18px;}
 
-#exposStratic span {width:295px;float:left;padding-bottom:13px;margin-right:4px;}
+#exposStratic span {width:320px;display:inline-block;text-align:right;margin-bottom:10px;}/*曝光策略指令样式*/
 
 footer {background-color:#656565;height:41px;}
 
@@ -87,26 +87,28 @@ footer span {color:#fff;line-height:41px;font-size:13px;}
 
 #noTakeOver {color:#64B2E0;width:66px;}
 
-#gimbalInfo nav {margin-top:20px;}
+nav {margin-top:20px;} /*子设备指令 导航*/
 
-#gimbalInfo nav span {line-height:30px;display:inline-block;
+nav span {line-height:30px;display:inline-block;
 			margin-right:2px;padding:0 3px;cursor:pointer;}
+			
+#ccdInfo nav span {padding:0 2.6px;}
 			
 nav span {background-color:#ECEEE6;}/*指令按钮导航栏 未点击 样式*/
 
 .active{font-weight:bold;background-color:#9F9F9E;}/*指令按钮导航栏  点击后样式*/
 
-#up, #down {border:2px solid #ccc;margin-top:20px;}
+.border2 {border:2px solid #ccc;margin-top:20px;}
 
-#btnsGimbal {width:700px;margin-top:20px;}
+.BtnsDiv {width:700px;margin-top:20px;}/*按钮型指令 样式*/
 
 .btnCommand {padding:0 10px;line-height:30px;font-size:15px;
-	color:#64B2E0;background-color:#fff;cursor:pointer;}/*按钮型不带参数指令 未点击 样式*/
+	color:#64B2E0;background-color:#fff;cursor:pointer;margin-right:28px;}/*按钮型不带参数指令 未点击 样式*/
 
 .btnClick {background-color:#64B2E0;color:#fff;}/*按钮型不带参数指令 点击后样式*/
-
-#btnsGimbal input {margin-right:28px;}
 
 form input[type='radio'], form div {display:none;}
 
 .command input, .command select {margin-right:16px;}/*每个带参数指令的样式*/
+
+.propT {font-weight:bold;}

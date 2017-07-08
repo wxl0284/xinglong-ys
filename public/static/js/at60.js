@@ -20,7 +20,7 @@
             },
 		});
 	}
-	setInterval (getStatus,1000); */
+	setInterval (getStatus,1800); */
 	
 	//接管 弹窗代码////////////////////////////////////////////////
 	$('#takeOverBtn').click(function () {
@@ -393,6 +393,8 @@
    
    //CCD 连接按钮 js事件///////////////////////////////////
    $('#ccdConnect').click(function (){
+	   $(this).addClass('btnClick');
+	   $('#btnsCCD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60CcdSendData',
@@ -412,6 +414,8 @@
    
    //CCD 断开按钮 js事件///////////////////////////////////
    $('#ccdDisConnect').click(function (){
+	   $(this).addClass('btnClick');
+	   $('#btnsCCD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60CcdSendData',
@@ -431,6 +435,8 @@
    
    //CCD 停止曝光 js事件/////////////////////////////////////
    $('#ccdStopExpose').click(function (){
+	   $(this).addClass('btnClick');
+	   $('#btnsCCD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60CcdSendData',
@@ -450,6 +456,8 @@
    
    //CCD 终止曝光 js事件/////////////////////////////////////
    $('#ccdAbortExpose').click(function (){
+	   $(this).addClass('btnClick');
+	   $('#btnsCCD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60CcdSendData',
