@@ -112,3 +112,7 @@ form input[type='radio'], form div {display:none;}
 .command input, .command select {margin-right:16px;}/*每个带参数指令的样式*/
 
 .propT {font-weight:bold;}
+
+#next {right:0;}
+
+#smallPic .mrgR {margin-left:10px;margin-right:9px;}
