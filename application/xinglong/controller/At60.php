@@ -1456,13 +1456,13 @@ class At60 extends Controller
 			//socket发送数据
 			$sendMsg = $headInfo;
 			echo '调焦器找零指令：' .udpSend($sendMsg);
-		}elseif (($setPosition=trim(input('setPosition'))) !== '')	//设置目标位置
+		}elseif (input('command') == 1)	//设置目标位置
 		{
-			 $length = 48 + 8;      //结构体长度
+			$length = 48 + 8;      //结构体长度
 			$headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device);
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=2);
-			
+			$setPosition=trim(input('setPosition'));
 			if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $setPosition))
 			{
 				echo '目标位置的值必须是数字！';return; 

@@ -651,6 +651,8 @@
    
    //调焦器 连接按钮 js事件///////////////////////////////////
    $('#focusConnect').click(function (){
+	   $(this).addClass('btnClick');
+	   $('#btnsFocus input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60FocusSendData',
@@ -670,6 +672,8 @@
    
     //调焦器 断开按钮 js事件///////////////////////////////////
    $('#focusDisConnect').click(function (){
+	   $(this).addClass('btnClick');
+	   $('#btnsFocus input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60FocusSendData',
@@ -689,6 +693,8 @@
    
    //调焦器 停止运动按钮 js事件///////////////////////////////////
    $('#focusStop').click(function (){
+	   $(this).addClass('btnClick');
+	   $('#btnsFocus input').not($(this)).removeClass('btnClick');
 	   $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60FocusSendData',
@@ -708,6 +714,8 @@
    
    //调焦器 找零按钮 js事件///////////////////////////////////
    $('#focusFindHome').click(function (){
+	   $(this).addClass('btnClick');
+	   $('#btnsFocus input').not($(this)).removeClass('btnClick');
 	   $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60FocusSendData',
@@ -799,6 +807,8 @@
 	
 	//随动圆顶 连接按钮 js事件///////////////////////////////////
    $('#sDomeConnect').click(function (){
+	   $(this).addClass('btnClick');
+	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60sDomeSendData',
@@ -818,6 +828,8 @@
    
    //随动圆顶 断开按钮 js事件///////////////////////////////////
    $('#sDomeDisConnect').click(function (){
+	   $(this).addClass('btnClick');
+	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60sDomeSendData',
@@ -837,6 +849,8 @@
    
    //随动圆顶 停止运动按钮 js事件///////////////////////////////////
    $('#sDomeStop').click(function (){
+	   $(this).addClass('btnClick');
+	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60sDomeSendData',
@@ -856,6 +870,8 @@
    
    //随动圆顶 打开天窗 按钮 js事件///////////////////////////////////
    $('#sDomeScuttle').click(function (){
+	   $(this).addClass('btnClick');
+	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60sDomeSendData',
@@ -875,6 +891,8 @@
    
    //随动圆顶 关闭天窗 按钮 js事件///////////////////////////////////
    $('#sDomeScuttleClose').click(function (){
+	   $(this).addClass('btnClick');
+	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60sDomeSendData',
@@ -1026,6 +1044,8 @@
    
    //滤光片  连接按钮 js 事件/////////////////////////////////
    $('#filterConnect').click(function (){
+	   $(this).addClass('btnClick');
+	   $('#btnsFilter input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60FilterSendData',
@@ -1045,6 +1065,8 @@
    
    //滤光片  断开按钮 js 事件/////////////////////////////////
    $('#filterDisConnect').click(function (){
+	   $(this).addClass('btnClick');
+	   $('#btnsFilter input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60FilterSendData',
@@ -1064,6 +1086,8 @@
    
    //滤光片 找零按钮 js事件//////////////////////////////////
    $('#filterFindHome').click(function (){
+	   $(this).addClass('btnClick');
+	   $('#btnsFilter input').not($(this)).removeClass('btnClick');
 	   $.ajax({
             type : 'post',
             url : '/xinglong/at60/at60FilterSendData',
@@ -1103,5 +1127,15 @@
             },
         });
 	});
+	
+	//滤光片 表单提交按钮 hover //////////////////////////////////
+   $('#filterPosBtn').hover(
+        function (){
+            $(this).addClass("hover");
+        }, 
+        function (){
+            $(this).removeClass("hover");
+        }
+   );
 	
 })

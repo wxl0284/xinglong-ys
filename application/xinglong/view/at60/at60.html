@@ -185,7 +185,7 @@
         <div id='devsNav'><!--望远镜子设备导航:js用code/public/static/js/dev1.js-->
             <table>
                 <tr>
-                  <td><a name='planInfo' href='#'>观测计划</a></td><td><a href='#'>观测图像</a></td><td><a name='gimbalInfo' class='borderBtm' href='#'>转台</a></td><td><a name='ccdInfo' href='#'>CCD</a></td><td><a name='focusInfo' href='#'>调焦器</a></td><td><a name='domeInfo' href='#'>圆顶</a></td><td><a name='filterInfo' href='#'>滤光片</a></td><td><a href='#'>数据处理</a></td><td><a href='#'>光谱终端</a></td><td><a href='#'>导星</a></td>
+                  <td><a name='planInfo' href='#'>观测计划</a></td><td><a name='at60Res' href='#'>观测图像</a></td><td><a name='gimbalInfo' class='borderBtm' href='#'>转台</a></td><td><a name='ccdInfo' href='#'>CCD</a></td><td><a name='focusInfo' href='#'>调焦器</a></td><td><a name='domeInfo' href='#'>圆顶</a></td><td><a name='filterInfo' href='#'>滤光片</a></td><td><a href='#'>数据处理</a></td><td><a href='#'>光谱终端</a></td><td><a href='#'>导星</a></td>
                 </tr>
             </table>
 			<hr style='height:3px;border:none;border-top:3px solid #ccc;'/>
@@ -543,9 +543,197 @@
            <div class='clear'></div>
 		 </div><!--ccd固定属性 结束-->
 	   </div><!--ccd 结束-->
+	   <div id='focusInfo' class='displayNo'><!--调焦器指令和属性 -->
+			<nav class='center'><!--调焦器指令 导航-->
+			    <span name='targetPos'>设置目标位置</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span name='fixedSpeed'>设置恒速转动</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span name='temperaEnable'>使能温度补偿</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span name='temperaCoeficnt'>温度补偿系数</span>
+			</nav>
+			<div class='border2'><!--调焦器 指令和可变属性-->
+				<div id='btnsFocus' class='center_mrg center BtnsDiv'>
+					&nbsp;&nbsp;&nbsp;&nbsp;<input id='focusConnect' class='border1 btnCommand' type='button' value='连接调焦器' />
+					<input id='focusDisConnect' class='border1 btnCommand' type='button' value='断开调焦器' />
+					<input id='focusFindHome' class='border1 btnCommand' type='button' value='找 零' />
+					<input id='focusStop' class='border1 btnCommand' type='button' value='停止运动' />
+				</div><br>
+				<hr style='width:98%;' class='center_mrg'><br>
+				<form id='at60Focus' class='center command'>
+					<div id='targetPos'>
+					   <input type='radio' name='command' value='1' />目标位置：
+					   <input type="text" name='setPosition' placeholder=''/>
+					</div>
+					<div id='fixedSpeed'>
+					   <input type='radio' name='command' value='2' />设置恒速转动：
+					  <input type="text" name='speed' placeholder=''/>
+					</div>
+					<div id='temperaEnable'>
+					   <input type='radio' name='command' value='3' />使能温度补偿：
+					   <input type="text" name='enable' />
+					</div>
+					<div id='temperaCoeficnt'>
+					   <input type='radio' name='command' value='4' />温度补偿系数：
+					   <input type="text" name='coefficient' />
+					  </div>
+					<br><input id='focusSbmt' class='border submitBtn' type="button" value="确认提交指令">
+				</form>
+				<br><hr style='width:98%;' class='center_mrg'><br>
+			<div><!--调焦器 可变属性-->
+                <span class='propT'>调焦器可变属性:</span><br><br>
+				 <ul class='properUl'>
+                   <li class='li fl'>当前位置:&nbsp;&nbsp;<span>123456</span></li>
+                   <li class='li fl'>目标位置:&nbsp;&nbsp;<span>123456</span></li>
+                   <li class='li fl'>找零状态:&nbsp;&nbsp;<span>123456</span></li>
+                   <li class='li fl'>是否进行温度补偿:&nbsp;&nbsp;<span>123456</span></li>
+                   <li class='li fl'>温度补偿系数:&nbsp;&nbsp;<span>123456</span></li>
+                </ul>
+               <div class='clear'></div>
+             </div><!--调焦器 可变属性结束-->
+		 </div><!--调焦器 指令和可变属性 结束-->
+		 <div class='border2'><!--调焦器 固定属性-->
+			<br><span class='propT'>调焦器固定属性:</span><br><br>
+			<ul class='properUl'>
+			   <li class='li fl'>分辨率:&nbsp;&nbsp;<span>123456</span></li>          
+			   <li class='li fl'>最大值:&nbsp;&nbsp;<span>123456</span></li>    
+			   <li class='li fl'>最小值:&nbsp;&nbsp;<span>123456</span></li>    
+			   <li class='li fl'>是否可找零:&nbsp;&nbsp;<span>12345</span></li>           
+			   <li class='li fl'>可否温度补偿:&nbsp;&nbsp;<span>12345678</span></li>      
+			   <li class='li fl'>最大速度:&nbsp;&nbsp;<span>12345678</span></li>          
+			   <li class='li fl'>可否找零:&nbsp;&nbsp;<span>12345678</span></li>   
+             </ul>
+           <div class='clear'></div>
+		 </div><!--调焦器 固定属性 结束-->
+	   </div><!--调焦器 结束-->
+	   <div id='domeInfo' class='displayNo'><!--圆顶 指令和属性-->
+			<nav class='center'><!--圆顶指令 导航-->
+			    <span name='setPos'>设置目标方位</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span name='rotateSpd'>设置转动速度</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span name='shadePos'>设置风帘位置</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span name='shadeAct'>控制风帘运动</span>
+			</nav>
+			<div class='border2'><!--圆顶 指令和可变属性-->
+				<div id='btnsSlaveD' class='center_mrg center BtnsDiv'>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id='sDomeConnect' class='border1 btnCommand' type='button' value='连接圆顶' />
+				   <input id='sDomeDisConnect' class='border1 btnCommand' type='button' value='断开圆顶' />
+				   <input id='sDomeStop' class='border1 btnCommand' type='button' value='停止运动' />
+				   <input id='sDomeScuttle' class='border1 btnCommand' type='button' value='打开天窗' />
+				   <input id='sDomeScuttleClose' class='border1 btnCommand' type='button' value='关闭天窗' />
+				</div><br>
+				<hr style='width:98%;' class='center_mrg'><br>
+				<form id='at60Dome' class='center command'>
+					<div id='setPos'>
+					   <input type='radio' name='command' value='1' />设置目标方位:
+					   <input type="text" name='domePosition' placeholder='0-360'/>
+					</div>
+					<div id='rotateSpd'>
+					    <input type='radio' name='command' value='2' />设置转动速度：
+						<input type="text" name='RotateSpeed' placeholder='数字'/>
+					</div>
+					<div id='shadePos'>
+					   <input type='radio' name='command' value='3' />设置风帘位置：
+					   <input type="text" name='shadePosition' placeholder='0-90' />
+					</div>
+					<div id='shadeAct'>
+					   <input type='radio' name='command' value='4' />控制风帘运动：
+					   <select name="shadeAction" style='width:90px;'>
+						   <option value="" selected='selected'>请选择</option>
+						   <option value="1">向上</option>
+						   <option value="2">向下</option>
+						   <option value="3">停止</option>
+						 </select>
+					  </div>
+					<br><input id='domeSbmt' class='border submitBtn' type="button" value="确认提交指令">
+				</form>
+				<br><hr style='width:98%;' class='center_mrg'><br>
+			<div><!--圆顶 可变属性-->
+                <span class='propT'>圆顶可变属性:</span><br><br>
+				 <ul class='properUl'>
+                    <li class='li fl'>当前状态:&nbsp;&nbsp;<span>123456</span></li>
+				   <li class='li fl'>天窗状态:&nbsp;&nbsp;<span>123456</span></li>
+                   <li class='li fl'>风帘状态:&nbsp;&nbsp;<span>123456</span></li>
+                   <li class='li fl'>错误标识:&nbsp;&nbsp;<span>123456</span></li>
+                </ul>
+               <div class='clear'></div>
+             </div><!--圆顶 可变属性结束-->
+		 </div><!--圆顶 指令和可变属性 结束-->
+		<div class='border2'><!--圆顶 固定属性-->
+			<br><span class='propT'>圆顶固定属性:</span><br><br>
+			<ul class='properUl'>
+			   <li class='li fl'>类型:&nbsp;&nbsp;<span>123456</span></li>
+                   <li class='li fl'>是否具备风帘:&nbsp;&nbsp;<span>123456</span></li>
+                   <li class='li fl'>最大转动速度:&nbsp;&nbsp;<span>123456</span></li>
+                   <li class='li fl'>控制风帘运动:&nbsp;&nbsp;<span>123456</span></li>
+                   <li class='li fl'>可否连接:&nbsp;&nbsp;<span>123456</span></li>
+             </ul>
+           <div class='clear'></div>
+		 </div><!--圆顶 固定属性 结束-->
+	   </div><!--圆顶 结束-->
+	   <div id='filterInfo' class='displayNo'><!--滤光片 指令和属性-->
+			<div class='border2'><!--滤光片 指令和可变属性-->
+				<div id='btnsFilter' class='center_mrg center BtnsDiv' style='width:850px;'>
+					<input id='filterConnect' class='border1 btnCommand' type='button' value='连接滤光片' />&nbsp;&nbsp;&nbsp;&nbsp;
+					<input id='filterDisConnect' class='border1 btnCommand' type='button' value='断开滤光片' />&nbsp;&nbsp;&nbsp;&nbsp;
+					<input id='filterFindHome' class='border1 btnCommand' type='button' value='找 零' />&nbsp;&nbsp;&nbsp;&nbsp;
+					滤光片位置：<select id='filterPosi' class='border1 btnCommand' name="filterPos" style='width:90px;color:#000;border:1px solid #000;'>
+								<option value="">请选择</option>
+							   <option value="0">0</option>
+							   <option value="1">1</option>
+							   <option value="2">2</option>
+							   <option value="3">3</option>
+						 </select>&nbsp;&nbsp;
+					<input id='filterPosBtn' class='border submitBtn' type='button' value='提交滤光片位置' />
+				</div><br>
+			<hr style='width:98%;' class='center_mrg'><br>
+			<div><!--滤光片 可变属性-->
+                <span class='propT'>滤光片可变属性:</span><br><br>
+				 <ul class='properUl'>
+                   <li class='li fl'>是否找零:&nbsp;&nbsp;<span>123456</span></li>
+                   <li class='li fl'>当前状态:&nbsp;&nbsp;<span>123456</span></li>
+                   <li class='li fl'>错误标识:&nbsp;&nbsp;<span>123456</span></li>
+                </ul>
+               <div class='clear'></div>
+             </div><!--滤光片 可变属性结束-->
+		 </div><!--滤光片 指令和可变属性 结束-->
+		<div class='border2'><!--滤光片 固定属性-->
+			<br><span class='propT'>滤光片固定属性:</span><br><br>
+			<ul class='properUl'>
+			    <li class='li fl'>插槽数目:&nbsp;&nbsp;<span>123456</span></li>
+			   <li class='li fl'>滤光片类型:&nbsp;&nbsp;<span>123456</span></li>
+			   <li class='li fl'>滤光片焦距偏差值:&nbsp;&nbsp;<span>123456</span></li>
+			   <li class='li fl'>滤光片焦距偏差值:&nbsp;&nbsp;<span>123456</span></li>
+			   <li class='li fl'>可否设置滤光片位置:&nbsp;&nbsp;<span>123456</span></li>
+             </ul>
+           <div class='clear'></div>
+		 </div><!--滤光片 固定属性 结束-->
+	   </div><!--滤光片 结束-->
+	   <div id='planInfo' class='displayNo'><!--观测计划表格 开始-->
+			 <table id="dg" title="计划表格" >  </table>
+			<div id="toolbar">
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-more" plain="true" onclick="importPlan()">导入计划</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="addPlan()">添加计划</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="savePlan()">保存</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editPlan()">编辑</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="submitPlan()">提交计划</a>
+           </div>
+		   <form id='imptPlan' style='display:none;' enctype='multipart/form-data'>
+				<input type='file' name='plan' />
+		   </form><!--计划文件上传表单-->
+		</div><!--观测计划表格 结束-->
+		{load href='/static/js/plan_datagrid.js'}
+		<div id='at60Res' class='displayNo'><!--观测图像 开始-->
+			sfds<br>sfsd
+		</div><!--观测图像 结束-->
     </div><!-- id='all' 结束 --><br>
 	<footer class='center clear'>
 		<span>中科院国家天文台兴隆观测基地</span>
 	</footer>
 </body>
 </html>
+<!-- <span>全开圆顶操作指令:</span><br />
+               <input id='fDomeConnect' type='button' value='连接圆顶' />
+			   打开圆顶：<select name="openDome" style='width:90px;'>
+										<option value="">请选择</option>
+									   <option value="0">关闭</option>
+									   <option value="1">打开</option>
+									   <option value="2">停止运动</option>
+						 </select> -->
