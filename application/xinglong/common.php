@@ -10,47 +10,16 @@ $magic:
 return $head; pack完成的二进制数据
 */
 
-function packHead ($magic,$version,$msg,$length,$sequence,$at,$device)
+function packHead ($magic=0,$version=0,$msg=0,$length=0,$sequence=0,$at=0,$device=0)
 {
-    if (isset($magic))
-    {
-        $magic = $magic;
-    }else{
-        $magic = 0;
-    }
     $head = pack('L', $magic);  //uint32
 
-    if (isset($version))
-    {
-        $version = $version;
-    }else{
-        $version = 0;
-    }
     $head .= pack('S', $version);  //uint16
 
-
-    if (isset($msg))
-    {
-        $msg = $msg;
-    }else{
-        $msg = 0;
-    }
     $head .= pack('S', $msg);       //uint16
 
-    if (isset($length))
-    {
-        $length = $length;      //要动态获取
-    }else{
-        $length = 0;
-    }
     $head .= pack('L', $length);        //uint32
 
-    if (isset($sequence))
-    {
-        $sequence = $sequence;
-    }else{
-        $sequence = 0;
-    }
     $head .= pack('L', $sequence);      //uint32
 
     $tv_sec = time();
@@ -59,21 +28,8 @@ function packHead ($magic,$version,$msg,$length,$sequence,$at,$device)
     $tv_usec = substr(microtime(), 2, 8);
     $head .= pack('L', $tv_usec);        //uint32  精确到微妙
 
-
-    if (isset($at))
-    {
-        $at = $at;
-    }else{
-        $at = 0;
-    }
     $head .= pack('S', $at);        //uint16
 
-     if (isset($device))
-    {
-        $device = $device;
-    }else{
-        $device = 0;
-    }
     $head .= pack('S', $device);    //uint16
     return $head;
 }
@@ -88,54 +44,18 @@ $operation: 操作编号
 return $head2; pack完成的二进制数据
 */
 
-function packHead2 ($user,$plan,$at,$device,$sequence,$operation)
+function packHead2 ($user=1,$plan=0,$at=0,$device=0,$sequence=0,$operation=0)
 {
-    if (isset($user))
-    {
-        $user = $user;
-    }else{
-        $user = 0;
-    }
     $head2 = pack('I', $user);   
 
-    if (isset($plan))
-    {
-        $plan = $plan;
-    }else{
-        $plan = 0;
-    }
     $head2 .= pack('I', $plan);   
 
-    if (isset($at))
-    {
-        $at = $at;
-    }else{
-        $at = 0;
-    }
     $head2 .= pack('S', $at); 
 
-    if (isset($device))
-    {
-        $device = $device;
-    }else{
-        $device = 0;
-    }
     $head2 .= pack('S', $device);   
 
-    if (isset($sequence))
-    {
-        $sequence = $sequence;
-    }else{
-        $sequence = 0;
-    }
     $head2 .= pack('I', $sequence);  
 
-    if (isset($operation))
-    {
-        $operation = $operation;
-    }else{
-        $operation = 0;
-    }
     $head2 .= pack('I', $operation);      //uint32
 
     return $head2;

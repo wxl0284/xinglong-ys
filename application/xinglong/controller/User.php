@@ -350,4 +350,10 @@ class User extends Controller
 		}
 	}
 	
+	public function foo ()
+	{
+		$xx = 33;
+		return demo($xx);
+	}
+	
 }
