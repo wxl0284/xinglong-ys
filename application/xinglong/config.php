@@ -26,7 +26,11 @@ return [
         //'hostport'        => '5432',    
         'hostport'        => '3306',     
 
-    ], 
+    ],
+	
+	'app_debug'              => true,
+    // 应用Trace
+    'app_trace'              => true,
 	
 	//udpSocket ip udpSocket ip地址
 	'udp_socket_ip' => '192.168.160.154',
