@@ -5,18 +5,18 @@ function sbmt ()
 {
 	$('input:text').removeClass('displayNo');
 	var username = $(':text').val();  //获取用户名的输入值
-	var reg = new RegExp("^[a-zA-Z0-9_]{5,10}$");
+	var reg = new RegExp("^[a-zA-Z0-9_-]{6,12}$");
 	if (!username.match(reg))
 	{
-	   layer.tips('用户名须为5-10位数字字母!', '#ipt1');return;
+	   layer.tips('用户名须为6-12位数字字母_及-!', '#ipt1');return;
 	}
 	$('input:password').removeClass('displayNo');
 	//验证密码
 	var paswd = $(':password').val();  //获取密码的输入值
-	var reg = new RegExp("^[a-zA-Z0-9_]{6,10}$");
+	var reg = new RegExp("^[a-zA-Z0-9_-]{6,12}$");
 	if (!paswd.match(reg))
 	{
-	   layer.tips('密码须为6-10位数字字母!', '#ipt2');return;
+	   layer.tips('密码须为6-12位数字字母_及-!', '#ipt2');return;
 	}
 	document.getElementsByTagName("form")[0].submit()
 }
@@ -30,10 +30,10 @@ $(function (){
 		{
 			$('input:text').removeClass('displayNo');
 			var username = $(':text').val();  //获取用户名的输入值
-			var reg = new RegExp("^[a-zA-Z0-9_]{5,10}$");
+			var reg = new RegExp("^[a-zA-Z0-9_-]{6,12}$");
 			if (!username.match(reg))
 			{
-			   layer.tips('用户名须为5-10位数字字母!', '#ipt1');return;
+			   layer.tips('用户名须为6-12位数字字母_及-!', '#ipt1');return;
 			}
 		}
 	    input.removeClass('displayNo');	

@@ -73,12 +73,13 @@ class User extends Controller
                 '密码' => $passwd,
                 '确认密码' => $rePasswd ,],
             [
-                '用户名' =>	'require|max:10|min:5|regex:/^\w{5,10}$/',
-                '密码' => 'require|min:6|max:10|regex:/^\w{6,10}$/',
+                //'用户名' =>	'require|max:12|min:6|regex:/^\w{5,10}$/',
+                '用户名' =>	'require|max:12|min:6|alphaDash',
+                '密码' => 'require|min:6|max:12|alphaDash',
                 '确认密码' => 'require|confirm:密码',],
 			['确认密码'=>['confirm'=>'两次密码不一致','require'=>'确认密码不能为空'],
-			 '用户名'=>['regex'=>'用户名只能数字字母下划线','min'=>'用户名长度最少须5位','max'=>'用户名长度最多10位','require'=>'用户名不能为空'],
-			 '密码'=>['min'=>'密码长度最少须6位','max'=>'密码长度最多10位','require'=>'密码不能为空','regex'=>'密码只能是数字字母'],]);
+			 '用户名'=>['alphaDash'=>'密码只能是数字字母_及-','min'=>'用户名长度最少须6位','max'=>'用户名长度最多12位','require'=>'用户名不能为空'],
+			 '密码'=>['min'=>'密码长度最少须6位','max'=>'密码长度最多12位','require'=>'密码不能为空','alphaDash'=>'密码只能是数字字母_及-'],]);
 		
         if(true	!==	$result)    //验证失败 输出错误信息
         { 
@@ -185,9 +186,9 @@ class User extends Controller
                 '用户名' =>	$username,
             ],
             [
-                '用户名' =>	'require|max:10|min:5|regex:/^\w{5,10}$/',
+                '用户名' =>	'require|max:12|min:6|alphaDash',
 			],
-		    ['用户名'=>['regex'=>'用户名只能数字字母下划线','min'=>'用户名长度最少须5位','max'=>'用户名长度最多10位','require'=>'用户名不能为空'],]);
+		    ['用户名'=>['alphaDash'=>'用户名只能数字字母_及-','min'=>'用户名长度最少须6位','max'=>'用户名长度最多12位','require'=>'用户名不能为空'],]);
 		
         if(true	!==	$result)    //验证失败 输出错误信息
         { 
@@ -197,9 +198,9 @@ class User extends Controller
 		//验证密码
 		if($passwd) //有提交的密码
 		{
-			if (!preg_match('/\w{6,10}/', $passwd))
+			if (!preg_match('/[\w-]{6,10}/', $passwd))
 			{
-				$this->error('密码只能是6-10为数字字母!');
+				$this->error('密码须是6-12为数字字母_及-!');
 			}else{
 				$passwd = md5($passwd);
 			}
@@ -311,12 +312,12 @@ class User extends Controller
             ],
             
             [
-                '原密码' =>	'require|max:10|min:6|regex:/^\w{6,10}$/',
-                '新密码' => 'require|min:6|max:10|regex:/^\w{6,10}$/',
+                '原密码' =>	'require|max:12|min:6|alphaDash',
+                '新密码' => 'require|min:6|max:12|alphaDash',
                 '确认密码' => 'require|confirm:新密码',
         ],
-		['原密码'=>['regex'=>'原密码只能数字字母下划线','min'=>'原密码长度最少须6位','max'=>'原密码长度最多10位','require'=>'原密码不能为空'],
-		 '新密码'=>['regex'=>'新密码只能数字字母下划线','min'=>'新密码长度最少须6位','max'=>'原密码长度最多10位','require'=>'新密码不能为空'],
+		['原密码'=>['alphaDash'=>'原密码只能数字字母_及-','min'=>'原密码长度最少须6位','max'=>'原密码长度最多12位','require'=>'原密码不能为空'],
+		 '新密码'=>['alphaDash'=>'新密码只能数字字母_及-','min'=>'新密码长度最少须6位','max'=>'原密码长度最多12位','require'=>'新密码不能为空'],
 		 '确认密码'=>['require'=>'确认密码不能为空','confirm'=>'两次密码不一致'],
 		]);
 		

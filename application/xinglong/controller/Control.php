@@ -31,9 +31,9 @@ class Control extends Controller
             ],
             
             [
-                '用户名' =>	'require|max:10|min:5',
+                '用户名' =>	'require|max:12|min:6',
                 '__token__'	=>	'token',
-                '密码' => 'require|min:6|max:10',
+                '密码' => 'require|min:6|max:12',
         ]);
         if(true	!==	$result)    //验证失败 输出错误信息
         { 
