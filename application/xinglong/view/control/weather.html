@@ -28,7 +28,9 @@
 			<div id='cloud_1' class='center'>
 				<p class='title_text'>气象云图</p>
 				<a class='border1 more' style='visibility:hidden;'>查看更多</a><br /><br />
-				{$wxytError	??	''}
+				{if	condition="isset($wxytError)"}
+					<div style='height:395px;'>{$wxytError}</div>
+				{/if}
 				{if	condition="isset($cloudPic)"}
 					<img {$cloudPic} alt='卫星云图'/>
 				{/if}

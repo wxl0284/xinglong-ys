@@ -132,8 +132,18 @@ class Control extends Controller
                 $windPowerNight = str_replace(['<','>'], '', $matchs[0][9]);
             }
         }else{//缓存获取失败，从网络抓取
-            $weathStr = file_get_contents('http://www.nmc.cn/publish/forecast/AHE/xinglong.html');
-        
+			$ch = curl_init();
+			curl_setopt ($ch, CURLOPT_URL, 'http://www.nmc.cn/publish/forecast/AHE/xinglong.html');
+			curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1); //返回字符串数据
+			curl_setopt($ch, CURLOPT_FAILONERROR, 1); //出错时停止
+			$weathStr = curl_exec($ch); //将远程数据存入变量
+
+			if( curl_errno($ch) )
+			{
+				$weatherError = '网络异常，暂未获取天气预报,检查您的网络设置!';
+			}
+			curl_close($ch);
+			
             if ($weathStr)
             {//获取成功，写入缓存
                 Cache::set('weather', $weathStr, 3600);
@@ -180,8 +190,6 @@ class Control extends Controller
 					$windPowerDay = str_replace(['<','>'], '', $matchs[0][8]);
 					$windPowerNight = str_replace(['<','>'], '', $matchs[0][9]);
 				}
-            }else{//从网络抓取 失败
-                $weatherError = '网络异常，暂未获取天气预报!';
             }
             
         }//天气预报获取ok////////////////////////////////////////
@@ -234,7 +242,7 @@ class Control extends Controller
         }
 		
         return view('front');
-    }
+    }////////////////////////////////////////////////////////////
 	
 	//更多气象信息 页面 ////////////////////////////////////////////
     public function weatherMore ()
@@ -253,20 +261,28 @@ class Control extends Controller
             preg_match('/<img id="imgpath"([\s\S]){50,260}不存在！\'">/', $wxyt, $match);
             preg_match('/src="http:\/\/([\s\S]){50,200}\d+"/', $match[0], $match1);
             $cloudPic = $match1[0];
-        }else{//从网络抓取数据
-            $a = file_get_contents('http://www.nmc.cn/publish/satellite/fy2.htm');
-            //写入缓存
-            if ($a)
+        }else{//从网络抓取数据            
+			$ch = curl_init();
+			curl_setopt ($ch, CURLOPT_URL, 'http://www.nmc.cn/publish/satellite/fy2.htm');
+			curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1); //返回字符串数据
+			curl_setopt($ch, CURLOPT_FAILONERROR, 1); //出错时停止
+			$cloudPicStr = curl_exec($ch); //将远程数据存入变量
+
+			if( curl_errno($ch) )
+			{
+				$wxytError = '网络异常，暂未获取卫星云图,检查您的网络设置!';
+				$cloudPic  = null;
+			}
+			curl_close($ch);
+			
+            if ($cloudPicStr)
             {//抓取成功
-                Cache::set('wxyt', $a, 3600);
+                Cache::set('wxyt', $cloudPicStr, 3600); //写入缓存
 				
 				$wxyt = Cache::get('wxyt');
 				preg_match('/<img id="imgpath"([\s\S]){50,260}不存在！\'">/', $wxyt, $match);
 				preg_match('/src="http:\/\/([\s\S]){50,200}\d+"/', $match[0], $match1);
 				$cloudPic = $match1[0];
-            }else{//抓取失败
-                $wxytError = '网络异常，暂未获取卫星云图!';
-				$cloudPic  = null;
             }
               
         } //气象云图获取ok//////////////////////////////////////////

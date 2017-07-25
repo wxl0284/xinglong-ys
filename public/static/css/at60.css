@@ -46,7 +46,7 @@ header div div a {color:#eaf1f9;}
 
 #devsNav table td{width:110px;text-align:center;}
 
-#devsNav table td a{color:#000;padding-bottom:11px;}
+#devsNav table td a{color:#000;padding-bottom:11px;cursor:pointer;}
 
 div.notCheck {color:#d0d0d0;}
 
