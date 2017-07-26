@@ -93,6 +93,7 @@
 		commandDiv = $(divID);
 		divs.not(commandDiv).hide();//隐藏其他相应指令
 		commandDiv.show();//显示相应指令		
+		commandDiv.click();//同时执行此指令的点击事件		
 	});//每个设备 指令导航栏 nav下span 点击事件  结束/////////////////////////
 	
 	//转台 连接按钮js事件/////////////////////////////////

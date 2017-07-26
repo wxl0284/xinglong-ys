@@ -1,0 +1,116 @@
+/*60CM样式*/
+header {height:50px;background-color:#64B2E0;top:-6px;}
+
+header div {width:1200px;margin:0 auto;line-height:50px;color:#eaf1f9;font-size:14px;}
+
+header img {top:10px;}
+
+header p {display:inline-block;right:82px;font-size:14px;}
+
+header p a {color:#eaf1f9;}
+
+header div div {border:1px solid #fff; font-size:14px; text-align:center;
+			right:0px;top:12px; width:78px; height:26px;line-height:26px;}
+
+header div div a {color:#eaf1f9;}
+
+#timeInfo {text-align:center;}
+
+#time td { width:105px;}
+
+#time tr.tdC td {color:#00B5EE;}
+
+#time_1 td span {color:#00B5EE;}
+
+#atPic {width:535px;}
+
+#atPic img {width:264px;}
+
+#infos {right:0;top:0;width:650px;height:270px;}
+
+#devsInfo {margin:20px auto;}
+
+#devsInfo .childDev {display:inline-block;width:228px;margin-right:4px;margin-left:4px;}
+
+#devsInfo div.txt-cntr {margin-bottom:12px;}
+
+#devsInfo div.pos_a {top:0.2px;}
+
+#devsNav {height:40px;}
+
+#devsNav table {margin:0 auto;}
+
+#devsNav table tr{line-height:40px;}
+
+#devsNav table td{width:110px;text-align:center;}
+
+#devsNav table td a{color:#000;padding-bottom:11px;cursor:pointer;}
+
+div.notCheck {color:#d0d0d0;}
+
+.hover {background-color:#3578c6;color:#fff;border:0;}
+
+#devsNav a.borderBtm {border-bottom:3px solid #0D69FC;font-weight:bold;}
+
+.properUl {margin-left:22px;}
+
+ul.properUl li {margin-right:8px;width:226px;margin-bottom:13px;}
+ul.properUl li span {color:#00B5EE;}
+
+.submitBtn {width:135px;height:32px;font-size:18px;}
+
+#exposStratic span {width:320px;display:inline-block;text-align:right;margin-bottom:10px;}/*曝光策略指令样式*/
+
+footer {background-color:#656565;height:41px;}
+
+footer span {color:#fff;line-height:41px;font-size:13px;}
+
+#devsInfo span.pos_r {top:-40px;}
+
+#devsInfo img.pos_a {left:8px; top:28px;}
+
+#planInfo {margin-top:12px;margin-bottom:22px;}
+
+#takeOverBtn {top:240px;left:98px;width:60px;background-color:#64B2E0;color:#fff;cursor:pointer;}
+
+#panel {left:300px;}
+
+#takeOverPanel td {height:40px;width:160px;font-size:15px;}
+
+#takeOverPanel table {padding-right:75px;}
+
+#takeOverPanel table a {height:22px;cursor:pointer;line-height:22px;}
+
+#doTakeOver {background-color:#64B2E0;width:100px;color:#fff;}
+
+#noTakeOver {color:#64B2E0;width:66px;}
+
+nav {margin-top:20px;} /*子设备指令 导航*/
+
+nav span {line-height:30px;display:inline-block;
+			margin-right:2px;padding:0 3px;cursor:pointer;}
+			
+#ccdInfo nav span {padding:0 2.6px;}
+			
+nav span {background-color:#ECEEE6;}/*指令按钮导航栏 未点击 样式*/
+
+.active{font-weight:bold;background-color:#9F9F9E;}/*指令按钮导航栏  点击后样式*/
+
+.border2 {border:2px solid #ccc;margin-top:20px;}
+
+.BtnsDiv {width:700px;margin-top:20px;}/*按钮型指令 样式*/
+
+.btnCommand {padding:0 10px;line-height:30px;font-size:15px;
+	color:#64B2E0;background-color:#fff;cursor:pointer;margin-right:28px;}/*按钮型不带参数指令 未点击 样式*/
+
+.btnClick {background-color:#64B2E0;color:#fff;}/*按钮型不带参数指令 点击后样式*/
+
+form input[type='radio'], form div {display:none;}
+
+.command input, .command select {margin-right:16px;}/*每个带参数指令的样式*/
+
+.propT {font-weight:bold;}
+
+#next {right:0;}
+
+#smallPic .mrgR {margin-left:10px;margin-right:9px;}
