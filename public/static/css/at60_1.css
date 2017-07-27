@@ -114,3 +114,5 @@ form input[type='radio'], form div {display:none;}
 #next {right:0;}
 
 #smallPic .mrgR {margin-left:10px;margin-right:9px;}
+
+#bigPic button { right:38px;bottom:8px; cursor:pointer;}
