@@ -34,7 +34,6 @@
 								arr[ii] = datas[p];
 								ii ++;
 							}
-							
 							table.datagrid({
 									data: arr,
 							});
@@ -331,7 +330,7 @@
 			},
 			{field:'del', title:'删除', width:80,
 				formatter:function(value,row,index){
-					return '<a href="#" onclick="delPlan1(this)">删除</a> ';
+					return '<a onclick="delPlan1(this)">删除</a> ';
 				}
 			},
 		]],
