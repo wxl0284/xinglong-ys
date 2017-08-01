@@ -1,5 +1,5 @@
-	table = $('#dg'); //定义全局table 变量
-	editRow = undefined;  //全局开关, 编辑
+	var table = $('#dg'); //定义全局table 变量
+	var editRow = undefined;  //全局开关, 编辑
 	//导入计划文件 上传////////////////////////////////////////////
 	function importPlan ()
 	{
