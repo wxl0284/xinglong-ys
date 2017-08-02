@@ -19,7 +19,7 @@
 					contentType : false, 
 		            success: function (info) {
 						if (!info.match("^\{(.+:.+,*){1,}\}$"))
-						{
+						{//非json数据
 							alert(info);
 							if (info.indexOf('登录') !== -1)
 							{
