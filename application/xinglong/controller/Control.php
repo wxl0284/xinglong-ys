@@ -316,7 +316,9 @@ class Control extends Controller
     {
         //清空session 和cookie
         Session::clear();
-        Cookie::clear();
+        //Cookie::clear();
+		Cookie::set('login','',-1);
+		Cookie::set('role','',-1);
         //返回首页
          return view('login');
     }
