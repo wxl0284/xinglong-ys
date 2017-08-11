@@ -13,7 +13,14 @@ class Control extends Controller
     //显示登陆页面////////////////////////////////////////////////
     public function index()
     {
-       return view('login');
+		//如果已登录，直接去首页
+		if (Cookie::has('login'))
+		{
+			$this->redirect('/xinglong/control/front');
+		}else {
+			return view('login'); //未登时
+		}
+       
     }
     
     //登录的方法/////////////////////////////////////////////////////////
