@@ -14,7 +14,7 @@ class Control extends Controller
     public function index()
     {
 		//如果已登录，直接去首页
-		if (Cookie::has('login'))
+		if (Cookie::has('login') && Session::has('login'))
 		{
 			$this->redirect('/xinglong/control/front');
 		}else {
