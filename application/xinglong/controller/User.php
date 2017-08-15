@@ -28,6 +28,12 @@ class User extends Controller
 	//用户首页/////////////////////////////////////////////////
 	public function index ()
 	{
+		//权限判断
+		if (Cookie::get('role') != 1)
+		{
+			$this->error('您无权查看用户信息!');
+		}
+		
 		if($keyword = trim(input('keyword')))
 		{
 			
