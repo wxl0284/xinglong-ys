@@ -27,6 +27,8 @@ input.command {width:103px; margin-right:7px;}  /*input框公共样式*/
 
 .inline {display:inline-block;}
 
+.line {display:inline;}
+
 .pos_r {position:relative;}
 
 .pos_a {position:absolute;}
@@ -41,4 +43,10 @@ li {list-style-type:none;}
 
 footer {background-color:#656565;height:41px;}
 
-footer span {color:#fff;line-height:41px;font-size:13px;} 
+footer span {color:#fff;line-height:41px;font-size:13px;}
+
+#atList {cursor:pointer; border:0;left:-700px;z-index:30;}
+
+#atListUl {background-color:#64B2E0;}
+
+#res {left:300px; color:#eaf1f9;}

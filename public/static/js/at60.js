@@ -22,6 +22,21 @@
 	}
 	setInterval (getStatus,1800); */
 	
+	//显示导航栏望远镜列表   
+   var ul = $('#atListUl');
+   $('#atList').hover(
+        function (){
+            ul.show();
+        }, 
+       function (){		
+			ul.hide();
+        } 
+   );
+   
+   $('#at60').click(function () {
+	   location = '/xinglong/at60';
+   });//望远镜列表js代码结束
+	
 	//接管 弹窗代码////////////////////////////////////////////////
 	$('#takeOverBtn').click(function () {
 		$('#panel').removeClass('displayNo');

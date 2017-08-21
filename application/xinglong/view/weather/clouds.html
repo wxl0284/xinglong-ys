@@ -12,10 +12,16 @@
 	    <div class='pos_r'>
 	      <img class='pos_a' src='/static/images-0/logo1.png'/>
 		   <p class='pos_a'>
-		   <a href="{:url('xinglong/control/front')}">首页&nbsp;&nbsp;&nbsp;&nbsp;</a>
-		   <a href='/xinglong/user'>用户管理&nbsp;&nbsp;&nbsp;&nbsp;</a> 
-		   <a href='/xinglong/user/passwd'>修改密码&nbsp;&nbsp;&nbsp;&nbsp;</a>
-		   <span>欢迎!&nbsp;&nbsp;{$Request.cookie.login ?? ''}&nbsp;</span></p>
+				<a href="{:url('xinglong/control/front')}">首页&nbsp;&nbsp;&nbsp;&nbsp;
+				</a>
+				<a id='atList'>望远镜列表&nbsp;&nbsp;&nbsp;&nbsp;
+				</a>
+				<a href='/xinglong/user'>用户管理&nbsp;&nbsp;&nbsp;&nbsp;</a>
+				<a href='/xinglong/user/passwd'>修改密码&nbsp;&nbsp;&nbsp;&nbsp;
+				</a>
+				<span>欢迎!&nbsp;&nbsp;{$Request.cookie.login ?? ''}&nbsp;
+				</span>
+		   </p>
 		   <div class='pos_a'><a href='/xinglong/control/logout'>&nbsp;&nbsp;&nbsp;退出&nbsp;&nbsp;&nbsp;</a></div> 
 	    </div>
 	</header>
