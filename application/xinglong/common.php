@@ -109,4 +109,65 @@ function udpSendPlan ($sendMsg = '', $ip='192.168.160.154', $port = '4747')
   
    fclose($handle); 
   
-} 
+}
+
+//以下为太阳、月亮等位置计算函数
+date_default_timezone_set('PRC'); //设置时区
+/*
+  ymd(); 获取年、月、日
+*/
+function ymd ()
+{
+	$ymd = date('Y:m:d');
+	$ymd = explode(':', $ymd);
+	return $ymd;	
+}
+
+/*
+  epoch(); 得到历元
+*/
+function epoch ()
+{
+	$ymd = ymd();
+	return $ymd[0] + (($ymd[1]- 1)*30.3 + $ymd[2])/365;	
+}
+
+/*
+  ModifiedJulianDay(); 返回修正儒略日
+*/
+function ModifiedJulianDay ($year, $mon, $day, $hour)
+{
+	$a = 10000*$year + 100*$mon + $day;
+	if($mon <= 2)
+	{
+		$mon += 12;
+		$year --;
+	}
+	
+	if($a <= 15821004.1)
+	{
+		$b = ($year + 4716)/4 - 1179 - 2;
+	}else{
+		$b = $year/400 - $year/100 + $year/4;
+	}
+	
+	$a = 365*$year - 679004;
+	$c = 30.6001*($mon + 1);
+	$jDay = $a + $b + $c + $hour/24;
+	return $jDay;
+}
+
+/*
+  getJDay(); 获取儒略日
+*/
+function getJDay ()
+{
+	$hms = date('H:i:s');
+	$hms = explode(':', $hms);
+	$mSec = substr(microtime(), 2, 8);
+	$h = $hms[0] + $hms[1]/60 + ($hms[2] + $mSec/1000)/3600;
+	$ymd = ymd();
+	return ModifiedJulianDay($ymd[0], $ymd[1], $ymd[2], $h);
+}
+
+//太阳、月亮等位置计算函数 结束

@@ -4,6 +4,7 @@ namespace app\xinglong\controller;
 use think\Controller;
 use think\Db;
 use think\Cookie;
+use think\Request;
 
 class Weather extends Controller
 {
@@ -56,4 +57,9 @@ class Weather extends Controller
 		
 		return view('weatherDetail');
 	}/////////////////////////////////////////////////////////////
+	
+	public function test ()
+	{
+		return date('H-i-s');
+	}
 }
