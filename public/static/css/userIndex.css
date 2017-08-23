@@ -24,7 +24,7 @@ td{width:200px;border:1px solid #ccc;height:30px;}
 
 #paging ul {float:left;position:relative;left:50%;}
 
-ul li {float:left;position:relative; right:50%; padding:6px;}
+#paging ul li {float:left;position:relative; right:50%; padding:6px;}
 
 .title_text {font-size:21px;}
  

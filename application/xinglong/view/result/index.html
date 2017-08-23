@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset='utf-8'>
-    <title>修改密码</title>
+    <title>观测结果</title>
      {load href='/static/css/common-1.css'}
-     {load href='/static/css/userAdd.css'}
+     {load href='/static/css/result.css'}
 	 {load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
-	 {load href='/static/js/user.js'}
+	 {load href='/static/js/result.js'}
 </head>
 <body>
 	<img src='/static/images-1/top.jpg' style='width:100%'/>
@@ -41,29 +41,22 @@
 	    </div>
 	</header>
 	<div id='all'>
-		  <form id='fm' class='center_mrg' action="{:url('user/editPaswd')}" method='post'>
-			<input type='hidden' name='username' value='{$Request.cookie.login}' />
-			<table>
-				<tr>
-				   <td>原密码</td>
-				   <td><input class='border ipt' type='password' name='passwd' placeholder='6-12位字母数字_及-' />
-				   </td>
-				</tr>
-				<tr>
-					<td>新密码</td>
-					<td><input class='border ipt' type='password' name='passwdNew' placeholder='6-12位字母数字_及-' /></td>
-				</tr>
-				<tr>
-					<td>确认密码</td>
-					<td><input class='border ipt' type='password' name='RepasswdNew' placeholder='6-12位字母数字_及-' /></td>
-				</tr>
-				<tr>
-					<td colspan='2' class='center'><input class='border1' type='submit' id='btn' type='button' value='确认提交' /></td>
-				</tr> 
-			</table>	
-		  </form> 
-    </div>
-	<footer class='center clear'>
+		<div id='at60Res' class='center_mrg' style='width:92%;'><!--观测图像 开始-->
+			<div id='bigPic' class='pos_r'>
+				<img src='/static/images-1/pic_Res.jpg' style='width:100%;'>
+				<button class='pos_a'>最新图像</button>
+			</div>
+			<div id='smallPic' class='pos_r'>
+				<img id='pre' src='/static/images-1/left.jpg'>
+				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
+				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
+				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
+				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
+				<img id='next' class='pos_a' src='/static/images-1/right.jpg'>
+			</div>
+		</div><!--观测图像 结束-->
+	</div><br> <br><br>
+	<footer class='center'>
 		<span>中科院国家天文台兴隆观测基地</span>
 	</footer>
 </body>

@@ -60,6 +60,7 @@ class Weather extends Controller
 	
 	public function test ()
 	{
-		return date('H-i-s');
+		$x = 33;
+		return demo($x);
 	}
 }
