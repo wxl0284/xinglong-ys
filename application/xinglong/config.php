@@ -28,7 +28,8 @@ return [
 
     ],
 	
-	//udpSocket ip udpSocket ip地址
-	'udp_socket_ip' => '192.168.160.154',
-	
+	//兴隆纬度
+	'latitude' => 40.395833;
+	//兴隆经度
+	'longitude' => 117.577222;
 ];
