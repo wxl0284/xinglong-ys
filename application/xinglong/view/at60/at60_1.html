@@ -92,10 +92,10 @@
 						<td>昏影终</td>
 					</tr>
 					<tr class='tdC'>
-						<td>2017.7.11</td>
-						<td>18:10:56</td>
+						<td id='date'></td>
+						<td id='bjTime'></td>
 						<td>J2000</td>
-						<td>2017.7.11</td>
+						<td id='siderealTime'></td>
 						<td>2017.7.11</td>
 						<td>2017.7.11</td>
 					</tr>
@@ -104,55 +104,55 @@
 				<hr style='width:98%;' class='center_mrg'><br>
 				<table id='time_1' class='center_mrg '>
 					<tr>
-					  <td>当前状态:<span style='color:red;'>跟踪中</span>
+					  <td>当前状态:<span id='curstatus' style='color:red;'></span>
 					  </td>
-					  <td>跟踪误差（角秒）:<span>12.345</span>
+					  <td>跟踪误差:<span id='trackError'></span>
 					  </td>
-					  <td>当前时角:<span>222</span>
-					  </td>
-                    </tr>
-                    <tr>
-					  <td>镜盖状态:<span>开</span>
-					  </td>
-					  <td>当前赤经:<span>12.345</span>
-					  </td>
-					  <td>当前赤纬:<span>12.345</span>
+					  <td>当前时角:<span id='hourAngle'></span>
 					  </td>
                     </tr>
                     <tr>
-					  <td>目标名:<span>abcd</span>
+					  <td>镜盖状态:<span id='coverStatus'></span>
 					  </td>
-					  <td>目标类型:<span>恒星</span>
+					  <td>当前赤经:<span id='rightAscension'></span>
 					  </td>
-					  <td>目标赤经:<span>12.345</span>
+					  <td>当前赤纬:<span id='declination'></span>
 					  </td>
                     </tr>
                     <tr>
-					  <td>目标赤纬:<span>12.345</span>
+					  <td>目标名:<span id='trackObjectName'></span>
 					  </td>
-					  <td>当前方位:<span>12.345</span>
+					  <td>目标类型:<span id='trackType'></span>
 					  </td>
-					  <td>当前俯仰:<span>12.345</span>
+					  <td>目标赤经:<span id='targetRightAscension'></span>
+					  </td>
+                    </tr>
+                    <tr>
+					  <td>目标赤纬:<span id='targetDeclination'></span>
+					  </td>
+					  <td>当前方位:<span id='azmiuth'></span>
+					  </td>
+					  <td>当前俯仰:<span id='elevation'></span>
 					  </td>
                     </tr>
 					<tr>
-					  <td>赤经速度:<span>12.345</span>
+					  <td>赤经速度:<span id='RightAscensionSpeed'></span>
 					  </td>
-					  <td>赤纬速度:<span>12.345</span>
+					  <td>赤纬速度:<span id='declinationSpeed'></span>
 					  </td>
-					  <td>当前消旋位置:<span>12.345</span>
+					  <td>当前消旋位置:<span id='derotatorPositon'></span>
 					  </td>
                     </tr>
 					<tr>
-					  <td>目标消旋位置:<span>12.345</span>
+					  <td>目标消旋位置:<span id='targetDerotatorPosition'></span>
 					  </td>
-					  <td>轴1跟踪误差（角秒）:<span>12.345</span>
+					  <td>轴1跟踪误差:<span id='axis1TrackError'></span>
 					  </td>
-					  <td>轴2跟踪误差（角秒）:<span>12.345</span>
+					  <td>轴2跟踪误差:<span id='axis2TrackError'></span>
 					  </td> 
 					</tr>
 					<tr>
-					  <td>轴3跟踪误差（角秒）:<span>12.345</span>
+					  <td>轴3跟踪误差:<span id='axis3TrackError'></span>
 					  </td>
 					</tr>			
 				</table>
@@ -180,25 +180,25 @@
 			<img class='center_mrg' src='/static/images-1/line.png' width='970px;' style='display:block;'/>
 			<div class='pos_a' style='left:62px;top:168px;width:128px;'>
 				<!-- <img src='/static/images-1/zt.png' > -->
-				<img src='/static/images-1/ok.jpg' >
-				<p>转台状态正常</p>
+				<img id='gimbPic' src='/static/images-1/ok.jpg' >
+				<p id='gimbStatus'></p>
 			</div>
 			<div class='pos_a' style='left:297px;top:168px;width:128px;'>
 				<!-- <img src='/static/images-1/ccd.png' > -->
 				<img src='/static/images-1/warn.jpg' >
-				<p>CCD状态警告</p>
+				<p id='ccdStatus'></p>
 			</div>
 			<div class='pos_a' style='left:536px;top:168px;width:128px;'>
 				<!-- <img src='/static/images-1/tjq.png' > -->
-				<img src='/static/images-1/error.jpg' ><p>调焦器状态错误</p>
+				<img src='/static/images-1/error.jpg' ><p id='focusStatus'></p>
 			</div>
 			<div class='pos_a' style='left:782px;top:168px;width:128px;'>
 				<!-- <img src='/static/images-1/yd.png' > -->
-				<img src='/static/images-1/ok.jpg' ><p>圆顶状态正常</p>
+				<img src='/static/images-1/ok.jpg' ><p id='domeStatus'></p>
 			</div>
 			<div class='pos_a' style='left:1021px;top:168px;width:128px;'>
 				<!-- <img src='/static/images-1/lgp.png' > -->
-				<img src='/static/images-1/ok.jpg' ><p>滤光片状态正常</p>
+				<img src='/static/images-1/ok.jpg' ><p id='filterStatus'></p>
 			</div>
         </div><!--重要信息区域 结束-->
 		<br ><br>
@@ -330,47 +330,47 @@
 			  <div><!--转台可变属性-->
                 <span class='propT'>转台可变属性:</span><br><br>
                 <ul class='properUl'>
-                    <li class='li fl'> 时间戳:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>  当前恒星时:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>  当前时角:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>当前赤经:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>   当前赤纬:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>  当前J2000赤经:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 当前J2000赤纬:&nbsp;&nbsp;<span>12345678</span> </li>
-                    <li class='li fl'> 当前方位:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>  当前俯仰:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 当前消旋位置:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>  目标赤经:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>  目标赤纬:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 目标J2000赤经:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 目标J2000赤纬:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 目标消旋位置:&nbsp;&nbsp;<span>12345678</span></li>
+                    <li class='li fl'>时间戳:<span id='stamp'></span></li>
+                    <li class='li fl'>当前恒星时:<span id='siderealTime_1'></span></li>
+                    <li class='li fl'>当前时角:<span id='hourAngle_1'></span></li>
+                    <li class='li fl'>当前赤经:<span id='rightAscension_1'></span></li>
+                    <li class='li fl'>当前赤纬:<span id='declination_1'></span></li>
+                    <li class='li fl'>当前J2000赤经:<span id='J2000RightAscension'></span></li>
+                    <li class='li fl'>当前J2000赤纬:<span id='J2000Declination'></span> </li>
+                    <li class='li fl'>当前方位:<span id='azmiuth_1'></span></li>
+                    <li class='li fl'>当前俯仰:<span id='elevation_1'></span></li>
+                    <li class='li fl'>当前消旋位置:<span id='derotatorPositon_1'></span></li>
+                    <li class='li fl'>目标赤经:<span id='targetRightAscension_1'></span></li>
+                    <li class='li fl'>目标赤纬:<span id='targetDeclination_1'></span></li>
+                    <li class='li fl'>目标J2000赤经:<span id='targetJ2000RightAscension'></span></li>
+                    <li class='li fl'> 目标J2000赤纬:<span id='targetJ2000Declination'></span></li>
+                    <li class='li fl'>目标消旋位置:<span id='targetDerotatorPosition_1'></span></li>
                 </ul><div class='clear'></div>
              </div><!--转台 可变属性结束-->
 		  </div><!--指令和可变属性 结束-->
-		 <div class='border2'><!--固定属性-->
+		 <div class='border2'><!--转台固定属性-->
 			<br><span class='propT'>转台固定属性:</span><br><br>
                 <ul class='properUl'>
-                    <li class='li fl'>经度:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>  纬度:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>  口径:&nbsp;&nbsp;<span>12345678</span> </li>
-                    <li class='li fl'> 类型:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 焦点类型:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>焦比:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>焦距:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>轴1最大速度:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 轴2最大速度:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 轴3最大速度:&nbsp;&nbsp;<span>12345678</span></li>
-					<li class='li fl'>轴1最大加速度:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 轴2最大加速度:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 轴3最大加速度:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 轴1复位位置:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 轴2复位位置:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 轴3复位位置:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 是否有第3轴:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 是否有镜盖:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 是否有镜盖:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'> 恒速运动:&nbsp;&nbsp;<span>12345678</span></li>
+                    <li class='li fl'>经度:<span>12345678</span></li>
+                    <li class='li fl'>  纬度:<span>12345678</span></li>
+                    <li class='li fl'>  口径:<span>12345678</span> </li>
+                    <li class='li fl'> 类型:<span>12345678</span></li>
+                    <li class='li fl'> 焦点类型:<span>12345678</span></li>
+                    <li class='li fl'>焦比:<span>12345678</span></li>
+                    <li class='li fl'>焦距:<span>12345678</span></li>
+                    <li class='li fl'>轴1最大速度:<span>12345678</span></li>
+                    <li class='li fl'> 轴2最大速度:<span>12345678</span></li>
+                    <li class='li fl'> 轴3最大速度:<span>12345678</span></li>
+					<li class='li fl'>轴1最大加速度:<span>12345678</span></li>
+                    <li class='li fl'> 轴2最大加速度:<span>12345678</span></li>
+                    <li class='li fl'> 轴3最大加速度:<span>12345678</span></li>
+                    <li class='li fl'> 轴1复位位置:<span>12345678</span></li>
+                    <li class='li fl'> 轴2复位位置:<span>12345678</span></li>
+                    <li class='li fl'> 轴3复位位置:<span>12345678</span></li>
+                    <li class='li fl'> 是否有第3轴:<span>12345678</span></li>
+                    <li class='li fl'> 是否有镜盖:<span>12345678</span></li>
+                    <li class='li fl'> 是否有镜盖:<span>12345678</span></li>
+                    <li class='li fl'> 恒速运动:<span>12345678</span></li>
                 </ul><div class='clear'></div>
 		 </div><!--固定属性 结束-->
        </div><!--转台 结束-->
@@ -524,12 +524,12 @@
 			  <div><!--CCD可变属性-->
                 <span class='propT'>CCD可变属性:</span><br><br>
 				 <ul class='properUl'>
-                    <li class='li fl'>当前状态:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>Base line值:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>读出模式:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>当前拍摄波段:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>当前拍摄目标赤经:&nbsp;&nbsp;<span>12345678</span></li>
-                    <li class='li fl'>当前拍摄目标赤维:&nbsp;&nbsp;<span>12345678</span></li>
+                    <li class='li fl'>当前状态:<span id='ccdStatus_1'></span></li>
+                    <li class='li fl'>Base line值:<span id='baseLine'></span></li>
+                    <li class='li fl'>读出模式:<span id='readMode'></span></li>
+                    <li class='li fl'>当前拍摄波段:<span id='ObserveBand'></span></li>
+                    <li class='li fl'>拍摄目标赤经:<span id='TargetRightAscension'></span></li>
+                    <li class='li fl'>拍摄目标赤维:<span id='TargetDeclination'></span></li>
                 </ul>
                <div class='clear'></div>
              </div><!--CCD 可变属性结束-->
@@ -537,17 +537,17 @@
 		 <div class='border2'><!--ccd 固定属性-->
 			<br><span class='propT'>CCD固定属性:</span><br><br>
 			<ul class='properUl'>
-				<li class='li fl'>探测器类型:&nbsp;&nbsp;<span>12345678</span></li>
-				<li class='li fl'>传感器名称:&nbsp;&nbsp;<span>12345678</span></li>
-				<li class='li fl'>图像位数:&nbsp;&nbsp;<span>12345678</span></li>
-				<li class='li fl'>制冷方式:&nbsp;&nbsp;<span>12345678</span></li>
-				<li class='li fl'>最低制冷温度:&nbsp;&nbsp;<span>12345678</span></li>
-				<li class='li fl'>最大曝光时间:&nbsp;&nbsp;<span>12345678</span></li>
-				<li class='li fl'>最小曝光时间:&nbsp;&nbsp;<span>12345678</span></li>
-				<li class='li fl'>增益模式:&nbsp;&nbsp;<span>12345678</span></li>
-				<li class='li fl'>读出模式:&nbsp;&nbsp;<span>12345678</span></li>
-				<li class='li fl'>快门类型:&nbsp;&nbsp;<span>12345678</span></li>
-				<li class='li fl'>快门模式:&nbsp;&nbsp;<span>12345678</span></li>
+				<li class='li fl'>探测器类型:<span>12345678</span></li>
+				<li class='li fl'>传感器名称:<span>12345678</span></li>
+				<li class='li fl'>图像位数:<span>12345678</span></li>
+				<li class='li fl'>制冷方式:<span>12345678</span></li>
+				<li class='li fl'>最低制冷温度:<span>12345678</span></li>
+				<li class='li fl'>最大曝光时间:<span>12345678</span></li>
+				<li class='li fl'>最小曝光时间:<span>12345678</span></li>
+				<li class='li fl'>增益模式:<span>12345678</span></li>
+				<li class='li fl'>读出模式:<span>12345678</span></li>
+				<li class='li fl'>快门类型:<span>12345678</span></li>
+				<li class='li fl'>快门模式:<span>12345678</span></li>
              </ul>
            <div class='clear'></div>
 		 </div><!--ccd固定属性 结束-->
@@ -590,11 +590,11 @@
 			<div><!--调焦器 可变属性-->
                 <span class='propT'>调焦器可变属性:</span><br><br>
 				 <ul class='properUl'>
-                   <li class='li fl'>当前位置:&nbsp;&nbsp;<span>123456</span></li>
-                   <li class='li fl'>目标位置:&nbsp;&nbsp;<span>123456</span></li>
-                   <li class='li fl'>找零状态:&nbsp;&nbsp;<span>123456</span></li>
-                   <li class='li fl'>是否进行温度补偿:&nbsp;&nbsp;<span>123456</span></li>
-                   <li class='li fl'>温度补偿系数:&nbsp;&nbsp;<span>123456</span></li>
+                   <li class='li fl'>当前位置:&nbsp;&nbsp;<span id='curPos'></span></li>
+                   <li class='li fl'>目标位置:&nbsp;&nbsp;<span id='targetPosition'></span></li>
+                   <li class='li fl'>找零状态:&nbsp;&nbsp;<span id='focusIsHomed'></span></li>
+                   <li class='li fl'>是否进行温度补偿:&nbsp;&nbsp;<span id='compens'></span></li>
+                   <li class='li fl'>温度补偿系数:&nbsp;&nbsp;<span id='compensX'></span></li>
                 </ul>
                <div class='clear'></div>
              </div><!--调焦器 可变属性结束-->
@@ -656,10 +656,10 @@
 			<div><!--圆顶 可变属性-->
                 <span class='propT'>圆顶可变属性:</span><br><br>
 				 <ul class='properUl'>
-                    <li class='li fl'>当前状态:&nbsp;&nbsp;<span>123456</span></li>
-				   <li class='li fl'>天窗状态:&nbsp;&nbsp;<span>123456</span></li>
-                   <li class='li fl'>风帘状态:&nbsp;&nbsp;<span>123456</span></li>
-                   <li class='li fl'>错误标识:&nbsp;&nbsp;<span>123456</span></li>
+                    <li class='li fl'>当前状态:&nbsp;&nbsp;<span id='domeStatus_1'></span></li>
+				   <li class='li fl'>天窗状态:&nbsp;&nbsp;<span id='scuttle'></span></li>
+                   <li class='li fl'>风帘状态:&nbsp;&nbsp;<span id='shadeStatus'></span></li>
+                   <li class='li fl'>错误标识:&nbsp;&nbsp;<span id='errorStr'></span></li>
                 </ul>
                <div class='clear'></div>
              </div><!--圆顶 可变属性结束-->
@@ -695,9 +695,9 @@
 			<div><!--滤光片 可变属性-->
                 <span class='propT'>滤光片可变属性:</span><br><br>
 				 <ul class='properUl'>
-                   <li class='li fl'>是否找零:&nbsp;&nbsp;<span>123456</span></li>
-                   <li class='li fl'>当前状态:&nbsp;&nbsp;<span>123456</span></li>
-                   <li class='li fl'>错误标识:&nbsp;&nbsp;<span>123456</span></li>
+                   <li class='li fl'>是否找零:&nbsp;&nbsp;<span id='filterIsHomed'></span></li>
+                   <li class='li fl'>当前状态:&nbsp;&nbsp;<span id='filterStatus_1'></span></li>
+                   <li class='li fl'>错误标识:&nbsp;&nbsp;<span id='filterErrStr'></span></li>
                 </ul>
                <div class='clear'></div>
              </div><!--滤光片 可变属性结束-->

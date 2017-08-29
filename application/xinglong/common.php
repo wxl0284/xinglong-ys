@@ -373,7 +373,7 @@ function sunPosition (&$ra, &$dec, $mjd)
 	$y = $r * sin($lon/180*pi());
 
 	$xequat = $x;
-	$yequat = $y * cos($eo/180*pi()) + $z * sin($eo/180*pi(); //$z=0 ?
+	$yequat = $y * cos($eo/180*pi()) + $z * sin($eo/180*pi()); //$z=0 ?
 	$zequat = $y * sin($eo/180*pi()) + $z * cos($eo/180*pi()); //$z=0 ?
 
 	rect2Sphere($r, $ra, $dec, $xequat, $yequat, $zequat); //rect2Sphere 函数 ？
@@ -436,31 +436,6 @@ function EclipticObliquity($mjd)
 	return 23.4393 - $mjd0 * 3.563E-7;
 }
 
-/*
-*eq2AziEle() : 赤经赤纬转方位俯仰
-*/
-
-function eq2AziEle (&$azi, &$ele, $ha, $dec)
-{
-	$q =0;
-	$cosz = 0;
-	$sina = 0;
-	$cosa = 0;
-	$latitude = config('latitude'); //纬度
-
-	$ha *= 15;	// 时角从小时转换为角度
-	// 计算俯仰角
-	$cosz = sin($latitude/180*pi()) * sin($dec/180*pi()) + cos($latitude/180*pi()) * cos($dec/180*pi()) * cos($ha/180*pi());
-	$q = 1 - $cosz * $cosz;
-	$ele = atan2($cosz, sqrt($q)) * 180/pi();
-
-	// 计算方位角
-	$sina = cos($dec/180*pi()) * sin($ha/180*pi());
-	$cosa = sin($latitude/180*pi()) * cos($dec/180*pi()) * cos($ha/180*pi()) - cos($latitude/180*pi()) * sin($dec/180*pi());
-	$azi = atan2($sina, $cosa) * 180/pi();
-	// 转换为北零点 azi += 180;
-	$azi = ReduceAngle($azi);
-}
 
 /*
 *GetPosMoon() 月亮位置计算
@@ -474,15 +449,6 @@ function GetPosMoon(&$azi, &$ele)
 	MoonTopocentricPos($ra, $dec, GetJD());
 	$lmst = GetLMST();
 	Eq2AziEle($azi, $ele, $lmst - $ra, $dec);
-}
-
-/*
-*GetLMST(): 恒星时计算 
-*/
-
-function GetLMST()
-{
-	return localMeanSiderialTime(GetJD());
 }
 
 /**----------------------------------------------------------------------------
@@ -656,12 +622,16 @@ function Eq2AziEle(&$azi, &$ele, $ha, $dec)
 	
 	// 计算俯仰角
 	$cosz = sin($latitude/180*pi()) * sin($dec/180*pi()) + cos($latitude/180*pi()) * cos($dec/180*pi()) * cos($ha/180*pi());
+	
 	$q = 1 - $cosz * $cosz;
+	
 	$ele = atan2($cosz, sqrt($q)) *180/pi();
 
 	// 计算方位角
 	$sina = cos($dec/180*pi()) * sin($ha/180*pi());
+	
 	$cosa = sin($latitude/180*pi()) * cos($dec/180*pi()) * cos($ha/180*pi()) - cos($latitude/180*pi()) * sin($dec/180*pi());
+	
 	$azi = atan2($sina, $cosa) *180/pi();
 	// 转换为北零点 $azi += 180;
 	$azi = ReduceAngle($azi);

@@ -41,7 +41,7 @@ class User extends Controller
 			$keyword = '';
 		}
 		
-		$userList =Db::table('user')->where('username', 'like', '%'.$keyword.'%')->order('id desc')->paginate(8, false, ['query' => ['keyword' => $keyword]]);
+		$userList =Db::table('atccsuser')->where('username', 'like', '%'.$keyword.'%')->order('id desc')->paginate(8, false, ['query' => ['keyword' => $keyword]]);
 		$this->assign('userList', $userList);
 		return view('userIndex');
 	}
@@ -111,7 +111,7 @@ class User extends Controller
 		}
 		$data = ['username' => $username, 'password' => md5($passwd), 'role' => $role,
 				 'status' => 1, 'description' => $des];
-		$user = Db::table('user')->insert($data);
+		$user = Db::table('atccsuser')->insert($data);
 		if($user)
 		{
 			return '添加用户成功!';
@@ -137,7 +137,7 @@ class User extends Controller
 		
 		//halt(input('id'));
 		$id = input('id');
-		$userData = Db::table('user')->where('id', $id)->find();
+		$userData = Db::table('atccsuser')->where('id', $id)->find();
 		if ($userData)
 		{
 			$this->assign('userData', $userData);
@@ -209,7 +209,7 @@ class User extends Controller
 				$passwd = md5($passwd);
 			}
 		}else{//没有密码提交 用原来的密码
-			$passwd = Db::table('user')->where('id', $id)->value('password');
+			$passwd = Db::table('atccsuser')->where('id', $id)->value('password');
 			if(!$passwd)
 			{
 				$this->error('网络异常，请重新提交数据!');
@@ -217,7 +217,7 @@ class User extends Controller
 		}
 		
 		//更新数据
-		$res = Db::table('user')->where('id', $id)
+		$res = Db::table('atccsuser')->where('id', $id)
 			->update(['username'=>$username, 'password'=>$passwd, 'role'=>$role, 'description'=>$des,]);
 		if ($res)
 		{
@@ -243,7 +243,7 @@ class User extends Controller
 		
 		if($id = input('id'))
 		{
-			$res = Db::table('user')->where('id', $id)
+			$res = Db::table('atccsuser')->where('id', $id)
 				 ->update(['status' => 2]);
 			if($res)
 			{
@@ -273,7 +273,7 @@ class User extends Controller
 		
 		if($id = input('id'))
 		{
-			$res = Db::table('user')->where('id', $id)
+			$res = Db::table('atccsuser')->where('id', $id)
 				 ->update(['status' => 1]);
 			if($res)
 			{
@@ -328,9 +328,9 @@ class User extends Controller
             $this->error($result);
         }
 		
-		$user = Db::table('user');
+		$user = Db::table('atccsuser');
 		//根据cookie中的用户名 查原来密码
-		$oldPaswd = Db::table('user')->where('username', $username)->value('password');
+		$oldPaswd = Db::table('atccsuser')->where('username', $username)->value('password');
 	
 		if($oldPaswd)
 		{

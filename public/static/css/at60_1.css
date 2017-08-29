@@ -28,6 +28,8 @@ header div div a {color:#eaf1f9;}
 
 #infos {right:0;top:0;width:650px;height:270px;}
 
+#infos table td{width:211px;}
+
 #devsInfo {margin:20px auto;}
 
 #devsInfo .childDev {display:inline-block;width:228px;margin-right:4px;margin-left:4px;}

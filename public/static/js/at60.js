@@ -3,25 +3,133 @@
 */
 
  $(function () {
- 	//ajax 实时更新60cm望远镜子设备状态数据///////////////////////////		
-	/*function getStatus()
+ 	//ajax 实时更新60cm望远镜子设备状态数据///////////////////////		
+	function getStatus()
 	{
 		$.ajax({
 			type : 'post',
             url : '/xinglong/at60status/devsStatus',           
             success:  function (info) {
-               var info = eval( '(' + info +')' );
-				//console.log(info);return;
-				$('#gimbalStatus').html(info.gimbalStatus);
-				$('#ccdStatus').html(info.ccdStatus);
-				$('#focusStatus').html(info.focusStatus);
-				$('#slaveDomeStatus').html(info.slaveDomeStatus);
-				$('#filterStatus').html(info.filterStatus);
+                var info = eval( '(' + info +')' );
+				$('#date').html(info.date);
+				$('#bjTime').html(info.time);
+				$('#siderealTime').html(info.siderealTime);
+				$('#curstatus').html(info.curstatus); //转台状态
+				$('#trackError').html(info.trackError);
+				$('#hourAngle').html(info.hourAngle);
+				$('#coverStatus').html(info.coverStatus);
+				$('#rightAscension').html(info.rightAscension);
+				$('#declination').html(info.declination);
+				$('#trackObjectName').html(info.trackObjectName);
+				$('#trackType').html(info.trackType);
+				$('#targetRightAscension').html(info.targetRightAscension);
+				$('#targetDeclination').html(info.targetDeclination);
+				$('#azmiuth').html(info.azmiuth);//当前方位
+				$('#elevation').html(info.elevation);//当前俯仰
+				$('#RightAscensionSpeed').html(info.RightAscensionSpeed);
+				$('#declinationSpeed').html(info.declinationSpeed);
+				$('#derotatorPositon').html(info.derotatorPositon);
+				$('#targetDerotatorPosition').html(info.targetDerotatorPosition);
+				$('#axis1TrackError').html(info.axis1TrackError);
+				$('#axis2TrackError').html(info.axis2TrackError);
+				$('#axis3TrackError').html(info.axis3TrackError);
+				//接下来为gimbal可变属性
+				$('#stamp').html(info.timeStamp); //时间戳
+				$('#siderealTime_1').html(info.siderealTime); //恒星时
+				$('#hourAngle_1').html(info.hourAngle); //时角
+				$('#rightAscension_1').html(info.rightAscension); //赤经
+				$('#declination_1').html(info.declination); //赤纬
+				//J2000赤经
+				$('#J2000RightAscension').html(info.J2000RightAscension);
+				//j2000赤纬
+				$('#J2000Declination').html(info.J2000Declination);
+				$('#azmiuth_1').html(info.azmiuth);//当前方位
+				$('#elevation_1').html(info.elevation);//当前俯仰
+				//当前消旋位置
+				$('#derotatorPositon_1').html(info.derotatorPositon);
+				//目标赤经
+				$('#targetRightAscension_1').html(info.targetRightAscension);
+				//目标赤纬
+				$('#targetDeclination_1').html(info.targetDeclination);
+				//目标j2000赤经
+				$('#targetJ2000RightAscension').html(info.targetJ2000RightAscension);
+				//目标j2000赤纬
+				$('#targetJ2000Declination').html(info.targetJ2000Declination);
+				//目标消旋位置 targetDerotatorPosition
+				$('#targetDerotatorPosition_1').html(info.targetDerotatorPosition);
+				//gimbal可变属性 结束////////////////////////////
+				
+				//60cm各子设备状态//////////////////////////////////
+				//转台状态////////////////////////////
+				if (info.curstatus == '异常')
+				{
+					$('#gimbPic').attr('src', '/static/images-1/error.jpg');
+				}else{
+					$('#gimbPic').attr('src', '/static/images-1/ok.jpg');
+				}
+				$('#gimbStatus').html('转台:' + info.curstatus);
+				//转台状态结束/////////////////////////////
+				
+				//ccd状态/////////////////////////////////////
+				/* if (info.curstatus == '异常')
+				{
+					$('#gimbPic').attr('src', '/static/images-1/error.jpg');
+				} */
+				$('#ccdStatus').html('CCD:' + info.ccdCurStatus);
+				//如下为ccd可变属性
+				$('#ccdStatus_1').html(info.ccdCurStatus);
+				$('#baseLine').html(info.ccdBaseline);
+				$('#readMode').html(info.ccdReadOutMode);
+				$('#ObserveBand').html(info.ccdObserveBand);
+				$('#TargetRightAscension').html(info.ccdJ2000RightAscension);
+				$('#TargetDeclination').html(info.ccdJ2000Declination);				
+				//ccd 状态结束/////////////////////////////////
+				$('#focusStatus').html('调焦器:' + info.focusCurStatus);
+				//如下为 调焦器可变属性/////////////////////////////////
+				$('#curPos').html(info.focusPosition);
+				$('#targetPosition').html(info.focusTargetPos);
+				//找零状态
+				$('#focusIsHomed').html(info.focusIsHomed);
+				//是否温度补偿
+				$('#compens').html(info.focusIsTCompensation);
+				//温度补偿系数
+				$('#compensX').html(info.focusTCompenensation);
+				//调焦器 状态///////////////////////////////////////////////
+				//调焦器 状态 结束//////////////////////////////////////////
+				
+				//圆顶状态//////////////////////////////////////////////////
+				/* if (info.curstatus == '异常')
+				{
+					$('#gimbPic').attr('src', '/static/images-1/error.jpg');
+				}else{
+					$('#gimbPic').attr('src', '/static/images-1/ok.jpg');
+				} */
+				$('#domeStatus').html('圆顶:' + info.slaveDomeCurstatus);
+				$('#domeStatus_1').html(info.slaveDomeCurstatus);
+				$('#scuttle').html(info.slaveDomeScuttleStatus);//天窗状态
+				$('#shadeStatus').html(info.slaveDomeShadeStatus);//风帘状态
+				$('#errorStr').html(info.slaveDomeErrorStatus);//错误标识
+				//圆顶状态 结束/////////////////////////////////////////////
+				/* if (info.curstatus == '异常')
+				{
+					$('#gimbPic').attr('src', '/static/images-1/error.jpg');
+				}else{
+					$('#gimbPic').attr('src', '/static/images-1/ok.jpg');
+				} */
+				$('#filterStatus').html(info.filterCurstatus);
+				$('#filterStatus_1').html(info.filterCurstatus);
+				$('#filterIsHomed').html(info.filterIsHomed);
+				$('#filterErrStr').html(info.filterErrorStatus);
+				
+				//滤光片状态////////////////////////////////////////////////
+				
+				//滤光片状态 结束///////////////////////////////////////////
+				//60cm各子设备状态结束//////////////////////////////
             },
 		});
 	}
-	setInterval (getStatus,1800); */
-	
+	setInterval (getStatus, 1800);
+	/////////////////////////////////////////////////////////
 	//显示导航栏望远镜列表   
    var ul = $('#atListUl');
    $('#atList').hover(
