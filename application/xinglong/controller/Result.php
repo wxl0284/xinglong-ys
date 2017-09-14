@@ -30,4 +30,5 @@ class Result extends Controller
 	{
 		return view();
 	}
+
 }

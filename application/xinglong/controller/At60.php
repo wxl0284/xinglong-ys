@@ -6,14 +6,21 @@ use think\Session;
 use think\Request;
 use think\Cookie;
 use think\Db;
+use think\Config;
 
-//1号望远镜控制器
+//60cm号望远镜控制器
 class At60 extends Controller
 {
+	public $ip = '';  //socket通信 ip
+	public $port = '';  //socket通信 port
     //检测是否登录////////////////////////////////////////////////
     public function _initialize ()
     {
-        //未登录
+		//初始化soket的ip和端口
+        $this->ip = Config::get('ip');
+        $this->port = Config::get('port');
+		
+		//未登录
         if (!Cookie::has('login'))
         {
 			if (Request::instance()->isAjax())
@@ -26,7 +33,7 @@ class At60 extends Controller
         }   
     }
     
-    //显示1号望远控制镜页面////////////////////////////////////////
+    //显示60cm望远控制镜页面////////////////////////////////////////
     public function index ()
     {
 		//return view('at60');
@@ -93,7 +100,7 @@ class At60 extends Controller
        $sendMsg .= pack('L', $priority);     //uint32
         //socket发送数据
         $sendMsg = $headInfo . $sendMsg;
-        echo udpSend($sendMsg);	
+        echo udpSend($sendMsg, $this->ip, $this->port);	
     }
 	
     //at60 发送转台指令的方法/////////////////////////////////
@@ -151,10 +158,10 @@ class At60 extends Controller
 			$sendMsg = $headInfo . $sendMsg;
 			if ($connect == 1)
 			{
-				echo '连接指令：'. udpSend($sendMsg);
+				echo '连接指令：'. udpSend($sendMsg, $this->ip, $this->port);
 			}elseif ($connect == 2)
 			{
-				echo '断开连接指令：'. udpSend($sendMsg);
+				echo '断开连接指令：'. udpSend($sendMsg, $this->ip, $this->port);
 			}
 			
 		}elseif (($findHome=input('findHome')) !== null)	//发送 找零指令
@@ -171,7 +178,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '找零指令：'. udpSend($sendMsg);
+			echo '找零指令：'. udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (($park=input('park')) !== null)	//发送 复位指令
 		{
 			if ($park != 1)
@@ -185,7 +192,7 @@ class At60 extends Controller
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=10);
 			//socket发送数据
 			$sendMsg = $headInfo;
-			echo '复位指令：'. udpSend($sendMsg);	
+			echo '复位指令：'. udpSend($sendMsg, $this->ip, $this->port);	
 		}elseif (($stop=input('stop')) !== null)	//发送 停止指令
 		{
 			if ($stop != 1)
@@ -198,7 +205,7 @@ class At60 extends Controller
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=8);
 			//socket发送数据
 			$sendMsg = $headInfo;
-			echo '停止指令：'. udpSend($sendMsg);	
+			echo '停止指令：'. udpSend($sendMsg, $this->ip, $this->port);	
 		}elseif (($EmergenceStop=input('EmergenceStop')) !== null) //急停指令
 		{
 			if ($EmergenceStop != 1)
@@ -211,7 +218,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo;
-			echo '急停指令：'.udpSend($sendMsg);
+			echo '急停指令：'.udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 1)  //跟踪恒星指令
 		{
 			//var_dump(input());return;
@@ -266,7 +273,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '跟踪恒星指令：'. udpSend($sendMsg);
+			echo '跟踪恒星指令：'. udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 2)  //设置目标名称
 		{
 			$length = 48 + 50;    //该结构体总长度
@@ -298,7 +305,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '设置目标名称指令：' . udpSend($sendMsg);
+			echo '设置目标名称指令：' . udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 3)  //指向固定位置
 		{
 			$length = 48 + 16;    //该结构体总长度
@@ -330,7 +337,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '指向固定位置指令：' .udpSend($sendMsg);
+			echo '指向固定位置指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 4) 
 		{//轴3指向固定位置
 			$length = 48 + 8;    //该结构体总长度
@@ -346,7 +353,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '轴3指向固定位置指令：'. udpSend($sendMsg);
+			echo '轴3指向固定位置指令：'. udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 5)
 		{//设置轴3工作模式
 			$length = 48 + 10;    //该结构体总长度
@@ -378,7 +385,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '轴3工作模式指令：'. udpSend($sendMsg);	
+			echo '轴3工作模式指令：'. udpSend($sendMsg, $this->ip, $this->port);	
 		}elseif (input('command') == 6) //速度修正
 		{
 			$length = 48 + 10;    //该结构体总长度
@@ -410,7 +417,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '位置修正指令：' .udpSend($sendMsg);		
+			echo '位置修正指令：' .udpSend($sendMsg, $this->ip, $this->port);		
 		}elseif (input('command') == 7)  //恒速运动
 		{
 			$length = 48 + 10;      //该结构体总长度
@@ -442,7 +449,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '恒速运动指令：' .udpSend($sendMsg);	
+			echo '恒速运动指令：' .udpSend($sendMsg, $this->ip, $this->port);	
 		}elseif (input('command') == 8) //位置修正
 		{
 			$length = 48 + 10;     //该结构体总长度
@@ -474,7 +481,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '位置修正指令：' .udpSend($sendMsg);
+			echo '位置修正指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 9) //镜盖操作
 		{
 			$length = 48 + 2;      //该结构体总长度
@@ -491,7 +498,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '镜盖指令：' .udpSend($sendMsg);	
+			echo '镜盖指令：' .udpSend($sendMsg, $this->ip, $this->port);	
 		}elseif (input('command') == 10) //焦点切换镜
 		{
 			$length = 48 + 2;      //该结构体总长度
@@ -507,7 +514,7 @@ class At60 extends Controller
 			$sendMsg = pack('S', $setFocusType); //unsigned short
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '焦点切换镜指令：' .udpSend($sendMsg);
+			echo '焦点切换镜指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 11) //保存同步数据
 		{
 			$length = 48;      //该结构体总长度
@@ -517,7 +524,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo;
-			echo '保存同步数据指令：' .udpSend($sendMsg);	
+			echo '保存同步数据指令：' .udpSend($sendMsg, $this->ip, $this->port);	
 		}elseif (input('command') == 13) //属性设置
 		{
 			$length = 48;      //该结构体总长度
@@ -527,7 +534,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo;
-			echo '属性设置指令：' .udpSend($sendMsg);	
+			echo '属性设置指令：' .udpSend($sendMsg, $this->ip, $this->port);	
 		}
 		
 		//至此，转台指令发送代码结束
@@ -586,10 +593,10 @@ class At60 extends Controller
 			$sendMsg = $headInfo . $sendMsg;
 			if ($ccdConnect == 1)
 			{
-			   echo 'ccd连接指令：' .udpSend($sendMsg); 
+			   echo 'ccd连接指令：' .udpSend($sendMsg, $this->ip, $this->port); 
 			}elseif ($ccdConnect == 2)
 			{
-				echo '断开ccd指令：' .udpSend($sendMsg); 
+				echo '断开ccd指令：' .udpSend($sendMsg, $this->ip, $this->port); 
 			}
 				
 		}elseif (input('StopExpose') == 1)	//停止曝光
@@ -601,7 +608,7 @@ class At60 extends Controller
 			
 			//socket发送数据        
 			$sendMsg = $headInfo;
-			echo '停止曝光指令：'. udpSend($sendMsg);	
+			echo '停止曝光指令：'. udpSend($sendMsg, $this->ip, $this->port);	
 		}elseif (input('AbortExpose') == 1)	//终止曝光
 		{
 			$length = 48 ;      //该结构体总长度
@@ -611,7 +618,7 @@ class At60 extends Controller
 			
 			//socket发送数据        
 			$sendMsg = $headInfo;
-			echo '终止曝光指令：' . udpSend($sendMsg);	
+			echo '终止曝光指令：' . udpSend($sendMsg, $this->ip, $this->port);	
 		}elseif (($temperature=trim(input('temperature'))) !== '')	//设置制冷温度
 		{
 			$length = 48 +8;      //该结构体总长度
@@ -626,7 +633,7 @@ class At60 extends Controller
 			$sendMsg = pack('d', $temperature);     //double64
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '制冷温度指令：' .udpSend($sendMsg);		
+			echo '制冷温度指令：' .udpSend($sendMsg, $this->ip, $this->port);		
 		}elseif (input('command') == 2) //设置曝光策略
 		{
 			$length = 48 + 264;      //该结构体总长度
@@ -1046,7 +1053,7 @@ class At60 extends Controller
 			
 			//socket发送数据        
 			$sendMsg = $headInfo . $sendMsg;
-			echo '设置曝光策略指令：' .udpSend($sendMsg);
+			echo '设置曝光策略指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		
 		}elseif (input('command') == 3)	
 		{//开始曝光
@@ -1081,7 +1088,7 @@ class At60 extends Controller
 			
 			//socket发送数据        
 			$sendMsg = $headInfo . $sendMsg;
-			echo '开始曝光指令：'. udpSend($sendMsg);	
+			echo '开始曝光指令：'. udpSend($sendMsg, $this->ip, $this->port);	
 		}elseif (input('command') == 4)
 		{//设置增益
 			$length = 48 +4;      //该结构体总长度
@@ -1115,7 +1122,7 @@ class At60 extends Controller
 			
 			//socket发送数据        
 			$sendMsg = $headInfo . $sendMsg;
-			echo '设置增益指令：' .udpSend($sendMsg);	
+			echo '设置增益指令：' .udpSend($sendMsg, $this->ip, $this->port);	
 		}elseif (input('command') == 5)   //读出速度模式值
 		{
 			$length = 48 + 2;      //该结构体总长度
@@ -1133,7 +1140,7 @@ class At60 extends Controller
 							
 			//socket发送数据        
 			$sendMsg = $headInfo . $sendMsg;
-			echo '设置读出速度模式指令：' .udpSend($sendMsg);	
+			echo '设置读出速度模式指令：' .udpSend($sendMsg, $this->ip, $this->port);	
 		}elseif (input('command') == 6) //转移速度模式值
 		{
 			$length = 48 + 2;      //该结构体总长度
@@ -1149,7 +1156,7 @@ class At60 extends Controller
 			$sendMsg = pack('S', $SetTransferSpeed);     //uint32
 			//socket发送数据        
 			$sendMsg = $headInfo . $sendMsg;
-			echo '转移速度模式指令：' .udpSend($sendMsg);	
+			echo '转移速度模式指令：' .udpSend($sendMsg, $this->ip, $this->port);	
 		}elseif (input('command') == 7)     //设置BIN
 		{
 			$length = 48 +8;      //该结构体总长度
@@ -1183,7 +1190,7 @@ class At60 extends Controller
 			
 			//socket发送数据        
 			$sendMsg = $headInfo . $sendMsg;
-			echo '设置BIN指令：' .udpSend($sendMsg);	
+			echo '设置BIN指令：' .udpSend($sendMsg, $this->ip, $this->port);	
 		}elseif (input('command') == 8 )      //设置ROI 指令
 		{
 			$length = 48 + 16;      //该结构体总长度
@@ -1241,7 +1248,7 @@ class At60 extends Controller
 			
 			//socket发送数据        
 			$sendMsg = $headInfo . $sendMsg;
-			echo '设置Roi指令：' .udpSend($sendMsg);
+			echo '设置Roi指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 9)  //设置快门指令
 		{
 			$length = 48 + 2;      //该结构体总长度
@@ -1258,7 +1265,7 @@ class At60 extends Controller
 	
 			//socket发送数据        
 			$sendMsg = $headInfo . $sendMsg;
-			echo '设置快门指令：'. udpSend($sendMsg);
+			echo '设置快门指令：'. udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 10)     //设置帧转移
 		{
 			$length = 48 + 2;      //该结构体总长度
@@ -1275,7 +1282,7 @@ class At60 extends Controller
 	
 			//socket发送数据        
 			$sendMsg = $headInfo . $sendMsg;
-			echo '设置帧转移指令：'. udpSend($sendMsg);
+			echo '设置帧转移指令：'. udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 11 )     //SetEM     指令
 		{
 			$length = 48 + 6;      //该结构体总长度
@@ -1309,7 +1316,7 @@ class At60 extends Controller
 			
 			//socket发送数据        
 			$sendMsg = $headInfo . $sendMsg;
-			echo 'SetEM指令：' .udpSend($sendMsg);
+			echo 'SetEM指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 12 )  //isNoiseFilter
 		{
 			$length = 48 + 2;      //该结构体总长度
@@ -1326,7 +1333,7 @@ class At60 extends Controller
 				
 			//socket发送数据        
 			$sendMsg = $headInfo . $sendMsg;
-			echo 'CMOS noise filter指令：' .udpSend($sendMsg);
+			echo 'CMOS noise filter指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 13 )     //SetBaseline 指令
 		{
 			$length = 48 + 6;      //该结构体总长度
@@ -1360,7 +1367,7 @@ class At60 extends Controller
 				
 			//socket发送数据        
 			$sendMsg = $headInfo . $sendMsg;
-			echo 'Baseline指令：' .udpSend($sendMsg);
+			echo 'Baseline指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 14) //set over scan
 		{
 			$length = 48 + 2;      //该结构体总长度
@@ -1377,7 +1384,7 @@ class At60 extends Controller
 			
 			//socket发送数据        
 			$sendMsg = $headInfo . $sendMsg;
-			echo 'Over Scan指令：' .udpSend($sendMsg);
+			echo 'Over Scan指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}
 		
 		//至此，ccd指令发送代码结束        
@@ -1431,10 +1438,10 @@ class At60 extends Controller
 			$sendMsg = $headInfo . $sendMsg;
 			if ($focusConnect == 1)
 			{
-				echo '调焦器连接指令：' .udpSend($sendMsg);
+				echo '调焦器连接指令：' .udpSend($sendMsg, $this->ip, $this->port);
 			}elseif ($focusConnect == 2)
 			{
-				echo '调焦器断开指令：' .udpSend($sendMsg);
+				echo '调焦器断开指令：' .udpSend($sendMsg, $this->ip, $this->port);
 			}
 			
 		}elseif (input('focusStop') == 1)	//调焦器 停止运动
@@ -1446,7 +1453,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo;
-			echo '调焦器停止指令：' .udpSend($sendMsg);
+			echo '调焦器停止指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('findHome') == 1)  //找零
 		{
 			$length = 48 ;      //结构体长度
@@ -1456,7 +1463,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo;
-			echo '调焦器找零指令：' .udpSend($sendMsg);
+			echo '调焦器找零指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 1)	//设置目标位置
 		{
 			$length = 48 + 8;      //结构体长度
@@ -1471,7 +1478,7 @@ class At60 extends Controller
 			$sendMsg = pack('d', $setPosition);    //double64
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '设置目标位置指令：' .udpSend($sendMsg);
+			echo '设置目标位置指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 2) //恒速转动
 		{
 			$length = 48 + 8;      //结构体长度
@@ -1487,7 +1494,7 @@ class At60 extends Controller
 			$sendMsg = pack('d', $speed);    //double64
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '恒速转动指令：' .udpSend($sendMsg);
+			echo '恒速转动指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 3) //温度补偿
 		{
 			$length = 48 + 2;      //结构体长度
@@ -1503,7 +1510,7 @@ class At60 extends Controller
 			$sendMsg = pack('S', $enable);      //uint16
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '使能温度补偿指令：'. udpSend($sendMsg);
+			echo '使能温度补偿指令：'. udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 4)   //使能温度补偿系数
 		{
 			$length = 48 + 8;      //结构体长度
@@ -1519,7 +1526,7 @@ class At60 extends Controller
 			$sendMsg = pack('d', $coefficient);      //double64
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '温度补偿系数：' .udpSend($sendMsg);
+			echo '温度补偿系数：' .udpSend($sendMsg, $this->ip, $this->port);
 		}
 		
 		//调焦器指令发送 完毕
@@ -1573,10 +1580,10 @@ class At60 extends Controller
 			$sendMsg = $headInfo . $sendMsg;
 			if ($sDomeConnect == 1)
 			{
-				echo '随动圆顶连接指令：' .udpSend($sendMsg);	
+				echo '随动圆顶连接指令：' .udpSend($sendMsg, $this->ip, $this->port);	
 			}elseif ($sDomeConnect == 2)
 			{
-				echo '随动圆顶断开指令：' .udpSend($sendMsg);
+				echo '随动圆顶断开指令：' .udpSend($sendMsg, $this->ip, $this->port);
 			}
 						
 		}elseif (input('sDomeStop') !== null)	//停止运动
@@ -1588,7 +1595,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo;
-			echo '随动圆顶停止运动指令:' .udpSend($sendMsg);
+			echo '随动圆顶停止运动指令:' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (($OpenScuttle=input('OpenScuttle')) !== null) //天窗
 		{
 			$length = 48 + 2;      //结构体长度
@@ -1605,10 +1612,10 @@ class At60 extends Controller
 			$sendMsg = $headInfo . $sendMsg;
 			if ($OpenScuttle == 1)
 			{
-				echo '打开天窗指令：' .udpSend($sendMsg);
+				echo '打开天窗指令：' .udpSend($sendMsg, $this->ip, $this->port);
 			}elseif ($OpenScuttle == 2)
 			{
-				echo '关闭天窗指令：' .udpSend($sendMsg);
+				echo '关闭天窗指令：' .udpSend($sendMsg, $this->ip, $this->port);
 			}
 			
 		}elseif (input('command') == 1)
@@ -1626,7 +1633,7 @@ class At60 extends Controller
 			$sendMsg = pack('d', $domePosition);
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '目标方位指令：' .udpSend($sendMsg);
+			echo '目标方位指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 2)
 		{//转动速度
 			$length = 48 + 8;      //结构体长度
@@ -1642,7 +1649,7 @@ class At60 extends Controller
 			$sendMsg = pack('d', $RotateSpeed);
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '转动速度指令：' .udpSend($sendMsg);
+			echo '转动速度指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 3)
 		{//风帘位置
 			$length = 48 + 8;      //结构体长度
@@ -1659,7 +1666,7 @@ class At60 extends Controller
 			$sendMsg = pack('d', $shadePosition);
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '风帘位置指令：' .udpSend($sendMsg);
+			echo '风帘位置指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 4)
 		{//风帘运动
 			$length = 48 + 2;      //结构体长度
@@ -1675,7 +1682,7 @@ class At60 extends Controller
 			$sendMsg = pack('S', $shadeAction);
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '风帘运动指令：' .udpSend($sendMsg);
+			echo '风帘运动指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}
 		
 		//随动圆顶 指令发送结束	
@@ -1730,10 +1737,10 @@ class At60 extends Controller
 			$sendMsg = $headInfo . $sendMsg;
 			if ($fDomeConnect == 1)
 			{
-				echo '全开圆顶连接指令：' .udpSend($sendMsg);
+				echo '全开圆顶连接指令：' .udpSend($sendMsg, $this->ip, $this->port);
 			}elseif ($fDomeConnect == 2)
 			{
-				echo '全开圆顶断开指令：' .udpSend($sendMsg);
+				echo '全开圆顶断开指令：' .udpSend($sendMsg, $this->ip, $this->port);
 			}
 			
 		}elseif (($openDome=input('openDome')) !== null)
@@ -1752,13 +1759,13 @@ class At60 extends Controller
 			$sendMsg = $headInfo . $sendMsg;
 			if ($openDome == 0)
 			{
-				echo '全开圆顶关闭指令：'. udpSend($sendMsg);
+				echo '全开圆顶关闭指令：'. udpSend($sendMsg, $this->ip, $this->port);
 			}elseif ($openDome == 1)
 			{
-				echo '全开圆顶打开指令：'. udpSend($sendMsg);
+				echo '全开圆顶打开指令：'. udpSend($sendMsg, $this->ip, $this->port);
 			}elseif ($openDome == 2)
 			{
-				echo '全开圆顶停止指令：'. udpSend($sendMsg);
+				echo '全开圆顶停止指令：'. udpSend($sendMsg, $this->ip, $this->port);
 			}
 			
 		}
@@ -1816,10 +1823,10 @@ class At60 extends Controller
 			
 			if ($filterConnect == 1)
 			{
-				echo '滤光片连接指令：' .udpSend($sendMsg);
+				echo '滤光片连接指令：' .udpSend($sendMsg, $this->ip, $this->port);
 			}elseif ($filterConnect == 2)
 			{
-				echo '滤光片断开指令：' .udpSend($sendMsg);
+				echo '滤光片断开指令：' .udpSend($sendMsg, $this->ip, $this->port);
 			}
 			
 		}elseif (input('filterFindHome') == 1)
@@ -1831,7 +1838,7 @@ class At60 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo;
-			echo '滤光片找零指令：' .udpSend($sendMsg);
+			echo '滤光片找零指令：' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (($filterPos=input('filterPos')) !== null)
 		{//滤光片位置
 			$length = 48 + 2;      //结构体长度
@@ -1846,7 +1853,7 @@ class At60 extends Controller
 			$sendMsg = pack('S', $filterPos);  //unsigned short
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '滤光片位置指令：'. udpSend($sendMsg);
+			echo '滤光片位置指令：'. udpSend($sendMsg, $this->ip, $this->port);
 		}
 			
 			//滤光片 指令发送完毕
@@ -1904,7 +1911,7 @@ class At60 extends Controller
             //socket发送数据
             $sendMsg = $headInfo . $sendMsg;
            
-            echo '观测计划：'. udpSend($sendMsg);
+            echo '观测计划：'. udpSend($sendMsg, $this->ip, $this->port);
 			
 			unset($sendMsg);
 			
@@ -1928,7 +1935,7 @@ class At60 extends Controller
             //socket发送数据
             $sendMsg = $headInfo . $sendMsg;
            
-            echo '观测计划：'. udpSend($sendMsg);
+            echo '观测计划：'. udpSend($sendMsg, $this->ip, $this->port);
 			
 			unset($sendMsg);
 			
@@ -1952,9 +1959,9 @@ class At60 extends Controller
             //socket发送数据
             $sendMsg = $headInfo . $sendMsg;
            
-            echo '观测计划：'. udpSend($sendMsg);
+            echo '观测计划：'. udpSend($sendMsg, $this->ip, $this->port);
 			
-    }
+    }//观测计划 指令发送 结束///////////////////////////////////////
 	
 	
 	//导入计划文件/////////////////////////////////////////////////
@@ -2059,7 +2066,7 @@ class At60 extends Controller
 		}		
 	}//导入计划文件 结束//////////////////////////////////////////////
 	
-	//获取计划数据 验证并发送计划数据//////////////////////////////////////
+	//获取计划数据 验证并发送计划数据///////////////////////////
 	public function savePlan ()
 	{
 		//为了避免重新登录时 重新填写计划数据 忽略此项判断 仅验证权限一项
@@ -2095,21 +2102,28 @@ class At60 extends Controller
 		$device = 66;           
 		$msg = 8; $magic = 439041101; $version = 1;
 		//头部后部数据
-		$user = 1;  $plan = 0; $length =28 + 204;
+		$user = 1;  $plan = 0; $length =28 + 208;
 	   
-		$headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device);
+		$headInfo = planPackHead($magic,$version,$msg,$length,$sequence,$at,$device);
 		
 		//halt($planData['planData'][1]['bin']);
 		//验证计划数据
 		$planNum = count($planData['planData']);
 		for ($i = 0; $i < $planNum; $i ++) //循环提交上来的 每一条计划
 		{
+			//每条指令的tag
+			$sendMsg = pack('I', $i+1);  //unsigned int 
+			
+			$sendMsg .= pack('S', $at);
+            $sendMsg .= pack('a48', '01'); //user
+            $sendMsg .= pack('a48', '02'); //project
+			
 			$target = trim($planData['planData'][$i]['target']);
 			if($target=== '' || !preg_match('/^[a-zA-Z0-9]{1,48}$/', $target))
 			{
 				return '第'. ($i+1) .'条计划:目标名称须最多48位字母数字组合!'; 
 			}else{
-				 $sendMsg = pack('a48', $target); 
+				$sendMsg .= pack('a48', $target); 
 			}
 			
 			//验证目标类型
@@ -2145,7 +2159,7 @@ class At60 extends Controller
 				$sendMsg .= pack('d', $rightAscension);
 			}else{
 				return '第'. ($i+1) .'条计划:赤经数据有误!';
-			}
+			} 
 			
 			//验证 赤纬只能是数字！
 			$declination = trim($planData['planData'][$i]['declination']);
@@ -2212,13 +2226,13 @@ class At60 extends Controller
 				}
 			}
 			
-			//验证 delayTime
+			//验证 exposureCount
 			$exposureCount = trim($planData['planData'][$i]['exposureCount']);
 			if($exposureCount === '')
 			{
 				return '请填写第'. ($i+1) .'条计划:曝光数量!'; 
 			}else{
-				if(preg_match('/^[0-9]+$/', $delayTime) && $exposureCount>0 && $exposureCount <= 100)//曝光时间最大值？
+				if(preg_match('/^[0-9]+$/', $exposureCount) && $exposureCount>0 && $exposureCount <= 100)//曝光时间最大值？
 				{
 					$sendMsg .= pack('I', $exposureCount); 
 				}else{
@@ -2242,15 +2256,15 @@ class At60 extends Controller
 					}else{
 						if($filter == 'u' || $filter == 'U')
 						{
-							$sendMsg .= pack('I', 'U'); 
+							$sendMsg .= pack('a8', 'U'); 
 						}elseif($filter == 'b' || $filter == 'B'){
-							$sendMsg .= pack('I', 'B'); 
+							$sendMsg .= pack('a8', 'B'); 
 						}elseif($filter == 'V' || $filter == 'v'){
-							$sendMsg .= pack('I', 'V'); 
+							$sendMsg .= pack('a8', 'V'); 
 						}elseif($filter == 'R' || $filter == 'r'){
-							$sendMsg .= pack('I', 'R'); 
+							$sendMsg .= pack('a8', 'R'); 
 						}elseif ($filter == 'i' || $filter == 'I'){
-							$sendMsg .= pack('I', 'I'); 
+							$sendMsg .= pack('a8', 'I'); 
 						}
 					}
 				}
@@ -2301,11 +2315,82 @@ class At60 extends Controller
 			//发送 计划数据
             $sendMsg = $headInfo . $sendMsg;
            
-            udpSendPlan($sendMsg); //无返回值	
+            udpSendPlan($sendMsg, $this->ip, $this->port); //无返回值	
 		} //结束循环提交上来的计划
 		
 		return '观测计划发送完毕!';
 
-	} //发送观测计划 结束
+	} //发送观测计划 结束/////////////////////////////////////////////
 	
+	//观测计划的 开始 停止 下一个 ////////////////////////////////
+	public function at60PlanOption ()
+	{
+		//为了避免重新登录时 重新填写计划数据 忽略此项判断 仅验证权限一项
+		/* if (!Session::has('login'))
+		{
+			return '为确保操作者为同一人，请再次登录！';
+		} */
+
+		/*if (!Session::has('role'))
+		{
+			return '您没有此权限！';
+		}*/
+		
+		//获取提交数据
+		if (!input())
+		{
+			return '网络异常,请重新提交计划!';
+		}
+		
+		//定义全局$sequence 此变量在packHead()函数中要使用
+		if (Cookie::has('sequence'))
+		{
+			$sequence = Cookie::get('sequence');
+			Cookie::set('sequence', $sequence+1);
+		}else{
+			Cookie::set('sequence', 1);
+			$sequence = 0;
+		}
+ 
+		//望远镜
+		$at  = 37;
+		 //望远镜子设备
+		$device = 66;           
+		$msg = 9; $magic = 439041101; $version = 1;
+		//头部后部数据
+		$user = 1;  $plan = 0; $length =28 + 16; //长度有变
+	   
+		$headInfo = planPackHead($magic,$version,$msg,$length,$sequence,$at,$device);
+		
+		$input = input();
+		if($input['planOption'] == 'planStart')
+		{
+			$sendMsg = pack('I', 1);
+			$sendMsg .= pack('I', $input['mode']);
+			$sendMsg .= pack('I', $input['start']);
+			$sendMsg .= pack('I', 0);
+			
+			$sendMsg = $headInfo . $sendMsg;
+			echo '计划开始:' .udpSend($sendMsg, $this->ip, $this->port);
+		}elseif($input['planOption'] == 'planStop'){
+			$sendMsg = pack('I', 2);
+			$sendMsg .= pack('I', $input['mode']);
+			$sendMsg .= pack('I', $input['start']);
+			$sendMsg .= pack('I', 0);
+			
+			$sendMsg = $headInfo . $sendMsg;
+			echo '计划停止:' .udpSend($sendMsg, $this->ip, $this->port);
+		}elseif($input['planOption'] == 'planNext'){
+			$sendMsg = pack('I', 3);
+			$sendMsg .= pack('I', $input['mode']);
+			$sendMsg .= pack('I', $input['start']);
+			$sendMsg .= pack('I', 0);
+			
+			$sendMsg = $headInfo . $sendMsg;
+			echo '下一条计划:' .udpSend($sendMsg, $this->ip, $this->port);
+		}
+		
+		
+	}
+	//观测计划的 开始 停止 下一个 结束//////////////////////////////
 }

@@ -120,9 +120,5 @@ form input[type='radio'], form div {display:none;}
 #bigPic button { right:38px;bottom:8px; cursor:pointer;}
 
 /*观测计划模式：单选钮和按钮的样式*/
-#planModes {top:29.5px;right:460px;width:300px;}
-
-#modeVal {width:145px;z-index:99;background-color:#fff;}
-
-#planExe {top:0px;right:20px;}
+#planModes {top:29.5px;right:230px;}
 /*观测计划模式：单选钮和按钮的样式 结束*/

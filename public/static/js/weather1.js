@@ -26,6 +26,10 @@ $(function (){
    
    $('#at60').click(function () {
 	   location = '/xinglong/at60';
-   });//////////////////////////////////
+   });
+   $('#at80').click(function () {
+	   location = '/xinglong/at80';
+   });
+ //航栏望远镜列表//////////////////////////////////
    
 })

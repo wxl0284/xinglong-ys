@@ -1276,47 +1276,4 @@
         }
    );
 	
-//观测计划 执行模式 js /////////////////////////////////////
-	$('#modeSpan').hover(
-		function (){
-			$('#modeVal').show();
-			var planMode = $('#modeVal input');
-			//观测计划 若为single和singleLoop 隐藏‘下一个’按钮/////
-			if(planMode.eq(0).prop('checked') || planMode.eq(1).prop('checked'))
-			{
-				$('#planNext').hide();
-			}
-			
-		}, 
-		function (){
-			$('#modeVal').hide();
-		}
-	);
-//观测计划 执行模式 js结束 /////////////////////////////////////
-
-//观测计划 若为single和singleLoop 隐藏‘下一个’按钮///////////////
-	//var planMode = $('#modeVal input');
-	//console.log(planMode);return;
-	
-	/* if(planMode.eq(0).prop('checked') || planMode.eq(1).prop('checked'))
-	{
-		//alert(planMode[0])
-		$('#planNext').hide();
-	}else if(planMode.eq(2).prop('checked') || planMode.eq(3).prop('checked')){
-		$('#planNext').show();
-	} */
-	$('#modeVal').on('click', 'input', function () {
-		if($(this).val() == 3 || $(this).val() == 4)
-		{
-			$('#planNext').show();
-		}
-		
-		if($(this).val() == 1 || $(this).val() == 2)
-		{
-			$('#planNext').hide();
-		}
-	});
-
-//观测计划 若为single和singleLoop 隐藏‘下一个’按钮 结束///////////////
-	
 })

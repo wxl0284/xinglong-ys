@@ -49,4 +49,6 @@ footer span {color:#fff;line-height:41px;font-size:13px;}
 
 #atListUl {background-color:#64B2E0;}
 
-#res {left:300px; color:#eaf1f9;}
+header div.pos_r {top:1.5px;} /*此为公共头部导航栏 样式*/
+
+/* #res {left:300px; color:#eaf1f9;} 导航：观测结果样式*/

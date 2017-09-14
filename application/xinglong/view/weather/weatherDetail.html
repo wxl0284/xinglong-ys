@@ -13,10 +13,20 @@
 	<header class='pos_r'>
 	    <div class='pos_r'>
 	      <img class='pos_a' src='/static/images-0/logo1.png'/>
+		  <div id='atList' class='pos_a'>
+				望远镜列表
+				<ul id='atListUl' class='center displayNo'>
+					<li id='at60'>60CM</li>
+					<hr>
+					<li id='at80'>80CM</li>
+					<hr>
+					<li>85CM</li>
+					<hr>
+					<li>85CM</li>
+				</ul>
+		   </div>
 		   <p class='pos_a'>
 				<a href="{:url('xinglong/control/front')}">首页&nbsp;&nbsp;&nbsp;&nbsp;
-				</a>
-				<a id='atList'>望远镜列表&nbsp;&nbsp;&nbsp;&nbsp;
 				</a>
 				<a href='/xinglong/user'>用户管理&nbsp;&nbsp;&nbsp;&nbsp;</a>
 				<a href='/xinglong/user/passwd'>修改密码&nbsp;&nbsp;&nbsp;&nbsp;
@@ -292,5 +302,25 @@
 	}; 
 	dustChart.setOption(optionDust);
 //粉尘 结束//////////////////////////////////////////////////////////
+
+//显示导航栏望远镜列表//////////////////////////////////////// 
+   var ul = $('#atListUl');
+   $('#atList').hover(
+        function (){
+            ul.show();
+        }, 
+       function (){		
+			ul.hide();
+        } 
+   );
+   
+   $('#at60').click(function () {
+	   location = '/xinglong/at60';
+   });
+   $('#at80').click(function () {
+	   location = '/xinglong/at80';
+   });
+   //望远镜列表js代码结束///////////////////////////////////
+
 </script>
 </html>

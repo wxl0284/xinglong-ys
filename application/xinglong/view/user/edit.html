@@ -25,7 +25,6 @@
 					<li>85CM</li>
 				</ul>
 		   </div>
-		  <a href="{:url('/xinglong/result')}" class='pos_r' id='res'>观测结果</a>
 		   <p class='pos_a'>
 				<a href="{:url('xinglong/control/front')}">首页&nbsp;&nbsp;&nbsp;&nbsp;
 				</a>
@@ -71,6 +70,25 @@
 			</table>
 		  </form>
     </div>
+	<script>
+	//若修改用户信息的表单未输入数据，则禁止提交
+	var username = "{$userData.username}";
+	var role = "{$userData.role}";
+	var form = $('#fm');
+	$(function (){
+		form.submit(function (){
+			var nameVal = form.find('input[name="username"]').val();
+			var passwd = form.find('input[name="passwd"]').val();
+			var roleVal = form.find('select').val();
+			
+			if(nameVal === username && passwd === '' && roleVal == role)
+			{
+				alert('您未改动任何用户信息!')
+				return false; //表单未改动，不提交
+			}
+		});
+	})
+	</script>
 	<footer class='center clear'>
 		<span>中科院国家天文台兴隆观测基地</span>
 	</footer>

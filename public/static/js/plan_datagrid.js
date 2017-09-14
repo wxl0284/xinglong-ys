@@ -107,88 +107,7 @@
 
 	}
 	
-	//保存并提交计划 ////////////////////////////////////////////
-	function submitPlan ()
-	{
-		var plans = table.datagrid('getRows');	//选中所有记录
-		//console.log(plans);return;
-		var n = plans.length;
-		if ( n< 1) 
-		{
-			alert('无计划数据，请先导入计划或添加计划!');return;
-		}
-		//console.log(a.length);return;
-		
-		//js验证数据
-		for(var i = 0; i < n; i++)
-		{
-			if ($.trim(plans[i].target) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:目标名称!');return;
-			}
-			if ($.trim(plans[i].type) === '')
-			{
-				alert('请选择第' + (i+1) + '条计划:目标类型!');return;
-			}
-			if ($.trim(plans[i].rightAscension) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:赤经!');return;
-			}
-			if ($.trim(plans[i].declination) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:赤纬!');return;
-			}
-			if ($.trim(plans[i].epoch) === '')
-			{
-				alert('请选择第' + (i+1) + '条计划:历元!');return;
-			}
-			if ($.trim(plans[i].exposureTime) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:曝光时间!');return;
-			}
-			if ($.trim(plans[i].delayTime) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:delayTime!');return;
-			}
-			if ($.trim(plans[i].exposureCount) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:曝光数量!');return;
-			}
-			if ($.trim(plans[i].filter) === '')
-			{
-				alert('请选择第' + (i+1) + '条计划:滤光片!');return;
-			}
-			if ($.trim(plans[i].gain) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:增益!');return;
-			}
-			if ($.trim(plans[i].bin) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:Bin!');return;
-			}
-			if ($.trim(plans[i].readout) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:读出速度!');return;
-			}
-		}
-		
-		//ajax 发送数据到后台
-		$.ajax({
-			type: 'post',
-			url: '/xinglong/at60/savePlan',
-			data: {planData: plans},
-			success: function (info){
-				alert(info);
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}	
-			},
-			error: function (){
-				alert('网络异常,请重新提交计划！');
-			},
-		});
-	}
+	
 
 	//datagrid 属性////////////////////////////////////////
 	var targetType = [
@@ -216,6 +135,8 @@
 			height:500,
 			toolbar: '#toolbar',
 			singleSelect:true,
+			checkOnSelect:true,
+			selectOnCheck:true,
 			dragSelection: true,
 			striped: true,
 			dropAccept:'tbody tr',
@@ -348,3 +269,149 @@
 		table.datagrid('deleteRow', getrow(target));
 		editRow = undefined; //新加
 }
+
+//观测计划的 开始 停止 下一个按钮//////////////////////////////
+	//观测计划的开始 按钮//////////////////////////////////
+	$('#planModes').on('click', 'button', function () {
+		//获取模式值
+		var modeVal = $('#planModes').find('input:checked').val();
+		var option = $(this).attr('id');
+		var btnText = $(this).html();
+		var rows = table.datagrid('getSelections');
+		
+		var index = table.datagrid('getRowIndex', rows[0]);
+		//alert(index);return;
+		if(option === 'planStart')
+		{
+			submitPlan();
+		}
+		if(index < 0){
+			index = 0;
+		}
+		
+		/* //若为single和singleLoop模式，只能选择一条发送
+		if (modeVal == 1 || modeVal ==2)
+		{
+			if(rows.length > 1)
+			{
+				alert('single和singleLoop模式只能选择一条计划!');
+				return;
+			}
+			
+		} */
+		$.ajax({
+            type : 'post',
+            url : '/xinglong/at60/at60PlanOption',
+            data : {planOption : option,
+					mode : modeVal,
+					start : index +1,
+					},             
+            success:  function (info) {
+               alert(info);
+				if (info.indexOf('登录') !== -1)
+				{
+					location.href = '/';
+				}
+				
+				if (info.indexOf('计划停止') !== -1)
+				{
+					$('#planStart').show();
+				}
+            },
+            error:  function () {
+               alert('网络异常,请再次点击'+ btnText +'按钮!');
+            },
+        });
+	
+	});
+	//观测计划的开始 按钮 结束/////////////////////////////
+//观测计划的 开始 停止 下一个按钮 结束//////////////////////////////
+
+
+//保存并提交计划 ////////////////////////////////////////////
+	function submitPlan ()
+	{
+		var plans = table.datagrid('getRows');	//选中所有记录
+		//console.log(plans);return;
+		var n = plans.length;
+		if ( n< 1) 
+		{
+			alert('无计划数据，请先导入计划或添加计划!');return;
+		}
+		//console.log(a.length);return;
+		
+		//js验证数据
+		for(var i = 0; i < n; i++)
+		{
+			if ($.trim(plans[i].target) === '')
+			{
+				alert('请填写第' + (i+1) + '条计划:目标名称!');return;
+			}
+			if ($.trim(plans[i].type) === '')
+			{
+				alert('请选择第' + (i+1) + '条计划:目标类型!');return;
+			}
+			if ($.trim(plans[i].rightAscension) === '')
+			{
+				alert('请填写第' + (i+1) + '条计划:赤经!');return;
+			}
+			if ($.trim(plans[i].declination) === '')
+			{
+				alert('请填写第' + (i+1) + '条计划:赤纬!');return;
+			}
+			if ($.trim(plans[i].epoch) === '')
+			{
+				alert('请选择第' + (i+1) + '条计划:历元!');return;
+			}
+			if ($.trim(plans[i].exposureTime) === '')
+			{
+				alert('请填写第' + (i+1) + '条计划:曝光时间!');return;
+			}
+			if ($.trim(plans[i].delayTime) === '')
+			{
+				alert('请填写第' + (i+1) + '条计划:delayTime!');return;
+			}
+			if ($.trim(plans[i].exposureCount) === '')
+			{
+				alert('请填写第' + (i+1) + '条计划:曝光数量!');return;
+			}
+			if ($.trim(plans[i].filter) === '')
+			{
+				alert('请选择第' + (i+1) + '条计划:滤光片!');return;
+			}
+			if ($.trim(plans[i].gain) === '')
+			{
+				alert('请填写第' + (i+1) + '条计划:增益!');return;
+			}
+			if ($.trim(plans[i].bin) === '')
+			{
+				alert('请填写第' + (i+1) + '条计划:Bin!');return;
+			}
+			if ($.trim(plans[i].readout) === '')
+			{
+				alert('请填写第' + (i+1) + '条计划:读出速度!');return;
+			}
+		}
+		
+		//ajax 发送数据到后台
+		$.ajax({
+			type: 'post',
+			url: '/xinglong/at60/savePlan',
+			data: {planData: plans},
+			success: function (info){
+				alert(info);
+				if (info.indexOf('登录') !== -1)
+				{
+					location.href = '/';
+				}
+				
+				if (info.indexOf('计划发送完毕') !== -1)
+				{
+					$('#planStart').hide();
+				}
+			},
+			error: function (){
+				alert('网络异常,请重新提交计划！');
+			},
+		});
+	}//保存并提交计划  结束//////////////////////////////////////////
