@@ -200,7 +200,7 @@ function GetJD ()
 {
 	$hms = gmdate('H:i:s');  //用格林威治标准时
 	$hms = explode(':', $hms);
-	$mSec = substr(microtime(), 2, 8); //此处 $mSec 毫秒 ？
+	$mSec = substr(microtime(), 2, 8); //疑问 $mSec 毫秒 ？
 	
 	$h = $hms[0] + $hms[1]/60 + ($hms[2] + $mSec/1000)/3600;
 	$ymd = ymd();
@@ -294,7 +294,7 @@ function sunTimeOfEle (&$from, &$to, $mjd, $ele)
 	
 	sunPosition($ra, $dec, $mjd);
 	//echo $mjd;return;
-	$cosha = (sin($ele/180*pi()) - sin($latitude/180*pi()) * sin($dec)) / (cos($latitude/180*pi()) * cos($dec/180*pi()));
+	$cosha = (sin($ele/180*pi()) - sin($latitude/180*pi()) * sin($dec/180*pi())) / (cos($latitude/180*pi()) * cos($dec/180*pi()));
 	//echo $cosha;return;
 	if($cosha < -1)
 	{
@@ -305,7 +305,7 @@ function sunTimeOfEle (&$from, &$to, $mjd, $ele)
 	}
 	
 	$ha = (acos($cosha)*180/pi())/15;	// 小时为单位
-	$LtNoon = $ra - GetGMST0($mjd);
+	$LtNoon = $ra - getGMST0($mjd);
 	
 	$from = reduceZeroMax($LtNoon - $ha, 24);
 	$to   = reduceZeroMax($LtNoon + $ha, 24);
@@ -378,6 +378,9 @@ function localMeanSiderialTime ($mjd)
 	$ut = ($mjd - $mjd0)*24;
 	$t = ($mjd0 - 51544.5)/36525;	// 儒略纪元
 	$gmst = 6.697374558 + 1.0027379093 * $ut + (8640184.812866 + (0.093104 - 0.0000062 * $t) * $t) * $t / 3600;
+	
+	/* gmst = 6.697374558 + 1.0027379093 * ut + (8640184.812866 + (0.093104 - 0.0000062 * t) * t) * t / 3600; */
+	
 	$lmst = $gmst + $longitude / 15;
 	
 	return reduceZeroMax($lmst, 24);

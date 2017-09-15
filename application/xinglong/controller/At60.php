@@ -2109,6 +2109,7 @@ class At60 extends Controller
 		//halt($planData['planData'][1]['bin']);
 		//验证计划数据
 		$planNum = count($planData['planData']);
+		//halt($planNum);
 		for ($i = 0; $i < $planNum; $i ++) //循环提交上来的 每一条计划
 		{
 			//每条指令的tag
@@ -2136,7 +2137,8 @@ class At60 extends Controller
 				{
 					$sendMsg .= pack('I', $type); 
 				}else{//直接为汉字类型数据
-					if(!in_array($type, ['太阳','月亮','恒星']))
+					if(!in_array($type, ['太阳','月亮','恒星','彗星',
+						'行星', '卫星', '固定位置', '本底', '暗流', '平场']))
 					{
 						return '第'. ($i+1) .'条计划:目标类型有误!';
 					}else{
@@ -2147,6 +2149,20 @@ class At60 extends Controller
 							$sendMsg .= pack('I', 1); 
 						}elseif($type == '月亮'){
 							$sendMsg .= pack('I', 2); 
+						}elseif($type == '彗星'){
+							$sendMsg .= pack('I', 3); 
+						}elseif($type == '行星'){
+							$sendMsg .= pack('I', 4); 
+						}elseif($type == '卫星'){
+							$sendMsg .= pack('I', 5); 
+						}elseif($type == '固定位置'){
+							$sendMsg .= pack('I', 6); 
+						}elseif($type == '本底'){
+							$sendMsg .= pack('I', 7); 
+						}elseif($type == '暗流'){
+							$sendMsg .= pack('I', 8); 
+						}elseif($type == '平场'){
+							$sendMsg .= pack('I', 9); 
 						}
 					}
 				}

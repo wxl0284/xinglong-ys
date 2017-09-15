@@ -29,70 +29,70 @@ class At60status extends Controller
 		//60cm望远镜 当前状态信息/////////////////////////////
 		if ($gimbalStatus['curstatus'] == 1)
 		{
-			$status['curstatus'] = '离线';
+			$status['curstatus'] = '离线1';
 		}elseif ($gimbalStatus['curstatus'] == 2)
 		{
-			$status['curstatus'] = '连接中';
+			$status['curstatus'] = '连接中2';
 		}elseif ($gimbalStatus['curstatus'] == 3)
 		{
-			$status['curstatus'] = '断开中';
+			$status['curstatus'] = '断开中3';
 		}elseif ($gimbalStatus['curstatus'] == 4)
 		{
-			$status['curstatus'] = '未找零';
+			$status['curstatus'] = '未找零4';
 		}elseif ($gimbalStatus['curstatus'] == 5)
 		{
-			$status['curstatus'] = '找零中';
+			$status['curstatus'] = '找零中5';
 		}elseif ($gimbalStatus['curstatus'] == 6)
 		{
-			$status['curstatus'] = '停止中';
+			$status['curstatus'] = '停止中6';
 		}elseif ($gimbalStatus['curstatus'] == 7)
 		{
-			$status['curstatus'] = '停止';
+			$status['curstatus'] = '停止7';
 		}elseif ($gimbalStatus['curstatus'] == 8)
 		{
-			$status['curstatus'] = '急停中';
+			$status['curstatus'] = '急停中8';
 		}elseif ($gimbalStatus['curstatus'] == 9)
 		{
-			$status['curstatus'] = '急停';
+			$status['curstatus'] = '急停9';
 		}elseif ($gimbalStatus['curstatus'] == 10)
 		{
-			$status['curstatus'] = '复位中';
+			$status['curstatus'] = '复位中10';
 		}elseif ($gimbalStatus['curstatus'] == 11)
 		{
-			$status['curstatus'] = '复位';
+			$status['curstatus'] = '复位11';
 		}elseif ($gimbalStatus['curstatus'] == 12)
 		{
-			$status['curstatus'] = '等待恒速跟踪';
+			$status['curstatus'] = '等待恒速跟踪12';
 		}elseif ($gimbalStatus['curstatus'] == 13)
 		{
-			$status['curstatus'] = '恒速跟踪';
+			$status['curstatus'] = '恒速跟踪13';
 		}elseif ($gimbalStatus['curstatus'] == 14)
 		{
-			$status['curstatus'] = '速度修正中';
+			$status['curstatus'] = '速度修正中14';
 		}elseif ($gimbalStatus['curstatus'] == 15)
 		{
-			$status['curstatus'] = '位置修正中'; //？存疑
+			$status['curstatus'] = '位置修正中15'; //？存疑
 		}elseif ($gimbalStatus['curstatus'] == 16)
 		{
-			$status['curstatus'] = '等待变速跟踪';
+			$status['curstatus'] = '等待变速跟踪16';
 		}elseif ($gimbalStatus['curstatus'] == 17)
 		{
-			$status['curstatus'] = '变速跟踪中';
+			$status['curstatus'] = '变速跟踪中17';
 		}elseif ($gimbalStatus['curstatus'] == 18)
 		{
-			$status['curstatus'] = '指向中';
+			$status['curstatus'] = '指向中18';
 		}elseif ($gimbalStatus['curstatus'] == 19)
 		{
-			$status['curstatus'] = '指向到位';
+			$status['curstatus'] = '指向到位19';
 		}elseif ($gimbalStatus['curstatus'] == 20)
 		{
-			$status['curstatus'] = '等待恒速';
+			$status['curstatus'] = '等待恒速20';
 		}elseif ($gimbalStatus['curstatus'] == 21)
 		{
-			$status['curstatus'] = '恒速运动';
+			$status['curstatus'] = '恒速运动21';
 		}elseif ($gimbalStatus['curstatus'] == 22)
 		{
-			$status['curstatus'] = '异常';
+			$status['curstatus'] = '异常22';
 		}
 		//当前状态结束///////////////////////////////////////
 		
@@ -165,34 +165,31 @@ class At60status extends Controller
 		//ccd可变属性：当前状态信息/////////////////////////////////
 		if ($ccdStatus['curstatus'] == 1)
 		{
-			$status['ccdCurStatus'] = '离线';
+			$status['ccdCurStatus'] = '离线1';
 		}elseif ($ccdStatus['curstatus'] == 2)
 		{
-			$status['ccdCurStatus'] = '连接中';
+			$status['ccdCurStatus'] = '连接中2';
 		}elseif ($ccdStatus['curstatus'] == 3)
 		{
-			$status['ccdCurStatus'] = '断开中';
+			$status['ccdCurStatus'] = '断开中3';
 		}elseif ($ccdStatus['curstatus'] == 4)
 		{
-			$status['ccdCurStatus'] = '等待曝光';
+			$status['ccdCurStatus'] = '等待曝光4';
 		}elseif ($ccdStatus['curstatus'] == 5)
 		{
-			$status['ccdCurStatus'] = '曝光中';
+			$status['ccdCurStatus'] = '曝光中5';
 		}elseif ($ccdStatus['curstatus'] == 6)
 		{
-			$status['ccdCurStatus'] = '读出中';
+			$status['ccdCurStatus'] = '读出中6';
 		}elseif ($ccdStatus['curstatus'] == 7)
 		{
-			$status['ccdCurStatus'] = '图像存储中';
-		}elseif ($ccdStatus['curstatus'] == 7)
-		{
-			$status['ccdCurStatus'] = '图像存储中';
+			$status['ccdCurStatus'] = '图像存储中7';
 		}elseif ($ccdStatus['curstatus'] == 8)
 		{
-			$status['ccdCurStatus'] = '终止中';
+			$status['ccdCurStatus'] = '终止中8';
 		}elseif ($ccdStatus['curstatus'] == 9)
 		{
-			$status['ccdCurStatus'] = '空闲';
+			$status['ccdCurStatus'] = '空闲9';
 		}
  
 		$status['ccdBaseline'] = $ccdStatus['baseline'];  //ccd可变属性：baseline值
@@ -267,40 +264,40 @@ class At60status extends Controller
 		//圆顶当前状态////////////////////////////////////////////////
 		if($slaveDomeStatus['curstatus'] == 1)
 		{
-			$status['slaveDomeCurstatus'] = '离线';
+			$status['slaveDomeCurstatus'] = '离线1';
 		}elseif($slaveDomeStatus['curstatus'] == 2)
 		{
-			$status['slaveDomeCurstatus'] = '连接中';
+			$status['slaveDomeCurstatus'] = '连接中2';
 		}elseif($slaveDomeStatus['curstatus'] == 3)
 		{
-			$status['slaveDomeCurstatus'] = '断开中';
+			$status['slaveDomeCurstatus'] = '断开中3';
 		}elseif($slaveDomeStatus['curstatus'] == 4)
 		{
-			$status['slaveDomeCurstatus'] = '停止中';
+			$status['slaveDomeCurstatus'] = '停止中4';
 		}elseif($slaveDomeStatus['curstatus'] == 5)
 		{
-			$status['slaveDomeCurstatus'] = '已停止';
+			$status['slaveDomeCurstatus'] = '已停止5';
 		}elseif($slaveDomeStatus['curstatus'] == 6)
 		{
-			$status['slaveDomeCurstatus'] = '复位中';
+			$status['slaveDomeCurstatus'] = '复位中6';
 		}elseif($slaveDomeStatus['curstatus'] == 7)
 		{
-			$status['slaveDomeCurstatus'] = '复位';
+			$status['slaveDomeCurstatus'] = '复位7';
 		}elseif($slaveDomeStatus['curstatus'] == 8)
 		{
-			$status['slaveDomeCurstatus'] = '指向中';
+			$status['slaveDomeCurstatus'] = '指向中8';
 		}elseif($slaveDomeStatus['curstatus'] == 9)
 		{
-			$status['slaveDomeCurstatus'] = '指向到位';
+			$status['slaveDomeCurstatus'] = '指向到位9';
 		}elseif($slaveDomeStatus['curstatus'] == 10)
 		{
-			$status['slaveDomeCurstatus'] = '等待随动';
+			$status['slaveDomeCurstatus'] = '等待随动10';
 		}elseif($slaveDomeStatus['curstatus'] == 11)
 		{
-			$status['slaveDomeCurstatus'] = '随动中';
+			$status['slaveDomeCurstatus'] = '随动中11';
 		}elseif($slaveDomeStatus['curstatus'] == 12)
 		{
-			$status['slaveDomeCurstatus'] = '异常';
+			$status['slaveDomeCurstatus'] = '异常12';
 		}
 		//圆顶当前状态结束/////////////////////////////////////////////
 		

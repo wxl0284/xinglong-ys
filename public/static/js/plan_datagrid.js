@@ -112,8 +112,15 @@
 	//datagrid 属性////////////////////////////////////////
 	var targetType = [
 	{typeId:'0',name:'恒星'},
+	{typeId:'1',name:'太阳'},
 	{typeId:'2',name:'月亮'},
-	{typeId:'3',name:'彗星'},];
+	{typeId:'3',name:'彗星'},
+	{typeId:'4',name:'行星'},
+	{typeId:'5',name:'卫星'},
+	{typeId:'6',name:'固定位置'},
+	{typeId:'7',name:'本底'},
+	{typeId:'8',name:'暗流'},
+	{typeId:'9',name:'平场'},];
 	
 	var epochData = [
 	{epochId:'0',name:'Real'},
@@ -278,12 +285,12 @@
 		var option = $(this).attr('id');
 		var btnText = $(this).html();
 		var rows = table.datagrid('getSelections');
-		
 		var index = table.datagrid('getRowIndex', rows[0]);
 		//alert(index);return;
 		if(option === 'planStart')
 		{
 			submitPlan();
+			
 		}
 		if(index < 0){
 			index = 0;
