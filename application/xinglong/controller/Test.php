@@ -15,7 +15,8 @@ class Test extends Controller
 		
 		echo $sunRise. '|' .$sunSet;
 		//echo config('latitude'); */
-		return $h;
+		return data2Time ('-11.386761111111');
+		//return time2Data ('-11:23:12.34');
 		
 	}
 }

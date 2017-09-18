@@ -98,7 +98,8 @@ class At60status extends Controller
 		
 		$status['trackError'] = 2.11; //位置信息：跟踪误差（？咋获取）
 		//位置信息：当前时角
-		$status['hourAngle'] = round($gimbalStatus['hourAngle'], 5);
+		$gimbalStatus['hourAngle'] = floatval ($gimbalStatus['hourAngle']);
+		$status['hourAngle'] = data2Time($gimbalStatus['hourAngle']);
 		//获取镜盖 开/关 情况
 		if ($gimbalStatus['coverIndex'] === 0)
 		{
@@ -127,8 +128,10 @@ class At60status extends Controller
 			$status['trackType'] = '固定位置';
 		}
 		
-		$status['targetRightAscension'] = round($gimbalStatus['targetRightAscension'], 5); //目标赤经
-		$status['targetDeclination'] = round($gimbalStatus['targetDeclination'],5); //目标赤纬
+		$gimbalStatus['targetRightAscension'] = floatval ($gimbalStatus['targetRightAscension']);
+		$status['targetRightAscension'] = data2Time($gimbalStatus['targetRightAscension']/15); //目标赤经
+		$gimbalStatus['targetDeclination'] = floatval ($gimbalStatus['targetDeclination']);
+		$status['targetDeclination'] = data2Time($gimbalStatus['targetDeclination']); //目标赤纬
 		$status['azmiuth'] = round($gimbalStatus['azmiuth'],5); //当前方位
 		$status['elevation'] = round($gimbalStatus['elevation'],5); //当前俯仰
 		$status['RightAscensionSpeed'] = 12.3; //赤经速度 ?咋获取
@@ -139,18 +142,23 @@ class At60status extends Controller
 		$status['axis2TrackError'] = $gimbalStatus['axis2TrackError']; //轴2跟踪误差
 		$status['axis3TrackError'] = $gimbalStatus['axis3TrackError']; //轴3跟踪误差
 		//当前恒星时
-		$status['siderealTime'] = round($gimbalStatus['siderealTime'],5);
+		$gimbalStatus['siderealTime'] = floatval ($gimbalStatus['siderealTime']);
+		$status['siderealTime'] = data2Time($gimbalStatus['siderealTime']);
 		//接下来：转台可变属性
 		$status['timeStamp'] = time(); //时间戳
 		//j2000赤经
-		$status['J2000RightAscension'] = round($gimbalStatus['J2000RightAscension'], 5);
+		$gimbalStatus['J2000RightAscension'] = floatval ($gimbalStatus['J2000RightAscension']);
+		$status['J2000RightAscension'] = data2Time($gimbalStatus['J2000RightAscension']/15);
 		//j2000赤纬
-		$status['J2000Declination'] = round($gimbalStatus['J2000Declination'], 5);
+		$gimbalStatus['J2000Declination'] = floatval($gimbalStatus['J2000Declination']);
+		$status['J2000Declination'] = data2Time($gimbalStatus['J2000Declination']);
 		//目标j2000赤经
-		$status['targetJ2000RightAscension'] = round($gimbalStatus['targetJ2000RightAscension'], 5);
+		$gimbalStatus['targetJ2000RightAscension'] = floatval($gimbalStatus['targetJ2000RightAscension']);
+		$status['targetJ2000RightAscension'] = data2Time($gimbalStatus['targetJ2000RightAscension']/15);
 		//目标j2000赤纬
-		$status['targetJ2000Declination'] = round($gimbalStatus['targetJ2000Declination'], 5);
-		//转台 数据结束
+		$gimbalStatus['targetJ2000Declination'] = floatval($gimbalStatus['targetJ2000Declination']);
+		$status['targetJ2000Declination'] = data2Time($gimbalStatus['targetJ2000Declination']);
+		//转台 数据结束///////////////////////////////////////////////////////
 		
 		//读取ccd状态数据///////////////////////////////////////////
 		$ccdStatus = Db::table('at60ccdstatus')->order('id desc')->find();
@@ -195,8 +203,10 @@ class At60status extends Controller
 		$status['ccdBaseline'] = $ccdStatus['baseline'];  //ccd可变属性：baseline值
 		$status['ccdReadOutMode'] = $ccdStatus['readMode'];  //ccd可变属性：读出模式
 		$status['ccdObserveBand'] = $ccdStatus['band'];  //ccd可变属性：当前拍摄波段
-		$status['ccdJ2000RightAscension'] = round($ccdStatus['J2000RightAscension'], 5);  //ccd可变属性：当前拍摄目标赤经
-		$status['ccdJ2000Declination'] = round($ccdStatus['J2000Declination'], 5);  //ccd可变属性：当前拍摄目标赤纬
+		$ccdStatus['J2000RightAscension'] = floatval($ccdStatus['J2000RightAscension']);
+		$status['ccdJ2000RightAscension'] = data2Time($ccdStatus['J2000RightAscension']/15);  //ccd可变属性：当前拍摄目标赤经
+		$ccdStatus['J2000Declination'] = floatval($ccdStatus['J2000Declination']);
+		$status['ccdJ2000Declination'] = data2Time($ccdStatus['J2000Declination']);  //ccd可变属性：当前拍摄目标赤纬
 		//ccd 数据结束///////////////////////////////////////////////
 		
 		//读取调焦器状态数据///////////////////////////////////////////
@@ -354,6 +364,11 @@ class At60status extends Controller
 		//滤光片当前状态 结束 /////////////////////////////////////
 		$status['filterIsHomed'] = $filterStatus['isHomed']; //是否找零
 		$status['filterErrorStatus'] = $filterStatus['errorString']; //错误标识
+		
+		//当前计划
+		$planNum = Db::table('at60plan')->order('id desc')->value('tag');
+		
+		$status['planNum'] = $planNum;
 		
 		return json_encode($status);
 	}

@@ -379,8 +379,6 @@ function localMeanSiderialTime ($mjd)
 	$t = ($mjd0 - 51544.5)/36525;	// 儒略纪元
 	$gmst = 6.697374558 + 1.0027379093 * $ut + (8640184.812866 + (0.093104 - 0.0000062 * $t) * $t) * $t / 3600;
 	
-	/* gmst = 6.697374558 + 1.0027379093 * ut + (8640184.812866 + (0.093104 - 0.0000062 * t) * t) * t / 3600; */
-	
 	$lmst = $gmst + $longitude / 15;
 	
 	return reduceZeroMax($lmst, 24);
@@ -543,8 +541,9 @@ function MoonPosition(&$r, &$ra, &$dec, $mjd)
 	$M = ReduceAngle(115.3654 + 13.0649929509 * $mjd0);	// 平近点角
 	$eo = EclipticObliquity($mjd);
 	// E0,E1:偏近点角
-	$E0 = ReduceAngle($M + 180/pi() * $e * sin($M/180*pi()) * (1 + $e * cosd($M/180*pi())));
+	$E0 = ReduceAngle($M + 180/pi() * $e * sin($M/180*pi()) * (1 + $e * cos($M/180*pi())));
 	$E1 = ReduceAngle($E0 - ($E0 - 180/pi() * $e * sin($E0/180*pi()) - $M) / (1 - $e * cos($E0/180*pi())));
+	
 	// $x,$y,$r,$v:月轨坐标
 	$x = 0; $y = 0; $v = 0;
 	// $x,$y,z-eclip,$longitude,latitude,黄道坐标
@@ -600,7 +599,7 @@ function MoonPosition(&$r, &$ra, &$dec, $mjd)
 	$xequat = $yeclip * cos($eo/180*pi()) - $zeclip*sin($eo/180*pi());
 	$zequat = $yeclip * sin($eo/180*pi()) + $zeclip*cos($eo/180*pi());
 
-	Rect2Sphere($r, $ra, $dec, $xequat, $xequat, $zequat);
+	Rect2Sphere($r, $ra, $dec, $xequat, $yequat, $zequat);
 	$ra /= 15;
 }
 
@@ -681,3 +680,80 @@ function Eq2AziEle(&$azi, &$ele, $ha, $dec)
 
 
 //太阳、月亮等位置计算函数 结束/////////////////////////
+
+//数据库的时角/恒星时/赤经/赤纬 转为时间 的函数///////////////////
+/*
+* data2Time() 
+* param:$data :数据库读出的数据
+* return：00:01:02.3 (即00时1分2秒点3)
+*/
+function data2Time ($data)
+{
+	if ($data >= 0)
+	{
+		$sign = '+';
+	}else{
+		$sign = '-';
+		$data = -1 * $data;
+	}
+	
+	$hour = (int) $data;
+	$min =  (int) (($data - $hour) * 60);
+	$sec =  (int) (($data - $hour - $min/60) * 36000);
+	
+	$sec = $sec/10;
+	
+	if($hour < 10)
+	{
+		$hour = '0' . $hour;
+	}
+	
+	if($min < 10)
+	{
+		$min = '0' . $min;
+	}
+	
+	if($sec < 10)
+	{
+		$sec = '0' . $sec;
+	}
+	
+	return $res = $sign . $hour . ':' . $min . ':' . $sec;
+}
+
+//数据库的时角/恒星时/赤经/赤纬 转为时间 的函数///////////////////
+
+//时间 转为/赤经/赤纬(浮点数) 的函数///////////////////
+/*
+* time2Data() 
+* param:$data :用户输入（-12:12:12.33）
+* return：-6.66666 
+*/
+function time2Data ($data)
+{
+	//如果为0:0:0.0 返回0
+	if(str_replace(':', '', $data) == 0)
+	{
+		return 0;
+	}
+
+	$hms = explode(':', $data);
+	if(strpos($data, '-') !== false)
+	{
+		$hour = abs($hms[0]);
+		$min = $hms[1]/60;
+		$sec = $hms[2]/3600;
+
+		$res = $hour + $min + $sec;
+		return '-'.$res;
+	}else{
+		$hour = abs($hms[0]);
+		$min = $hms[1]/60;
+		$sec = $hms[2]/3600;
+
+		$res = $hour + $min + $sec;
+		return $res;
+	}
+}
+
+//时间 转为/赤经/赤纬(浮点数) 的函数///////////////////

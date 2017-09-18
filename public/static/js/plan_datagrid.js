@@ -55,13 +55,15 @@
 	{
 		if (editRow == undefined)
 		{
+			var plans = table.datagrid('getRows');
+			var n = plans.length;
 			table.datagrid('insertRow', {
-			index:0,
+			index:n,
 			row:{},
 			});
 			//将第一行设为 可编辑
-			table.datagrid('beginEdit', 0);
-			editRow = 0;
+			table.datagrid('beginEdit', n);
+			editRow = n;
 		}
 		
 	}
@@ -181,13 +183,13 @@
 			},
 			{field:'rightAscension', title:'赤经', width:80,
 				editor:{
-					type:'numberbox',
+					type:'validatebox',
 					options:{required:true,},
 				},
 			},
 			{field:'declination', title:'赤纬', width:80,
 				editor:{
-					type:'numberbox',
+					type:'validatebox',
 					options:{required:true,},
 			}},
 			{field:'epoch', title:'历元', width:80,
@@ -210,12 +212,12 @@
 			},
 			{field:'exposureTime', title:'曝光时间', width:80,
 				editor:{
-					type:'numberbox',
+					type:'validatebox',
 					options:{required:true,},},
 			},
 			{field:'delayTime', title:'delayTime', width:80,
 				editor:{
-					type:'numberbox',
+					type:'validatebox',
 					options:{required:true,},},
 			},
 			{field:'exposureCount', title:'曝光数量', width:80,
@@ -243,12 +245,12 @@
 			},
 			{field:'gain', title:'增益', width:80,
 				editor:{
-					type:'numberbox',
+					type:'validatebox',
 					options:{required:true,},},
 			},
 			{field:'bin', title:'Bin', width:80,
 				editor:{
-					type:'numberbox',
+					type:'validatebox',
 					options:{required:true,},},
 			},
 			{field:'readout', title:'读出速度', width:80,

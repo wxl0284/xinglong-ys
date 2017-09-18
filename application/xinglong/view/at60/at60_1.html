@@ -140,21 +140,21 @@
 					  </td>
 					  <td>赤纬速度:<span id='declinationSpeed'></span>
 					  </td>
-					  <td>当前消旋位置:<span id='derotatorPositon'></span>
-					  </td>
-                    </tr>
-					<tr>
-					  <td>目标消旋位置:<span id='targetDerotatorPosition'></span>
-					  </td>
 					  <td>轴1跟踪误差:<span id='axis1TrackError'></span>
 					  </td>
+					  <!-- <td>当前消旋位置:<span id='derotatorPositon'></span>
+					  </td> -->
+                    </tr>
+					<tr>
+					  <!-- <td>目标消旋位置:<span id='targetDerotatorPosition'></span>
+					  </td> -->
 					  <td>轴2跟踪误差:<span id='axis2TrackError'></span>
 					  </td> 
 					</tr>
-					<tr>
+					<!-- <tr>
 					  <td>轴3跟踪误差:<span id='axis3TrackError'></span>
 					  </td>
-					</tr>			
+					</tr>			 -->
 				</table>
 			</div>
 		</div><!--重要信息区域 结束-->
@@ -185,12 +185,12 @@
 			</div>
 			<div class='pos_a' style='left:287px;top:168px;width:150px;'>
 				<!-- <img src='/static/images-1/ccd.png' > -->
-				<img src='/static/images-1/warn.jpg' >
+				<img src='/static/images-1/ok.jpg' >
 				<p id='ccdStatus'></p>
 			</div>
 			<div class='pos_a' style='left:526px;top:168px;width:150px;'>
 				<!-- <img src='/static/images-1/tjq.png' > -->
-				<img src='/static/images-1/error.jpg' ><p id='focusStatus'></p>
+				<img src='/static/images-1/ok.jpg' ><p id='focusStatus' style="color:#ccc;"></p>
 			</div>
 			<div class='pos_a' style='left:772px;top:168px;width:150px;'>
 				<!-- <img src='/static/images-1/yd.png' > -->
@@ -213,40 +213,52 @@
           <div id='gimbalInfo' class='display'><!--转台指令和属性-->
              <nav class='center'><!--转台指令 导航-->
 			    <span name='trackStar'>跟踪恒星</span>	<span name='targetName'>设置目标名称</span>
-				<span name='poitFix'>指向固定位置</span>  <span name='slewDerotator'>轴3指向固定位置</span>
-				<span name='axis3Mode'>轴3工作模式</span>  <span name='speedX'>速度修正</span>
+				<!--<span name='poitFix'>指向固定位置</span>-->  <!-- <span name='slewDerotator'>轴3指向固定位置</span> -->
+				<!-- <span name='axis3Mode'>轴3工作模式</span>-->  <span name='speedX'>速度修正</span> 
 				<span name='speedF'>恒速运动</span>  <span name='positionX'>位置修正</span>
-				<span name='coverOp'>镜盖操作</span>  <span name='focusOp'>焦点切换镜</span>
-				<span name='saveData'>保存同步数据</span>  <span name='trackS'>跟踪恒星</span>	<span name='PropCfg'>属性设置</span>
+				<span name='coverOp'>镜盖操作</span>  <!--<span name='focusOp'>焦点切换镜</span>-->
+				<span name='saveData'>保存同步数据</span>  <!--<span name='trackS'>跟踪恒星</span>	<span name='PropCfg'>属性设置</span>-->
 			 </nav>
 			 <div class='border2'><!--指令和可变属性-->
 				<div id='btnsGimbal' class='center_mrg center BtnsDiv'>
 					<input id='gimbalConnect' class='border1 btnCommand' type='button' value='连接望远镜' />
 					<input id='gimbalDisConnect' class='border1 btnCommand' type='button' value='断开望远镜' />
-                   <input id='gimbalFindhome' class='border1 btnCommand' type='button' value='找  零' />
+                   <input id='gimbalFindhome' class='border1 btnCommand' type='button' value='找  零' style='color:#ccc;border-color:#ccc;cursor:not-allowed;' disabled='disabled'/>
                    <input id='gimbalPark' class='border1 btnCommand' type='button' value='复 位' />              
                    <input id='gimbalStop' class='border1 btnCommand' type='button' value='停 止' />				   
                    <input id='gimbalEmergenceStop' class='border1 btnCommand' type='button' value='急 停' />
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
 				<form id='at60Gimbal' class='center command'>
-					<div id='trackStar'>
+					<div id='trackStar' class="pos_r">
 					   <input type='radio' name='command' value='1' />
-					   赤经：<input type="text" name='rightAscension' placeholder='0-24'/>
-					   赤纬：<input type="text" name='declination' placeholder='-90-90'/>
+					   赤经：<input id='inputIn1' type="text" name='rightAscension' />
+					   赤纬：<input id='inputIn2' type="text" name='declination' />
 					  历元：<select name="epoch" style='width:69px;'>
 						       <option value="0">real</option>
 							   <option value="1">J2000</option>
 							   <option value="2">B1950</option>
 							   <option value="3">J2050</option>
 						    </select>
-					  跟踪速度：
+					  跟踪类型：
 					   <select name="speed" style='width:66px;'>
 						   <option value="0">恒星</option>
 						   <option value="1">太阳</option>
 						   <option value="2">月亮</option>
 						   <option value="3">彗星</option>
 						</select>
+						<!--上面大输入框的内嵌小输入框-->
+						<span id='inputIn1_1' style='display:block;left:290px;top:0px;' class="pos_a input_in">
+						  <input id='inputIn1_1_1' type="text" class='keyup'>
+						  :<input type="text" class='keyup'>
+						  :<input id='inputIn1_1_3' type="text" style="width:38px;">
+						</span>
+						<span id='inputIn2_1' style='display:block;left:510px;top:0px;' class="pos_a input_in">
+							<input id='inputIn2_1_1' type="text" class='keyup'>
+							:<input type="text" class='keyup'>
+							:<input id='inputIn2_1_3' type="text" style="width:38px;">
+						</span>
+						<!--上面大输入框的内嵌小输入框-->
 					</div>
 					<div id='targetName'>
 					   <input type='radio' name='command' value='2' />
@@ -282,7 +294,7 @@
 					<div id='speedX'>
                            <input type='radio' name='command' value='6' />
                            轴：<input type="text" name='axis' />
-                           修正值：<input type="text" name='correction' />
+                           速度：<input type="text" name='correction' />
 					</div>
 					<div id='speedF'>
                            <input type='radio' name='command' value='7' />
@@ -292,7 +304,7 @@
 					<div id='positionX'>
                            <input type='radio' name='command' value='8' />
                            轴：<input type="text" name='PositionCorrectAxis' />
-                           速度：<input type="text" name='PositionCorrectVal' />
+                           修正值：<input type="text" name='PositionCorrectVal' />
 					</div>
 					<div id='coverOp'>
                            <input type='radio' name='command' value='9' />镜盖操作：
@@ -339,12 +351,12 @@
                     <li class='li fl'>当前J2000赤纬:<span id='J2000Declination'></span> </li>
                     <li class='li fl'>当前方位:<span id='azmiuth_1'></span></li>
                     <li class='li fl'>当前俯仰:<span id='elevation_1'></span></li>
-                    <li class='li fl'>当前消旋位置:<span id='derotatorPositon_1'></span></li>
+                    <!-- <li class='li fl'>当前消旋位置:<span id='derotatorPositon_1'></span></li> -->
                     <li class='li fl'>目标赤经:<span id='targetRightAscension_1'></span></li>
                     <li class='li fl'>目标赤纬:<span id='targetDeclination_1'></span></li>
                     <li class='li fl'>目标J2000赤经:<span id='targetJ2000RightAscension'></span></li>
                     <li class='li fl'> 目标J2000赤纬:<span id='targetJ2000Declination'></span></li>
-                    <li class='li fl'>目标消旋位置:<span id='targetDerotatorPosition_1'></span></li>
+                    <!-- <li class='li fl'>目标消旋位置:<span id='targetDerotatorPosition_1'></span></li> -->
                 </ul><div class='clear'></div>
              </div><!--转台 可变属性结束-->
 		  </div><!--指令和可变属性 结束-->
@@ -396,7 +408,7 @@
 					   <input type='radio' name='command' value='1' />设置制冷温度：
 					   <input type="text" name='temperature' placeholder=''/>
 					</div>
-					<div id='exposStratic'><!--ccd 曝光策略开始-->
+					<div id='exposStratic' class="pos_r"><!--ccd 曝光策略开始-->
 					   <input type='radio' name='command' value='2' />
 					   <span>数据有效标志位：<input type="text" name='validFlag' placeholder='整数'/></span>
 					   <span>起始时刻：<input type="text" name='startTime' placeholder='整数' /></span>
@@ -414,8 +426,8 @@
 										   <option value="8">暗流</option>
 										   <option value="9">平场</option>
 									 </select></span>
-						<span>拍摄目标赤经：<input type="text" name='objectRightAscension' placeholder='小数' /></span>
-						<span>拍摄目标赤纬：<input type="text" name='objectDeclination' placeholder='小数' /></span>
+						<span>拍摄目标赤经：<input id='inputIn3' type="text" name='objectRightAscension' /></span>
+						<span>拍摄目标赤纬：<input id='inputIn4' type="text" name='objectDeclination' /></span>
 						<span>拍摄目标历元：<select name="objectEpoch" style='width:69px;'>
 									   <option value="0">real</option>
 									   <option value="1">J2000</option>
@@ -456,7 +468,19 @@
 						<span>望远镜赤经：<input type="text" name='telescopeRightAscension' placeholder='小数' /></span>
 						<span>望远镜赤纬：<input type="text" name='telescopeDeclination' placeholder='小数' /></span>
 						<span>焦距：<input type="text" name='focusLength' placeholder='小数' /></span>
-						<span>帧数：<input type="text" name='frameNum' placeholder='整数' /></span>	
+						<span>帧数：<input type="text" name='frameNum' placeholder='整数' /></span>
+						<!--上面大输入框的内嵌小输入框-->
+						<span id='inputIn3_1' style='display:block;left:90px;top:64px;' class="pos_a input_in">
+							<input id='inputIn3_1_1' type="text" class='keyup'>
+							:<input type="text" class='keyup'>
+							:<input id='inputIn3_1_3' type="text" style="width:38px;">
+						</span>
+						<span id='inputIn4_1' style='display:block;left:403px;top:64px;' class="pos_a input_in">
+							<input id='inputIn4_1_1' type="text" class='keyup'>
+							:<input type="text" class='keyup'>
+							:<input id='inputIn4_1_3' type="text" style="width:38px;">
+						</span>
+						<!--上面大输入框的内嵌小输入框-->	
 					  </div><!--ccd 曝光策略结束-->
 					  <div id='startExp'>
 					   <input type='radio' name='command' value='3' />
@@ -737,7 +761,7 @@
 				<div id='planExe' class='pos_a'>
 					<button id='planStart'>开始</button>
 					<button id='planStop'>停止</button>
-					<button id='planNext'>下一个</button>
+					<!-- <button id='planNext'>下一个</button> -->
 				</div>
 				
 		   </div>
@@ -768,7 +792,7 @@
 		<span>中科院国家天文台兴隆观测基地</span>
 	</footer>
 </body>
-<div style='position:fixed;bottom:36px;right:2px;width:18px' class='border'>观测计划<span style='color:blue;'>在执行第2条</span></div>
+<div style='position:fixed;bottom:36px;right:2px;width:18px' class='border'>观测计划在执行第<span id='planNum' style='color:blue;'></span>条</div>
 </html>
 <!-- <span>全开圆顶操作指令:</span><br />
                <input id='fDomeConnect' type='button' value='连接圆顶' />

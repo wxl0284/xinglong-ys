@@ -216,7 +216,7 @@ class At60 extends Controller
 			$headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device);
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=15);
 			
-			//socket发送数据
+			//soc4ket发送数据
 			$sendMsg = $headInfo;
 			echo '急停指令：'.udpSend($sendMsg, $this->ip, $this->port);
 		}elseif (input('command') == 1)  //跟踪恒星指令
@@ -229,10 +229,11 @@ class At60 extends Controller
 		
 			if (($rightAscension=trim(input('rightAscension'))) !== '') //赤经
 			{
-				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $rightAscension))
+				/* if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $rightAscension))
 				{
 					echo '赤经必须为数字！';return;
-				}
+				} */
+				$rightAscension = time2Data($rightAscension);
 				$sendMsg = pack('d', $rightAscension);     //double64
 			}else{
 				$sendMsg = pack('d', 0);
@@ -240,10 +241,11 @@ class At60 extends Controller
 			
 			if (($declination=trim(input('declination'))) !== '') //赤纬
 			{
-				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $declination))
+				/* if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $declination))
 				{
 					echo '赤纬必须为数字！';return;
-				}
+				} */
+				$declination = time2Data($declination);
 				$sendMsg .= pack('d', $declination);     //double64
 			}else{
 				$sendMsg .= pack('d', 0);
@@ -709,10 +711,12 @@ class At60 extends Controller
 			
 			if (($objectRightAscension=trim(input('objectRightAscension'))) !== '')  
 			{//拍摄目标赤经
-				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $objectRightAscension))
+				/* if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $objectRightAscension))
 				{
 					echo '拍摄目标赤经只能是数字！'; return;
-				}
+				} */
+				
+				$objectRightAscension = time2Data(objectRightAscension);
 				$sendMsg .= pack('d', $objectRightAscension);     //double64
 			}else{
 				$sendMsg .= pack('d', 0);
@@ -720,10 +724,8 @@ class At60 extends Controller
 			
 			if (($objectDeclination=trim(input('objectDeclination'))) !== '')    
 			{//当前拍摄目标赤纬
-				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $objectDeclination))
-				{
-					echo '拍摄目标赤纬只能是数字！'; return;
-				}
+				
+				$objectDeclination = time2Data($objectDeclination);
 				$sendMsg .= pack('d', $objectDeclination);    //double64
 			}else{
 				$sendMsg .= pack('d', 0);
@@ -1984,7 +1986,7 @@ class At60 extends Controller
 		//上传文件验证
 		$result = $this->validate(
 				['file' => $file],
-				['file' => 'file|require|fileExt:txt|fileSize:4096|fileMime:text/plain'],
+				['file' => 'file|require|fileExt:txt|fileSize:4096000000|fileMime:text/plain'],
 				['file.require' => '请选择上传文件',
 				 'file.fileExt' => '文件后缀名必须为txt',
 				 'file.fileSize' => '文件大小超出限制',
@@ -2120,12 +2122,9 @@ class At60 extends Controller
             $sendMsg .= pack('a48', '02'); //project
 			
 			$target = trim($planData['planData'][$i]['target']);
-			if($target=== '' || !preg_match('/^[a-zA-Z0-9]{1,48}$/', $target))
-			{
-				return '第'. ($i+1) .'条计划:目标名称须最多48位字母数字组合!'; 
-			}else{
-				$sendMsg .= pack('a48', $target); 
-			}
+			
+			$sendMsg .= pack('a48', $target); 
+		
 			
 			//验证目标类型
 			$type = trim($planData['planData'][$i]['type']);
@@ -2220,7 +2219,7 @@ class At60 extends Controller
 			{
 				return '请填写第'. ($i+1) .'条计划:曝光时间!'; 
 			}else{
-				if(preg_match('/^[0-9]+$/', $exposureTime) && $exposureTime>0 && $exposureTime <= 100)//曝光时间最大值？
+				if(true)//曝光时间最大值？
 				{
 					$sendMsg .= pack('d', $exposureTime); 
 				}else{
@@ -2234,7 +2233,7 @@ class At60 extends Controller
 			{
 				return '请填写第'. ($i+1) .'条计划:delayTime!'; 
 			}else{
-				if(preg_match('/^[0-9]+$/', $delayTime) && $delayTime>0 && $delayTime <= 100)//曝光时间最大值？
+				if(true)//曝光时间最大值？
 				{
 					$sendMsg .= pack('d', $delayTime); 
 				}else{
