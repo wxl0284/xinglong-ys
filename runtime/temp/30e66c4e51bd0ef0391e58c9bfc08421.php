@@ -1,12 +1,13 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:75:"D:\xampp\htdocs\demo\public/../application/xinglong\view\control\front.html";i:1505703729;}*/ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset='utf-8'>
     <title>首页</title>
-     {load href='/static/css/common-1.css'}
-     {load href='/static/css/front.css'}
-	 {load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
-	 {load href='/static/js/front.js'}
+     <link rel="stylesheet" type="text/css" href="/static/css/common-1.css" />
+     <link rel="stylesheet" type="text/css" href="/static/css/front.css" />
+	 <script type="text/javascript" src="/static/plugin/easyui-1.3.5/jquery.min.js"></script>
+	 <script type="text/javascript" src="/static/js/front.js"></script>
 </head>
 <body>
 	<img src='/static/images-1/top.jpg' style='width:100%'/>
@@ -26,14 +27,14 @@
 				</ul>
 		   </div>
 		   <p class='pos_a'>
-				<a href="{:url('xinglong/control/front')}">首页&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="<?php echo url('xinglong/control/front'); ?>">首页&nbsp;&nbsp;&nbsp;&nbsp;
 				</a>
-				{if	condition="$Request.cookie.role == 1 "}
+				<?php if(\think\Request::instance()->cookie('role') == 1): ?>
 				<a href='/xinglong/user'>用户管理&nbsp;&nbsp;&nbsp;&nbsp;</a>
-				{/if}
+				<?php endif; ?>
 				<a href='/xinglong/user/passwd'>修改密码&nbsp;&nbsp;&nbsp;&nbsp;
 				</a>
-				<span>欢迎!&nbsp;&nbsp;{$Request.cookie.login ?? ''}&nbsp;
+				<span>欢迎!&nbsp;&nbsp;<?php echo (\think\Request::instance()->cookie('login')) ? \think\Request::instance()->cookie('login') :  ''; ?>&nbsp;
 				</span>
 		   </p>
 		   <div class='pos_a'><a href='/xinglong/control/logout'>&nbsp;&nbsp;&nbsp;退出&nbsp;&nbsp;&nbsp;</a></div> 
@@ -45,35 +46,34 @@
 			<span class='title_text'>天 气 预 报</span><br />
 			<span id='weatherD'><?php echo date('Y.m.d',time());?></span>
 			<br />
-			<a class='border1 more' href="{:url('control/weatherMore')}">显示详情</a><br /><br />
-			<span style='font-size:20px;'>{$weatherError ??	''}</span>
+			<a class='border1 more' href="<?php echo url('control/weatherMore'); ?>">显示详情</a><br /><br />
+			<span style='font-size:20px;'><?php echo isset($weatherError) ? $weatherError : 	''; ?></span>
 			<table class='center_mrg'>
-				{if	condition="isset($day)"}
+				<?php if(isset($day)): ?>
 				  <tr>
 					<td>白天</td>
-					<td><img src='{$dayPic}' /><span>{$weatherDay}</span></td>
-					<td><img src='/static/images-1/temp.png' /><span style='padding-right:80px;'>{$tmpDay}</span></td>
-					<td><img src='/static/images-1/wind.jpg' /><span>{$windDay}</span></td>
-					<td><img src='/static/images-1/wind.jpg' /><span>{$windPowerDay}</span></td>
+					<td><img src='<?php echo $dayPic; ?>' /><span><?php echo $weatherDay; ?></span></td>
+					<td><img src='/static/images-1/temp.png' /><span style='padding-right:80px;'><?php echo $tmpDay; ?></span></td>
+					<td><img src='/static/images-1/wind.jpg' /><span><?php echo $windDay; ?></span></td>
+					<td><img src='/static/images-1/wind.jpg' /><span><?php echo $windPowerDay; ?></span></td>
 				  </tr>
 				  <tr ><td colspan='5'><div style='height:33px;'></div></td></tr>
 				  <tr>
 					<td>夜晚</td>
-					<td><img src='{$nightPic}' /><span>{$weatherNight}</span></td>
-					<td><img src='/static/images-1/temp.png' /><span style='padding-right:80px;'>{$tmpNight}</span></td>
-					<td><img src='/static/images-1/wind.jpg' /><span>{$windNight}</span></td>
-					<td><img src='/static/images-1/wind.jpg' /><span>{$windPowerNight}</span></td>
+					<td><img src='<?php echo $nightPic; ?>' /><span><?php echo $weatherNight; ?></span></td>
+					<td><img src='/static/images-1/temp.png' /><span style='padding-right:80px;'><?php echo $tmpNight; ?></span></td>
+					<td><img src='/static/images-1/wind.jpg' /><span><?php echo $windNight; ?></span></td>
+					<td><img src='/static/images-1/wind.jpg' /><span><?php echo $windPowerNight; ?></span></td>
 				  </tr>
-				{/if}
-				{if	condition="isset($night)"}
+				<?php endif; if(isset($night)): ?>
 				  <tr>
 					<td>夜晚</td>
-					<td><img src='{$nightPic}' />{$weatherNight}</td>
-					<td><img src='/static/images-1/temp.png' /><span style='padding-right:80px;'>{$tmpNight}</span></td>
-					<td><img src='/static/images-1/wind.jpg' /><span>{$windNight}</span></td>
-					<td><img src='/static/images-1/wind.jpg' /><span>{$windPowerNight}</span></td>
+					<td><img src='<?php echo $nightPic; ?>' /><?php echo $weatherNight; ?></td>
+					<td><img src='/static/images-1/temp.png' /><span style='padding-right:80px;'><?php echo $tmpNight; ?></span></td>
+					<td><img src='/static/images-1/wind.jpg' /><span><?php echo $windNight; ?></span></td>
+					<td><img src='/static/images-1/wind.jpg' /><span><?php echo $windPowerNight; ?></span></td>
 				  </tr>
-				{/if}
+				<?php endif; ?>
 			</table>
 		</div><!--天气预报结束--><br />
 	</div>
@@ -101,7 +101,7 @@
 			<span>85CM反光望远镜</span>
 		</div>
 		<div style='top:31%;left:54%;' class='pos_a'>
-			<a href="{:url('/xinglong/at60')}" target='_blank'><img src='/static/images-1/pic.png' alt='60CM反光望远镜' title='60CM反光望远镜' /></a><br>
+			<a href="<?php echo url('/xinglong/at60'); ?>" target='_blank'><img src='/static/images-1/pic.png' alt='60CM反光望远镜' title='60CM反光望远镜' /></a><br>
 			<span>60CM反光望远镜</span>
 		</div>
 		<div style='top:41%;left:46%;' class='pos_a'>
@@ -109,7 +109,7 @@
 			<span>50CM反光望远镜</span>
 		</div>
 		<div style='top:50%;left:39%;' class='pos_a'>
-			<a href="{:url('/xinglong/at80')}" target='_blank'><img src='/static/images-1/pic.png' alt='80CM反光望远镜' title='80CM反光望远镜' /></a><br>
+			<a href="<?php echo url('/xinglong/at80'); ?>" target='_blank'><img src='/static/images-1/pic.png' alt='80CM反光望远镜' title='80CM反光望远镜' /></a><br>
 			<span>80CM反光望远镜</span>
 		</div>
 		<div style='top:68%;left:52%;' class='pos_a'>
