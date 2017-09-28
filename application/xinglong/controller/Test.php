@@ -2,7 +2,7 @@
 namespace app\xinglong\controller;
 
 use think\Controller;
-use app\xinglong\model\Demo;
+use app\xinglong\model\User;
 
 class Test extends Controller
 {
@@ -18,6 +18,8 @@ class Test extends Controller
 		//echo config('latitude'); 
 		//return data2Time ('-11.386761111111');
 		//return time2Data ('-11:23:12.34'); */
+		$userData = User::where('id','>',10)->column('username','password');
+		print_r($userData);
 		
 		
 	}

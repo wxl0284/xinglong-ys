@@ -315,7 +315,7 @@ class Control extends Controller
     public function logout ()
     {
         //清空session 和cookie
-        Session::clear();
+        Session::delete('login');
         //Cookie::clear();
 		Cookie::set('login','',-1);
 		Cookie::set('role','',-1);
