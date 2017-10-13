@@ -139,7 +139,7 @@
 			},
 		});
 	}
-	setInterval (getStatus, 1800);
+	//setInterval (getStatus, 1800);
 	/////////////////////////////////////////////////////////
 	//显示导航栏望远镜列表   
    var ul = $('#atListUl');

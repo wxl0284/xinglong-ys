@@ -36,8 +36,7 @@ class At60 extends Controller
     //显示60cm望远控制镜页面////////////////////////////////////////
     public function index ()
     {
-		//return view('at60');
-		return view('at60_1');
+		return view('at60-m');
     }
     
     //at60 望远镜 接管指令////////////////////////////////////////////
