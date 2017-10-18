@@ -738,12 +738,36 @@
 		 </div><!--滤光片 固定属性 结束-->
 	   </div><!--滤光片 结束-->
 	   <div id='planInfo' class='displayNo pos_r'><!--观测计划表格 开始-->
-			 <table id="dg" title="计划表格" >  </table>
+			 <table id="dg" title="计划表格"> 
+			   <!-- <thead>   
+					<tr>
+						<th field="id" width="5" rowspan='2'></th>   
+						<th field="target" width="190" rowspan='2'>目标名称</th>   
+						<th field="type" width='80' rowspan='2'>目标类型</th>   
+						<th field="rightAscension" width='140' colspan='3'>赤经</th>
+						
+						<th field="declination" width='140' rowspan='2'>赤纬</th>
+						<th field="epoch" width='70' rowspan='2'>历元</th>
+						<th field="exposureTime" width='66' rowspan='2'>曝光时间</th>
+						<th field="delayTime" width='66' rowspan='2'>delayTime</th>
+						<th field="exposureCount" width='66' rowspan='2'>曝光数量</th>
+						<th field="filter" width='55' rowspan='2'>滤光片</th>
+						<th field="gain" width='50' rowspan='2'>增益</th>
+						<th field="bin" width='50' rowspan='2'>Bin</th>
+						<th field="readout" width='62' rowspan='2'>读出速度</th>
+						<th field="del" width='40' rowspan='2'>删除</th>
+					</tr>
+					<tr>
+						<th field="rightAscension1" width='35'></th>
+						<th field="rightAscension2" width='35'></th>
+						<th field="rightAscension3" width='70'></th>
+					</tr>
+				</thead> -->
+			 </table>
 			<div id="toolbar">
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-more" plain="true" onclick="importPlan()">导入计划</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="addPlan()">添加计划</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="savePlan()">保存</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editPlan()">编辑</a>
 			<!-- <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="submitPlan()">提交计划</a> -->
            </div>
 		   <!--观测计划的模式按钮-->
@@ -760,11 +784,10 @@
 				<div id='planExe' class='pos_a'>
 					<button id='planStart'>开始</button>
 					<button id='planStop'>停止</button>
-					<button id='tst'>测试</button>
 				</div>
 				
 		   </div>
-		   
+		   <div id='tst'>测试</div>
 		   <!--观测计划的模式按钮 结束-->
 		   <form id='imptPlan' style='display:none;' enctype='multipart/form-data'>
 				<input type='file' name='plan' />

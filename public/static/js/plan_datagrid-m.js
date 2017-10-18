@@ -1,5 +1,6 @@
 	var table = $('#dg'); //定义全局table 变量
 	var editRow = undefined;  //全局开关, 编辑
+	
 	//导入计划文件 上传////////////////////////////////////////////
 	function importPlan ()
 	{
@@ -39,7 +40,7 @@
 									data: arr,
 							});
 							
-							//editRow = undefined; //新加
+							editRow = undefined; //否则 导入后无法插入新行
 						}
 						
 					},
@@ -114,41 +115,40 @@
 	//添加计划 /////////////////////////////////////
 	function addPlan ()
 	{
-		//获取被选中的行
-		var selectRows = table.datagrid('getSelections');
-		var num = selectRows.length;
-		//console.log(num);return;
-		
-		if (num == 0 && editRow == undefined)
-		{//未选中任一行 直接添加一个新行
-			var plans = table.datagrid('getRows');
-			var n = plans.length;
-			table.datagrid('insertRow', {
-			index:n, //在最后面新加一空行
-			row:{},
-			});
-			//将此新加的一行设为可编辑
-			table.datagrid('beginEdit', n);
-			editRow = n;
-		}
-		
-		//选中的多于1行
-		if (num > 1)
+		if (editRow == undefined)
 		{
-			alert('添加时:只能选择一条数据!');
-		}
-		
-		if (num == 1 && editRow == undefined)
-		{
-			var num = table.datagrid('getRowIndex', selectRows[0]);
-			table.datagrid('insertRow', {
-				index : num + 1, //在选中行后面 新加一空行
-				row:{},
-			});
+			//获取被选中的行
+			var selectRows = table.datagrid('getSelections');
+			var num = selectRows.length;
 			
-			//将此新加的一行设为可编辑
-			table.datagrid('beginEdit', num + 1);
-			editRow = num + 1;
+			if (num == 0)
+			{//未选中任一行 直接添加一个新行
+				var plans = table.datagrid('getRows');
+				var n = plans.length;
+				table.datagrid('insertRow', {
+				index:n, //在最后面新加一空行
+				row:{},
+				});
+				//将此新加的一行设为可编辑
+				table.datagrid('beginEdit', n);
+				editRow = n;
+			}else if (num > 1){//选中的多于1行
+				alert('添加时:只能选择一条数据!');return;
+			}else if (num == 1){
+				var num = table.datagrid('getRowIndex', selectRows[0]);
+				table.datagrid('insertRow', {
+					index : num + 1, //在选中行后面 新加一空行
+					row:{},
+				});
+				
+				//将此新加的一行设为可编辑
+				table.datagrid('beginEdit', num + 1);
+				editRow = num + 1;
+			}
+			//滚动至新插入的行那里
+			table.datagrid('scrollTo', editRow);
+		}else{
+			alert('请先保存编辑的第'+ (editRow+1) +'条数据!');return;
 		}
 		
 	}//添加计划  结束/////////////////////////////////////
@@ -197,16 +197,17 @@
 	
 	$(function(){
 		table.datagrid({
-			idField: 'id',
 			width:1200,
 			height:500,
 			toolbar: '#toolbar',
 			checkOnSelect:true,
 			selectOnCheck:true,
+			singleSelect:false,
 			striped: true,
-			dropAccept:'tbody tr',
 			rownumbers:true,
-			/*fitColumns:false,
+			/*idField: 'id',
+			fitColumns:false,
+			dropAccept:'tbody tr',
 			singleSelect:true,
 			dragSelection: true,
 			onLoadSuccess: function(){
@@ -214,14 +215,14 @@
 			},*/
 
 			columns:[[
-			{field:'id', title:'id', width:5, checkbox:true,},
-			{field:'target', title:'观测目标名', width:120,
+			{field:'id', title:'id', checkbox:true,rowspan:2},
+			{field:'target',  title:'目标名称', width:190,rowspan:2,
 				editor:{
 					type:'validatebox',
 					options:{required:true,missingMessage:'目标名必填!'},
 				},
 			},
-			{field:'type', title:'目标类型', width:100,
+			{field:'type', title:'目标类型', width:80,rowspan:2,
 				formatter:function(value){
 					for(var i=0; i<targetType.length; i++){
 						if (targetType[i].typeId == value) return targetType[i].name;
@@ -239,18 +240,9 @@
 					},
 				},
 			},
-			{field:'rightAscension', title:'赤经', width:80,
-				editor:{
-					type:'numberbox',
-					options:{required:true,},
-				},
-			},
-			{field:'declination', title:'赤纬', width:80,
-				editor:{
-					type:'numberbox',
-					options:{required:true,},
-			}},
-			{field:'epoch', title:'历元', width:80,
+			{title:'赤经', colspan:3,},
+			{title:'赤纬', colspan:3,},
+			{field:'epoch', title:'历元',  width:66, rowspan:2,
 				formatter:function(value){
 					for(var i=0; i<epochData.length; i++){
 						if (epochData[i].epochId == value) return epochData[i].name;
@@ -268,22 +260,22 @@
 					},
 				},
 			},
-			{field:'exposureTime', title:'曝光时间', width:80,
+			{field:'exposureTime', title:'曝光时间',  width:60,rowspan:2,
 				editor:{
 					type:'numberbox',
 					options:{required:true,},},
 			},
-			{field:'delayTime', title:'delayTime', width:80,
+			{field:'delayTime', title:'delayTime',  width:66,rowspan:2,
 				editor:{
 					type:'numberbox',
 				},
 			},
-			{field:'exposureCount', title:'曝光数量', width:80,
+			{field:'exposureCount', title:'曝光数量', width:66, rowspan:2, 
 				editor:{
 					type:'numberbox',
 					options:{required:true,},},
 			},
-			{field:'filter', title:'滤光片', width:80,
+			{field:'filter', title:'滤光片',  width:55, rowspan:2,
 				formatter:function(value){
 					for(var i=0; i<filterData.length; i++){
 						if (filterData[i].filterId == value) return filterData[i].name;
@@ -301,33 +293,73 @@
 					},
 				},
 			},
-			{field:'gain', title:'增益', width:80,
+			{field:'gain', title:'增益',  width:50,rowspan:2,
 				editor:{
 					type:'numberbox',
 				},
 			},
-			{field:'bin', title:'Bin', width:80,
+			{field:'bin',  title:'Bin',  width:50, rowspan:2,
 				editor:{
 					type:'numberbox',
 				},
 			},
-			{field:'readout', title:'读出速度', width:80,
+			{field:'readout', title:'读出速度',  width:62, rowspan:2,
 				editor:{
 					type:'numberbox',
 					options:{required:true,},},
 			},
-			{field:'del', title:'删除', width:80,
+			{field:'del', title:'删除',  width:40, rowspan:2,
 				formatter:function(value,row,index){
 					return '<a onclick="delPlan1(this)">删除</a> ';
 				}
 			},
+		],[
+			{field:'rightAscension1',title:'时', width:35,
+				editor:{
+					type:'numberbox',
+					options:{required:true,},
+				},
+			},
+			{field:'rightAscension2', title:'分', width:35,
+				editor:{
+					type:'numberbox',
+					options:{required:true,},
+				},
+			},
+			{field:'rightAscension3', title:'秒', width:85,
+				editor:{
+					type:'validatebox',
+					options:{required:true,},
+				},
+			},
+			{field:'declination1', title:'时', width:35,
+				editor:{
+					type:'numberbox',
+					options:{required:true,},
+				},
+			},
+			{field:'declination2', title:'分', width:35,
+				editor:{
+					type:'numberbox',
+					options:{required:true,},
+				},
+			},
+			{field:'declination3', title:'秒', width:85,
+				editor:{
+					type:'validatebox',
+					options:{required:true,},
+				},
+			},
 		]],
 		//在双击一个单元格的时候开始编辑并生成编辑器，然后定位到编辑器的输入框上
 		onDblClickCell: function(index,field,value){
-			$(this).datagrid('beginEdit', index); //对点击行 进行编辑
-			var ed = $(this).datagrid('getEditor', {index:index,field:field});
-			if (ed !== null) $(ed.target).focus();
-			editRow = index;
+			if (editRow == undefined && field != 'id') {
+				$(this).datagrid('beginEdit', index); //对点击行 进行编辑
+				var ed = $(this).datagrid('getEditor', {index:index,field:field});
+				$(ed.target).focus();
+				editRow = index;
+			}
+			
 		}
 
 		/* onAfterEdit: function (rowIndex, rowData, changes){
@@ -342,6 +374,7 @@
 	}
 	function delPlan1(target){
 		table.datagrid('deleteRow', getrow(target));
+		editRow = undefined;
 }
 
 //观测计划的 开始 停止 下一个按钮////////////////////////////
@@ -517,8 +550,13 @@
 	}
 	
 	$('#tst').click(function () {
-		tstdata = table.datagrid('getSelections');
-		console.log(tstdata);
+		/* tstdata = table.datagrid('clearSelections');
+		var n = tstdata.length;
+		
+		console.log(tstdata); */
+		//让正在执行的计划那行 执行mouseover(),此处eq()的2 就是正执行的行索引
+		
+		$('table.datagrid-btable tbody tr').eq(2).mouseover();
 		
 	})
 //数据验证函数 结束////////////////////////////////////////

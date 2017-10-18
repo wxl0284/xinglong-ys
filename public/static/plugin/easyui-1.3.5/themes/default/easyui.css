@@ -1189,12 +1189,13 @@ a:hover.l-btn-plain-selected {
 }
 .datagrid-row-over,
 .datagrid-header td.datagrid-header-over {
-  background: #eaf2ff;
+  /* background: #eaf2ff; */
+  background: #16A05E; 
   color: #000000;
   cursor: default;
 }
 .datagrid-row-selected {
-  background: #FBEC88;
+  /* background: #FBEC88; */
   color: #000000;
 }
 .datagrid-body .datagrid-editable .datagrid-editable-input {
