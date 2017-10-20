@@ -140,7 +140,7 @@ class Control extends Controller
             }
         }else{//缓存获取失败，从网络抓取
 			$ch = curl_init();
-			curl_setopt ($ch, CURLOPT_URL, 'http://www.nmc.cn/publish/forecast/AHE/xinglong.html');
+			curl_setopt ($ch, CURLOPT_URL, 'http://www.nmc.cn/publish/forecast/AHE/xing-long.html');
 			curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1); //返回字符串数据
 			curl_setopt($ch, CURLOPT_FAILONERROR, 1); //出错时停止
 			$weathStr = curl_exec($ch); //将远程数据存入变量

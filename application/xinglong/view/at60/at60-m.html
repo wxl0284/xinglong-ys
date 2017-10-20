@@ -231,8 +231,14 @@
 				<form id='at60Gimbal' class='center command'>
 					<div id='trackStar' class="pos_r">
 					   <input type='radio' name='command' value='1' />
-					   赤经：<input id='inputIn1' type="text" name='rightAscension' />
-					   赤纬：<input id='inputIn2' type="text" name='declination' />
+					   赤经：
+					   <input id='inputIn1' class='hourMin' type="text" name='rightAscension1'>:
+					   <input id='inputIn1_1' class='hourMin' type="text" name='rightAscension2'>:
+					   <input id='inputIn1_2' class='sec' type="text" name='rightAscension2'>
+					   赤纬：
+					   <input id='inputIn2' class='hourMin' type="text" name='declination1'>:
+					   <input id='inputIn2_1' class='hourMin' type="text" name='declination2'>:
+					   <input id='inputIn2_2' class='sec' type="text" name='declination3'>
 					  历元：<select name="epoch" style='width:69px;'>
 						       <option value="0">real</option>
 							   <option value="1">J2000</option>
@@ -246,18 +252,6 @@
 						   <option value="2">月亮</option>
 						   <option value="3">彗星</option>
 						</select>
-						<!--上面大输入框的内嵌小输入框-->
-						<span id='inputIn1_1' style='display:block;left:290px;top:0px;' class="pos_a input_in">
-						  <input id='inputIn1_1_1' type="text" class='keyup'>
-						  :<input type="text" class='keyup'>
-						  :<input id='inputIn1_1_3' type="text" style="width:38px;">
-						</span>
-						<span id='inputIn2_1' style='display:block;left:510px;top:0px;' class="pos_a input_in">
-							<input id='inputIn2_1_1' type="text" class='keyup'>
-							:<input type="text" class='keyup'>
-							:<input id='inputIn2_1_3' type="text" style="width:38px;">
-						</span>
-						<!--上面大输入框的内嵌小输入框-->
 					</div>
 					<div id='targetName'>
 					   <input type='radio' name='command' value='2' />
@@ -425,8 +419,14 @@
 										   <option value="8">暗流</option>
 										   <option value="9">平场</option>
 									 </select></span>
-						<span>拍摄目标赤经：<input id='inputIn3' type="text" name='objectRightAscension' /></span>
-						<span>拍摄目标赤纬：<input id='inputIn4' type="text" name='objectDeclination' /></span>
+						<span>目标赤经：<input id='inputIn3' class='hourMin' type="text" name='objectRightAscension1'>:
+						<input id='inputIn3_1' class='hourMin' type="text" name='objectRightAscension2'>:
+						<input id='inputIn3_2' class='sec' type="text" name='objectRightAscension3'>
+						</span>
+						<span>目标赤纬：<input id='inputIn4' class='hourMin' type="text" name='objectDeclination1'>:
+						<input id='inputIn4_1' class='hourMin' type="text" name='objectDeclination2'>:
+						<input id='inputIn4_2' class='sec' type="text" name='objectDeclination3'>
+						</span>
 						<span>拍摄目标历元：<select name="objectEpoch" style='width:69px;'>
 									   <option value="0">real</option>
 									   <option value="1">J2000</option>
@@ -468,19 +468,7 @@
 						<span>望远镜赤纬：<input type="text" name='telescopeDeclination' placeholder='小数' /></span>
 						<span>焦距：<input type="text" name='focusLength' placeholder='小数' /></span>
 						<span>帧数：<input type="text" name='frameNum' placeholder='整数' /></span>
-						<!--上面大输入框的内嵌小输入框-->
-						<span id='inputIn3_1' style='display:block;left:90px;top:64px;' class="pos_a input_in">
-							<input id='inputIn3_1_1' type="text" class='keyup'>
-							:<input type="text" class='keyup'>
-							:<input id='inputIn3_1_3' type="text" style="width:38px;">
-						</span>
-						<span id='inputIn4_1' style='display:block;left:403px;top:64px;' class="pos_a input_in">
-							<input id='inputIn4_1_1' type="text" class='keyup'>
-							:<input type="text" class='keyup'>
-							:<input id='inputIn4_1_3' type="text" style="width:38px;">
-						</span>
-						<!--上面大输入框的内嵌小输入框-->	
-					  </div><!--ccd 曝光策略结束-->
+					</div><!--ccd 曝光策略结束-->
 					  <div id='startExp'>
 					   <input type='radio' name='command' value='3' />
 					   是否读取帧序号：<input type="text" name='isReadFrameSeq' />

@@ -225,8 +225,11 @@ class At60 extends Controller
 			$headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device);
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=3);
-		
-			if (($rightAscension=trim(input('rightAscension'))) !== '') //赤经
+			
+			//处理赤经数据 
+			$rightAscension = trim(input('rightAscension1')).':'.trim(input('rightAscension2')).':'.trim(input('rightAscension3'));
+			
+			if ($rightAscension !== '::') //赤经
 			{
 				/* if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $rightAscension))
 				{
@@ -238,7 +241,10 @@ class At60 extends Controller
 				$sendMsg = pack('d', 0);
 			}
 			
-			if (($declination=trim(input('declination'))) !== '') //赤纬
+			//处理赤纬数据 
+			$declination = trim(input('declination1')).':'.trim(input('declination2')).':'.trim(input('declination3'));
+			
+			if ($declination !== '::') //赤纬
 			{
 				/* if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $declination))
 				{
@@ -708,7 +714,10 @@ class At60 extends Controller
 				$sendMsg .= pack('S', 0);  //unsigned short
 			}
 			
-			if (($objectRightAscension=trim(input('objectRightAscension'))) !== '')  
+			//处理赤经数据
+			$objectRightAscension = trim(input('objectRightAscension1')).':'.trim(input('objectRightAscension2')).':'.trim(input('objectRightAscension3'));
+			
+			if ($objectRightAscension !== '::')  
 			{//拍摄目标赤经
 				/* if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $objectRightAscension))
 				{
@@ -721,7 +730,10 @@ class At60 extends Controller
 				$sendMsg .= pack('d', 0);
 			}
 			
-			if (($objectDeclination=trim(input('objectDeclination'))) !== '')    
+			//处理赤经数据
+			$objectDeclination = trim(input('objectDeclination1')).':'.trim(input('objectDeclination2')).':'.trim(input('objectDeclination3'));
+			
+			if ($objectDeclination !== '::')    
 			{//当前拍摄目标赤纬
 				
 				$objectDeclination = time2Data($objectDeclination);
@@ -734,7 +746,7 @@ class At60 extends Controller
 			{
 				if (!preg_match('/^\d{1,5}$/', $objectEpoch))
 				{
-					echo '拍摄目标赤纬只能是数字！'; return;
+					echo '目标历元只能是数字！'; return;
 				}
 				$sendMsg .= pack('S', $objectEpoch);   
 			}else{
@@ -2178,19 +2190,43 @@ class At60 extends Controller
 				}
 			}
 			
+			//处理赤经数据
+			$rightAscension = trim($planData['planData'][$i]['rightAscension1']).':'.trim($planData['planData'][$i]['rightAscension2']).':'.trim($planData['planData'][$i]['rightAscension3']);
+			
 			//验证 rightAscension
-			$rightAscension = trim($planData['planData'][$i]['rightAscension']);
-			if (preg_match('/^-?\d+(\.\d{0,15})?$/', $rightAscension) && ($rightAscension >= 0) && ($rightAscension <= 24))
+			if ($rightAscension !== '::')
 			{//赤经：数字 0-24
+				if (!is_numeric(str_replace(':', '', $rightAscension)))
+				{
+					return '第'. ($i+1) .'条计划:赤经数据有误!';
+				}
+				
+				$rightAscension = time2Data($rightAscension);
+				if ($rightAscension > 90 || $rightAscension < -90)
+				{
+					return '第'. ($i+1) .'条计划:赤经数据有误!';
+				}
 				$sendMsg .= pack('d', $rightAscension);
 			}else{
 				return '第'. ($i+1) .'条计划:赤经数据有误!';
 			} 
 			
-			//验证 赤纬只能是数字！
-			$declination = trim($planData['planData'][$i]['declination']);
-			if (preg_match('/^-?\d+(\.\d{0,15})?$/', $declination) && ($declination >= -90) && ($declination <= 90))
-			{//赤经：数字 0-24
+			//处理赤纬数据
+			$declination = trim($planData['planData'][$i]['declination1']).':'.trim($planData['planData'][$i]['declination2']).':'.trim($planData['planData'][$i]['declination3']);
+			
+			//验证 赤纬
+			if ($declination !== '::')
+			{
+				if (!is_numeric(str_replace(':', '', $declination)))
+				{
+					return '第'. ($i+1) .'条计划:赤纬数据有误!';
+				}
+				
+				$declination = time2Data($declination);
+				if ($declination > 90 || $declination < -90)
+				{
+					return '第'. ($i+1) .'条计划:赤纬数据有误!';
+				}
 				$sendMsg .= pack('d', $declination);
 			}else{
 				return '第'. ($i+1) .'条计划:赤纬数据有误!';

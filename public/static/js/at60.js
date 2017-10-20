@@ -1318,11 +1318,10 @@
 		}
 	});
 
-//观测计划 若为single和singleLoop 隐藏‘下一个’按钮 结束///////////////
-
-//指令输入框之 内嵌的input框 keyup事件 blur事件 /////////////////////////////
-
-$('span.input_in input.keyup').keyup(function () {
+//观测计划 若为single和singleLoop 隐藏‘下一个’按钮 结束/////////
+/*********以下为赤经和赤纬 时分秒输入框 js代码**************/
+//按tab键实现下一个输入框的输入，不用写js代码
+/* $('span.input_in input.keyup').keyup(function () {
    //获取输入框的值
    var inputStr = $(this).val();
    if( inputStr.indexOf('-') > -1 && inputStr.length == 3)
@@ -1332,15 +1331,15 @@ $('span.input_in input.keyup').keyup(function () {
    {
 	   $(this).next('input').focus();
    }
-});
+}); */
 
 //转台跟踪恒星的赤经///////////////////////////////////////////
-$('#inputIn1').focus(function () {
+/* $('#inputIn1').focus(function () {
 	var spn = $('#inputIn1_1');
 	$(this).val('');
 	spn.show();
 	$('#inputIn1_1_1').focus();
-});
+}); 
 
 $('#inputIn1_1_3').blur(function () {
 	var spn = $('#inputIn1_1');
@@ -1348,10 +1347,10 @@ $('#inputIn1_1_3').blur(function () {
 	var resultStr = inputs.eq(0).val() + ':' + inputs.eq(1).val() + ':' + inputs.eq(2).val()
 	spn.hide();
 	$('#inputIn1').val(resultStr);
-});
+});*/
 
 //转台跟踪恒星的赤纬////////////////////////////////////////////
-$('#inputIn2').focus(function () {
+/* $('#inputIn2').focus(function () {
 	var spn = $('#inputIn2_1');
 	$(this).val('');
 	spn.show();
@@ -1364,10 +1363,10 @@ $('#inputIn2_1_3').blur(function () {
 	var resultStr = inputs.eq(0).val() + ':' + inputs.eq(1).val() + ':' + inputs.eq(2).val()
 	spn.hide();
 	$('#inputIn2').val(resultStr);
-});
+}); */
 
 //CCD 曝光策略 拍摄目标赤经////////////////////////////////////////////
-$('#inputIn3').focus(function () {
+/* $('#inputIn3').focus(function () {
 	var spn = $('#inputIn3_1');
 	$(this).val('');
 	spn.show();
@@ -1379,11 +1378,11 @@ $('#inputIn3_1_3').blur(function () {
 	var inputs = spn.children('input');
 	var resultStr = inputs.eq(0).val() + ':' + inputs.eq(1).val() + ':' + inputs.eq(2).val()
 	spn.hide();
-	$('#inputIn3').val(resultStr);
-});/////////////////////////////////////////////////////
+	$('#inputIn3').val(resultStr); */
+//});/////////////////////////////////////////////////////
 
 //CCD 曝光策略 拍摄目标赤纬////////////////////////////////////////////
-$('#inputIn4').focus(function () {
+/* $('#inputIn4').focus(function () {
 	var spn = $('#inputIn4_1');
 	$(this).val('');
 	spn.show();
@@ -1395,12 +1394,7 @@ $('#inputIn4_1_3').blur(function () {
 	var inputs = spn.children('input');
 	var resultStr = inputs.eq(0).val() + ':' + inputs.eq(1).val() + ':' + inputs.eq(2).val()
 	spn.hide();
-	$('#inputIn4').val(resultStr);
-});/////////////////////////////////////////////////////
-//指令输入框之 内嵌的input框 keyup事件/////////////////////////////
-
-
-$('span.input_in').blur(function () {
-	alert(33);
-})
+	$('#inputIn4').val(resultStr); */
+//});/////////////////////////////////////////////////////
+/*********赤经和赤纬 时分秒输入框 js代码结束**************/
 })

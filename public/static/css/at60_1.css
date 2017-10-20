@@ -118,8 +118,17 @@ form input[type='radio'], form div {display:none;}
 #smallPic .mrgR {margin-left:10px;margin-right:9px;}
 
 #bigPic button { right:38px;bottom:8px; cursor:pointer;}
+/*转台和ccd 之赤经赤纬输入框样式*/
+#trackStar .hourMin {width:28px;margin-right: 2px;}
 
-/*内嵌的input框之 样式*/
+#trackStar .sec {width:86px;}
+
+#exposStratic .hourMin {width:28px;margin-right: 2px;}
+
+#exposStratic .sec {width:86px;}
+/*转台和ccd 之赤经赤纬输入框样式 结束*/
+
+/*内嵌的input框之 样式
 #inputIn1_1 input {width:28px;margin:0;border:0;}
 #inputIn2_1 input {width:28px;margin:0;border:0;}
 #inputIn3_1 input {width:28px;margin:0;border:0;}
