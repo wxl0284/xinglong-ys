@@ -128,13 +128,6 @@ form input[type='radio'], form div {display:none;}
 #exposStratic .sec {width:86px;}
 /*转台和ccd 之赤经赤纬输入框样式 结束*/
 
-/*内嵌的input框之 样式
-#inputIn1_1 input {width:28px;margin:0;border:0;}
-#inputIn2_1 input {width:28px;margin:0;border:0;}
-#inputIn3_1 input {width:28px;margin:0;border:0;}
-#inputIn4_1 input {width:28px;margin:0;border:0;}
-/*内嵌的input框之 样式 结束*/
-
 /*观测计划模式：单选钮和按钮的样式*/
 #planModes {top:29.5px;right:460px;width:300px;}
 
