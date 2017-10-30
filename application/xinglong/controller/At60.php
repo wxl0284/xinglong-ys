@@ -7,6 +7,7 @@ use think\Request;
 use think\Cookie;
 use think\Db;
 use think\Config;
+use think\Cache;
 
 //60cm号望远镜控制器
 class At60 extends Controller
@@ -36,7 +37,11 @@ class At60 extends Controller
     //显示60cm望远控制镜页面////////////////////////////////////////
     public function index ()
     {
-		return view('at60-m');
+		//判断60cm望远镜是否已配置，否则先配置并存入缓存
+		
+		return view('at60-m');  
+			//原来的代码 直接显示60cm页面
+		
     }
     
     //at60 望远镜 接管指令////////////////////////////////////////////
