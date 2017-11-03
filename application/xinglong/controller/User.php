@@ -13,14 +13,14 @@ class User extends Controller
     public function _initialize ()
     {
         //未登录
-        if (!Cookie::has('login'))
+        if (!Session::has('login'))
         {
 			if (Request::instance()->isAjax())
 			{
 				return '请完成登录后，再进行相关操作！';
 			}
             $request = Request::instance();
-            Cookie::set('url', $request->url());
+            Cookie::set('url', $request->url(true));
             $this->error('请完成登录后，再进行相关操作！', '/');
         }   
     }
@@ -29,7 +29,7 @@ class User extends Controller
 	public function index ()
 	{
 		//权限判断
-		if (Cookie::get('role') != 1)
+		if (Session::get('role') != 1)
 		{
 			$this->error('您无权查看用户信息!');
 		}
@@ -55,13 +55,8 @@ class User extends Controller
 	//添加用户////////////////////////////////////////////////////
 	public function doadd ()
 	{
-		//权限和是否登录的判断
-		if (!Session::has('login'))
-		{
-			return '为确保操作者为同一人，请再次登录！';
-		}
-	
-		if (Cookie::get('role') != 1)
+		//权限的判断
+		if (Session::get('role') != 1)
 		{
 			 return '您无权添加用户';
 		}
@@ -123,14 +118,8 @@ class User extends Controller
 	//编辑用户 页面///////////////////////////////////////////////////
 	public function edit ()
 	{
-		//权限和是否登录的判断
-		if (!Session::has('login'))
-		{
-			Cookie::set('url', $this->request->url());
-			$this->error('为确保操作者为同一人，请再次登录！', '/');
-		}
-	
-		if (Cookie::get('role') != 1)
+		//权限的判断	
+		if (Session::get('role') != 1)
 		{
 			 $this->error('您无权编辑用户！', '/');
 		}
@@ -151,13 +140,8 @@ class User extends Controller
 	//编辑用户 /////////////////////////////////////////////////////
 	public function doEdit ()
 	{
-		//权限和是否登录的判断
-		if (!Session::has('login'))
-		{
-			$this->error('为确保操作者为同一人，请再次登录！', '/');
-		}
-	
-		if (Cookie::get('role') != 1)
+		//权限和是否登录的判断	
+		if (Session::get('role') != 1)
 		{
 			 $this->error('您无权编辑用户！', '/');
 		}
@@ -230,13 +214,8 @@ class User extends Controller
 	//禁用  用户
 	public function off ()
 	{
-		//权限和是否登录的判断
-		if (!Session::has('login'))
-		{
-			$this->error('为确保操作者为同一人，请再次登录！', '/');
-		}
-	
-		if (Cookie::get('role') != 1)
+		//权限的判断	
+		if (Session::get('role') != 1)
 		{
 			 $this->error('您无权编辑用户！', '/');
 		}
@@ -260,13 +239,8 @@ class User extends Controller
 		//禁用  用户
 	public function on ()
 	{
-		//权限和是否登录的判断
-		if (!Session::has('login'))
-		{
-			$this->error('为确保操作者为同一人，请再次登录！', '/');
-		}
-	
-		if (Cookie::get('role') != 1)
+		//权限的判断	
+		if (Session::get('role') != 1)
 		{
 			 $this->error('您无权编辑用户！', '/');
 		}
@@ -295,7 +269,7 @@ class User extends Controller
 	//修改密码//////////////////////////////////////////////////////
 	public function editPaswd ()
 	{
-		if(!Cookie::has('login'))
+		if(!Session::has('login'))
 		{
 			$this->error('请登录后再进行此操作!', '/');
 		}

@@ -14,7 +14,7 @@ class Control extends Controller
     public function index()
     {
 		//如果已登录，直接去首页
-		if (Cookie::has('login') && Session::has('login'))
+		if (Session::has('login'))
 		{
 			$this->redirect('/xinglong/control/front');
 		}else {
@@ -68,9 +68,8 @@ class Control extends Controller
         }
 
         //登录成功，写入Cookie, 跳转至主页面
-        Cookie::set('login', $userData[0]['username']);
         Session::set('login', $userData[0]['username']);
-        Cookie::set('role', $userData[0]['role']);
+        Session::set('role', $userData[0]['role']);
         //session中已有之前的url,则跳转回此url
         if (Cookie::has('url'))
         {
@@ -85,7 +84,7 @@ class Control extends Controller
     public function front ()
     {
 		//未登录
-        if (!Cookie::has('login'))
+        if (!Session::has('login'))
         {
             $request = Request::instance();
             Cookie::set('url', $request->url());
@@ -255,7 +254,7 @@ class Control extends Controller
     public function weatherMore ()
     {
 		//未登录////////////////////////////////////////////////
-        if (!Cookie::has('login'))
+        if (!Session::has('login'))
         {
             $request = Request::instance();
             Cookie::set('url', $request->url());
@@ -316,9 +315,8 @@ class Control extends Controller
     {
         //清空session 和cookie
         Session::delete('login');
-        //Cookie::clear();
-		Cookie::set('login','',-1);
-		Cookie::set('role','',-1);
+        Session::delete('role');
+        Cookie::clear();
         //返回首页
          return view('login');
     }

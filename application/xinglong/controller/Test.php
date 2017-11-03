@@ -21,7 +21,10 @@ class Test extends Controller
 		//return time2Data ('-11:23:12.34'); */
 		//$userData = User::where('id','>',10)->column('username','password');
 		//print_r($userData);
-			//Cache::set('name1', 'mm', 100);
+		$cacheStr['a'] = "aaa";
+		$cacheStr['b'] = "bbb";
+		$cacheStr['data'] = 1;
+		Cache::set('name', $cacheStr);
 		
 		
 	}
@@ -30,21 +33,9 @@ class Test extends Controller
 	{
 		if (Cache::get('name')) {
 			$res = Cache::get('name');
-			return $res['a'];
+			return $res['data'];
 		}else{
 			return 'no cache';
 		}
-		$a = 'aaaa';
-		$str = <<<EOD
-	Example o\$a\f string spanning multiple 
-	linesusing heredoc syntaxdddd.tring spanning multiple linesusing heredoc syntaxdddd.tring spanning multiple 
-	linesusing heredoc syntaxdddd.tring spanning multiple 
-	linesusing heredoc syntaxdddd.tring spanning multiple 
-	linesusing heredoc syntaxdddd.tring spanning multiple 
-	linesusing heredoc syntaxdddd.
-EOD;
-		
-		//return $str;
 	}
-	
 }

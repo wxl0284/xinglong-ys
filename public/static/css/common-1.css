@@ -47,7 +47,9 @@ footer span {color:#fff;line-height:41px;font-size:13px;}
 
 #atList {cursor:pointer; border:0;left:-700px;z-index:30;}
 
-#atListUl {background-color:#64B2E0;}
+#atConfig {cursor:pointer; border:0;left:-520px;z-index:30;}
+
+#atListUl,#atConfigList {background-color:#64B2E0;}
 
 header div.pos_r {top:1.5px;} /*此为公共头部导航栏 样式*/
 

@@ -5,6 +5,7 @@ use think\Controller;
 use think\Db;
 use think\Cookie;
 use think\Request;
+use think\Session;
 
 class Weather extends Controller
 {
@@ -12,14 +13,14 @@ class Weather extends Controller
     public function _initialize ()
     {
         //未登录
-        if (!Cookie::has('login'))
+        if (!Session::has('login'))
         {
 			/* if (Request::instance()->isAjax())
 			{
 				return '请完成登录后，再进行相关操作！';
 			} */
             $request = Request::instance();
-            Cookie::set('url', $request->url());
+            Cookie::set('url', $request->url(true));
             $this->error('请完成登录后，再进行相关操作！', '/');
         }   
     }
@@ -58,9 +59,4 @@ class Weather extends Controller
 		return view('weatherDetail');
 	}/////////////////////////////////////////////////////////////
 	
-	public function test ()
-	{
-		$x = 33;
-		return demo($x);
-	}
 }

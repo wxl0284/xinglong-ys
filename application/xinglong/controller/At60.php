@@ -22,14 +22,14 @@ class At60 extends Controller
         $this->port = Config::get('port');
 		
 		//未登录
-        if (!Cookie::has('login'))
+        if (!Session::has('login'))
         {
 			if (Request::instance()->isAjax())
 			{
 				return '请完成登录后，再进行相关操作！';
 			}
             $request = Request::instance();
-            Cookie::set('url', $request->url());
+            Cookie::set('url', $request->url(true));
             $this->error('请完成登录后，再进行相关操作！', '/');
         }   
     }
@@ -38,7 +38,16 @@ class At60 extends Controller
     public function index ()
     {
 		//判断60cm望远镜是否已配置，否则先配置并存入缓存
+		$at60Page = Cache::get('at60Page');
 		
+		if(!isset($at60Page['data']))
+		{
+			$this->redirect('/xinglong/page_config/at60config');
+		}else{
+			$this->assign([
+                'cacheStr' => $at60Page,
+            ]);
+		}
 		return view('at60-m');  
 			//原来的代码 直接显示60cm页面
 		
@@ -48,10 +57,6 @@ class At60 extends Controller
     public function at60TakeOver ()
     {
 		//权限和是否登录的判断
-		if (!Session::has('login'))
-		{
-			return '为确保操作者为同一人，请再次登录！';
-		}
 		
 		/*if (!Session::has('role'))
 		{
@@ -111,10 +116,6 @@ class At60 extends Controller
     public function at60GimbalSendData ()
     {
 		//判断权限和登录
-        if (!Session::has('login'))
-		{
-			return '为确保操作者为同一人，请再次登录！';
-		}
 		
 		/*if (!Session::has('role'))
 		{
@@ -556,10 +557,6 @@ class At60 extends Controller
     public function at60CcdSendData ()
     {
         //判断权限和登录
-		if (!Session::has('login'))
-		{
-			return '为确保操作者为同一人，请再次登录！';
-		}
 
 		/*if (!Session::has('role'))
 		{
@@ -729,7 +726,7 @@ class At60 extends Controller
 					echo '拍摄目标赤经只能是数字！'; return;
 				} */
 				
-				$objectRightAscension = time2Data(objectRightAscension);
+				$objectRightAscension = time2Data($objectRightAscension);
 				$sendMsg .= pack('d', $objectRightAscension);     //double64
 			}else{
 				$sendMsg .= pack('d', 0);
@@ -1412,10 +1409,6 @@ class At60 extends Controller
 	public function at60FocusSendData ()
 	{
 		//判断权限和登录
-		if (!Session::has('login'))
-		{
-			return '为确保操作者为同一人，请再次登录！';
-		}
 
 		/*if (!Session::has('role'))
 		{
@@ -1554,10 +1547,6 @@ class At60 extends Controller
 	public function at60sDomeSendData ()
 	{
 		//判断权限和登录
-		if (!Session::has('login'))
-		{
-			return '为确保操作者为同一人，请再次登录！';
-		}
 
 		/*if (!Session::has('role'))
 		{
@@ -1710,10 +1699,6 @@ class At60 extends Controller
 	public function at60fDomeSendData ()
 	{
 		//判断权限和登录
-		if (!Session::has('login'))
-		{
-			return '为确保操作者为同一人，请再次登录！';
-		}
 
 		/*if (!Session::has('role'))
 		{
@@ -1795,10 +1780,6 @@ class At60 extends Controller
 	public function at60FilterSendData ()
 	{
 		//判断权限和登录
-		if (!Session::has('login'))
-		{
-			return '为确保操作者为同一人，请再次登录！';
-		}
 
 		/*if (!Session::has('role'))
 		{
@@ -1881,10 +1862,6 @@ class At60 extends Controller
     public function planTest()
     {
         //判断权限和登录
-		if (!Session::has('login'))
-		{
-			return '为确保操作者为同一人，请再次登录！';
-		}
 
 		/*if (!Session::has('role'))
 		{
@@ -1986,10 +1963,6 @@ class At60 extends Controller
 	public function importPlan ()
 	{
 		//判断权限和登录
-		if (!Session::has('login'))
-		{
-			return '为确保操作者为同一人，请再次登录！';
-		}
 
 		/*if (!Session::has('role'))
 		{

@@ -140,7 +140,7 @@
 		});
 	}
 	//setInterval (getStatus, 1800);
-	/////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////
 	//显示导航栏望远镜列表   
    var ul = $('#atListUl');
    $('#atList').hover(
@@ -152,15 +152,20 @@
         } 
    );
    
-   $('#at60').click(function () {
-	   location = '/xinglong/at60';
-   });
-   $('#at80').click(function () {
-	   location = '/xinglong/at80';
-   });
-   //望远镜列表js代码结束///////////////////////////////////
-	
-	//接管 弹窗代码////////////////////////////////////////////////
+   //各望远镜配置 js事件
+   var configList = $('#atConfigList');
+   $('#atConfig').hover(
+        function (){
+            configList.show();
+        }, 
+       function (){		
+			configList.hide();
+        } 
+   );
+   
+//望远镜列表js代码结束///////////////////////////////////
+
+//接管 弹窗代码////////////////////////////////////////////////
 	$('#takeOverBtn').click(function () {
 		$('#panel').removeClass('displayNo');
 		$('#takeOverPanel').window({
@@ -192,7 +197,7 @@
         dev.addClass('display');
     }); ///////////////////////////////////////////////////////
     
-    /*//接管望远镜按钮 js事件 ////////////////////////////////////////////
+/*//接管望远镜按钮 js事件 ///////////////////////////////////////
      $('#takeOver').click(function () {
        //var e = $(this);
    
@@ -216,9 +221,9 @@
             },
         });
      
-    });/////////////////////////////////////////////////////////////*/
+    });//////////////////////////////////////////////////////////*/
 	
-	//每个设备 指令导航栏 nav下span 点击事件/////////////////////////
+//每个设备 指令导航栏 nav下span 点击事件/////////////////////////
 	var navSpan = $('nav span');
 	var divs = $('form div');//获取页面指令表单中所有div
 	$('nav').on('click', 'span', function() {
@@ -229,12 +234,16 @@
 		var divID = $(this).attr('name');
 		divID = '#' + divID;
 		commandDiv = $(divID);
-		divs.not(commandDiv).hide();//隐藏其他相应指令
+		//找到与commandDiv同级的指令提交按钮
+		var sbmt = commandDiv.siblings('input[type="button"]');
+		divs.not(commandDiv).hide();//隐藏其他指令
 		commandDiv.show();//显示相应指令		
-		commandDiv.click();//同时执行此指令的点击事件		
-	});//每个设备 指令导航栏 nav下span 点击事件  结束/////////////////////////
+		commandDiv.click();//同时执行此指令的点击事件
+		sbmt.prop('disabled', false); //启用提交按钮
+	});
+//每个设备 指令导航栏 nav下span 点击事件  结束///////////////////
 	
-	//转台 连接按钮js事件/////////////////////////////////
+//转台 连接按钮js事件/////////////////////////////////
     $('#gimbalConnect').click(function () {
 		$(this).addClass('btnClick');
 		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
@@ -255,7 +264,7 @@
         });
     }); 
 	
-	//转台 断开连接按钮 js事件/////////////////////////////////
+//转台 断开连接按钮 js事件/////////////////////////////////
     $('#gimbalDisConnect').click(function () {
 		$(this).addClass('btnClick');
 		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
@@ -276,7 +285,7 @@
         });
     }); 
 	
-	//转台 找零按钮js事件//////////////////////////////////
+//转台 找零按钮js事件//////////////////////////////////
     $('#gimbalFindhome').click(function () {
 		$(this).addClass('btnClick');
 		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
@@ -297,7 +306,7 @@
         });
     });
     
-	//转台 复位按钮 js事件////////////////////////////////////
+//转台 复位按钮 js事件////////////////////////////////////
     $('#gimbalPark').click(function () {
 		$(this).addClass('btnClick');
 		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
@@ -318,7 +327,7 @@
         });
     }); 
 	 
-	//转台 停止按钮 js事件///////////////////////////////////
+//转台 停止按钮 js事件///////////////////////////////////
     $('#gimbalStop').click(function () {
 		$(this).addClass('btnClick');
 		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
@@ -339,7 +348,7 @@
         });
     });  
 	
-	//转台 急停按钮 js事件/////////////////////////////////////
+//转台 急停按钮 js事件/////////////////////////////////////
     $('#gimbalEmergenceStop').click(function () {
 		$(this).addClass('btnClick');
 		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
@@ -360,7 +369,7 @@
         });
     });/////////////////////////////////////////// 
 	
-	//转台 带参数指令  js事件////////////////////////////////////////////////
+//转台 带参数指令  js事件///////////////////////////////////////
 	var gimbalForm = $('#at60Gimbal');
     var gimbalSelect = gimbalForm.find('div');
 
@@ -373,7 +382,7 @@
          
      });
 	 
-    //转台 轴3工作模式 仅对模式2有效 js事件////////////////////////////
+//转台 轴3工作模式 仅对模式2有效 js事件////////////////////////////
 	$('#at60Axis3').change(function (){
         var e = $(this).next('span');
        if ($(this).val() == 2)
@@ -385,119 +394,228 @@
        }
     });
     
-    //验证转台 表单指令数据///////////////////////////////////////////
-	function checkGimbal ()
-	{
-		var msg = ''; //定义错误提示
-		var formElemt = $('#at60Gimbal');
-		if (formElemt.find("input[value='1']").prop('checked')) //验证跟踪恒星 指令数据
+//验证转台 表单指令数据 逐一验证//////////////////////////////
+	//验证 跟踪恒星-赤经
+	$('#inputIn1_2').blur(function () {
+		var gimbalSbmt = $('#gimbalSbmt');
+		var v1 = $.trim($('#inputIn1').val());
+		var v2 = $.trim($('#inputIn1_1').val());
+		var v3 = $.trim($(this).val());
+		var patn = /^\d{1,2}$/;
+		var err = 0; //错误标识
+		
+		if (!patn.test(v1) || v1 < 0 || v1 >= 24)
 		{
-			var rightAscension = formElemt.find('input[name="rightAscension"]').val();
-			var declination = formElemt.find('input[name="declination"]').val();
-			var epoch = formElemt.find('select[name="epoch"]').val();
-			var speed = formElemt.find('select[name="speed"]').val();
-			//定义各指令数据格式
-			var reg = new RegExp("^[a-zA-Z0-9_]{6,10}$");
-			
-			/* if (数据1未通过) //验证未通过
-			{
-				msg += '提示信息1\n';
-			}
-			
-			if (数据2未通过){
-				msg += '提示信息2\n';
-			}
-			.....
-			if (msg != '')  //有数据错误
-			{
-				alert(msg);	return false;
-			}else{//数据无误
-				return true;
-			}
-			*/
-		}else if(formElemt.find("input[value='2']").prop('checked')){//验证目标名称 
-			var objectName = formElemt.find('input[name="objectName"]').val();//目标名称
-			var objectType = formElemt.find('select[name="objectType"]').val();//目标类型
-			//定义各指令数据格式
-			var reg = new RegExp("^[a-zA-Z0-9_]{6,10}$");
-			/* if (数据1未通过) //验证未通过
-			{
-				msg += '提示信息1\n';
-			}
-			
-			if (数据2未通过){
-				msg += '提示信息2\n';
-			}
-			.....
-			if (msg != '')  //有数据错误
-			{
-				alert(msg);	return false;
-			}else{//数据无误
-				return true;
-			}
-			*/
-		}else if(formElemt.find("input[value='3']").prop('checked')){//指向固定位置 
-			var azimuth = formElemt.find('input[name="azimuth"]').val();//方位
-			var elevation = formElemt.find('input[name="elevation"]').val();//俯仰
-			//定义各指令数据格式
-			var reg = new RegExp("^[a-zA-Z0-9_]{6,10}$");
-			/* if (数据1未通过) //验证未通过
-			{
-				msg += '提示信息1\n';
-			}
-			
-			if (数据2未通过){
-				msg += '提示信息2\n';
-			}
-			.....
-			if (msg != '')  //有数据错误
-			{
-				alert(msg);	return false;
-			}else{//数据无误
-				return true;
-			}
-			*/
-		}else if (formElemt.find("input[value='4']").prop('checked')){//轴3指向固定位置
-			var slewDerotator = formElemt.find('input[name="slewDerotator"]').val();//轴3指向固定位置
-			//if ()......
-		}else if (formElemt.find("input[value='5']").prop('checked')){//轴3工作模式
-			var axis3Mode = formElemt.find('select[name="mode"]').val();//模式
-			var polarizingAngle = formElemt.find('input[name="polarizingAngle"]').val();//起偏角
-			//if ()......
-		}else if (formElemt.find("input[value='6']").prop('checked')){//速度修正
-			var axis = formElemt.find('select[name="axis"]').val();//轴
-			var correction = formElemt.find('input[name="correction"]').val();//修正值
-			//if ()......
-		}else if (formElemt.find("input[value='7']").prop('checked')){//恒速运动
-			var FixedMoveAxis = formElemt.find('input[name="FixedMoveAxis"]').val();//轴
-			var FixedMoveSpeed = formElemt.find('input[name="FixedMoveSpeed"]').val();//速度
-			//if ()......
-		}else if (formElemt.find("input[value='8']").prop('checked')){//位置修正
-			var PositionCorrectAxis = formElemt.find('input[name="PositionCorrectAxis"]').val();//轴
-			var PositionCorrectVal = formElemt.find('input[name="PositionCorrectVal"]').val();//速度
-			//if ()......
-		}else if (formElemt.find("input[value='9']").prop('checked')){//镜盖操作
-			var openCover = formElemt.find('select[name="openCover"]').val();//
-			//if ()......
-		}else if (formElemt.find("input[value='10']").prop('checked')){//焦点切换镜
-			var setFocusType = formElemt.find('select[name="setFocusType"]').val();
-			//if ()......
-		}else if (formElemt.find("input[value='11']").prop('checked')){//保存同步数据
-			var saveSyncData = formElemt.find('input[name="saveSyncData"]').val();
-			//if ()......
-		}else if (formElemt.find("input[value='13']").prop('checked')){//属性设置
-			var configProp = formElemt.find('input[name="configProp"]').val();
-			//if ()......
+			err = 1;
+			layer.tips('小时之数据输入有误!', $(this), {tipsMore: true});
+			gimbalSbmt.prop('disabled', true);
+		}else{
+			gimbalSbmt.prop('disabled', false);
 		}
-	}	//转台指令 验证函数结束
-	
-    //转台 带参数指令 表单提交//////////////////////////////////
-    $('#gimbalSbmt').click(function () {
-        var form = $('#at60Gimbal');    //获取转台表单元素
-        var formData = new FormData(form[0]);  //将jquery对象转为js-dom对象
-		if(true)	//验证数据 通过后执行ajax  checkGimbal()
+		
+		if (v2 < 0 || v2 >59 || !patn.test(v2))
 		{
-			//执行ajax
+			err = 1;
+			layer.tips('分钟之数据输入有误!', $(this), {tipsMore: true});
+			gimbalSbmt.prop('disabled', true);
+		}else{
+			gimbalSbmt.prop('disabled', false);
+		}
+		
+		if (v3 == '' || v3 < 0 || v3 > 59 || !$.isNumeric(v3) || v3.indexOf('. ') == 0 )
+		{
+			err = 1;
+			layer.tips('秒之数据输入有误!', $(this), {tipsMore: true});
+			gimbalSbmt.prop('disabled', true);
+		}else{
+			gimbalSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);
+	});////验证 跟踪恒星-赤经 结束//////////////////////////
+	
+	//验证 跟踪恒星-赤纬
+	$('#inputIn2_2').blur(function () {
+		var gimbalSbmt = $('#gimbalSbmt');
+		var v1 = $.trim($('#inputIn2').val());
+		var v2 = $.trim($('#inputIn2_1').val());
+		var v3 = $.trim($(this).val());
+		var patn = /^\d{1,2}$/;
+		var err = 0;
+		
+		if (v1 < -90 || v1 > 90 || !patn.test(v1))
+		{
+			err = 1;
+			layer.tips('小时之数据输入有误!', $(this), {tipsMore: true});
+			gimbalSbmt.prop('disabled', true);
+		}else{
+			gimbalSbmt.prop('disabled', false);
+		}
+		
+		if (v2 < 0 || v2 >59 || !patn.test(v2))
+		{
+			err = 1;
+			layer.tips('分钟之数据输入有误!', $(this), {tipsMore: true});
+			gimbalSbmt.prop('disabled', true);
+		}else{
+			gimbalSbmt.prop('disabled', false);
+		}
+		
+		if (v3 == '' || v3 < 0 || v3 > 59 || !$.isNumeric(v3) || v3.indexOf('. ') == 0 )
+		{
+			err = 1;
+			layer.tips('秒之数据输入有误!', $(this), {tipsMore: true});
+			gimbalSbmt.prop('disabled', true);
+		}else{
+			gimbalSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);
+	});////验证 跟踪恒星-赤纬 结束//////////////////////////
+	
+	//验证 设置目标名称//////////////////////////////////
+	$('#objectNameInput').blur(function () {
+		var gimbalSbmt = $('#gimbalSbmt');
+		var v = $.trim($(this).val());
+		var patn = /([\u4e00-\u9fa5]| )+/;
+		var err = 0;
+		
+		if (patn.test(v) || v == '')
+		{
+			err = 1;
+			layer.tips('目标名称不能有汉字或空格!', $(this), {tipsMore: true});
+			gimbalSbmt.prop('disabled', true);
+		}else{
+			gimbalSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);
+	});////验证 设置目标名称 结束//////////////////////////
+	
+	//验证 速度修正-轴 //////////////////////////////////
+	$('#speedXInput').blur(function () {
+		var gimbalSbmt = $('#gimbalSbmt');
+		var v = $.trim($(this).val());
+		var err = 0;
+		
+		if (!(v == 1 || v == 2))
+		{
+			err = 1;
+			layer.tips('轴设置有误!', $(this), {tipsMore: true});
+			gimbalSbmt.prop('disabled', true);
+		}else{
+			gimbalSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);
+	});////验证 速度修正-轴 结束//////////////////////////
+	
+	//验证 速度修正-速度 //////////////////////////////////
+	$('#speedCorrect').blur(function () {
+		var gimbalSbmt = $('#gimbalSbmt');
+		var v = $.trim($(this).val());
+		var err = 0;
+		
+		if ((!$.isNumeric(v)) || (v > 1 || v < -1))
+		{
+			err = 1;
+			layer.tips('速度设置有误!', $(this), {tipsMore: true});
+			gimbalSbmt.prop('disabled', true);
+		}else{
+			gimbalSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);
+	});////验证 速度修正-速度 结束//////////////////////////
+	
+	//验证 恒速运动-轴 //////////////////////////////////
+	$('#speedFAxis').blur(function () {
+		var gimbalSbmt = $('#gimbalSbmt');
+		var v = $.trim($(this).val());
+		var err = 0;
+		
+		if (!(v == 1 || v == 2))
+		{
+			layer.tips('轴设置有误!', $(this), {tipsMore: true});
+			gimbalSbmt.prop('disabled', true);
+		}else{
+			gimbalSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);
+	});////验证 恒速运动-轴 结束//////////////////////////
+	
+	//验证 恒速运动-速度 //////////////////////////////////
+	$('#speedFVal').blur(function () {
+		var gimbalSbmt = $('#gimbalSbmt');
+		var v = $.trim($(this).val());
+		var err = 0;
+		
+		if ((!$.isNumeric(v)) || (v > 1 || v < -1))
+		{
+			err = 1;
+			layer.tips('速度设置有误!', $(this), {tipsMore: true});
+			gimbalSbmt.prop('disabled', true);
+		}else{
+			gimbalSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);
+	});////验证 恒速运动-速度 结束//////////////////////////
+	
+	//验证 位置修正-轴 //////////////////////////////////
+	$('#PositionCorrectAxis').blur(function () {
+		var gimbalSbmt = $('#gimbalSbmt');
+		var v = $.trim($(this).val());
+		var err = 0;
+		
+		if (!(v == 1 || v == 2))
+		{
+			err = 1;
+			layer.tips('轴设置有误!', $(this), {tipsMore: true});
+			gimbalSbmt.prop('disabled', true);
+		}else{
+			gimbalSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);
+	});////验证 位置修正-轴 结束//////////////////////////
+	
+	//验证 位置修正-速度 //////////////////////////////////
+	$('#PositionCorrectVal').blur(function () {
+		var gimbalSbmt = $('#gimbalSbmt');
+		var v = $.trim($(this).val());
+		var err = 0;
+		
+		if ((!$.isNumeric(v)) || (v > 1 || v < -1))
+		{
+			err = 1;
+			layer.tips('速度设置有误!', $(this), {tipsMore: true});
+			gimbalSbmt.prop('disabled', true);
+		}else{
+			gimbalSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);
+	});////验证 位置修正-速度 结束//////////////////////////
+//验证转台 表单指令数据 结束/////////////////////////////////////
+
+//转台 带参数指令 表单提交//////////////////////////////////
+    $('#gimbalSbmt').click(function () {
+		var err = 0; //错误标识
+        var form = $('#at60Gimbal');    //获取转台表单元素
+		var textE = form.children('div:not(.notCheck)').find('input.blur');
+		textE.each(function () {
+			$(this).blur();
+			err += $(this).data('err');
+		});
+		
+		if (err > 0){
+			return;  //指令输入有误 不提交
+		}
+		
+        var formData = new FormData(form[0]);  //将jquery对象转为js-dom对象
+		//执行ajax
 			$.ajax ({
               type: 'post',
               url : '/xinglong/at60/at60GimbalSendData',
@@ -515,12 +633,10 @@
                alert('网络异常,请重新提交');
               },
         	});
-		}
-        
-     
-    });
-    
-   //转台 表单提交按钮 hover //////////////////////////////////
+	});
+//转台 带参数指令 表单提交////////////////////////////////// 
+  
+//转台 表单提交按钮 hover //////////////////////////////////
    $('#gimbalSbmt').hover(
         function (){
             $(this).addClass("hover");
@@ -614,7 +730,7 @@
         });
    });
    
-   //CCD 带参数指令  js事件//////////////////////////////////////////////
+//CCD 带参数指令  js事件//////////////////////////////////////////////
 	var ccdForm = $('#at60Ccd');
     var ccdSelect = ccdForm.find('div');
 
@@ -626,126 +742,357 @@
          $(this).removeClass('notCheck');
      });
 	
-	//ccd 表单数据验证////////////////////////////////////////////
-	function checkCcd ()
-	{
-		var msg = ''; //定义错误提示
-		var formElemt = $('#at60Ccd');
+//ccd 表单数据验证////////////////////////////////////////////
+	//验证制冷温度
+	$('#ccdTemperature').blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());
+		var err = 0;
 		
-		if (formElemt.find("input[value='1']").prop('checked')) //制冷温度
+		if ((!$.isNumeric(v)) || v > 20 || v < -80)
 		{
-			var temperature = formElemt.find("input[name='temperature']").val();
-			/*if ()
-			{
-				.......
-			}*/
-		}else if (formElemt.find("input[value='2']").prop('checked')){//曝光策略
-			var validFlag = formElemt.find("input[name='validFlag']").val();//数据标志位
-			var startTime = formElemt.find("input[name='startTime']").val();//起始时刻
-			var duration = formElemt.find("input[name='duration']").val();//曝光时间
-			var delay = formElemt.find("input[name='delay']").val();//延迟时间
-			var objectName = formElemt.find("input[name='objectName']").val();//目标名称
-			var objectType = formElemt.find("select[name='objectType']").val();//目标类型
-			var objectRightAscension = formElemt.find("input[name='objectRightAscension']").val();//目标赤经
-			var objectDeclination = formElemt.find("input[name='objectDeclination']").val();//目标赤纬
-			var objectEpoch = formElemt.find("select[name='objectEpoch']").val();//目标历元
-			var objectBand = formElemt.find("input[name='objectBand']").val();//拍摄波段
-			var objectFilter = formElemt.find("select[name='objectFilter']").val();//滤光片
-			var isSaveImage = formElemt.find("select[name='isSaveImage']").val();//是否保存图像
-			/* if ()
-			{
-				........
-			} */
-		}else if (formElemt.find("input[value='3']").prop('checked')){//开始曝光
-			var isReadFrameSeq = formElemt.find("input[name='isReadFrameSeq']").val();
-			var frameSequence = formElemt.find("input[name='frameSequence']").val();
-			/* if ()
-			{
-				.....
-			} */
-		}else if (formElemt.find("input[value='4']").prop('checked')){//设置增益
-			var mode = formElemt.find("input[name='mode']").val();//增益模式
-			var gear = formElemt.find("input[name='gear']").val();//挡位
-			/* if ()
-			{
-				.....
-			} */
-		}else if (formElemt.find("input[value='5']").prop('checked')){//设置读出速度模式值
-			var ReadSpeedMode = formElemt.find("input[name='ReadSpeedMode']").val();//增益模式
-			/* if ()
-			{
-				.....
-			} */
-		}else if (formElemt.find("input[value='6']").prop('checked')){//设置转移速度值
-			var SetTransferSpeed = formElemt.find("input[name='SetTransferSpeed']").val();//增益模式
-			/* if ()
-			{
-				.....
-			} */
-		}else if (formElemt.find("input[value='7']").prop('checked')){//设置bin
-			var BinX = formElemt.find("input[name='BinX']").val();//binX
-			var BinY = formElemt.find("input[name='BinY']").val();//binY
-			/* if ()
-			{
-				.....
-			} */
-		}else if (formElemt.find("input[value='8']").prop('checked')){//设置Roi
-			var startX = formElemt.find("input[name='startX']").val();//startX
-			var startY = formElemt.find("input[name='startY']").val();//startY
-			var imageWidth = formElemt.find("input[name='imageWidth']").val();//imageWidth
-			var imageHeight = formElemt.find("input[name='imageHeight']").val();//imageHeight
-			/* if ()
-			{
-				.....
-			} */
-		}else if (formElemt.find("input[value='9']").prop('checked')){//设置快门
-			var shutter = formElemt.find("select[name='shutter']").val();
-			/* if ()
-			{
-				.....
-			} */
-		}else if (formElemt.find("input[value='10']").prop('checked')){//设置帧转移
-			var isEM = formElemt.find("input[name='isEM']").val();//isEM
-			var eMValue = formElemt.find("input[name='eMValue']").val();//eMValue
-			/* if ()
-			{
-				.....
-			} */
-		}else if (formElemt.find("input[value='11']").prop('checked')){//设置SetEM
-			var isFullFrame = formElemt.find("input[name='isFullFrame']").val();
-			/* if ()
-			{
-				.....
-			} */
-		}else if (formElemt.find("input[value='12']").prop('checked')){//设置CMOS
-			var isNoiseFilter = formElemt.find("input[name='isNoiseFilter']").val();
-			/* if ()
-			{
-				.....
-			} */
-		}else if (formElemt.find("input[value='13']").prop('checked')){//设置Base line
-			var isBaseline = formElemt.find("input[name='isBaseline']").val();
-			var baselineValue = formElemt.find("input[name='baselineValue']").val();
-			/* if ()
-			{
-				.....
-			} */
-		}else if (formElemt.find("input[value='14']").prop('checked')){//设置Over Scan
-			var isOverScan = formElemt.find("input[name='isOverScan']").val();
-			/* if ()
-			{
-				.....
-			} */
+			err = 1;
+			layer.tips('制冷温度值有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
 		}
-	}//ccd 表单验证函数结束
+		
+		$(this).data('err', err);
+	});
+	
+	//验证曝光时间
+	$('#durationInput').blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());
+		var err = 0;
+		
+		if ((!$.isNumeric(v)) || v < 0)
+		{
+			err = 1;
+			layer.tips('曝光时间值有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);
+	});
+	
+	//验证delay-延迟时间
+	$('#delayInput').blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());
+		var err = 0;
+		
+		if ((!$.isNumeric(v)) || v < 0)
+		{
+			err = 1;
+			layer.tips('延迟时间值有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);
+	});
+	
+	//验证 目标名称
+	$('#ccdObjectName').blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());
+		var patn = /([\u4e00-\u9fa5]| )+/;
+		var err = 0;
+		
+		if (patn.test(v) || v == '')
+		{
+			err = 1;
+			layer.tips('目标名称不能有汉字或空格空格!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);
+	});
+	
+	//验证 目标赤经
+	$('#inputIn3_2').blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v1 = $.trim($('#inputIn3').val());
+		var v2 = $.trim($('#inputIn3_1').val());
+		var v3 = $.trim($(this).val());
+		var patn = /^\d{1,2}$/;
+		var err = 0;
+		
+		if (!patn.test(v1) || v1 < 0 || v1 >= 24)
+		{
+			err = 1;
+			layer.tips('小时之数据输入有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+		
+		if (!patn.test(v2) || v2 < 0 || v2 >59)
+		{
+			err = 1;
+			layer.tips('分钟之数据输入有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+		
+		if (v3 == '' || v3 < 0 || v3 > 59 || !$.isNumeric(v3) || v3.indexOf('. ') == 0 )
+		{
+			err = 1;
+			layer.tips('秒之数据输入有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);		
+	});
+	
+	//验证 目标赤纬
+	$('#inputIn4_2').blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v1 = $.trim($('#inputIn4').val());
+		var v2 = $.trim($('#inputIn4_1').val());
+		var v3 = $.trim($(this).val());
+		var patn = /^\d{1,2}$/;
+		var err = 0;
+		
+		if (!patn.test(v1)|| v1 < -90 || v1 > 90)
+		{
+			err = 1;
+			layer.tips('小时之数据输入有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+		
+		if (!patn.test(v2)|| v2 < 0 || v2 >59)
+		{
+			err = 1;
+			layer.tips('分钟之数据输入有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+		
+		if (v3 == '' || v3 < 0 || v3 > 59 || !$.isNumeric(v3) || v3.indexOf('. ') == 0 )
+		{
+			err = 1;
+			layer.tips('秒之数据输入有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);	
+	});
+	
+	//验证 拍摄波段
+	$('#objectBandInput').blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());
+		var err = 0;
+		
+		/* if (v1 == '' || v1 < 90 || v1 > 90 || !$.isNumeric(v1))
+		{
+			layer.tips('小时之数据输入有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		} */
 
-	//CCD 带参数指令 表单提交 JS事件///////////////////////////////
+		$(this).data('err', err);
+	});
+	
+	//验证 帧序号
+	$('#frameSequenceIn').blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());
+		var err = 0;
+		
+		/* if (v1 == '' || v1 < 90 || v1 > 90 || !$.isNumeric(v1))
+		{
+			layer.tips('小时之数据输入有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		} */
+
+		$(this).data('err', err);
+	});
+	
+	//验证 读出速度模式值
+	$('#ReadSpeedModeIn').blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());
+		var patn = /^[1-9]$/;
+		var err = 0;
+		
+		if (!patn.test(v))
+		{
+			err = 1;
+			layer.tips('模式输入有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+
+		$(this).data('err', err);
+	});
+	
+	//验证 转移速度值
+	$('#TransferSpeedIn').blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());
+		var patn = /^[1-9]$/;
+		var err = 0;
+		
+		if (!patn.test(v))
+		{
+			err = 1;
+			layer.tips('转移速度输入有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+
+		$(this).data('err', err);
+	});
+	
+	//验证 设置Roi //////////////////////////////////////
+	$('#startX').blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());		
+		var patn = /^\d+$/; //必须为>=0的整数
+		var err = 0;
+		
+		if (!patn.test(v))
+		{
+			err = 1;
+			layer.tips('startX输入有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+
+		$(this).data('err', err);
+	});
+	
+	$('#startY').blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());		
+		var patn = /^\d+$/; //必须为>=0的整数
+		var err = 0;
+		
+		if (!patn.test(v))
+		{
+			err = 1;
+			layer.tips('startY输入有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+			
+		$(this).data('err', err);
+	});
+	
+	$('#imageWidth').blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());		
+		var patn = /^\d+$/; //必须为>=0的整数
+		var err = 0;
+		
+		if (!patn.test(v))
+		{
+			err = 1;
+			layer.tips('imageWidth输入有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+			
+		$(this).data('err', err);
+	});
+	
+	$('#imageHeight').blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());		
+		var patn = /^\d+$/; //必须为>=0的整数
+		var err = 0;
+		
+		if (!patn.test(v))
+		{
+			err = 1;
+			layer.tips('imageHeight输入有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+			
+		$(this).data('err', err);
+	});
+	//验证 设置Roi 结束////////////////////////////////////
+	
+	//验证 EmValue
+	$('#eMValueIn').blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());		
+		var patn = /^\d+$/; //必须为>=0的整数
+		var err = 0;
+		if (!patn.test(v))
+		{
+			err = 1;
+			layer.tips('EmValue输入有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+
+		$(this).data('err', err);
+	});
+	
+	//验证 baselineValue
+	$('#baselineValueIn').blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());		
+		var patn = /^\d+$/; //必须为>=0的整数
+		var err = 0;
+		
+		if (!patn.test(v))
+		{
+			err = 1;
+			layer.tips('此值输入有误!', $(this), {tipsMore: true});
+			ccdSbmt.prop('disabled', true);
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+
+		$(this).data('err', err);
+	});
+//ccd 表单数据验证 结束/////////////////////////////////////////
+
+//CCD 带参数指令 表单提交 JS事件///////////////////////////////
     $('#ccdSbmt').click(function () {
+		var err = 0; //错误标识
         var form = $('#at60Ccd');    //获取ccd表单元素
+		var textE = form.children('div:not(.notCheck)').find('input.blur');
+		textE.each(function () {
+			$(this).blur();
+			err += $(this).data('err');
+		});
+		if (err > 0){
+			return;  //指令输入有误 不提交
+		}
+		
         var formData = new FormData(form[0]);
         //执行ajax
-        if (true)  //此处调用 checkCcd函数
-		{
 			$.ajax ({
               type: 'post',
               url : '/xinglong/at60/at60CcdSendData',
@@ -762,11 +1109,10 @@
              error:  function () {
                alert('网络异常,请重新提交');
             },
-          })
-		}     
+          })    
     });
 	
-   //ccd 表单提交按钮 hover //////////////////////////////////
+//ccd 表单提交按钮 hover //////////////////////////////////
    $('#ccdSbmt').hover(
         function (){
             $(this).addClass("hover");
@@ -776,7 +1122,7 @@
         }
    );
    
-   //调焦器 带参数指令  js事件//////////////////////////////////////////////
+//调焦器 带参数指令  js事件///////////////////////////////////////
 	var focusForm = $('#at60Focus');
     var focusSelect = focusForm.find('div');
 
@@ -788,7 +1134,7 @@
          $(this).removeClass('notCheck');
      });
    
-   //调焦器 连接按钮 js事件///////////////////////////////////
+//调焦器 连接按钮 js事件///////////////////////////////////
    $('#focusConnect').click(function (){
 	   $(this).addClass('btnClick');
 	   $('#btnsFocus input').not($(this)).removeClass('btnClick');
@@ -809,7 +1155,7 @@
       });
    });
    
-    //调焦器 断开按钮 js事件///////////////////////////////////
+//调焦器 断开按钮 js事件///////////////////////////////////
    $('#focusDisConnect').click(function (){
 	   $(this).addClass('btnClick');
 	   $('#btnsFocus input').not($(this)).removeClass('btnClick');
@@ -830,7 +1176,7 @@
         });
    });
    
-   //调焦器 停止运动按钮 js事件///////////////////////////////////
+//调焦器 停止运动按钮 js事件///////////////////////////////////
    $('#focusStop').click(function (){
 	   $(this).addClass('btnClick');
 	   $('#btnsFocus input').not($(this)).removeClass('btnClick');
@@ -851,7 +1197,7 @@
         });
    });
    
-   //调焦器 找零按钮 js事件///////////////////////////////////
+//调焦器 找零按钮 js事件///////////////////////////////////
    $('#focusFindHome').click(function (){
 	   $(this).addClass('btnClick');
 	   $('#btnsFocus input').not($(this)).removeClass('btnClick');
@@ -872,7 +1218,7 @@
         });
    }); 
    
-    //调焦器 表单提交按钮 hover //////////////////////////////////
+//调焦器 表单提交按钮 hover //////////////////////////////////
    $('#focusSbmt').hover(
         function (){
             $(this).addClass("hover");
@@ -882,54 +1228,84 @@
         }
    );
    
-   //调焦器 表单数据验证////////////////////////////////////////////
-	function checkCcd ()
-	{
-		var msg = ''; //定义错误提示
-		var formElemt = $('#at60Focus');
-			
-		if (formElemt.find("input[value='1']").prop('checked'))//目标位置
+//调焦器 表单数据验证////////////////////////////////////////////
+	//验证 目标位置
+	$('#setPositionIn').blur(function () {
+		var focusSbmt = $('#focusSbmt');
+		var v = $.trim($(this).val());	
+		var err = 0;
+		
+		if (!$.isNumeric(v) || v < 0)
 		{
-			var setPosition = formElemt.find("input[name='setPosition']").val();
-			/* if ()
-			{
-				......
-			} */
-		}else if (formElemt.find("input[value='2']").prop('checked')){//恒速转动
-			var speed = formElemt.find("input[name='speed']").val();
-			/* if ()
-				{
-					......
-				} */
-		}else if (formElemt.find("input[value='3']").prop('checked')){//使能温度补偿
-			var enable = formElemt.find("input[name='enable']").val();
-			/* if ()
-				{
-					......
-				} */
-		}else if (formElemt.find("input[value='4']").prop('checked')){//温度补偿系数
-			var coefficient = formElemt.find("input[name='coefficient']").val();
-			/* if ()
-				{
-					......
-				} */
+			err = 1;
+			layer.tips('此值输入有误!', $(this), {tipsMore: true});
+			focusSbmt.prop('disabled', true);
+		}else{
+			focusSbmt.prop('disabled', false);
 		}
-	}//调焦器 表单数据验证函数 结束///////////////////////////////////
-   
-   //调焦器 带参数指令 表单提交 JS事件///////////////////////////////
-    $('#focusSbmt').click(function () {
-        var form = $('#at60Focus');    //获取ccd表单元素
-        var formData = new FormData(form[0]);
-        //执行ajax
-		if (true)	//此处调用 checkCcd()函数
+
+		$(this).data('err', err);
+	});
+	
+	//验证 恒速运动
+	$('#speedIn').blur(function () {
+		var focusSbmt = $('#focusSbmt');
+		var v = $.trim($(this).val());	
+		var err = 0;
+		
+		if (!$.isNumeric(v) || v <= 0)
 		{
-			$.ajax ({
-              type: 'post',
-              url : '/xinglong/at60/at60FocusSendData',
-              data : formData,
-              processData : false,
-              contentType : false,  
-              success:  function (info) {
+			err = 1;
+			layer.tips('此值输入有误!', $(this), {tipsMore: true});
+			focusSbmt.prop('disabled', true);
+		}else{
+			focusSbmt.prop('disabled', false);
+		}
+
+		$(this).data('err', err);
+	});
+	
+	//验证 温度补偿系数
+	$('#coefficientIn').blur(function () {
+		var focusSbmt = $('#focusSbmt');
+		var v = $.trim($(this).val());	
+		var err = 0;
+		
+		if (!$.isNumeric(v) || v == 0)
+		{
+			err = 1;
+			layer.tips('此值输入有误!', $(this), {tipsMore: true});
+			focusSbmt.prop('disabled', true);
+		}else{
+			focusSbmt.prop('disabled', false);
+		}
+
+		$(this).data('err', err);
+	});
+//调焦器 表单数据验证 结束/////////////////////////////////////////
+	  
+//调焦器 带参数指令 表单提交 JS事件///////////////////////////////
+    $('#focusSbmt').click(function () {
+		var err = 0;
+        var form = $('#at60Focus');    //获取ccd表单元素
+        var textE = form.children('div:not(.notCheck)').find('input.blur');
+		textE.each(function () {
+			$(this).blur();
+			err += $(this).data('err');
+		});
+		
+		if (err > 0){
+			return;  //指令输入有误 不提交
+		}
+		
+		var formData = new FormData(form[0]);
+		$.ajax ({
+             type: 'post',
+             url : '/xinglong/at60/at60FocusSendData',
+             data : formData,
+             processData : false,
+             contentType : false,  
+             success:  function (info) {
                 alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
@@ -939,12 +1315,10 @@
              error:  function () {
                alert('网络异常,请重新提交');
             },
-          })
-		}
-        
+         })        
     });
 	
-	//随动圆顶 连接按钮 js事件///////////////////////////////////
+//随动圆顶 连接按钮 js事件///////////////////////////////////
    $('#sDomeConnect').click(function (){
 	   $(this).addClass('btnClick');
 	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
@@ -965,7 +1339,7 @@
         });
    });
    
-   //随动圆顶 断开按钮 js事件///////////////////////////////////
+//随动圆顶 断开按钮 js事件///////////////////////////////////
    $('#sDomeDisConnect').click(function (){
 	   $(this).addClass('btnClick');
 	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
@@ -986,7 +1360,7 @@
         });
    });
    
-   //随动圆顶 停止运动按钮 js事件///////////////////////////////////
+//随动圆顶 停止运动按钮 js事件///////////////////////////////////
    $('#sDomeStop').click(function (){
 	   $(this).addClass('btnClick');
 	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
@@ -1007,7 +1381,7 @@
         });
    });
    
-   //随动圆顶 打开天窗 按钮 js事件///////////////////////////////////
+//随动圆顶 打开天窗 按钮 js事件///////////////////////////////////
    $('#sDomeScuttle').click(function (){
 	   $(this).addClass('btnClick');
 	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
@@ -1028,7 +1402,7 @@
         });
    });
    
-   //随动圆顶 关闭天窗 按钮 js事件///////////////////////////////////
+//随动圆顶 关闭天窗 按钮 js事件///////////////////////////////////
    $('#sDomeScuttleClose').click(function (){
 	   $(this).addClass('btnClick');
 	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
@@ -1049,7 +1423,7 @@
         });
    });
 	
-	//随动圆顶 带参数指令  js事件//////////////////////////////////////////////
+//随动圆顶 带参数指令  js事件//////////////////////////////////////
 	var domeForm = $('#at60Dome');
     var domeSelect = domeForm.find('div');
 
@@ -1061,48 +1435,79 @@
          $(this).removeClass('notCheck');
      });
 	 
-	//随动圆顶 表单数据验证////////////////////////////////////////////
-	function checkSlaveDome ()
-	{
-		var msg = ''; //定义错误提示
-		var formElemt = $('#at60Dome');
-			
-		if (formElemt.find("input[value='1']").prop('checked'))//目标方位
+//随动圆顶 表单数据验证//////////////////////////////////////////
+	//验证 目标方位
+	$('#domePositionIn').blur(function () {
+		var domeSbmt = $('#domeSbmt');
+		var v = $.trim($(this).val());	
+		var err = 0;
+		
+		if (!$.isNumeric(v) || v < 0 || v > 360)
 		{
-			var domePosition = formElemt.find("input[name='domePosition']").val();
-			/* if ()
-			{
-				......
-			} */
-		}else if (formElemt.find("input[value='2']").prop('checked')){//转动速度
-			var RotateSpeed = formElemt.find("input[name='RotateSpeed']").val();
-			/* if ()
-				{
-					......
-				} */
-		}else if (formElemt.find("input[value='3']").prop('checked')){//风帘位置
-			var shadePosition = formElemt.find("input[name='shadePosition']").val();
-			/* if ()
-				{
-					......
-				} */
-		}else if (formElemt.find("input[value='4']").prop('checked')){//风帘运动
-			var shadeAction = formElemt.find("select[name='shadeAction']").val();
-			/* if ()
-				{
-					......
-				} */
+			err = 1;
+			layer.tips('此值输入有误!', $(this), {tipsMore: true});
+			domeSbmt.prop('disabled', true);
+		}else{
+			domeSbmt.prop('disabled', false);
 		}
-	}//随动圆顶 表单数据验证函数 结束///////////////////////////////////
-	 
-	//圆顶 带参数指令 表单提交 JS事件///////////////////////////////
-    $('#domeSbmt').click(function () {
-        var form = $('#at60Dome');    //获取ccd表单元素
-        var formData = new FormData(form[0]);
-        //执行ajax
-		if (true) //此处调用  checkSlaveDome()函数
+
+		$(this).data('err', err);
+	});
+	
+	//验证 转动速度
+	$('#RotateSpeedIn').blur(function () {
+		var domeSbmt = $('#domeSbmt');
+		var v = $.trim($(this).val());	
+		var err = 0;
+		
+		if (!$.isNumeric(v) || v <= 0)
 		{
-			$.ajax ({
+			err = 1;
+			layer.tips('此值输入有误!', $(this), {tipsMore: true});
+			domeSbmt.prop('disabled', true);
+		}else{
+			domeSbmt.prop('disabled', false);
+		}
+
+		$(this).data('err', err);
+	});
+	
+	//验证 风帘位置
+	$('#shadePositionIn').blur(function () {
+		var domeSbmt = $('#domeSbmt');
+		var v = $.trim($(this).val());	
+		var err = 0;
+		
+		if (!$.isNumeric(v) || v < 0 || v > 90)
+		{
+			err = 1;
+			layer.tips('此值输入有误!', $(this), {tipsMore: true});
+			domeSbmt.prop('disabled', true);
+		}else{
+			domeSbmt.prop('disabled', false);
+		}
+
+		$(this).data('err', err);
+	});
+//随动圆顶 表单数据验证 结束//////////////////////////////////////////
+
+//随动圆顶 带参数指令 表单提交 JS事件///////////////////////////////
+    $('#domeSbmt').click(function () {
+		var err = 0;
+        var form = $('#at60Dome');    //获取ccd表单元素
+		var textE = form.children('div:not(.notCheck)').find('input.blur');
+		textE.each(function () {
+			$(this).blur();
+			err += $(this).data('err');
+		});
+		
+		if (err > 0){
+			return;  //指令输入有误 不提交
+		}
+		
+        var formData = new FormData(form[0]);
+        
+		$.ajax ({
               type: 'post',
               url : '/xinglong/at60/at60sDomeSendData',
               data : formData,
@@ -1118,9 +1523,7 @@
              error:  function () {
                alert('网络异常,请重新提交');
             },
-          })
-		}
-             
+        })           
     });
 	
 	//随动圆顶 表单提交按钮 hover //////////////////////////////////

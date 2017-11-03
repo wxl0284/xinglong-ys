@@ -11,6 +11,7 @@
      {load href='/static/plugin/easyui-1.3.5/jquery.easyui.min.js'}
      {load href='/static/plugin/easyui-1.3.5/locale/easyui-lang-zh_CN.js'}
      {load href='/static/js/at60.js'}
+     {load href='/static/plugin/layer/layer.js'}
 </head>
 <body>
 	<header class='pos_r'>
@@ -19,25 +20,35 @@
 		  <div id='atList' class='pos_a'>
 				望远镜列表
 				<ul id='atListUl' class='center displayNo'>
-					<li id='at60'>60CM</li>
+					<li><a href='{:url("/xinglong/at60")}' target='_blank'>60CM</a></li>
 					<hr>
-					<li id='at80'>80CM</li>
+					<li><a href='{:url("/xinglong/at80")}' target='_blank'>80CM</a></li>
 					<hr>
 					<li>85CM</li>
 					<hr>
 					<li>85CM</li>
 				</ul>
 		   </div>
+		    <div id='atConfig' class='pos_a'>
+				配置望远镜
+				<ul id='atConfigList' class='center displayNo'>
+					<li><a href='{:url("/xinglong/page_config/at60config")}' target='_blank'>配置60CM</a></li>
+					<hr>
+					<li><a href='{:url("/xinglong/page_config/at80config")}' target='_blank'>配置80CM</a></li>
+					<hr>
+					<li>配置85CM</li>
+				</ul>
+		   </div>
 		  <!-- <a href="{:url('/xinglong/result')}" class='pos_r' id='res'>观测结果</a> -->
 		   <p class='pos_a'>
 				<a href="{:url('xinglong/control/front')}">首页&nbsp;&nbsp;&nbsp;&nbsp;
 				</a>
-				{if	condition="$Request.cookie.role == 1 "}
+				{if	condition="$Think.session.role == 1 "}
 				<a href='/xinglong/user'>用户管理&nbsp;&nbsp;&nbsp;&nbsp;</a>
 				{/if}
 				<a href='/xinglong/user/passwd'>修改密码&nbsp;&nbsp;&nbsp;&nbsp;
 				</a>
-				<span>欢迎!&nbsp;&nbsp;{$Request.cookie.login ?? ''}&nbsp;
+				<span>欢迎!&nbsp;&nbsp;{$Think.session.login ?? ''}&nbsp;
 				</span>
 		   </p>
 		   <div class='pos_a'><a href='/xinglong/control/logout'>&nbsp;&nbsp;&nbsp;退出&nbsp;&nbsp;&nbsp;</a></div> 
@@ -218,7 +229,7 @@
 				<span name='coverOp'>镜盖操作</span>  <!--<span name='focusOp'>焦点切换镜</span>-->
 				<span name='saveData'>保存同步数据</span>  <!--<span name='trackS'>跟踪恒星</span>	<span name='PropCfg'>属性设置</span>-->
 			 </nav>
-			 <div class='border2'><!--指令和可变属性-->
+			 <div class='border2'><!--转台指令和可变属性-->
 				<div id='btnsGimbal' class='center_mrg center BtnsDiv'>
 					<input id='gimbalConnect' class='border1 btnCommand' type='button' value='连接望远镜' />
 					<input id='gimbalDisConnect' class='border1 btnCommand' type='button' value='断开望远镜' />
@@ -229,16 +240,16 @@
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
 				<form id='at60Gimbal' class='center command'>
-					<div id='trackStar' class="pos_r">
+					<div id='trackStar'>
 					   <input type='radio' name='command' value='1' />
 					   赤经：
 					   <input id='inputIn1' class='hourMin' type="text" name='rightAscension1'>:
 					   <input id='inputIn1_1' class='hourMin' type="text" name='rightAscension2'>:
-					   <input id='inputIn1_2' class='sec' type="text" name='rightAscension2'>
+					   <input id='inputIn1_2' class='sec blur' type="text" name='rightAscension2'>
 					   赤纬：
 					   <input id='inputIn2' class='hourMin' type="text" name='declination1'>:
 					   <input id='inputIn2_1' class='hourMin' type="text" name='declination2'>:
-					   <input id='inputIn2_2' class='sec' type="text" name='declination3'>
+					   <input id='inputIn2_2' class='sec blur' type="text" name='declination3'>
 					  历元：<select name="epoch" style='width:69px;'>
 						       <option value="0">real</option>
 							   <option value="1">J2000</option>
@@ -255,7 +266,7 @@
 					</div>
 					<div id='targetName'>
 					   <input type='radio' name='command' value='2' />
-					   目标名称：<input type="text" name='objectName' />
+					   目标名称：<input id='objectNameInput' type="text" name='objectName' class='blur'>
 					  目标类型：<select name="objectType" style='width:81px;'>
 						           <option value="0">恒星</option>
 								   <option value="1">太阳</option>
@@ -268,12 +279,12 @@
 					  </div>
 					<div id='poitFix'>
 						   <input type='radio' name='command' value='3' />
-						   方位：<input type="text" name='azimuth' />
-						   俯仰：<input type="text" name='elevation' />
+						   方位：<input type="text" name='azimuth' class='blur'>
+						   俯仰：<input type="text" name='elevation' class='blur'>
 					</div>
 					<div id='slewDerotator'>
 					   <input type='radio' name='command' value='4' />轴3指向固定位置：
-					   <input type="text" name='slewDerotator' />
+					   <input type="text" name='slewDerotator' class='blur'>
 					</div>
 					<div id='axis3Mode'>
 					   <input type='radio' name='command' value='5' />
@@ -282,22 +293,22 @@
 								   <option value="1">偏差消旋</option>
 								   <option value="2">始终指向同一角度</option>
 						    </select>
-					   <span class='displayNo'>起偏角：<input type="text" name='polarizingAngle' /></span>
+					   <span class='displayNo'>起偏角：<input type="text" name='polarizingAngle' class='blur'></span>
 					</div>
 					<div id='speedX'>
                            <input type='radio' name='command' value='6' />
-                           轴：<input type="text" name='axis' />
-                           速度：<input type="text" name='correction' />
+                           轴：<input id='speedXInput' type="text" name='axis' class='blur'>
+                           速度：<input id='speedCorrect'type="text" name='correction' class='blur'>
 					</div>
 					<div id='speedF'>
                            <input type='radio' name='command' value='7' />
-                           轴：<input type="text" name='FixedMoveAxis' />
-                           速度：<input type="text" name='FixedMoveSpeed' />
+                           轴：<input id='speedFAxis' type="text" name='FixedMoveAxis' class='blur'>
+                           速度：<input id='speedFVal' type="text" name='FixedMoveSpeed' class='blur'>
 					</div>
 					<div id='positionX'>
                            <input type='radio' name='command' value='8' />
-                           轴：<input type="text" name='PositionCorrectAxis' />
-                           修正值：<input type="text" name='PositionCorrectVal' />
+                           轴：<input id='PositionCorrectAxis' type="text" name='PositionCorrectAxis' class='blur'>
+                           修正值：<input id='PositionCorrectVal' type="text" name='PositionCorrectVal' class='blur'>
 					</div>
 					<div id='coverOp'>
                            <input type='radio' name='command' value='9' />镜盖操作：
@@ -318,16 +329,18 @@
                           
 					</div>
 					<div id='saveData'>
-                           <input type='radio' name='command' value='11' />保存同步数据：
-						   <input type="text" name='saveSyncData' />
+                           <input type='radio' name='command' value='11' />保存同步数据：<select name="saveSyncData" style='width:56px;'>
+						        <option value="0">否</option>
+							    <option value="1">是</option>
+						    </select>
 					</div>
 					<div id='trackS'>
                            <input type='radio' name='command' value='12' />跟踪恒星：
-						   <input type="text" name='trackStar' />
+						   <input type="text" name='trackStar' class='blur'>
 					</div>
 					<div id='PropCfg'>
                            <input type='radio' name='command' value='13' />属性设置：
-						   <input type="text" name='configProp' />
+						   <input type="text" name='configProp' class='blur'>
 					</div>
 					<br><input id='gimbalSbmt' class='border submitBtn' type="button" value="确认提交指令">
 				</form>
@@ -336,7 +349,7 @@
                 <span class='propT'>转台可变属性:</span><br><br>
                 <ul class='properUl'>
                     <li class='li fl'>时间戳:<span id='stamp'></span></li>
-                    <li class='li fl'>当前恒星时:<span id='siderealTime_1'></span></li>
+                    {$cacheStr['siderealTime_1']}
                     <li class='li fl'>当前时角:<span id='hourAngle_1'></span></li>
                     <li class='li fl'>当前赤经:<span id='rightAscension_1'></span></li>
                     <li class='li fl'>当前赤纬:<span id='declination_1'></span></li>
@@ -381,12 +394,20 @@
        </div><!--转台 结束-->
 	   <div id='ccdInfo' class='displayNo'><!--ccd 指令和属性-->
 			<nav class='center'><!--ccd指令 导航-->
-			    <span name='coolTemp'>制冷温度</span>	<span name='exposStratic'>曝光策略</span>
-				<span name='startExp'>开始曝光</span>  <span name='setGear'>设置增益</span>
-				<span name='readOut'>读出速度模式</span>  <span name='transSpeed'>设置转移速度</span>
-				<span name='setBin'>设置Bin</span>  <span name='setRoi'>设置Roi</span>
-				<span name='setShutter'>设置快门</span>  <span name='setFrame'>设置帧转移</span>
-				<span name='setEm'>设置SetEM</span>  <span name='setCmos'>CMOS noise</span>	<span name='setBase'>Base line</span> <span name='setOverScan'>Over Scan</span>
+			    <span name='coolTemp'>制冷温度</span>
+				<span name='exposStratic'>曝光策略</span>
+				<span name='startExp'>开始曝光</span>
+				<span name='setGear'>设置增益</span>
+				<span name='readOut'>读出速度模式</span>
+				<span name='transSpeed'>转移速度模式</span>
+				<span name='setBin'>设置Bin</span>
+				<span name='setRoi'>设置Roi</span>
+				<span name='setShutter'>设置快门</span>
+				<span name='setFrame'>设置帧转移</span>
+				<span name='setEm'>设置EM</span>
+				<span name='setCmos'>CMOS noise</span>
+				<span name='setBase'>Base line</span>
+				<span name='setOverScan'>Over Scan</span>
 			</nav>
 			<div class='border2'><!--ccd 指令和可变属性-->
 				<div id='btnsCCD' class='center_mrg center BtnsDiv'>
@@ -399,15 +420,15 @@
 				<form id='at60Ccd' class='center command'>
 					<div id='coolTemp'>
 					   <input type='radio' name='command' value='1' />设置制冷温度：
-					   <input type="text" name='temperature' placeholder=''/>
+					   <input id='ccdTemperature' type="text" name='temperature' placeholder='-80~20' class='blur'>
 					</div>
 					<div id='exposStratic' class="pos_r"><!--ccd 曝光策略开始-->
 					   <input type='radio' name='command' value='2' />
-					   <span>数据有效标志位：<input type="text" name='validFlag' placeholder='整数'/></span>
-					   <span>起始时刻：<input type="text" name='startTime' placeholder='整数' /></span>
-					   <span>曝光时间：<input type="text" name='duration' placeholder='整数' /></span>
-					   <span>延迟时间：<input type="text" name='delay' placeholder='整数' /></span>
-					   <span>拍摄目标名称：<input type="text" name='objectName' placeholder='数字字母' /></span>
+					   <span>数据有效标志位：<input type="text" name='validFlag' placeholder='整数'></span>
+					   <span>起始时刻：<input type="text" name='startTime' placeholder='整数'></span>
+					   <span>曝光时间：<input id='durationInput' type="text" name='duration' placeholder='数字' class='blur'></span>
+					   <span>延迟时间：<input id='delayInput' type="text" name='delay' placeholder='数字' class='blur'></span>
+					   <span>拍摄目标名称：<input id='ccdObjectName' type="text" name='objectName' placeholder='数字字母' class='blur'></span>
 					   <span>拍摄目标类型：<select name="objectType" style='width:75px;'>
 										   <option value="0">恒星</option>
 										   <option value="2">月亮</option>
@@ -421,11 +442,11 @@
 									 </select></span>
 						<span>目标赤经：<input id='inputIn3' class='hourMin' type="text" name='objectRightAscension1'>:
 						<input id='inputIn3_1' class='hourMin' type="text" name='objectRightAscension2'>:
-						<input id='inputIn3_2' class='sec' type="text" name='objectRightAscension3'>
+						<input id='inputIn3_2' class='sec blur' type="text" name='objectRightAscension3'>
 						</span>
 						<span>目标赤纬：<input id='inputIn4' class='hourMin' type="text" name='objectDeclination1'>:
 						<input id='inputIn4_1' class='hourMin' type="text" name='objectDeclination2'>:
-						<input id='inputIn4_2' class='sec' type="text" name='objectDeclination3'>
+						<input id='inputIn4_2' class='sec blur' type="text" name='objectDeclination3'>
 						</span>
 						<span>拍摄目标历元：<select name="objectEpoch" style='width:69px;'>
 									   <option value="0">real</option>
@@ -433,7 +454,7 @@
 									   <option value="2">B1950</option>
 									   <option value="3">J2050</option>
 									</select></span>
-						<span>当前拍摄波段：<input type="text" name='objectBand' placeholder='数字字母' /></span>
+						<span>当前拍摄波段：<input id='objectBandInput' type="text" name='objectBand' placeholder='数字字母'></span>
 						<span>拍摄波段滤光片系统：<select name="objectFilter" style='width:110px;'>
 									   <option value="0">Johnshon-Bessel</option>
 									   <option value="1">Sloan</option>
@@ -471,33 +492,60 @@
 					</div><!--ccd 曝光策略结束-->
 					  <div id='startExp'>
 					   <input type='radio' name='command' value='3' />
-					   是否读取帧序号：<input type="text" name='isReadFrameSeq' />
-					   帧序号：<input type="text" name='frameSequence' />
+					   是否读取帧序号：<select name="isReadFrameSeq" style='width:118px;'>
+						           <option value="0">是</option>
+								   <option value="1">否</option>
+						    </select>
+					   帧序号：<input id='frameSequenceIn' type="text" name='frameSequence' class='blur'>
 					  </div>
 					  <div id='setGear'>
 					   <input type='radio' name='command' value='4' />
-					   增益模式：<input type="text" name='mode' />
-					   增益档位：<input type="text" name='gear' />
+					   增益模式：<select name="mode" style='width:60px;'>
+						           <option value="0">0</option>
+								   <option value="1">1</option>
+								   <option value="2">2</option>
+								   <option value="3">3</option>
+								   <option value="4">4</option>
+						    </select>
+					   增益档位：<select name="gear" style='width:60px;'>
+						           <option value="0">0</option>
+								   <option value="1">1</option>
+								   <option value="2">2</option>
+								   <option value="3">3</option>
+								   <option value="4">4</option>
+						    </select>
 					  </div>
 					  <div id='readOut'>
 					   <input type='radio' name='command' value='5' />读出速度模式：
-					   <input type="text" name='ReadSpeedMode' placeholder='整数' />		   
+					   <input type="text" id='ReadSpeedModeIn' name='ReadSpeedMode' placeholder='整数' class='blur'>		   
 					  </div>
 					  <div id='transSpeed'>
-                           <input type='radio' name='command' value='6' />转移速度值：
-						   <input type="text" name='SetTransferSpeed' placeholder='整数' />	
+                           <input type='radio' name='command' value='6' />转移速度模式：
+						   <input type="text" id='TransferSpeedIn' name='SetTransferSpeed' placeholder='整数' class='blur'>	
 					  </div>
 					  <div id='setBin'>
                            <input type='radio' name='command' value='7' />
-                           BinX：<input type="text" name='BinX' />
-                           BinY：<input type="text" name='BinY' />
+                           BinX：<select name="BinX" style='width:60px;'>
+						           <option value="0">0</option>
+								   <option value="1">1</option>
+								   <option value="2">2</option>
+								   <option value="3">3</option>
+								   <option value="4">4</option>
+						    </select>
+                           BinY：<select name="BinY" style='width:60px;'>
+						           <option value="0">0</option>
+								   <option value="1">1</option>
+								   <option value="2">2</option>
+								   <option value="3">3</option>
+								   <option value="4">4</option>
+						    </select>
 					  </div>
 					  <div id='setRoi'>
                            <input type='radio' name='command' value='8' />
-                           startX：<input type="text" name='startX' />
-                           startY：<input type="text" name='startY' />
-                           ImageW：<input type="text" name='imageWidth' />
-                           imageHeight：<input type="text" name='imageHeight' />
+                           startX：<input id='startX' type="text" name='startX' class='blur'>
+                           startY：<input id='startY' type="text" name='startY' class='blur'>
+                           ImageW：<input id='imageWidth' type="text" name='imageWidth' class='blur'>
+                           imageHeight：<input id='imageHeight' type="text" name='imageHeight' class='blur'>
 					  </div>
 					  <div id='setShutter'>
                            <input type='radio' name='command' value='9' />设置快门：
@@ -507,26 +555,40 @@
 						    </select>
 					  </div>
 					  <div id='setFrame'>
-                           <input type='radio' name='command' value='10' />帧转移：
-						   <input type="text" name='isFullFrame' />                          
+                           <input type='radio' name='command' value='10' />帧转移：<select name="isFullFrame" style='width:66px;'>
+						           <option value="0">否</option>
+								   <option value="1">是</option>
+						    </select>                          
 					  </div>
 					  <div id='setEm'>
                            <input type='radio' name='command' value='11' />
-						   isEM<input type="text" name='isEM' />					   
-						  eMValue<input type="text" name='eMValue' />						   
+						   设置Em：<select name="isEM" style='width:66px;'>
+						           <option value="0">否</option>
+								   <option value="1">是</option>
+						    </select> 					   
+						  EmValue：<input id='eMValueIn' type="text" name='eMValue' class='blur'>						   
 					  </div>
 					  <div id='setCmos'>
-                           <input type='radio' name='command' value='12' />
-						   CMOS noise filter：<input type="text" name='isNoiseFilter' />
+                           <input type='radio' name='command' value='12' />CMOS noise filter：
+						   <select name="isNoiseFilter" style='width:66px;'>
+						           <option value="0">否</option>
+								   <option value="1">是</option>
+						    </select>
 					  </div>
 					  <div id='setBase'>
                            <input type='radio' name='command' value='13' />
-						   isBaseline：<input type="text" name='isBaseline' />
-						  baselineValue：<input type="text" name='baselineValue' />
+						   isBaseline：<select name="isBaseline" style='width:66px;'>
+						           <option value="0">否</option>
+								   <option value="1">是</option>
+						    </select>
+						  baselineValue：<input id='baselineValueIn' type="text" name='baselineValue' class='blur'>
 					  </div>
 					  <div id='setOverScan'>
                            <input type='radio' name='command' value='14' />
-						   Over Scan：<input type="text" name='isOverScan' />
+						   Over Scan：<select name="isOverScan" style='width:66px;'>
+						           <option value="0">否</option>
+								   <option value="1">是</option>
+						    </select>
 					  </div>
 					<br>
 					<input id='ccdSbmt' class='border submitBtn' type="button" value="确认提交指令">
@@ -581,20 +643,22 @@
 				<form id='at60Focus' class='center command'>
 					<div id='targetPos'>
 					   <input type='radio' name='command' value='1' />目标位置：
-					   <input type="text" name='setPosition' placeholder=''/>
+					   <input type="text" id='setPositionIn' name='setPosition' placeholder='数字' class='blur'>
 					</div>
 					<div id='fixedSpeed'>
 					   <input type='radio' name='command' value='2' />设置恒速转动：
-					  <input type="text" name='speed' placeholder=''/>
+					  <input type="text" id='speedIn' name='speed' placeholder='数字' class='blur'>
 					</div>
 					<div id='temperaEnable'>
-					   <input type='radio' name='command' value='3' />使能温度补偿：
-					   <input type="text" name='enable' />
+					   <input type='radio' name='command' value='3' />使能温度补偿：<select name="enable" style='width:66px;'>
+						           <option value="0">否</option>
+								   <option value="1">是</option>
+						    </select>
 					</div>
 					<div id='temperaCoeficnt'>
 					   <input type='radio' name='command' value='4' />温度补偿系数：
-					   <input type="text" name='coefficient' />
-					  </div>
+					   <input type="text" id='coefficientIn' name='coefficient' class='blur'>
+					</div>
 					<br><input id='focusSbmt' class='border submitBtn' type="button" value="确认提交指令">
 				</form>
 				<br><hr style='width:98%;' class='center_mrg'><br>
@@ -643,15 +707,15 @@
 				<form id='at60Dome' class='center command'>
 					<div id='setPos'>
 					   <input type='radio' name='command' value='1' />设置目标方位:
-					   <input type="text" name='domePosition' placeholder='0-360'/>
+					   <input type="text" id='domePositionIn' name='domePosition' placeholder='0-360' class='blur'>
 					</div>
 					<div id='rotateSpd'>
 					    <input type='radio' name='command' value='2' />设置转动速度：
-						<input type="text" name='RotateSpeed' placeholder='数字'/>
+						<input type="text" id='RotateSpeedIn' name='RotateSpeed' placeholder='数字' class='blur'>
 					</div>
 					<div id='shadePos'>
 					   <input type='radio' name='command' value='3' />设置风帘位置：
-					   <input type="text" name='shadePosition' placeholder='0-90' />
+					   <input type="text" id='shadePositionIn' name='shadePosition' placeholder='0-90' class='blur'>
 					</div>
 					<div id='shadeAct'>
 					   <input type='radio' name='command' value='4' />控制风帘运动：
@@ -727,30 +791,6 @@
 	   </div><!--滤光片 结束-->
 	   <div id='planInfo' class='displayNo pos_r'><!--观测计划表格 开始-->
 			 <table id="dg" title="计划表格"> 
-			   <!-- <thead>   
-					<tr>
-						<th field="id" width="5" rowspan='2'></th>   
-						<th field="target" width="190" rowspan='2'>目标名称</th>   
-						<th field="type" width='80' rowspan='2'>目标类型</th>   
-						<th field="rightAscension" width='140' colspan='3'>赤经</th>
-						
-						<th field="declination" width='140' rowspan='2'>赤纬</th>
-						<th field="epoch" width='70' rowspan='2'>历元</th>
-						<th field="exposureTime" width='66' rowspan='2'>曝光时间</th>
-						<th field="delayTime" width='66' rowspan='2'>delayTime</th>
-						<th field="exposureCount" width='66' rowspan='2'>曝光数量</th>
-						<th field="filter" width='55' rowspan='2'>滤光片</th>
-						<th field="gain" width='50' rowspan='2'>增益</th>
-						<th field="bin" width='50' rowspan='2'>Bin</th>
-						<th field="readout" width='62' rowspan='2'>读出速度</th>
-						<th field="del" width='40' rowspan='2'>删除</th>
-					</tr>
-					<tr>
-						<th field="rightAscension1" width='35'></th>
-						<th field="rightAscension2" width='35'></th>
-						<th field="rightAscension3" width='70'></th>
-					</tr>
-				</thead> -->
 			 </table>
 			<div id="toolbar">
 			<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-more" plain="true" onclick="importPlan()">导入计划</a>

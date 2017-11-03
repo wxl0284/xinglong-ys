@@ -13,14 +13,14 @@ class Result extends Controller
     public function _initialize ()
     {
         //未登录
-        if (!Cookie::has('login'))
+        if (!Session::has('login'))
         {
 			if (Request::instance()->isAjax())
 			{
 				return '请完成登录后，再进行相关操作！';
 			}
             $request = Request::instance();
-            Cookie::set('url', $request->url());
+            Cookie::set('url', $request->url(true));
             $this->error('请完成登录后，再进行相关操作！', '/');
         }   
     }

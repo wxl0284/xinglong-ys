@@ -151,12 +151,16 @@
         } 
    );
    
-   $('#at60').click(function () {
-	   location = '/xinglong/at60';
-   });
-   $('#at80').click(function () {
-	   location = '/xinglong/at80';
-   });
+    //各望远镜配置 js事件
+   var configList = $('#atConfigList');
+   $('#atConfig').hover(
+        function (){
+            configList.show();
+        }, 
+       function (){		
+			configList.hide();
+        } 
+   );
    //望远镜列表js代码结束///////////////////////////////////
 	
 	//接管 弹窗代码////////////////////////////////////////////////

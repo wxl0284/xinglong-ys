@@ -9,8 +9,5 @@ $(function () {
 			ul.hide();
         } 
    );
-   
-   $('#at60').click(function () {
-	   location = '/xinglong/at60';
-   });
+
 })
