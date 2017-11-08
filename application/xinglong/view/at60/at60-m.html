@@ -94,15 +94,13 @@
 			<div id='infos' class='border pos_a'>
 				<table id='time' class='center'>
 					<tr>
-						<td>日期</td>
-						<td>北京时</td>
+						<td>UTC时</td>
 						<td>历元</td>
 						<td>恒星时</td>
 						<td>晨光始</td>
 						<td>昏影终</td>
 					</tr>
 					<tr class='tdC'>
-						<td id='date'></td>
 						<td id='bjTime'></td>
 						<td>J2000</td>
 						<td id='siderealTime'></td>
@@ -240,16 +238,16 @@
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
 				<form id='at60Gimbal' class='center command'>
-					<div id='trackStar'>
+					<div id='trackStar' class='pos_r'>
 					   <input type='radio' name='command' value='1' />
 					   赤经：
-					   <input id='inputIn1' class='hourMin' type="text" name='rightAscension1'>:
-					   <input id='inputIn1_1' class='hourMin' type="text" name='rightAscension2'>:
-					   <input id='inputIn1_2' class='sec blur' type="text" name='rightAscension2'>
+					   <input id='inputIn1' class='hourMin blur border_b' type="text" name='rightAscension1'>:
+					   <input id='inputIn1_1' class='hourMin blur border_b' type="text" name='rightAscension2'>:
+					   <input id='inputIn1_2' class='sec blur border_b' type="text" name='rightAscension2'>
 					   赤纬：
-					   <input id='inputIn2' class='hourMin' type="text" name='declination1'>:
-					   <input id='inputIn2_1' class='hourMin' type="text" name='declination2'>:
-					   <input id='inputIn2_2' class='sec blur' type="text" name='declination3'>
+					   <input id='inputIn2' class='hourMin blur border_b' type="text" name='declination1'>:
+					   <input id='inputIn2_1' class='hourMin blur border_b' type="text" name='declination2'>:
+					   <input id='inputIn2_2' class='sec blur border_b' type="text" name='declination3'>
 					  历元：<select name="epoch" style='width:69px;'>
 						       <option value="0">real</option>
 							   <option value="1">J2000</option>
@@ -263,6 +261,8 @@
 						   <option value="2">月亮</option>
 						   <option value="3">彗星</option>
 						</select>
+						<p style='position:absolute;border:1px solid #7a7a7a;top:1px;left:262px;width:162px;height:19px;z-index:-1;'></p>
+						<p style='position:absolute;border:1px solid #7a7a7a;top:1px;left:495px;width:162px;height:19px;z-index:-1;'></p>
 					</div>
 					<div id='targetName'>
 					   <input type='radio' name='command' value='2' />
@@ -349,7 +349,7 @@
                 <span class='propT'>转台可变属性:</span><br><br>
                 <ul class='properUl'>
                     <li class='li fl'>时间戳:<span id='stamp'></span></li>
-                    {$cacheStr['siderealTime_1']}
+                    <li class='li fl'>当前恒星时:<span id='siderealTime_1'></span></li>
                     <li class='li fl'>当前时角:<span id='hourAngle_1'></span></li>
                     <li class='li fl'>当前赤经:<span id='rightAscension_1'></span></li>
                     <li class='li fl'>当前赤纬:<span id='declination_1'></span></li>
@@ -440,14 +440,16 @@
 										   <option value="8">暗流</option>
 										   <option value="9">平场</option>
 									 </select></span>
-						<span>目标赤经：<input id='inputIn3' class='hourMin' type="text" name='objectRightAscension1'>:
-						<input id='inputIn3_1' class='hourMin' type="text" name='objectRightAscension2'>:
-						<input id='inputIn3_2' class='sec blur' type="text" name='objectRightAscension3'>
+						<span>目标赤经：<input id='inputIn3' class='hourMin border_b blur' type="text" name='objectRightAscension1'>:
+						<input id='inputIn3_1' class='hourMin border_b blur' type="text" name='objectRightAscension2'>:
+						<input id='inputIn3_2' class='sec blur border_b' type="text" name='objectRightAscension3'>
 						</span>
-						<span>目标赤纬：<input id='inputIn4' class='hourMin' type="text" name='objectDeclination1'>:
-						<input id='inputIn4_1' class='hourMin' type="text" name='objectDeclination2'>:
-						<input id='inputIn4_2' class='sec blur' type="text" name='objectDeclination3'>
+						<span>目标赤纬：<input id='inputIn4' class='hourMin border_b blur' type="text" name='objectDeclination1'>:
+						<input id='inputIn4_1' class='hourMin blur border_b' type="text" name='objectDeclination2'>:
+						<input id='inputIn4_2' class='sec blur border_b' type="text" name='objectDeclination3'>
 						</span>
+						<p style='position:absolute;border:1px solid #7a7a7a;top:65px;left:254px;width:162px;height:19px;z-index:-1;'></p>
+						<p style='position:absolute;border:1px solid #7a7a7a;top:65px;left:580px;width:162px;height:19px;z-index:-1;'></p>
 						<span>拍摄目标历元：<select name="objectEpoch" style='width:69px;'>
 									   <option value="0">real</option>
 									   <option value="1">J2000</option>
@@ -757,7 +759,7 @@
 					<input id='filterConnect' class='border1 btnCommand' type='button' value='连接滤光片' />&nbsp;&nbsp;&nbsp;&nbsp;
 					<input id='filterDisConnect' class='border1 btnCommand' type='button' value='断开滤光片' />&nbsp;&nbsp;&nbsp;&nbsp;
 					<input id='filterFindHome' class='border1 btnCommand' type='button' value='找 零' />&nbsp;&nbsp;&nbsp;&nbsp;
-					滤光片位置：<select id='filterPosi' class='border1 btnCommand' name="filterPos" style='width:90px;color:#000;border:1px solid #000;'>
+					滤光片位置：<select id='filterPosi' class='border1 btnCommand' name="filterPos" style='width:90px;color:#000;border:1px solid #7a7a7a;'>
 								<option value="">请选择</option>
 							   <option value="0">0</option>
 							   <option value="1">1</option>
@@ -815,7 +817,6 @@
 				</div>
 				
 		   </div>
-		   <div id='tst'>测试</div>
 		   <!--观测计划的模式按钮 结束-->
 		   <form id='imptPlan' style='display:none;' enctype='multipart/form-data'>
 				<input type='file' name='plan' />

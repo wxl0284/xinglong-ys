@@ -1,7 +1,130 @@
+/****at60页面之datagrid插件 js***/
+//观测计划的赤经和赤纬 js事件//////////////////////////////
+	//赤经 的js事件//////////////////////////////////
+	//赤经之小时 js事件
+	$('#planInfo').on('keyup', 'td[field="rightAscension1"] input.datagrid-editable-input', function () {
+		
+		var patn = /^\d{2}$/;
+		var v = $.trim($(this).val());
+		//v_R = v.replace(/(-|\+)/g, ''); //将+或-替换为空字符
+		if (patn.test(v))
+		{
+			$(this).blur();
+		}
+	
+	});
+	
+	//赤经之小时 blur事件
+	$('#planInfo').on('blur', 'td[field="rightAscension1"] input.datagrid-editable-input', function () {
+		
+		var patn = /^\d{1,2}$/;
+		var v = $.trim($(this).val());
+		if (!patn.test(v) || v >= 24 || v < 0)
+		{
+			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
+		}else{
+			$('#planInfo div.datagrid-body td[field="rightAscension2"] input.datagrid-editable-input').focus();
+		}
+	
+	});
+	
+	//赤经之分钟 js事件
+	$('#planInfo').on('keyup', 'td[field="rightAscension2"] input.datagrid-editable-input', function () {
+		var patn = /^\d{2}$/;
+		var v = $.trim($(this).val());
+		if (patn.test(v))
+		{
+			$(this).blur();
+		}
+	})
+	
+	//赤经之分钟 blur事件
+	$('#planInfo').on('blur', 'td[field="rightAscension2"] input.datagrid-editable-input', function () {
+		var patn = /^\d{1,2}$/;
+		var v = $.trim($(this).val());
+		if (!patn.test(v) || v < 0 || v >= 60)
+		{
+			layer.tips('参数超限', $(this), {tips: 1, tipsMore: true});
+		}else{
+			$('#planInfo div.datagrid-body td[field="rightAscension3"] input.datagrid-editable-input').focus();
+		}
+	
+	})
+	
+	//赤经之秒 js事件
+	$('#planInfo').on('blur', 'td[field="rightAscension3"] input.datagrid-editable-input', function () {
+		var v = $.trim($(this).val());
+		if (!$.isNumeric(v) || v >= 60 || v < 0)
+		{
+			layer.tips('秒参数超限', $(this), {tips : 1,tipsMore: true});
+		}	
+	})
+	//赤经 的js事件 结束/////////////////////////////////////
+	
+	//赤纬 的js事件//////////////////////////////////
+	//赤纬之小时 js事件
+	$('#planInfo').on('keyup', 'td[field="declination1"] input.datagrid-editable-input', function () {
+		var v = $.trim($(this).val());
+		v_R = v.replace(/-/, ''); //将-替换为空字符
+		if (v_R.length == 2)
+		{
+			$(this).blur();
+		}
+	
+	});
+	
+	//赤纬之小时 blur事件
+	$('#planInfo').on('blur', 'td[field="declination1"] input.datagrid-editable-input', function () {
+		var v = $.trim($(this).val());
+		var patn = /^-?\d{1,2}$/;
+		if (!patn.test(v) || v > 90 || v < -90)
+		{
+			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
+		}else{
+			$('#planInfo div.datagrid-body td[field="declination2"] input.datagrid-editable-input').focus();
+		}
+	
+	});
+	
+	//赤纬之分钟 js事件
+	$('#planInfo').on('keyup', 'td[field="declination2"] input.datagrid-editable-input', function () {
+		var patn = /^\d{2}$/;
+		var v = $.trim($(this).val());
+		if (patn.test(v))
+		{
+			$(this).blur();
+		}
+	
+	})
+	
+	//赤纬之分钟 blur事件
+	$('#planInfo').on('blur', 'td[field="declination2"] input.datagrid-editable-input', function () {
+		var v = $.trim($(this).val());
+		var patn = /^\d{1,2}$/;
+		
+		if (!patn.test(v) || v > 59 || v < 0)
+		{
+			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
+		}else{
+			$('#planInfo div.datagrid-body td[field="declination3"] input.datagrid-editable-input').focus();
+		}
+	
+	});
+	
+	//赤纬之秒 js事件
+	$('#planInfo').on('blur', 'td[field="declination3"] input.datagrid-editable-input', function () {
+		var v = $.trim($(this).val());
+		if (!$.isNumeric(v) || v >= 60 || v < 0)
+		{
+			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
+		}	
+	})
+	//赤纬 的js事件//////////////////////////////////
+//观测计划的赤经和赤纬 js事件//////////////////////////////
 	var table = $('#dg'); //定义全局table 变量
 	var editRow = undefined;  //全局开关, 编辑
 	
-	//导入计划文件 上传////////////////////////////////////////////
+//导入计划文件 上传////////////////////////////////////////////
 	function importPlan ()
 	{
 		$(function (){
@@ -216,13 +339,13 @@
 
 			columns:[[
 			{field:'id', title:'id', checkbox:true,rowspan:2},
-			{field:'target',  title:'目标名称', width:190,rowspan:2,
+			{field:'target',  title:'目标名称', width:200,rowspan:2,
 				editor:{
 					type:'validatebox',
 					options:{required:true,missingMessage:'目标名必填!'},
 				},
 			},
-			{field:'type', title:'目标类型', width:80,rowspan:2,
+			{field:'type', title:'目标类型', width:76,rowspan:2,
 				formatter:function(value){
 					for(var i=0; i<targetType.length; i++){
 						if (targetType[i].typeId == value) return targetType[i].name;
@@ -240,8 +363,8 @@
 					},
 				},
 			},
-			{title:'赤经', colspan:3,},
-			{title:'赤纬', colspan:3,},
+			{title:'赤经', colspan:5,},
+			{title:'赤纬', colspan:5,},
 			{field:'epoch', title:'历元',  width:66, rowspan:2,
 				formatter:function(value){
 					for(var i=0; i<epochData.length; i++){
@@ -260,7 +383,7 @@
 					},
 				},
 			},
-			{field:'exposureTime', title:'曝光时间',  width:60,rowspan:2,
+			{field:'exposureTime', title:'曝光时间',  width:58,rowspan:2,
 				editor:{
 					type:'numberbox',
 					options:{required:true,},},
@@ -270,7 +393,7 @@
 					type:'numberbox',
 				},
 			},
-			{field:'exposureCount', title:'曝光数量', width:66, rowspan:2, 
+			{field:'exposureCount', title:'曝光数量', width:58, rowspan:2, 
 				editor:{
 					type:'numberbox',
 					options:{required:true,},},
@@ -293,17 +416,17 @@
 					},
 				},
 			},
-			{field:'gain', title:'增益',  width:50,rowspan:2,
+			{field:'gain', title:'增益',  width:46,rowspan:2,
 				editor:{
 					type:'numberbox',
 				},
 			},
-			{field:'bin',  title:'Bin',  width:50, rowspan:2,
+			{field:'bin',  title:'Bin',  width:40, rowspan:2,
 				editor:{
 					type:'numberbox',
 				},
 			},
-			{field:'readout', title:'读出速度',  width:62, rowspan:2,
+			{field:'readout', title:'读出速度',  width:58, rowspan:2,
 				editor:{
 					type:'numberbox',
 					options:{required:true,},},
@@ -314,37 +437,61 @@
 				}
 			},
 		],[
-			{field:'rightAscension1',title:'时', width:35,
+	
+			{field:'rightAscension1', width:33,title:'时',
 				editor:{
 					type:'numberbox',
 					options:{required:true,},
 				},
 			},
-			{field:'rightAscension2', title:'分', width:35,
+			{field:'c1', 
+				formatter:function(value,row,index){
+					return ':';
+				}
+			},
+		
+			{field:'rightAscension2', width:33,title:'分',
 				editor:{
 					type:'numberbox',
 					options:{required:true,},
 				},
 			},
-			{field:'rightAscension3', title:'秒', width:85,
+			{field:'c2', 
+				formatter:function(value,row,index){
+					return ':';
+				}
+			},
+			{field:'rightAscension3', width:76,title:'秒',
 				editor:{
 					type:'validatebox',
 					options:{required:true,},
 				},
 			},
-			{field:'declination1', title:'时', width:35,
+	
+			{field:'declination1', width:33,title:'时',
 				editor:{
 					type:'numberbox',
 					options:{required:true,},
 				},
 			},
-			{field:'declination2', title:'分', width:35,
+			{field:'c3', 
+				formatter:function(value,row,index){
+					return ':';
+				}
+			},
+	
+			{field:'declination2', width:33,title:'分',
 				editor:{
 					type:'numberbox',
 					options:{required:true,},
 				},
 			},
-			{field:'declination3', title:'秒', width:85,
+			{field:'c4', 
+				formatter:function(value,row,index){
+					return ':';
+				}
+			},
+			{field:'declination3', width:76,title:'秒',
 				editor:{
 					type:'validatebox',
 					options:{required:true,},

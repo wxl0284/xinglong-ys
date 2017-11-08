@@ -395,83 +395,170 @@
     });
     
 //验证转台 表单指令数据 逐一验证//////////////////////////////
-	//验证 跟踪恒星-赤经
-	$('#inputIn1_2').blur(function () {
+	//验证 跟踪恒星-赤经之小时
+	var inputIn1 = $('#inputIn1');
+	var inputIn1_1 = $('#inputIn1_1');
+	var inputIn1_2 = $('#inputIn1_2');
+	
+	inputIn1.keyup(function () {
+		var patn = /^\d{2}$/;
+		var v = $.trim($(this).val());
+		if (patn.test(v))
+		{
+			$(this).blur();
+		}
+	});
+	
+	//赤经之小时 blur事件
+	inputIn1.blur(function () {
 		var gimbalSbmt = $('#gimbalSbmt');
-		var v1 = $.trim($('#inputIn1').val());
-		var v2 = $.trim($('#inputIn1_1').val());
-		var v3 = $.trim($(this).val());
 		var patn = /^\d{1,2}$/;
+		var v = $.trim($(this).val());
 		var err = 0; //错误标识
-		
-		if (!patn.test(v1) || v1 < 0 || v1 >= 24)
+		if (!patn.test(v) || v > 24 || v < 0)
 		{
 			err = 1;
-			layer.tips('小时之数据输入有误!', $(this), {tipsMore: true});
 			gimbalSbmt.prop('disabled', true);
+			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
 		}else{
+			inputIn1_1.focus();
 			gimbalSbmt.prop('disabled', false);
 		}
 		
-		if (v2 < 0 || v2 >59 || !patn.test(v2))
+		$(this).data('err', err);
+	});
+	
+	//赤经之分钟 js事件
+	inputIn1_1.keyup(function () {
+		var patn = /^\d{2}$/;
+		var v = $.trim($(this).val());
+		if (patn.test(v))
+		{
+			$(this).blur();
+		}
+	})
+	
+	//赤经之分钟 blur事件
+	inputIn1_1.blur(function () {
+		var gimbalSbmt = $('#gimbalSbmt');
+		var patn = /^\d{1,2}$/;
+		var v = $.trim($(this).val());
+		var err = 0;
+		if (!patn.test(v) || v < 0 || v >= 60)
 		{
 			err = 1;
-			layer.tips('分钟之数据输入有误!', $(this), {tipsMore: true});
 			gimbalSbmt.prop('disabled', true);
+			layer.tips('参数超限', $(this), {tips: 1, tipsMore: true});
 		}else{
+			inputIn1_2.focus();
 			gimbalSbmt.prop('disabled', false);
 		}
-		
-		if (v3 == '' || v3 < 0 || v3 > 59 || !$.isNumeric(v3) || v3.indexOf('. ') == 0 )
+	
+		$(this).data('err', err);
+	})
+	
+	//赤经之秒 js事件
+	inputIn1_2.blur(function () {
+		var gimbalSbmt = $('#gimbalSbmt');
+		var v = $.trim($(this).val());
+		var err = 0;
+		if (!$.isNumeric(v) || v >= 60 || v < 0)
 		{
 			err = 1;
-			layer.tips('秒之数据输入有误!', $(this), {tipsMore: true});
 			gimbalSbmt.prop('disabled', true);
+			layer.tips('秒参数超限', $(this), {tips : 1,tipsMore: true});
 		}else{
 			gimbalSbmt.prop('disabled', false);
 		}
 		
 		$(this).data('err', err);
-	});////验证 跟踪恒星-赤经 结束//////////////////////////
+	})
+	//验证 跟踪恒星-赤经 结束//////////////////////////
 	
-	//验证 跟踪恒星-赤纬
-	$('#inputIn2_2').blur(function () {
+	//验证 跟踪恒星-赤纬之小时
+	var inputIn2 = $('#inputIn2');
+	var inputIn2_1 = $('#inputIn2_1');
+	var inputIn2_2 = $('#inputIn2_2');
+	
+	inputIn2.keyup(function () {
+		var v = $.trim($(this).val());
+		v_R = v.replace(/-/, ''); //将-替换为空字符
+		if (v_R.length == 2)
+		{
+			$(this).blur();
+		}
+	
+	});
+	
+	//赤纬之小时 blur事件
+	inputIn2.blur(function () {
 		var gimbalSbmt = $('#gimbalSbmt');
-		var v1 = $.trim($('#inputIn2').val());
-		var v2 = $.trim($('#inputIn2_1').val());
-		var v3 = $.trim($(this).val());
-		var patn = /^\d{1,2}$/;
+		var v = $.trim($(this).val());
+		var patn = /^-?\d{1,2}$/;
 		var err = 0;
 		
-		if (v1 < -90 || v1 > 90 || !patn.test(v1))
+		if (!patn.test(v) || v > 90 || v < -90)
 		{
 			err = 1;
-			layer.tips('小时之数据输入有误!', $(this), {tipsMore: true});
 			gimbalSbmt.prop('disabled', true);
+			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
 		}else{
+			inputIn2_1.focus();
+			gimbalSbmt.prop('disabled', false);
+		}
+	
+		$(this).data('err', err);
+	});
+	
+	//赤纬之分钟 js事件
+	inputIn2_1.keyup(function () {
+		var patn = /^\d{2}$/;
+		var v = $.trim($(this).val());
+		if (patn.test(v))
+		{
+			$(this).blur();
+		}
+	
+	})
+	
+	//赤纬之分钟 blur事件
+	inputIn2_1.blur(function () {
+		var gimbalSbmt = $('#gimbalSbmt');
+		var v = $.trim($(this).val());
+		var err = 0;
+		var patn = /^\d{1,2}$/;
+		
+		if (!patn.test(v) || v > 59 || v < 0)
+		{
+			err = 1;
+			gimbalSbmt.prop('disabled', true);
+			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
+		}else{
+			inputIn2_2.focus();
 			gimbalSbmt.prop('disabled', false);
 		}
 		
-		if (v2 < 0 || v2 >59 || !patn.test(v2))
-		{
-			err = 1;
-			layer.tips('分钟之数据输入有误!', $(this), {tipsMore: true});
-			gimbalSbmt.prop('disabled', true);
-		}else{
-			gimbalSbmt.prop('disabled', false);
-		}
+		$(this).data('err', err);
+	});
+	
+	//赤纬之秒 js事件
+	inputIn2_2.blur(function () {
+		var gimbalSbmt = $('#gimbalSbmt');
+		var err = 0;
+		var v = $.trim($(this).val());
 		
-		if (v3 == '' || v3 < 0 || v3 > 59 || !$.isNumeric(v3) || v3.indexOf('. ') == 0 )
+		if (!$.isNumeric(v) || v >= 60 || v < 0)
 		{
 			err = 1;
-			layer.tips('秒之数据输入有误!', $(this), {tipsMore: true});
 			gimbalSbmt.prop('disabled', true);
+			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
 		}else{
 			gimbalSbmt.prop('disabled', false);
 		}
 		
 		$(this).data('err', err);
-	});////验证 跟踪恒星-赤纬 结束//////////////////////////
+	})
+	//验证 跟踪恒星-赤纬 结束//////////////////////////
 	
 	//验证 设置目标名称//////////////////////////////////
 	$('#objectNameInput').blur(function () {
@@ -816,83 +903,173 @@
 		$(this).data('err', err);
 	});
 	
-	//验证 目标赤经
-	$('#inputIn3_2').blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
-		var v1 = $.trim($('#inputIn3').val());
-		var v2 = $.trim($('#inputIn3_1').val());
-		var v3 = $.trim($(this).val());
-		var patn = /^\d{1,2}$/;
-		var err = 0;
-		
-		if (!patn.test(v1) || v1 < 0 || v1 >= 24)
+	//验证 曝光策略之赤经 赤纬///////////////////////////////
+	//验证 赤经之小时
+	var inputIn3 = $('#inputIn3');
+	var inputIn3_1 = $('#inputIn3_1');
+	var inputIn3_2 = $('#inputIn3_2');
+	
+	//赤经之小时 keyup事件
+	inputIn3.keyup(function () {
+		var patn = /^\d{2}$/;
+		var v = $.trim($(this).val());
+		if (patn.test(v))
 		{
-			err = 1;
-			layer.tips('小时之数据输入有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
+			$(this).blur();
 		}
-		
-		if (!patn.test(v2) || v2 < 0 || v2 >59)
-		{
-			err = 1;
-			layer.tips('分钟之数据输入有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
-		}
-		
-		if (v3 == '' || v3 < 0 || v3 > 59 || !$.isNumeric(v3) || v3.indexOf('. ') == 0 )
-		{
-			err = 1;
-			layer.tips('秒之数据输入有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
-		}
-		
-		$(this).data('err', err);		
 	});
 	
-	//验证 目标赤纬
-	$('#inputIn4_2').blur(function () {
+	//赤经之小时 blur事件
+	inputIn3.blur(function () {
 		var ccdSbmt = $('#ccdSbmt');
-		var v1 = $.trim($('#inputIn4').val());
-		var v2 = $.trim($('#inputIn4_1').val());
-		var v3 = $.trim($(this).val());
 		var patn = /^\d{1,2}$/;
+		var v = $.trim($(this).val());
+		var err = 0; //错误标识
+		if (!patn.test(v) || v > 24 || v < 0)
+		{
+			err = 1;
+			ccdSbmt.prop('disabled', true);
+			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
+		}else{
+			inputIn3_1.focus();
+			ccdSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);
+	});
+	
+	//赤经之分钟 js事件
+	inputIn3_1.keyup(function () {
+		var patn = /^\d{2}$/;
+		var v = $.trim($(this).val());
+		if (patn.test(v))
+		{
+			$(this).blur();
+		}
+	})
+	
+	//赤经之分钟 blur事件
+	inputIn3_1.blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var patn = /^\d{1,2}$/;
+		var v = $.trim($(this).val());
+		var err = 0;
+		if (!patn.test(v) || v < 0 || v >= 60)
+		{
+			err = 1;
+			ccdSbmt.prop('disabled', true);
+			layer.tips('参数超限', $(this), {tips: 1, tipsMore: true});
+		}else{
+			inputIn3_2.focus();
+			ccdSbmt.prop('disabled', false);
+		}
+	
+		$(this).data('err', err);
+	})
+	
+	//赤经之秒 js事件
+	inputIn3_2.blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());
+		var err = 0;
+		if (!$.isNumeric(v) || v >= 60 || v < 0)
+		{
+			err = 1;
+			ccdSbmt.prop('disabled', true);
+			layer.tips('秒参数超限', $(this), {tips : 1,tipsMore: true});
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);
+	})
+	//验证 赤经 结束//////////////////////////
+	
+	//验证 -赤纬之小时
+	var inputIn4 = $('#inputIn4');
+	var inputIn4_1 = $('#inputIn4_1');
+	var inputIn4_2 = $('#inputIn4_2');
+	
+	//赤纬之小时 keyup事件
+	inputIn4.keyup(function () {
+		var v = $.trim($(this).val());
+		v_R = v.replace(/-/, ''); //将-替换为空字符
+		if (v_R.length == 2)
+		{
+			$(this).blur();
+		}
+	
+	});
+	
+	//赤纬之小时 blur事件
+	inputIn4.blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());
+		var patn = /^-?\d{1,2}$/;
 		var err = 0;
 		
-		if (!patn.test(v1)|| v1 < -90 || v1 > 90)
+		if (!patn.test(v) || v > 90 || v < -90)
 		{
 			err = 1;
-			layer.tips('小时之数据输入有误!', $(this), {tipsMore: true});
 			ccdSbmt.prop('disabled', true);
+			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
 		}else{
+			inputIn4_1.focus();
 			ccdSbmt.prop('disabled', false);
 		}
-		
-		if (!patn.test(v2)|| v2 < 0 || v2 >59)
-		{
-			err = 1;
-			layer.tips('分钟之数据输入有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
-		}
-		
-		if (v3 == '' || v3 < 0 || v3 > 59 || !$.isNumeric(v3) || v3.indexOf('. ') == 0 )
-		{
-			err = 1;
-			layer.tips('秒之数据输入有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
-		}
-		
-		$(this).data('err', err);	
+	
+		$(this).data('err', err);
 	});
+	
+	//赤纬之分钟 js事件
+	inputIn4_1.keyup(function () {
+		var patn = /^\d{2}$/;
+		var v = $.trim($(this).val());
+		if (patn.test(v))
+		{
+			$(this).blur();
+		}
+	
+	})
+	
+	//赤纬之分钟 blur事件
+	inputIn4_1.blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var v = $.trim($(this).val());
+		var err = 0;
+		var patn = /^\d{1,2}$/;
+		
+		if (!patn.test(v) || v > 59 || v < 0)
+		{
+			err = 1;
+			ccdSbmt.prop('disabled', true);
+			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
+		}else{
+			inputIn4_2.focus();
+			ccdSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);
+	});
+	
+	//赤纬之秒 js事件
+	inputIn4_2.blur(function () {
+		var ccdSbmt = $('#ccdSbmt');
+		var err = 0;
+		var v = $.trim($(this).val());
+		
+		if (!$.isNumeric(v) || v >= 60 || v < 0)
+		{
+			err = 1;
+			ccdSbmt.prop('disabled', true);
+			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
+		}else{
+			ccdSbmt.prop('disabled', false);
+		}
+		
+		$(this).data('err', err);
+	})
+	//验证 曝光策略之赤经 赤纬 结束//////////////////////////
 	
 	//验证 拍摄波段
 	$('#objectBandInput').blur(function () {
@@ -1722,82 +1899,4 @@
 	});
 
 //观测计划 若为single和singleLoop 隐藏‘下一个’按钮 结束/////////
-/*********以下为赤经和赤纬 时分秒输入框 js代码**************/
-//按tab键实现下一个输入框的输入，不用写js代码
-/* $('span.input_in input.keyup').keyup(function () {
-   //获取输入框的值
-   var inputStr = $(this).val();
-   if( inputStr.indexOf('-') > -1 && inputStr.length == 3)
-   { 
-	   $(this).next('input').focus();
-   }else if( inputStr.indexOf('-') === -1 && inputStr.length == 2)
-   {
-	   $(this).next('input').focus();
-   }
-}); */
-
-//转台跟踪恒星的赤经///////////////////////////////////////////
-/* $('#inputIn1').focus(function () {
-	var spn = $('#inputIn1_1');
-	$(this).val('');
-	spn.show();
-	$('#inputIn1_1_1').focus();
-}); 
-
-$('#inputIn1_1_3').blur(function () {
-	var spn = $('#inputIn1_1');
-	var inputs = spn.children('input');
-	var resultStr = inputs.eq(0).val() + ':' + inputs.eq(1).val() + ':' + inputs.eq(2).val()
-	spn.hide();
-	$('#inputIn1').val(resultStr);
-});*/
-
-//转台跟踪恒星的赤纬////////////////////////////////////////////
-/* $('#inputIn2').focus(function () {
-	var spn = $('#inputIn2_1');
-	$(this).val('');
-	spn.show();
-	$('#inputIn2_1_1').focus();
-});
-
-$('#inputIn2_1_3').blur(function () {
-	var spn = $('#inputIn2_1');
-	var inputs = spn.children('input');
-	var resultStr = inputs.eq(0).val() + ':' + inputs.eq(1).val() + ':' + inputs.eq(2).val()
-	spn.hide();
-	$('#inputIn2').val(resultStr);
-}); */
-
-//CCD 曝光策略 拍摄目标赤经////////////////////////////////////////////
-/* $('#inputIn3').focus(function () {
-	var spn = $('#inputIn3_1');
-	$(this).val('');
-	spn.show();
-	$('#inputIn3_1_1').focus();
-});
-
-$('#inputIn3_1_3').blur(function () {
-	var spn = $('#inputIn3_1');
-	var inputs = spn.children('input');
-	var resultStr = inputs.eq(0).val() + ':' + inputs.eq(1).val() + ':' + inputs.eq(2).val()
-	spn.hide();
-	$('#inputIn3').val(resultStr); */
-//});/////////////////////////////////////////////////////
-
-//CCD 曝光策略 拍摄目标赤纬////////////////////////////////////////////
-/* $('#inputIn4').focus(function () {
-	var spn = $('#inputIn4_1');
-	$(this).val('');
-	spn.show();
-	$('#inputIn4_1_1').focus();
-});
-
-$('#inputIn4_1_3').blur(function () {
-	var spn = $('#inputIn4_1');
-	var inputs = spn.children('input');
-	var resultStr = inputs.eq(0).val() + ':' + inputs.eq(1).val() + ':' + inputs.eq(2).val()
-	spn.hide();
-	$('#inputIn4').val(resultStr); */
-//});/////////////////////////////////////////////////////
-/*********赤经和赤纬 时分秒输入框 js代码结束**************/
 })
