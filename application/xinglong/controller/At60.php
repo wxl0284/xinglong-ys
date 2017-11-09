@@ -49,7 +49,6 @@ class At60 extends Controller
             ]);
 		}
 		return view('at60-m');  
-			//原来的代码 直接显示60cm页面
 		
     }
     
@@ -232,56 +231,76 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=3);
 			
-			//处理赤经数据 
-			$rightAscension = trim(input('rightAscension1')).':'.trim(input('rightAscension2')).':'.trim(input('rightAscension3'));
-			
-			if ($rightAscension !== '::') //赤经
+			//处理赤经数据
+			$postData = input();
+			if (!preg_match('/^\d{1,2}$/', $postData['rightAscension1']) || $postData['rightAscension1'] > 24 || $postData['rightAscension1'] < 0)
 			{
-				/* if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $rightAscension))
-				{
-					echo '赤经必须为数字！';return;
-				} */
-				$rightAscension = time2Data($rightAscension);
-				$sendMsg = pack('d', $rightAscension);     //double64
-			}else{
-				$sendMsg = pack('d', 0);
+				return '赤经之小时参数超限!';
 			}
 			
-			//处理赤纬数据 
-			$declination = trim(input('declination1')).':'.trim(input('declination2')).':'.trim(input('declination3'));
-			
-			if ($declination !== '::') //赤纬
+			if (!preg_match('/^\d{1,2}$/', $postData['rightAscension2']) || $postData['rightAscension2'] > 59 || $postData['rightAscension2'] < 0)
 			{
-				/* if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $declination))
-				{
-					echo '赤纬必须为数字！';return;
-				} */
-				$declination = time2Data($declination);
-				$sendMsg .= pack('d', $declination);     //double64
+				return '赤经之分钟参数超限!';
+			}
+			
+			if (!is_numeric($postData['rightAscension3']) || $postData['rightAscension3'] >= 60 || $postData['rightAscension3'] < 0)
+			{
+				return '赤经之秒参数超限!';
+			}
+			$rightAscension = $postData['rightAscension1'].':'.$postData['rightAscension2'].':'.$postData['rightAscension3'];
+			
+			$rightAscension = time2Data($rightAscension);
+			
+			if ($rightAscension > 24 || $rightAscension < 0) //赤经
+			{
+				return '赤经参数超限!';
 			}else{
-				$sendMsg .= pack('d', 0);
+				$sendMsg = pack('d', $rightAscension);     //double64
+			}
+			
+			//处理赤纬数据
+			if (!preg_match('/^\d{1,2}$/', $postData['declination1']) || $postData['declination1'] > 90 || $postData['declination1'] < -90)
+			{
+				return '赤纬之小时参数超限!';
+			}
+			
+			if (!preg_match('/^\d{1,2}$/', $postData['declination2']) || $postData['declination2'] > 59 || $postData['declination2'] < 0)
+			{
+				return '赤纬之分钟参数超限!';
+			}
+			
+			if (!is_numeric($postData['declination3']) || $postData['declination3'] >= 60 || $postData['declination3'] < 0)
+			{
+				return '赤纬之秒参数超限!';
+			}
+			
+			$declination = $postData['declination1'].':'.$postData['declination2'].':'.$postData['declination3'];
+			
+			$declination = time2Data($declination);
+			
+			if ($declination > 90 || $declination < -90) //赤纬
+			{
+				return '赤纬参数超限!'
+			}else{
+				$sendMsg .= pack('d', $declination);     //double64
 			}
 				
 			if (($epoch=input('epoch')) !== '') //历元
 			{  
-				if (!preg_match('/^\d{1,10}$/', $epoch))
+				if (!preg_match('/^\d{1}$/', $epoch))
 				{
-					echo '历元必须为数字！';return;
+					return '历元参数超限！';
 				}
 				$sendMsg .= pack('S', $epoch);     //unsigned short
-			}else{
-				$sendMsg .= pack('S', 0);
 			}
 				
-			if (($speed=input('speed')) !== '')  //跟踪速度
+			if (($speed=input('speed')) !== '')  //跟踪类型
 			{      
-				if (!preg_match('/^\d{1,10}$/', $speed))
+				if (!preg_match('/^\d{1}$/', $speed))
 				{
-					echo '历元必须为数字！';return;
+					return '跟踪类型参数超限！';
 				}
 				$sendMsg .= pack('S', $speed);     //unsigned short
-			}else{
-				$sendMsg .= pack('S', 0);
 			}
 			
 			//socket发送数据
@@ -296,9 +315,9 @@ class At60 extends Controller
 			
 			if (($objectName=trim(input('objectName'))) !== '')
 			{//目标名称
-				if (!preg_match('/^[a-zA-Z0-9]{1,48}$/', $objectName))
+				if (preg_match('/[\x{4e00}-\x{9af5} ]/u', $objectName))
 				{
-					echo '目标名称只能是数字字母！';return;
+					return '目标名称不能含汉字或空格！';
 				}
 				$sendMsg = pack('a48', $objectName);   //uint8,48表示长度
 			}else{
@@ -307,13 +326,11 @@ class At60 extends Controller
 			
 			if (($objectType=input('objectType')) !== '') //目标类型
 			{
-				if (!preg_match('/^\d{1,5}$/', $objectType))
+				if (!preg_match('/^\d{1}$/', $objectType))
 				{
-					echo '目标名称只能是数字！';return;
+					return '目标类型参数超限！';
 				}
 				$sendMsg .= pack('S', $objectType);     //unsigned short
-			}else{
-				$sendMsg .= pack('S', 0);
 			}
 			
 			//socket发送数据
@@ -408,7 +425,7 @@ class At60 extends Controller
 			
 			if (($axis=trim(input('axis'))) !== '')  //轴
 			{
-				if (!preg_match('/^\d{1,5}$/', $axis))
+				if (!preg_match('/^\d{1}$/', $axis))
 				{
 					echo '速度修正:轴必须为数字！';return;
 				}
@@ -503,9 +520,9 @@ class At60 extends Controller
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=13);
 			
 			$openCover = trim(input('openCover'));
-			if (!preg_match('/^\d{1,5}$/', $openCover))
+			if (!preg_match('/^[0-2]$/', $openCover))
 			{
-				echo '镜盖指令无效！';return;
+				return '镜盖操作参数超限！';
 			}
 			$sendMsg = pack('S', $openCover);     //unsigned short
 			
@@ -628,16 +645,17 @@ class At60 extends Controller
 			//socket发送数据        
 			$sendMsg = $headInfo;
 			echo '终止曝光指令：' . udpSend($sendMsg, $this->ip, $this->port);	
-		}elseif (($temperature=trim(input('temperature'))) !== '')	//设置制冷温度
+		}elseif (input('command') == 1)	//设置制冷温度
 		{
 			$length = 48 +8;      //该结构体总长度
 			$headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device);
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=2);
-
-			if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $temperature))
+			
+			$temperature = input('temperature');
+			if (!is_numeric($temperature) || $temperature >20 || $temperature < -80)
 			{
-				echo '制冷温度只能是数字！'; return;
+				return '制冷温度参数超限！';
 			}
 			$sendMsg = pack('d', $temperature);     //double64
 			//socket发送数据
@@ -649,6 +667,8 @@ class At60 extends Controller
 			$headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device);
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=3);
+			
+			$postData = input();
 			
 			if (($validFlag=trim(input('validFlag'))) !== '')    //数据有效标志位
 			{
@@ -694,61 +714,98 @@ class At60 extends Controller
 				$sendMsg .= pack('d', 0);
 			}
 			
-			if (($objectName=trim(input('objectName'))) !== '')      //拍摄目标
+			if ($postData['objectName'] !== '')  //拍摄目标
 			{
-				if (!preg_match('/^[a-zA-Z0-9]{1,24}$/', $objectName))
+				if (preg_match('/[\x{4e00}-\x{9af5} ]/u', $postData['objectName']))
 				{
-					echo '拍摄目标只能是字母和数字！'; return;
+					return '目标名称不能含汉字或空格！';
 				}
-				$sendMsg .= pack('a48', $objectName);  //objectName uint8-48
+				$sendMsg .= pack('a48', $postData['objectName']);  //objectName uint8-48
 			}else{
 				$sendMsg .= pack('a48', '0');
 			}
 			
-			if (($objectType=input('objectType')) !== '')    //拍摄目标类型
+			if ($postData['objectType'] !== '')    //拍摄目标类型
 			{
-				if (!preg_match('/^\d{1,5}$/', $objectType))
+				if (!preg_match('/^\d{1}$/', $postData['objectType']))
 				{
-					echo '目标类型只能是数字！'; return;
+					return '目标类型参数超限！';
 				}
-				$sendMsg .= pack('S', $objectType); 
+				$sendMsg .= pack('S', $postData['objectType']); 
 			}else{
 				$sendMsg .= pack('S', 0);  //unsigned short
 			}
 			
-			//处理赤经数据
-			$objectRightAscension = trim(input('objectRightAscension1')).':'.trim(input('objectRightAscension2')).':'.trim(input('objectRightAscension3'));
+			//处理赤经数据			
+			$objectRightAscension = $postData['objectRightAscension1'].':'.$postData['objectRightAscension2'].':'.$postData['objectRightAscension3'];
 			
 			if ($objectRightAscension !== '::')  
 			{//拍摄目标赤经
-				/* if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $objectRightAscension))
+				if (!preg_match('/^\d{1,2}$/', $postData['objectRightAscension1']) || $postData['objectRightAscension1'] > 24 || $postData['objectRightAscension1'] < 0)
 				{
-					echo '拍摄目标赤经只能是数字！'; return;
-				} */
+					return '曝光策略:赤经之小时参数超限!';
+				}
+				
+				if (!preg_match('/^\d{1,2}$/', $postData['objectRightAscension2']) || $postData['objectRightAscension2'] > 59 || $postData['objectRightAscension2'] < 0)
+				{
+					return '曝光策略:赤经之分钟参数超限!';
+				}
+				
+				if (!is_numeric($postData['objectRightAscension3']) || $postData['objectRightAscension3'] >= 60 || $postData['objectRightAscension3'] < 0)
+				{
+					return '曝光策略:赤经之秒参数超限!';
+				}
 				
 				$objectRightAscension = time2Data($objectRightAscension);
-				$sendMsg .= pack('d', $objectRightAscension);     //double64
+				
+				if ($objectRightAscension > 24 || $objectRightAscension < 0) //赤经
+				{
+					return '曝光策略:赤经参数超限!';
+				}else{
+					$sendMsg .= pack('d', $objectRightAscension);  //double64
+				}
+				
 			}else{
 				$sendMsg .= pack('d', 0);
 			}
 			
-			//处理赤经数据
-			$objectDeclination = trim(input('objectDeclination1')).':'.trim(input('objectDeclination2')).':'.trim(input('objectDeclination3'));
+			//处理赤纬数据
+			$objectDeclination = $postData['objectDeclination1'].':'.$postData['objectDeclination2'].':'.$postData['objectDeclination3'];
 			
 			if ($objectDeclination !== '::')    
 			{//当前拍摄目标赤纬
+				if (!preg_match('/^\d{1,2}$/', $postData['objectDeclination1']) || $postData['objectDeclination1'] > 90 || $postData['objectDeclination1'] < -90)
+				{
+					return '曝光策略:赤纬之小时参数超限!';
+				}
 				
+				if (!preg_match('/^\d{1,2}$/', $postData['objectDeclination2']) || $postData['objectDeclination2'] > 59 || $postData['objectDeclination2'] < 0)
+				{
+					return '曝光策略:赤纬之分钟参数超限!';
+				}
+				
+				if (!is_numeric($postData['objectDeclination3']) || $postData['objectDeclination3'] >= 60 || $postData['objectDeclination3'] < 0)
+				{
+					return '曝光策略:赤纬之秒参数超限!';
+				}
+
 				$objectDeclination = time2Data($objectDeclination);
-				$sendMsg .= pack('d', $objectDeclination);    //double64
+				if ($objectDeclination > 90 || $objectDeclination < -90)
+				{ //赤纬
+					return '曝光策略:赤纬参数超限!'
+				}else{
+					$sendMsg .= pack('d', $objectDeclination);//double64
+				}
+				
 			}else{
 				$sendMsg .= pack('d', 0);
 			}
 			
 			if (($objectEpoch=input('objectEpoch')) !== '')    //拍摄目标历元
 			{
-				if (!preg_match('/^\d{1,5}$/', $objectEpoch))
+				if (!preg_match('/^\d{1}$/', $objectEpoch))
 				{
-					echo '目标历元只能是数字！'; return;
+					return '目标历元只能是数字！';
 				}
 				$sendMsg .= pack('S', $objectEpoch);   
 			}else{
@@ -757,7 +814,7 @@ class At60 extends Controller
 			
 			if (($objectBand = trim(input('objectBand'))) !== '')      //拍摄波段
 			{  
-				if (!preg_match('/^[a-zA-Z0-9]{1,8}$/', $objectBand))
+				if (!preg_match('/^[a-zA-Z0-9_-]{1,8}$/', $objectBand))
 				{
 					echo '当前拍摄波段只能是8位字母数字！'; return;
 				}
@@ -1080,7 +1137,7 @@ class At60 extends Controller
 			if (input('isReadFrameSeq') !== '')      //是否读取帧序号
 			{
 				$isReadFrameSeq = trim(input('isReadFrameSeq'));
-				if (!preg_match('/^\d{1,5}$/', $isReadFrameSeq))
+				if (!preg_match('/^\d{1}$/', $isReadFrameSeq))
 				{
 					echo '是否读取帧序号只能是数字！'; return;
 				}
@@ -1089,7 +1146,7 @@ class At60 extends Controller
 				$sendMsg = pack('S', 0);
 			}
 			
-			if (input('frameSequence') !== '')      //起始时间
+			if (input('frameSequence') !== '')      //帧序号
 			{
 				$frameSequence = trim(input('frameSequence'));
 				if (!preg_match('/^\d{1,10}$/', $frameSequence))

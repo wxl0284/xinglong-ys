@@ -65,79 +65,7 @@
 		<hr>
 		<form id='allOption'><!--60cm各子设备 指令属性选项-->
 			<div id='gimbal' class='displayNo border mrgTop'>
-			  <span class='optionTitle'>转台指令</span><br>
-				<span class='optionLeng inline'>连接望远镜<input type='checkbox' name='viewOpt[]' value='connectAt'></span>
-				<span class='optionLeng inline'>断开望远镜<input type='checkbox' name='viewOpt[]' value='disconnect'></span>
-				<span class='optionLeng inline'>找零<input type='checkbox' name='viewOpt[]' value='gimbalFindHome'></span>
-				<span class='optionLeng inline'>复位<input type='checkbox' name='viewOpt[]' value='gimbalPark'></span>
-				<span class='optionLeng inline'>停止<input type='checkbox' name='viewOpt[]' value='gimbalStop'></span>
-				<span class='optionLeng inline'>急停<input type='checkbox' name='viewOpt[]' value='gimbalEmergStop'></span>
-				<span class='optionLeng inline'>跟踪恒星<input type='checkbox' name='viewOpt[]' value='trackStar'></span>
-				<span class='optionLeng inline'>设置目标名称<input type='checkbox' name='viewOpt[]' value='setObjecName'></span>
-				<span class='optionLeng inline'>速度修正<input type='checkbox' name='viewOpt[]' value='speedM'></span>
-				<span class='optionLeng inline'>恒速运动<input type='checkbox' name='viewOpt[]' value='speedE'></span>
-				<span class='optionLeng inline'>位置修正<input type='checkbox' name='viewOpt[]' value='positionM'></span>
-				<span class='optionLeng inline'>镜盖操作<input type='checkbox' name='viewOpt[]' value='coverOpr'></span>
-				<span class='optionLeng inline'>保存同步数据<input type='checkbox' name='viewOpt[]' value='saveData'></span>
-				<br><span class='optionTitle'>转台可变属性</span>
-				<br>
-				<span class='optionLeng inline'>时间戳<input type='checkbox' name='viewOpt[]' value='timeStamp'></span>
-				<span class='optionLeng inline'>当前恒星时<input type='checkbox' name='viewOpt[]' value='siderealTime_1'></span>
-				<span class='optionLeng inline'>当前时角<input type='checkbox' name='viewOpt[]' value='hourAngle'></span>
-				<span class='optionLeng inline'>当前赤经<input type='checkbox' name='viewOpt[]' value='rightAscension'></span>
-				<span class='optionLeng inline'>当前赤纬<input type='checkbox' name='viewOpt[]' value='declination'></span>
-				<span class='optionLeng inline'>当前J2000赤经<input type='checkbox' name='viewOpt[]' value='J2000RightAscension'></span>
-				<span class='optionLeng inline'>当前J2000赤纬<input type='checkbox' name='viewOpt[]' value='J2000Declination'></span>
-				<span class='optionLeng inline'>当前方位<input type='checkbox' name='viewOpt[]' value='azimuth'></span>
-				<span class='optionLeng inline'>当前俯仰<input type='checkbox' name='viewOpt[]' value='elevation'></span>
-				<span class='optionLeng inline'>当前消旋位置<input type='checkbox' name='viewOpt[]' value='derotatorPosition'></span>
-				<span class='optionLeng inline'>目标赤经<input type='checkbox' name='viewOpt[]' value='targetRightAscension'></span>
-				<span class='optionLeng inline'>目标赤纬<input type='checkbox' name='viewOpt[]' value='targetDeclination'></span>
-				<span class='optionLeng inline'>目标J2000赤经<input type='checkbox' name='viewOpt[]' value='targetJ2000RightAscension'></span>
-				<span class='optionLeng inline'>目标J2000赤纬<input type='checkbox' name='viewOpt[]' value='targetJ2000Declination'></span>
-				<span class='optionLeng inline'>目标方位<input type='checkbox' name='viewOpt[]' value='targetAzmiuth'></span>
-				<span class='optionLeng inline'>目标俯仰<input type='checkbox' name='viewOpt[]' value='targetElevation'></span>
-				<span class='optionLeng inline'>目标消旋位置<input type='checkbox' name='viewOpt[]' value='targetDerotatorPosition'></span>
-				<span class='optionLeng inline'>轴1跟踪误差<input type='checkbox' name='viewOpt[]' value='axis1TrackError'></span>
-				<span class='optionLeng inline'>轴2跟踪误差<input type='checkbox' name='viewOpt[]' value='axis2TrackError'></span>
-				<span class='optionLeng inline'>轴3跟踪误差<input type='checkbox' name='viewOpt[]' value='axis2TrackError'></span>
-				<span class='optionLeng inline'>焦点类型索引位置<input type='checkbox' name='viewOpt[]' value='focusTypeIndex'></span>
-				<span class='optionLeng inline'>焦点切换镜角度位置<input type='checkbox' name='viewOpt[]' value='axis4Angle'></span>
-				<span class='optionLeng inline'>镜盖索引位置<input type='checkbox' name='viewOpt[]' value='coverIndex'></span>
-				<span class='optionLeng inline'>镜盖位置<input type='checkbox' name='viewOpt[]' value='coverPosition'></span>
-				<span class='optionLeng inline'>焦点类型目标索引位置<input type='checkbox' name='viewOpt[]' value='targetFocusTypeIndex'></span>
-				<span class='optionLeng inline'>焦点切换镜目标角度位置<input type='checkbox' name='viewOpt[]' value='targetAxis4Angle'></span>
-				<span class='optionLeng inline'>镜盖目标索引位置<input type='checkbox' name='viewOpt[]' value='targetIndexOfCover'></span>
-				<span class='optionLeng inline'>轴1速度<input type='checkbox' name='viewOpt[]' value='axis1Speed'></span>
-				<span class='optionLeng inline'>轴2速度<input type='checkbox' name='viewOpt[]' value='axis2Speed'></span>
-				<span class='optionLeng inline'>轴3速度<input type='checkbox' name='viewOpt[]' value='axis3Speed'></span>
-				<span class='optionLeng inline'>跟踪目标类型<input type='checkbox' name='viewOpt[]' value='trackType'></span>
-				<span class='optionLeng inline'>目标名称<input type='checkbox' name='viewOpt[]' value='trackObjectName'></span>
-				<span class='optionLeng inline'>大气折射修正值<input type='checkbox' name='viewOpt[]' value='refractionCorrection'></span>
-				<span class='optionLeng inline'>轴1编码器位置<input type='checkbox' name='viewOpt[]' value='axis1Encoder'></span>
-				<span class='optionLeng inline'>轴2编码器位置<input type='checkbox' name='viewOpt[]' value='axis1Encoder'></span>
-				<span class='optionLeng inline'>轴3编码器位置<input type='checkbox' name='viewOpt[]' value='axis1Encoder'></span>
-				<span class='optionLeng inline'>轴3工作模式<input type='checkbox' name='viewOpt[]' value='axis3Mode'></span>
-				<span class='optionLeng inline'>轴1指向模型修正值<input type='checkbox' name='viewOpt[]' value='axis1PMCorrection'></span>
-				<span class='optionLeng inline'>轴2指向模型修正值<input type='checkbox' name='viewOpt[]' value='axis2PMCorrection'></span>
-				<span class='optionLeng inline'>轴3指向模型修正值<input type='checkbox' name='viewOpt[]' value='axis3PMCorrection'></span>
-				<span class='optionLeng inline'>轴1人工修正值<input type='checkbox' name='viewOpt[]' value='axis1ManualCorrection'></span>
-				<span class='optionLeng inline'>轴2人工修正值<input type='checkbox' name='viewOpt[]' value='axis2ManualCorrection'></span>
-				<span class='optionLeng inline'>轴3人工修正值<input type='checkbox' name='viewOpt[]' value='axis3ManualCorrection'></span>
-				<span class='optionLeng inline'>盘向<input type='checkbox' name='viewOpt[]' value='pieSide'></span>
-				<span class='optionLeng inline'>目标盘向<input type='checkbox' name='viewOpt[]' value='targetPieSide'></span>
-				<span class='optionLeng inline'>轴1是否找零<input type='checkbox' name='viewOpt[]' value='isAxis1FindHome'></span>
-				<span class='optionLeng inline'>轴2是否找零<input type='checkbox' name='viewOpt[]' value='isAxis2FindHome'></span>
-				<span class='optionLeng inline'>轴3是否找零<input type='checkbox' name='viewOpt[]' value='isAxis3FindHome'></span>
-				<span class='optionLeng inline'>温度<input type='checkbox' name='viewOpt[]' value='temperature'></span>
-				<span class='optionLeng inline'>湿度<input type='checkbox' name='viewOpt[]' value='humidity'></span>
-				<span class='optionLeng inline'>当前状态<input type='checkbox' name='viewOpt[]' value='gimbalCurStatus'></span>
-				<span class='optionLeng inline'>历史状态<input type='checkbox' name='viewOpt[]' value='gimbalLastStatus'></span>
-				<span class='optionLeng inline'>错误标识<input type='checkbox' name='viewOpt[]' value='gimbalErrorStatus'></span>
-				<span class='optionLeng inline'>警告状态<input type='checkbox' name='viewOpt[]' value='WarningType'></span>
-				<span class='optionLeng inline'>错误状态<input type='checkbox' name='viewOpt[]' value='ErrorType'></span>
-				<br><span class='optionTitle'>转台固定属性</span>
-				<br>
+				<span class='optionTitle'>转台固定属性</span><br>
 				<span class='optionLeng inline'>类型<input type='checkbox' name='viewOpt[]' value='atType'></span>
 				<span class='optionLeng inline'>焦点类型<input type='checkbox' name='viewOpt[]' value='focustype'></span>
 				<span class='optionLeng inline'>焦比<input type='checkbox' name='viewOpt[]' value='focusratio'></span>
@@ -175,73 +103,7 @@
 				<span class='optionLeng inline'>跟踪卫星<input type='checkbox' name='viewOpt[]' value='canTrackSatellite'></span>
 			</div><!--转台的选项 结束-->
 			<div id='ccd' class='displayNo border mrgTop'><!--ccd选项-->
-				<span class='optionTitle'>CCD指令</span><br>
-				<span class='optionLeng inline'>连接CCD<input type='checkbox' name='viewOpt[]' value='ccdConnect'></span>
-				<span class='optionLeng inline'>断开CCD<input type='checkbox' name='viewOpt[]' value='ccdDisConnect'></span>
-				<span class='optionLeng inline'>停止曝光<input type='checkbox' name='viewOpt[]' value='ccdStopExpose'></span>
-				<span class='optionLeng inline'>终止曝光<input type='checkbox' name='viewOpt[]' value='ccdAbortExpose'></span>
-				<span class='optionLeng inline'>制冷温度<input type='checkbox' name='viewOpt[]' value='coolTemp'></span>
-				<span class='optionLeng inline'>曝光策略<input type='checkbox' name='viewOpt[]' value='exposStratic'></span>
-				<span class='optionLeng inline'>开始曝光<input type='checkbox' name='viewOpt[]' value='startExp'></span>
-				<span class='optionLeng inline'>设置增益<input type='checkbox' name='viewOpt[]' value='setGear'></span>
-				<span class='optionLeng inline'>读出速度模式<input type='checkbox' name='viewOpt[]' value='readOut'></span>
-				<span class='optionLeng inline'>设置转移速度<input type='checkbox' name='viewOpt[]' value='transSpeed'></span>
-				<span class='optionLeng inline'>设置Bin<input type='checkbox' name='viewOpt[]' value='setBin'></span>
-				<span class='optionLeng inline'>设置Roi<input type='checkbox' name='viewOpt[]' value='setRoi'></span>
-				<span class='optionLeng inline'>设置快门 <input type='checkbox' name='viewOpt[]' value='setShutter'></span>
-				<span class='optionLeng inline'>设置帧转移<input type='checkbox' name='viewOpt[]' value='setFrame'></span>
-				<span class='optionLeng inline'>设置SetEM<input type='checkbox' name='viewOpt[]' value='setEm'></span>
-				<span class='optionLeng inline'>CMOS noise<input type='checkbox' name='viewOpt[]' value='setCmos'></span>
-				<span class='optionLeng inline'>Base line<input type='checkbox' name='viewOpt[]' value='setBase'></span>
-				<span class='optionLeng inline'>Over Scan<input type='checkbox' name='viewOpt[]' value='setOverScan'></span>
-				<span class='optionTitle'>CCD可变属性</span><br>
-				<span class='optionLeng inline'>时间戳<input type='checkbox' name='viewOpt[]' value='ccdIimeStamp'></span>
-				<span class='optionLeng inline'>当前拍摄目标名称<input type='checkbox' name='viewOpt[]' value='curObserveName'></span>
-				<span class='optionLeng inline'>当前拍摄目标类型<input type='checkbox' name='viewOpt[]' value='curObserveType'></span>
-				<span class='optionLeng inline'>当前拍摄目标赤经<input type='checkbox' name='viewOpt[]' value='curObserveJ2000RightAscension'></span>
-				<span class='optionLeng inline'>当前拍摄目标赤纬<input type='checkbox' name='viewOpt[]' value='curObserveJ2000Declination'></span>
-				<span class='optionLeng inline'>当前拍摄目标历元<input type='checkbox' name='viewOpt[]' value='curObserveEpoch'></span>
-				<span class='optionLeng inline'>当前拍摄波段<input type='checkbox' name='viewOpt[]' value='curObserveBand'></span>
-				<span class='optionLeng inline'>当前状态<input type='checkbox' name='viewOpt[]' value='ccdCurStatus'></span>
-				<span class='optionLeng inline'>历史状态<input type='checkbox' name='viewOpt[]' value='ccdLastStatus'></span>
-				<span class='optionLeng inline'>错误标识<input type='checkbox' name='viewOpt[]' value='ccdErrorStatus'></span>
-				<span class='optionLeng inline'>警告状态<input type='checkbox' name='viewOpt[]' value='ccdWarningType'></span>
-				<span class='optionLeng inline'>错误状态<input type='checkbox' name='viewOpt[]' value='ccdErrorType'></span>
-				<span class='optionLeng inline'>BinX<input type='checkbox' name='viewOpt[]' value='ccdBinX'></span>
-				<span class='optionLeng inline'>BinY<input type='checkbox' name='viewOpt[]' value='ccdBinY'></span>
-				<span class='optionLeng inline'>startX<input type='checkbox' name='viewOpt[]' value='ccdStartX'></span>
-				<span class='optionLeng inline'>startY<input type='checkbox' name='viewOpt[]' value='ccdStartY'></span>
-				<span class='optionLeng inline'>图像宽度<input type='checkbox' name='viewOpt[]' value='imageWidth'></span>
-				<span class='optionLeng inline'>图像高度<input type='checkbox' name='viewOpt[]' value='imageHeight'></span>
-				<span class='optionLeng inline'>曝光时间<input type='checkbox' name='viewOpt[]' value='exposureTime'></span>
-				<span class='optionLeng inline'>延迟时间<input type='checkbox' name='viewOpt[]' value='delayTime'></span>
-				<span class='optionLeng inline'>帧序号<input type='checkbox' name='viewOpt[]' value='frameSequence'></span>
-				<span class='optionLeng inline'>总拍摄帧数<input type='checkbox' name='viewOpt[]' value='frameTotal'></span>
-				<span class='optionLeng inline'>读出速度模式索引<input type='checkbox' name='viewOpt[]' value='indexofReadoutMode'></span>
-				<span class='optionLeng inline'>转移速度模式索引<input type='checkbox' name='viewOpt[]' value='indexofTransferSpeedMode'></span>
-				<span class='optionLeng inline'>增益模式索引<input type='checkbox' name='viewOpt[]' value='indexofGainMode'></span>
-				<span class='optionLeng inline'>增益档位索引<input type='checkbox' name='viewOpt[]' value='indexofGain'></span>
-				<span class='optionLeng inline'>当前制冷温度<input type='checkbox' name='viewOpt[]' value='curCoolerT'></span>
-				<span class='optionLeng inline'>制冷温度设置值<input type='checkbox' name='viewOpt[]' value='targetCoolerT'></span>
-				<span class='optionLeng inline'>上次曝光名称<input type='checkbox' name='viewOpt[]' value='lastTargetName'></span>
-				<span class='optionLeng inline'>上次曝光名称<input type='checkbox' name='viewOpt[]' value='lastTargetName'></span>
-				<span class='optionLeng inline'>上次曝光开始时刻<input type='checkbox' name='viewOpt[]' value='lastExposeStartTime'></span>
-				<span class='optionLeng inline'>上次曝光时间<input type='checkbox' name='viewOpt[]' value='lastExposeDuration'></span>
-				<span class='optionLeng inline'>读出模式<input type='checkbox' name='viewOpt[]' value='readoutMode'></span>
-				<span class='optionLeng inline'>图像存储位数值<input type='checkbox' name='viewOpt[]' value='bytesofPixel'></span>
-				<span class='optionLeng inline'>曝光完成百分比<input type='checkbox' name='viewOpt[]' value='exposurePercent'></span>
-				<span class='optionLeng inline'>曝光触发模式值（索引）<input type='checkbox' name='viewOpt[]' value='exposeTriggerMode'></span>
-				<span class='optionLeng inline'>风扇状态（索引）<input type='checkbox' name='viewOpt[]' value='fanOn'></span>
-				<span class='optionLeng inline'>快门模式值（索引）<input type='checkbox' name='viewOpt[]' value='ShutterMode'></span>
-				<span class='optionLeng inline'>帧转移<input type='checkbox' name='viewOpt[]' value='isFullFrame'></span>
-				<span class='optionLeng inline'>EM<input type='checkbox' name='viewOpt[]' value='isEM'></span>
-				<span class='optionLeng inline'>EM值<input type='checkbox' name='viewOpt[]' value='valueOfEM'></span>
-				<span class='optionLeng inline'>CMOS noise filter<input type='checkbox' name='viewOpt[]' value='isNoiseFilter'></span>
-				<span class='optionLeng inline'>base line<input type='checkbox' name='viewOpt[]' value='isBaseline'></span>
-				<span class='optionLeng inline'>Base line值<input type='checkbox' name='viewOpt[]' value='vlaueOfBaseline'></span>
-				<span class='optionLeng inline'>像元比例尺X<input type='checkbox' name='viewOpt[]' value='pixelScaleX'></span>
-				<span class='optionLeng inline'>像元比例尺Y<input type='checkbox' name='viewOpt[]' value='pixelScaleY'></span>
-				<br><span class='optionTitle'>CCD固定属性</span><br>
+				<span class='optionTitle'>CCD固定属性</span><br>
 				<span class='optionLeng inline'>探测器类型<input type='checkbox' name='viewOpt[]' value='ccdType'></span>
 				<span class='optionLeng inline'>x像素<input type='checkbox' name='viewOpt[]' value='xPixel'></span>
 				<span class='optionLeng inline'>y像素<input type='checkbox' name='viewOpt[]' value='yPixel'></span>
@@ -298,26 +160,7 @@
 				<span class='optionLeng inline'>设置over scan<input type='checkbox' name='viewOpt[]' value='canSetOverScan'></span>
 			</div><!--ccd选项 结束-->
 			<div id='focus' class='displayNo border mrgTop'>
-				<span class='optionTitle'>调焦器指令</span><br>
-				<span class='optionLeng inline'>连接调焦器<input type='checkbox' name='viewOpt[]' value='focusConnect'></span>
-				<span class='optionLeng inline'>断开调焦器<input type='checkbox' name='viewOpt[]' value='focusDisConnect'></span>
-				<span class='optionLeng inline'>找零<input type='checkbox' name='viewOpt[]' value='focusFindhome'></span>
-				<span class='optionLeng inline'>停止运动<input type='checkbox' name='viewOpt[]' value='focusStop'></span>
-				<span class='optionLeng inline'>设置目标位置<input type='checkbox' name='viewOpt[]' value='focusTargetPos'></span>
-				<span class='optionLeng inline'>设置恒速转动<input type='checkbox' name='viewOpt[]' value='focusFixedSpeed'></span>
-				<span class='optionLeng inline'>使能温度补偿 <input type='checkbox' name='viewOpt[]' value='temperaEnable'></span>
-				<span class='optionLeng inline'>温度补偿系数<input type='checkbox' name='viewOpt[]' value='temperaCoeficnt'></span>
-				<br><span class='optionTitle'>调焦器可变属性</span><br>
-				<span class='optionLeng inline'>时间戳<input type='checkbox' name='viewOpt[]' value='focusTimeStamp'></span>
-				<span class='optionLeng inline'>当前状态<input type='checkbox' name='viewOpt[]' value='focusCurStatus'></span>
-				<span class='optionLeng inline'>当前位置<input type='checkbox' name='viewOpt[]' value='focusCurPosition'></span>
-				<span class='optionLeng inline'>目标位置<input type='checkbox' name='viewOpt[]' value='focusTargetPosition'></span>
-				<span class='optionLeng inline'>找零状态<input type='checkbox' name='viewOpt[]' value='focusBeHomed'></span>
-				<span class='optionLeng inline'>当前环境温度<input type='checkbox' name='viewOpt[]' value='focusTemperature'></span>
-				<span class='optionLeng inline'>是否进行温度补偿<input type='checkbox' name='viewOpt[]' value='isTemperatureCompensate'></span>
-				<span class='optionLeng inline'>温度补偿系数<input type='checkbox' name='viewOpt[]' value='tempertureCompensatecoefficient'></span>
-				<span class='optionLeng inline'>错误标识<input type='checkbox' name='viewOpt[]' value='focusErrorStatus'></span>
-				<br><span class='optionTitle'>调焦器固定属性</span><br>
+				<span class='optionTitle'>调焦器固定属性</span><br>
 				<span class='optionLeng inline'>最大值<input type='checkbox' name='viewOpt[]' value='focusMaxValue'></span>
 				<span class='optionLeng inline'>最小值<input type='checkbox' name='viewOpt[]' value='focusMinValue'></span>
 				<span class='optionLeng inline'>分辨率<input type='checkbox' name='viewOpt[]' value='focusIncrement'></span>
@@ -334,28 +177,7 @@
 				<span class='optionLeng inline'>可否找零<input type='checkbox' name='viewOpt[]' value='focusCanFindHome'></span>
 			</div><!--调焦器选项 结束-->
 			<div id='slaveDome' class='displayNo border mrgTop'>
-				<span class='optionTitle'>随动圆顶指令</span><br>
-				<span class='optionLeng inline'>连接圆顶<input type='checkbox' name='viewOpt[]' value='sDomeConnect'></span>
-				<span class='optionLeng inline'>断开圆顶<input type='checkbox' name='viewOpt[]' value='sDomeDisConnect'></span>
-				<span class='optionLeng inline'>停止运动<input type='checkbox' name='viewOpt[]' value='sDomeStop'></span>
-				<span class='optionLeng inline'>打开天窗<input type='checkbox' name='viewOpt[]' value='sDomeScuttle'></span>
-				<span class='optionLeng inline'>关闭天窗<input type='checkbox' name='viewOpt[]' value='sDomeScuttleClose'></span>
-				<span class='optionLeng inline'>设置目标方位<input type='checkbox' name='viewOpt[]' value='sDomeSetPos'></span>
-				<span class='optionLeng inline'>设置转动速度 <input type='checkbox' name='viewOpt[]' value='sDomeRotateSpeed'></span>
-				<span class='optionLeng inline'>设置风帘位置 <input type='checkbox' name='viewOpt[]' value='sDomeShadePos'></span>
-				<span class='optionLeng inline'>控制风帘运动 <input type='checkbox' name='viewOpt[]' value='sDomeShadeAct'></span>
-				<br><span class='optionTitle'>随动圆顶可变属性</span><br>
-				<span class='optionLeng inline'>当前状态<input type='checkbox' name='viewOpt[]' value='sDomeCurStatus'></span>
-				<span class='optionLeng inline'>天窗状态<input type='checkbox' name='viewOpt[]' value='sDomeShutterStatus'></span>
-				<span class='optionLeng inline'>风帘状态<input type='checkbox' name='viewOpt[]' value='sDomeShadeStatus'></span>
-				<span class='optionLeng inline'>当前方位<input type='checkbox' name='viewOpt[]' value='curDomePosition'></span>
-				<span class='optionLeng inline'>天窗打开百分比<input type='checkbox' name='viewOpt[]' value='curShutterPosition'></span>
-				<span class='optionLeng inline'>风帘位置<input type='checkbox' name='viewOpt[]' value='curShadePosition'></span>
-				<span class='optionLeng inline'>目标方位<input type='checkbox' name='viewOpt[]' value='targetDomePosition'></span>
-				<span class='optionLeng inline'>目标天窗状态<input type='checkbox' name='viewOpt[]' value='targetShutterPosition'></span>
-				<span class='optionLeng inline'>目标风帘位置<input type='checkbox' name='viewOpt[]' value='targetShadePosition'></span>
-				<span class='optionLeng inline'>错误标识<input type='checkbox' name='viewOpt[]' value='sDomeErrorStatus'></span>
-				<br><span class='optionTitle'>随动圆顶固定属性</span><br>
+				<span class='optionTitle'>随动圆顶固定属性</span><br>
 				<span class='optionLeng inline'>是否具备风帘<input type='checkbox' name='viewOpt[]' value='HasShade'></span>
 				<span class='optionLeng inline'>最大转动速度<input type='checkbox' name='viewOpt[]' value='sDomeMaxSpeed'></span>
 				<span class='optionLeng inline'>可否设置目标方位<input type='checkbox' name='viewOpt[]' value='canSetDomePositin'></span>
@@ -367,20 +189,7 @@
 				<span class='optionLeng inline'>可否连接<input type='checkbox' name='viewOpt[]' value='sDomeCanConnect'></span>
 			</div><!--随动圆顶 选项 结束-->
 			<div id='filter' class='displayNo border mrgTop'>
-				<span class='optionTitle'>滤光片指令</span><br>
-				<span class='optionLeng inline'>连接<input type='checkbox' name='viewOpt[]' value='filterConnect'></span>
-				<span class='optionLeng inline'>断开<input type='checkbox' name='viewOpt[]' value='filterDisConnect'></span>
-				<span class='optionLeng inline'>找零<input type='checkbox' name='viewOpt[]' value='filterFindHome'></span>
-				<span class='optionLeng inline'>设置滤光片位置<input type='checkbox' name='viewOpt[]' value='setFilterPosition'></span>
-				<br><span class='optionTitle'>滤光片可变属性</span><br>
-				<span class='optionLeng inline'>当前状态<input type='checkbox' name='viewOpt[]' value='filterCurStatus'></span>
-				<span class='optionLeng inline'>时间戳<input type='checkbox' name='viewOpt[]' value='filterTimeStamp'></span>
-				<span class='optionLeng inline'>当前插槽位置索引<input type='checkbox' name='viewOpt[]' value='curFilterPosition'></span>
-				<span class='optionLeng inline'>目标插槽位置<input type='checkbox' name='viewOpt[]' value='targetFilterPosition'></span>
-				<span class='optionLeng inline'>可否找零<input type='checkbox' name='viewOpt[]' value='filterBeHomed'></span>
-				<span class='optionLeng inline'>错误标识<input type='checkbox' name='viewOpt[]' value='filterErrorStatus'></span>
-				<span class='optionLeng inline'>错误类型<input type='checkbox' name='viewOpt[]' value='filterErrorType'></span>
-				<br><span class='optionTitle'>滤光片固定属性</span><br>
+				<span class='optionTitle'>滤光片固定属性</span><br>
 				<span class='optionLeng inline'>插槽数目<input type='checkbox' name='viewOpt[]' value='numberOfFilter'></span>
 				<span class='optionLeng inline'>滤光片类型<input type='checkbox' name='viewOpt[]' value='FilterSystem'></span>
 				<span class='optionLeng inline'>滤光片名称<input type='checkbox' name='viewOpt[]' value='FilterName'></span>

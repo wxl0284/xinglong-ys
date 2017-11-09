@@ -234,12 +234,9 @@
 		var divID = $(this).attr('name');
 		divID = '#' + divID;
 		commandDiv = $(divID);
-		//找到与commandDiv同级的指令提交按钮
-		var sbmt = commandDiv.siblings('input[type="button"]');
 		divs.not(commandDiv).hide();//隐藏其他指令
 		commandDiv.show();//显示相应指令		
 		commandDiv.click();//同时执行此指令的点击事件
-		sbmt.prop('disabled', false); //启用提交按钮
 	});
 //每个设备 指令导航栏 nav下span 点击事件  结束///////////////////
 	
@@ -377,7 +374,6 @@
          $(this).find('input:radio').prop('checked', true);
          var notcheck = gimbalSelect.not($(this));
          notcheck.addClass('notCheck');
-         notcheck.find('input[type="text"]').val('');
          $(this).removeClass('notCheck');
          
      });
@@ -411,18 +407,15 @@
 	
 	//赤经之小时 blur事件
 	inputIn1.blur(function () {
-		var gimbalSbmt = $('#gimbalSbmt');
 		var patn = /^\d{1,2}$/;
 		var v = $.trim($(this).val());
 		var err = 0; //错误标识
 		if (!patn.test(v) || v > 24 || v < 0)
 		{
 			err = 1;
-			gimbalSbmt.prop('disabled', true);
 			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
 		}else{
 			inputIn1_1.focus();
-			gimbalSbmt.prop('disabled', false);
 		}
 		
 		$(this).data('err', err);
@@ -440,18 +433,15 @@
 	
 	//赤经之分钟 blur事件
 	inputIn1_1.blur(function () {
-		var gimbalSbmt = $('#gimbalSbmt');
 		var patn = /^\d{1,2}$/;
 		var v = $.trim($(this).val());
 		var err = 0;
 		if (!patn.test(v) || v < 0 || v >= 60)
 		{
 			err = 1;
-			gimbalSbmt.prop('disabled', true);
 			layer.tips('参数超限', $(this), {tips: 1, tipsMore: true});
 		}else{
 			inputIn1_2.focus();
-			gimbalSbmt.prop('disabled', false);
 		}
 	
 		$(this).data('err', err);
@@ -459,16 +449,12 @@
 	
 	//赤经之秒 js事件
 	inputIn1_2.blur(function () {
-		var gimbalSbmt = $('#gimbalSbmt');
 		var v = $.trim($(this).val());
 		var err = 0;
 		if (!$.isNumeric(v) || v >= 60 || v < 0)
 		{
 			err = 1;
-			gimbalSbmt.prop('disabled', true);
 			layer.tips('秒参数超限', $(this), {tips : 1,tipsMore: true});
-		}else{
-			gimbalSbmt.prop('disabled', false);
 		}
 		
 		$(this).data('err', err);
@@ -492,7 +478,6 @@
 	
 	//赤纬之小时 blur事件
 	inputIn2.blur(function () {
-		var gimbalSbmt = $('#gimbalSbmt');
 		var v = $.trim($(this).val());
 		var patn = /^-?\d{1,2}$/;
 		var err = 0;
@@ -500,11 +485,9 @@
 		if (!patn.test(v) || v > 90 || v < -90)
 		{
 			err = 1;
-			gimbalSbmt.prop('disabled', true);
 			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
 		}else{
 			inputIn2_1.focus();
-			gimbalSbmt.prop('disabled', false);
 		}
 	
 		$(this).data('err', err);
@@ -518,12 +501,10 @@
 		{
 			$(this).blur();
 		}
-	
 	})
 	
 	//赤纬之分钟 blur事件
 	inputIn2_1.blur(function () {
-		var gimbalSbmt = $('#gimbalSbmt');
 		var v = $.trim($(this).val());
 		var err = 0;
 		var patn = /^\d{1,2}$/;
@@ -531,11 +512,9 @@
 		if (!patn.test(v) || v > 59 || v < 0)
 		{
 			err = 1;
-			gimbalSbmt.prop('disabled', true);
 			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
 		}else{
 			inputIn2_2.focus();
-			gimbalSbmt.prop('disabled', false);
 		}
 		
 		$(this).data('err', err);
@@ -543,26 +522,20 @@
 	
 	//赤纬之秒 js事件
 	inputIn2_2.blur(function () {
-		var gimbalSbmt = $('#gimbalSbmt');
 		var err = 0;
 		var v = $.trim($(this).val());
 		
 		if (!$.isNumeric(v) || v >= 60 || v < 0)
 		{
 			err = 1;
-			gimbalSbmt.prop('disabled', true);
 			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		}else{
-			gimbalSbmt.prop('disabled', false);
-		}
-		
+		}		
 		$(this).data('err', err);
 	})
 	//验证 跟踪恒星-赤纬 结束//////////////////////////
 	
 	//验证 设置目标名称//////////////////////////////////
 	$('#objectNameInput').blur(function () {
-		var gimbalSbmt = $('#gimbalSbmt');
 		var v = $.trim($(this).val());
 		var patn = /([\u4e00-\u9fa5]| )+/;
 		var err = 0;
@@ -570,18 +543,13 @@
 		if (patn.test(v) || v == '')
 		{
 			err = 1;
-			layer.tips('目标名称不能有汉字或空格!', $(this), {tipsMore: true});
-			gimbalSbmt.prop('disabled', true);
-		}else{
-			gimbalSbmt.prop('disabled', false);
-		}
-		
+			layer.tips('名称不能有汉字或空格!', $(this), {tipsMore: true});
+		}		
 		$(this).data('err', err);
 	});////验证 设置目标名称 结束//////////////////////////
 	
 	//验证 速度修正-轴 //////////////////////////////////
 	$('#speedXInput').blur(function () {
-		var gimbalSbmt = $('#gimbalSbmt');
 		var v = $.trim($(this).val());
 		var err = 0;
 		
@@ -589,17 +557,12 @@
 		{
 			err = 1;
 			layer.tips('轴设置有误!', $(this), {tipsMore: true});
-			gimbalSbmt.prop('disabled', true);
-		}else{
-			gimbalSbmt.prop('disabled', false);
-		}
-		
+		}		
 		$(this).data('err', err);
 	});////验证 速度修正-轴 结束//////////////////////////
 	
 	//验证 速度修正-速度 //////////////////////////////////
 	$('#speedCorrect').blur(function () {
-		var gimbalSbmt = $('#gimbalSbmt');
 		var v = $.trim($(this).val());
 		var err = 0;
 		
@@ -607,9 +570,6 @@
 		{
 			err = 1;
 			layer.tips('速度设置有误!', $(this), {tipsMore: true});
-			gimbalSbmt.prop('disabled', true);
-		}else{
-			gimbalSbmt.prop('disabled', false);
 		}
 		
 		$(this).data('err', err);
@@ -617,16 +577,12 @@
 	
 	//验证 恒速运动-轴 //////////////////////////////////
 	$('#speedFAxis').blur(function () {
-		var gimbalSbmt = $('#gimbalSbmt');
 		var v = $.trim($(this).val());
 		var err = 0;
 		
 		if (!(v == 1 || v == 2))
 		{
 			layer.tips('轴设置有误!', $(this), {tipsMore: true});
-			gimbalSbmt.prop('disabled', true);
-		}else{
-			gimbalSbmt.prop('disabled', false);
 		}
 		
 		$(this).data('err', err);
@@ -634,7 +590,6 @@
 	
 	//验证 恒速运动-速度 //////////////////////////////////
 	$('#speedFVal').blur(function () {
-		var gimbalSbmt = $('#gimbalSbmt');
 		var v = $.trim($(this).val());
 		var err = 0;
 		
@@ -642,9 +597,6 @@
 		{
 			err = 1;
 			layer.tips('速度设置有误!', $(this), {tipsMore: true});
-			gimbalSbmt.prop('disabled', true);
-		}else{
-			gimbalSbmt.prop('disabled', false);
 		}
 		
 		$(this).data('err', err);
@@ -652,7 +604,6 @@
 	
 	//验证 位置修正-轴 //////////////////////////////////
 	$('#PositionCorrectAxis').blur(function () {
-		var gimbalSbmt = $('#gimbalSbmt');
 		var v = $.trim($(this).val());
 		var err = 0;
 		
@@ -660,9 +611,6 @@
 		{
 			err = 1;
 			layer.tips('轴设置有误!', $(this), {tipsMore: true});
-			gimbalSbmt.prop('disabled', true);
-		}else{
-			gimbalSbmt.prop('disabled', false);
 		}
 		
 		$(this).data('err', err);
@@ -670,7 +618,6 @@
 	
 	//验证 位置修正-速度 //////////////////////////////////
 	$('#PositionCorrectVal').blur(function () {
-		var gimbalSbmt = $('#gimbalSbmt');
 		var v = $.trim($(this).val());
 		var err = 0;
 		
@@ -678,9 +625,6 @@
 		{
 			err = 1;
 			layer.tips('速度设置有误!', $(this), {tipsMore: true});
-			gimbalSbmt.prop('disabled', true);
-		}else{
-			gimbalSbmt.prop('disabled', false);
 		}
 		
 		$(this).data('err', err);
@@ -825,14 +769,12 @@
          $(this).find('input:radio').prop('checked', true);
          var notcheck = ccdSelect.not($(this));
          notcheck.addClass('notCheck');
-         notcheck.find('input[type="text"]').val('');
          $(this).removeClass('notCheck');
      });
 	
 //ccd 表单数据验证////////////////////////////////////////////
 	//验证制冷温度
 	$('#ccdTemperature').blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());
 		var err = 0;
 		
@@ -840,17 +782,12 @@
 		{
 			err = 1;
 			layer.tips('制冷温度值有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
-		}
-		
+		}		
 		$(this).data('err', err);
 	});
 	
 	//验证曝光时间
 	$('#durationInput').blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());
 		var err = 0;
 		
@@ -858,17 +795,12 @@
 		{
 			err = 1;
 			layer.tips('曝光时间值有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
-		}
-		
+		}		
 		$(this).data('err', err);
 	});
 	
 	//验证delay-延迟时间
 	$('#delayInput').blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());
 		var err = 0;
 		
@@ -876,17 +808,12 @@
 		{
 			err = 1;
 			layer.tips('延迟时间值有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
-		}
-		
+		}		
 		$(this).data('err', err);
 	});
 	
 	//验证 目标名称
 	$('#ccdObjectName').blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());
 		var patn = /([\u4e00-\u9fa5]| )+/;
 		var err = 0;
@@ -894,12 +821,8 @@
 		if (patn.test(v) || v == '')
 		{
 			err = 1;
-			layer.tips('目标名称不能有汉字或空格空格!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
-		}
-		
+			layer.tips('名称不能有汉字或空格空格!', $(this), {tipsMore: true});
+		}		
 		$(this).data('err', err);
 	});
 	
@@ -921,18 +844,15 @@
 	
 	//赤经之小时 blur事件
 	inputIn3.blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var patn = /^\d{1,2}$/;
 		var v = $.trim($(this).val());
 		var err = 0; //错误标识
 		if (!patn.test(v) || v > 24 || v < 0)
 		{
 			err = 1;
-			ccdSbmt.prop('disabled', true);
 			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
 		}else{
 			inputIn3_1.focus();
-			ccdSbmt.prop('disabled', false);
 		}
 		
 		$(this).data('err', err);
@@ -950,18 +870,15 @@
 	
 	//赤经之分钟 blur事件
 	inputIn3_1.blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var patn = /^\d{1,2}$/;
 		var v = $.trim($(this).val());
 		var err = 0;
 		if (!patn.test(v) || v < 0 || v >= 60)
 		{
 			err = 1;
-			ccdSbmt.prop('disabled', true);
 			layer.tips('参数超限', $(this), {tips: 1, tipsMore: true});
 		}else{
 			inputIn3_2.focus();
-			ccdSbmt.prop('disabled', false);
 		}
 	
 		$(this).data('err', err);
@@ -969,18 +886,13 @@
 	
 	//赤经之秒 js事件
 	inputIn3_2.blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());
 		var err = 0;
 		if (!$.isNumeric(v) || v >= 60 || v < 0)
 		{
 			err = 1;
-			ccdSbmt.prop('disabled', true);
 			layer.tips('秒参数超限', $(this), {tips : 1,tipsMore: true});
-		}else{
-			ccdSbmt.prop('disabled', false);
-		}
-		
+		}		
 		$(this).data('err', err);
 	})
 	//验证 赤经 结束//////////////////////////
@@ -1003,7 +915,6 @@
 	
 	//赤纬之小时 blur事件
 	inputIn4.blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());
 		var patn = /^-?\d{1,2}$/;
 		var err = 0;
@@ -1011,11 +922,9 @@
 		if (!patn.test(v) || v > 90 || v < -90)
 		{
 			err = 1;
-			ccdSbmt.prop('disabled', true);
 			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
 		}else{
 			inputIn4_1.focus();
-			ccdSbmt.prop('disabled', false);
 		}
 	
 		$(this).data('err', err);
@@ -1034,7 +943,6 @@
 	
 	//赤纬之分钟 blur事件
 	inputIn4_1.blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());
 		var err = 0;
 		var patn = /^\d{1,2}$/;
@@ -1042,11 +950,9 @@
 		if (!patn.test(v) || v > 59 || v < 0)
 		{
 			err = 1;
-			ccdSbmt.prop('disabled', true);
 			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
 		}else{
 			inputIn4_2.focus();
-			ccdSbmt.prop('disabled', false);
 		}
 		
 		$(this).data('err', err);
@@ -1054,35 +960,26 @@
 	
 	//赤纬之秒 js事件
 	inputIn4_2.blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var err = 0;
 		var v = $.trim($(this).val());
 		
 		if (!$.isNumeric(v) || v >= 60 || v < 0)
 		{
 			err = 1;
-			ccdSbmt.prop('disabled', true);
 			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		}else{
-			ccdSbmt.prop('disabled', false);
-		}
-		
+		}		
 		$(this).data('err', err);
 	})
 	//验证 曝光策略之赤经 赤纬 结束//////////////////////////
 	
 	//验证 拍摄波段
 	$('#objectBandInput').blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());
 		var err = 0;
 		
 		/* if (v1 == '' || v1 < 90 || v1 > 90 || !$.isNumeric(v1))
 		{
 			layer.tips('小时之数据输入有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
 		} */
 
 		$(this).data('err', err);
@@ -1090,16 +987,12 @@
 	
 	//验证 帧序号
 	$('#frameSequenceIn').blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());
 		var err = 0;
 		
 		/* if (v1 == '' || v1 < 90 || v1 > 90 || !$.isNumeric(v1))
 		{
 			layer.tips('小时之数据输入有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
 		} */
 
 		$(this).data('err', err);
@@ -1107,7 +1000,6 @@
 	
 	//验证 读出速度模式值
 	$('#ReadSpeedModeIn').blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());
 		var patn = /^[1-9]$/;
 		var err = 0;
@@ -1116,17 +1008,12 @@
 		{
 			err = 1;
 			layer.tips('模式输入有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
 		}
-
 		$(this).data('err', err);
 	});
 	
 	//验证 转移速度值
 	$('#TransferSpeedIn').blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());
 		var patn = /^[1-9]$/;
 		var err = 0;
@@ -1135,17 +1022,12 @@
 		{
 			err = 1;
 			layer.tips('转移速度输入有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
 		}
-
 		$(this).data('err', err);
 	});
 	
 	//验证 设置Roi //////////////////////////////////////
 	$('#startX').blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());		
 		var patn = /^\d+$/; //必须为>=0的整数
 		var err = 0;
@@ -1154,16 +1036,12 @@
 		{
 			err = 1;
 			layer.tips('startX输入有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
 		}
 
 		$(this).data('err', err);
 	});
 	
 	$('#startY').blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());		
 		var patn = /^\d+$/; //必须为>=0的整数
 		var err = 0;
@@ -1172,16 +1050,11 @@
 		{
 			err = 1;
 			layer.tips('startY输入有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
-		}
-			
+		}			
 		$(this).data('err', err);
 	});
 	
 	$('#imageWidth').blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());		
 		var patn = /^\d+$/; //必须为>=0的整数
 		var err = 0;
@@ -1190,16 +1063,11 @@
 		{
 			err = 1;
 			layer.tips('imageWidth输入有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
-		}
-			
+		}			
 		$(this).data('err', err);
 	});
 	
 	$('#imageHeight').blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());		
 		var patn = /^\d+$/; //必须为>=0的整数
 		var err = 0;
@@ -1208,18 +1076,13 @@
 		{
 			err = 1;
 			layer.tips('imageHeight输入有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
-		}
-			
+		}			
 		$(this).data('err', err);
 	});
 	//验证 设置Roi 结束////////////////////////////////////
 	
 	//验证 EmValue
 	$('#eMValueIn').blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());		
 		var patn = /^\d+$/; //必须为>=0的整数
 		var err = 0;
@@ -1227,17 +1090,12 @@
 		{
 			err = 1;
 			layer.tips('EmValue输入有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
 		}
-
 		$(this).data('err', err);
 	});
 	
 	//验证 baselineValue
 	$('#baselineValueIn').blur(function () {
-		var ccdSbmt = $('#ccdSbmt');
 		var v = $.trim($(this).val());		
 		var patn = /^\d+$/; //必须为>=0的整数
 		var err = 0;
@@ -1246,11 +1104,7 @@
 		{
 			err = 1;
 			layer.tips('此值输入有误!', $(this), {tipsMore: true});
-			ccdSbmt.prop('disabled', true);
-		}else{
-			ccdSbmt.prop('disabled', false);
 		}
-
 		$(this).data('err', err);
 	});
 //ccd 表单数据验证 结束/////////////////////////////////////////
@@ -1307,7 +1161,6 @@
          $(this).find('input:radio').prop('checked', true);
          var notcheck = focusSelect.not($(this));
          notcheck.addClass('notCheck');
-         notcheck.find('input[type="text"]').val('');
          $(this).removeClass('notCheck');
      });
    
@@ -1408,7 +1261,6 @@
 //调焦器 表单数据验证////////////////////////////////////////////
 	//验证 目标位置
 	$('#setPositionIn').blur(function () {
-		var focusSbmt = $('#focusSbmt');
 		var v = $.trim($(this).val());	
 		var err = 0;
 		
@@ -1416,17 +1268,12 @@
 		{
 			err = 1;
 			layer.tips('此值输入有误!', $(this), {tipsMore: true});
-			focusSbmt.prop('disabled', true);
-		}else{
-			focusSbmt.prop('disabled', false);
 		}
-
 		$(this).data('err', err);
 	});
 	
 	//验证 恒速运动
 	$('#speedIn').blur(function () {
-		var focusSbmt = $('#focusSbmt');
 		var v = $.trim($(this).val());	
 		var err = 0;
 		
@@ -1434,17 +1281,12 @@
 		{
 			err = 1;
 			layer.tips('此值输入有误!', $(this), {tipsMore: true});
-			focusSbmt.prop('disabled', true);
-		}else{
-			focusSbmt.prop('disabled', false);
 		}
-
 		$(this).data('err', err);
 	});
 	
 	//验证 温度补偿系数
 	$('#coefficientIn').blur(function () {
-		var focusSbmt = $('#focusSbmt');
 		var v = $.trim($(this).val());	
 		var err = 0;
 		
@@ -1452,11 +1294,7 @@
 		{
 			err = 1;
 			layer.tips('此值输入有误!', $(this), {tipsMore: true});
-			focusSbmt.prop('disabled', true);
-		}else{
-			focusSbmt.prop('disabled', false);
 		}
-
 		$(this).data('err', err);
 	});
 //调焦器 表单数据验证 结束/////////////////////////////////////////
@@ -1608,14 +1446,12 @@
          $(this).find('input:radio').prop('checked', true);
          var notcheck = domeSelect.not($(this));
          notcheck.addClass('notCheck');
-         notcheck.find('input[type="text"]').val('');
          $(this).removeClass('notCheck');
      });
 	 
 //随动圆顶 表单数据验证//////////////////////////////////////////
 	//验证 目标方位
 	$('#domePositionIn').blur(function () {
-		var domeSbmt = $('#domeSbmt');
 		var v = $.trim($(this).val());	
 		var err = 0;
 		
@@ -1623,17 +1459,12 @@
 		{
 			err = 1;
 			layer.tips('此值输入有误!', $(this), {tipsMore: true});
-			domeSbmt.prop('disabled', true);
-		}else{
-			domeSbmt.prop('disabled', false);
 		}
-
 		$(this).data('err', err);
 	});
 	
 	//验证 转动速度
 	$('#RotateSpeedIn').blur(function () {
-		var domeSbmt = $('#domeSbmt');
 		var v = $.trim($(this).val());	
 		var err = 0;
 		
@@ -1641,17 +1472,12 @@
 		{
 			err = 1;
 			layer.tips('此值输入有误!', $(this), {tipsMore: true});
-			domeSbmt.prop('disabled', true);
-		}else{
-			domeSbmt.prop('disabled', false);
 		}
-
 		$(this).data('err', err);
 	});
 	
 	//验证 风帘位置
 	$('#shadePositionIn').blur(function () {
-		var domeSbmt = $('#domeSbmt');
 		var v = $.trim($(this).val());	
 		var err = 0;
 		
@@ -1659,11 +1485,7 @@
 		{
 			err = 1;
 			layer.tips('此值输入有误!', $(this), {tipsMore: true});
-			domeSbmt.prop('disabled', true);
-		}else{
-			domeSbmt.prop('disabled', false);
 		}
-
 		$(this).data('err', err);
 	});
 //随动圆顶 表单数据验证 结束//////////////////////////////////////////

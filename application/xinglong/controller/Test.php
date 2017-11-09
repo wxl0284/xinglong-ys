@@ -4,6 +4,7 @@ namespace app\xinglong\controller;
 use think\Controller;
 use app\xinglong\model\User;
 use think\Cache;
+use think\Request;
 
 class Test extends Controller
 {
@@ -36,6 +37,34 @@ class Test extends Controller
 			return $res['data'];
 		}else{
 			return 'no cache';
+		}
+	}
+	
+	public function test ()
+	{
+		$a['aa'] = 'aaaa';
+		$a['bb'] = 'bbbb';
+		Cache::set('name', $a);
+		return view('table/a');
+	}
+	
+	public function valid ()
+	{
+		$data = Cache::get('name');
+		halt($data);
+	/* 	$result	= $this->validate(
+            [
+                '用户名' =>	$a['n'],
+            ],
+            
+            [
+                '用户名' =>	'alphaDash',
+        ]); */
+        if (!preg_match('/^[0-2]$/', $a['n']))
+        { 
+            return 'err';
+        }else{
+			return 'ok';
 		}
 	}
 }
