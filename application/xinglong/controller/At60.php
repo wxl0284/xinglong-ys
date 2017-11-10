@@ -280,7 +280,7 @@ class At60 extends Controller
 			
 			if ($declination > 90 || $declination < -90) //赤纬
 			{
-				return '赤纬参数超限!'
+				return '赤纬参数超限!';
 			}else{
 				$sendMsg .= pack('d', $declination);     //double64
 			}
@@ -792,7 +792,7 @@ class At60 extends Controller
 				$objectDeclination = time2Data($objectDeclination);
 				if ($objectDeclination > 90 || $objectDeclination < -90)
 				{ //赤纬
-					return '曝光策略:赤纬参数超限!'
+					return '曝光策略:赤纬参数超限!';
 				}else{
 					$sendMsg .= pack('d', $objectDeclination);//double64
 				}

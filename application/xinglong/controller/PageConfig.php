@@ -4,12 +4,11 @@ namespace app\xinglong\controller;
 use think\Controller;
 use think\Cache;
 use think\Session;
-/* use think\Session;
 use think\Request;
 use think\Cookie;
 use think\Db;
-use think\Config;
- */
+//use think\Config;
+
 
 class PageConfig extends Controller
 {
@@ -40,8 +39,8 @@ class PageConfig extends Controller
 	{
 		//未选中任何选项
 		$option = input();
-
-		if(empty($option)) {
+		halt($option);
+		if(empty($option['viewOpt'])) {
 			return '未选中任何选项!';
 		}
 		
