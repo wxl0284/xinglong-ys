@@ -354,5 +354,494 @@
 			$('#xPixelVal').val(v);
 		}
 	})
+	
+	//y像素
+	$('#yPixel').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入y像素值", "1024/2048");
+			
+			while(!$.isNumeric(v) || v < 0)
+			{
+				alert('y像素值输入有误!');
+				v = prompt("请输入y像素值", "1024/2048");
+			}
+			
+			$('#yPixelVal').val(v);
+		}
+	})
+	
+	//x像元大小
+	$('#xPixelSize').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入x像元值(um)", "");
+			
+			while(!$.isNumeric(v) || v < 0)
+			{
+				alert('x像元值(um)输入有误!');
+				v = prompt("请输入x像元值(um)", "");
+			}
+			
+			$('#xPixelSizeVal').val(v);
+		}
+	})
+	
+	//y像元大小
+	$('#yPixelSize').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入y像元值(um)", "");
+			
+			while(!$.isNumeric(v) || v < 0)
+			{
+				alert('y像元值(um)输入有误!');
+				v = prompt("请输入y像元值(um)", "");
+			}
+			
+			$('#yPixelSizeVal').val(v);
+		}
+	})
+	
+	//传感器名称
+	$('#sensorName').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入传感器名称", "芯片名");
+			var patn = / /;
+			while(patn.test(v))
+			{
+				alert('传感器名称输入有误!');
+				v = prompt("请输入传感器名称", "");
+			}
+			
+			$('#sensorNameVal').val(v);
+		}
+	})
+	
+	//图像位数
+	$('#imageBits').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['136px', '120px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#imageBitsVal'),
+			});
+		}
+	})
+	
+	//制冷方式
+	$('#coolerMode').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['150px', '120px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#coolerModeVal'),
+			});
+		}
+	})
+	
+	//最低制冷温度
+	$('#lowCoolerT').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入最低制冷温度（℃）", "");
+			while(!$.isNumeric(v))
+			{
+				alert('最低制冷温度输入有误!');
+				v = prompt("请输入最低制冷温度（℃）", "");
+			}
+			
+			$('#lowCoolerTVal').val(v);
+		}
+	})
+	
+	//最大曝光时间
+	$('#maxExposureTime').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入最大曝光时间（S）", "");
+			while(!$.isNumeric(v))
+			{
+				alert('最大曝光时间输入有误!');
+				v = prompt("请输入最大曝光时间（S）", "");
+			}
+			
+			$('#maxExposureTimeTVal').val(v);
+		}
+	})
+	
+	//最小曝光时间
+	$('#minExposureTime').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入最小曝光时间（S）", "");
+			while(!$.isNumeric(v) || v <= 0)
+			{
+				alert('最小曝光时间输入有误!');
+				v = prompt("请输入最小曝光时间（S）", "");
+			}
+			
+			$('#minExposureTimeVal').val(v);
+		}
+	})
+	
+	//曝光时间分辨率
+	$('#exposureTimeRation').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入曝光时间分辨率（/微妙）", "");
+			while(!$.isNumeric(v) || v <= 0)
+			{
+				alert('曝光时间分辨率输入有误!');
+				v = prompt("请输入曝光时间分辨率（/微妙）", "");
+			}
+			
+			$('#exposureTimeRationVal').val(v);
+		}
+	})
+	
+	//满阱电荷
+	$('#fullWellDepth').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入满阱电荷（电子数）", "");
+			while(!$.isNumeric(v) || v <= 0)
+			{
+				alert('满阱电荷输入有误!');
+				v = prompt("请输入满阱电荷（电子数）", "");
+			}
+			
+			$('#fullWellDepthVal').val(v);
+		}
+	})
+	
+	//读出模式5
+	$('#readoutMode5').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['150px', '120px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#readoutMode5Val'),
+			});
+		}
+	})
+	
+	//读出速度模式4
+	$('#readoutSpeed').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['110px', '120px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#readoutSpeedVal'),
+			});
+		}
+	})
+	
+	//转移速度模式4
+	$('#transferSpeed').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['110px', '120px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#transferSpeedVal'),
+			});
+		}
+	})
+	
+	//增益模式2
+	$('#gainmode').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['160px', '120px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#gainmodeVal'),
+			});
+		}
+	})
+	
+	//增益挡位4
+	$('#gainNumber').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['118px', '130px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#gainNumberVal'),
+			});
+		}
+	})
+	
+	//增益值
+	$('#gainValueArray').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['158px', '130px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#gainValueArrayVal'),
+			});
+		}
+	})
+	
+	//读出噪声值
+	$('#readoutNoiseArray').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['118px', '130px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#readoutNoiseArrayVal'),
+			});
+		}
+	})
+	
+	//快门类型
+	$('#ShutterType').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['118px', '130px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#ShutterTypeVal'),
+			});
+		}
+	})
+	
+	//快门模式
+	$('#ccdShutterMode').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['126px', '130px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#ccdShutterModeVal'),
+			});
+		}
+	})
+	
+	//bin值
+	$('#binArray').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['126px', '130px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#binArrayVal'),
+			});
+		}
+	})
+	
+	//接口类型
+	$('#InterfaceType').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['126px', '130px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#InterfaceTypeVal'),
+			});
+		}
+	})
+	
+	//曝光触发模式
+	$('#ExposeTriggerMode').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['126px', '130px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#ExposeTriggerModeVal'),
+			});
+		}
+	})
+	
+	//最大em值
+	$('#EmMaxValue').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入最大EM值", "整数");
+			var patn = /^\d{1,3}$/;
+			while(!patn.test(v) || v <= 0)
+			{
+				alert('最大EM输入有误!');
+				v = prompt("请输入最大EM", "整数");
+			}
+			
+			$('#EmMaxValueVal').val(v);
+		}
+	})
+	
+	//最小em值
+	$('#EmMinValue').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入最小EM值", "整数");
+			var patn = /^\d{1,3}$/;
+			while(!patn.test(v) || v <= 0)
+			{
+				alert('最小EM输入有误!');
+				v = prompt("请输入最小EM", "整数");
+			}
+			
+			$('#EmMinValueVal').val(v);
+		}
+	})
+	
+	//调焦器 固定属性配置
+	//最大值
+	$('#focusMaxValue').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入最大值（μm）", "");
+			while(!$.isNumeric(v) || v <= 0)
+			{
+				alert('最大值输入有误!');
+				v = prompt("请输入最大值（μm）", "");
+			}
+			
+			$('#focusMaxValueVal').val(v);
+		}
+	})
+	
+	//最小值
+	$('#focusMinValue').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入最小值（μm）", "");
+			while(!$.isNumeric(v) || v <= 0)
+			{
+				alert('最小值输入有误!');
+				v = prompt("请输入最小值（μm）", "");
+			}
+			
+			$('#focusMinValueVal').val(v);
+		}
+	})
+	
+	//分辨率
+	$('#focusIncrement').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入分辨率（μm）", "");
+			while(!$.isNumeric(v) || v <= 0)
+			{
+				alert('分辨率输入有误!');
+				v = prompt("请输入分辨率（μm）", "");
+			}
+			
+			$('#focusIncrementVal').val(v);
+		}
+	})
+	
+	//最大速度
+	$('#focusMaxSpeed').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入最大速度（μm/s）", "");
+			while(!$.isNumeric(v) || v <= 0)
+			{
+				alert('最大速度输入有误!');
+				v = prompt("请输入最大速度（μm/s）", "");
+			}
+			
+			$('#focusMaxSpeedVal').val(v);
+		}
+	})
+	
+	//随动圆顶 固定属性配置
+	//圆顶类型
+	$('#DomeType').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['110px', '130px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#DomeTypeVal'),
+			});
+		}
+	})
+	
+	//最大转动速度
+	$('#sDomeMaxSpeed').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入最大转动速度（°/s）", "");
+			while(!$.isNumeric(v) || v <= 0)
+			{
+				alert('最大转动速度输入有误!');
+				v = prompt("请输入最大转动速度（°/s）", "");
+			}
+			
+			$('#sDomeMaxSpeedVal').val(v);
+		}
+	})
+	
 //各选项询问框 js事件 结束/////////////////////////
 })
