@@ -330,15 +330,31 @@
 			</div><!--随动圆顶 选项 结束-->
 			<div id='filter' class='displayNo border mrgTop'>
 				<span class='optionTitle'>滤光片固定属性</span><br>
-				<span class='optionLeng inline'>插槽数目<input type='checkbox' name='viewOpt[]' value='numberOfFilter'></span>
-				<span class='optionLeng inline'>滤光片类型<input type='checkbox' name='viewOpt[]' value='FilterSystem'></span>
-				<span class='optionLeng inline'>滤光片名称<input type='checkbox' name='viewOpt[]' value='FilterName'></span>
-				<span class='optionLeng inline'>滤光片焦距偏差值<input type='checkbox' name='viewOpt[]' value='FilterFocusLengthCompensate'></span>
-				<span class='optionLeng inline'>形状<input type='checkbox' name='viewOpt[]' value='FilterShape'></span>
-				<span class='optionLeng inline'>可否设置滤光片位置<input type='checkbox' name='viewOpt[]' value='canSetFilterPosition'></span>
-				<span class='optionLeng inline'>支持连接操作<input type='checkbox' name='viewOpt[]' value='filterCanConnect'></span>
-				<span class='optionLeng inline'>支持找零操作<input type='checkbox' name='viewOpt[]' value='filterCanFindHome'></span>
-			</div>
+				<span class='optionLeng inline'>插槽数目<input id='numberOfFilter' type='checkbox' name='viewOpt[]' value='numberOfFilter'></span>
+				<input type='hidden' id='numberOfFilterVal' name='numberOfFilterVal'>
+				<span class='optionLeng inline'>滤光片类型<input id='FilterSystem' type='checkbox' name='viewOpt[]' value='FilterSystem'></span>
+				<select id='FilterSystemVal' name='FilterSystemVal' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>滤光片类型</option>
+					<option value='0'>Johnshon-Bessel</option>
+					<option value='1'>Sloan</option>
+					<option value='2'>Strömgrem</option>
+				</select>
+				<span class='optionLeng inline'>滤光片名称<input id='FilterName' type='checkbox' name='viewOpt[]' value='FilterName'></span>
+				<input type='hidden' id='FilterNameVal' name='FilterNameVal'>
+				<span class='optionLeng inline'>滤光片焦距偏差值<input id='FilterFocusLengthCompensate' type='checkbox' name='viewOpt[]' value='FilterFocusLengthCompensate'></span>
+				<input type='hidden' id='FilterFocusLengthCompensateVal' name='FilterFocusLengthCompensateVal'>
+				<span class='optionLeng inline'>插槽尺寸<input id='FilterSize' type='checkbox' name='viewOpt[]' value='FilterSize'></span>
+				<input type='hidden' id='FilterSizeVal' name='FilterSizeVal'>
+				<span class='optionLeng inline'>形状<input id='FilterShape' type='checkbox' name='viewOpt[]' value='FilterShape'></span>
+				<select id='FilterShapeVal' name='FilterShapeVal' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>选择形状</option>
+					<option value='0'>圆形</option>
+					<option value='1'>矩形</option>
+				</select>
+				<span class='optionLeng inline'>支持设置滤光片位置<input type='checkbox' name='viewOpt[]' value='canSetFilterPosition'></span>
+				<span class='optionLeng inline'>支持连接指令<input type='checkbox' name='viewOpt[]' value='filterCanConnect'></span>
+				<span class='optionLeng inline'>支持找零指令<input type='checkbox' name='viewOpt[]' value='filterCanFindHome'></span>
+			</div><!--滤光片 选项 结束-->
 		</form><!--60cm各子设备 指令属性选项结束 -->
 		<br>
 		<div class='center' style='margin-bottom:30px;'>

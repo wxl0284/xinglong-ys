@@ -843,5 +843,101 @@
 		}
 	})
 	
+	//滤光片固定属性 配置
+	//插槽数目
+	$('#numberOfFilter').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入插槽数目", "");
+			while(!$.isNumeric(v) || v <= 0)
+			{
+				alert('插槽数目输入有误!');
+				v = prompt("请输入插槽数目", "");
+			}
+			
+			$('#numberOfFilterVal').val(v);
+		}
+	})
+	
+	//滤光片类型
+	$('#FilterSystem').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['150px', '130px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#FilterSystemVal'),
+			});
+		}
+	})
+	
+	//滤光片名称
+	$('#FilterName').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入滤光片名称", "");
+			v = $.trim(v);
+			while(v.length === 0)
+			{
+				alert('滤光片名称不能为空!');
+				v = prompt("请输入滤光片名称", "");
+			}
+			
+			$('#FilterNameVal').val(v);
+		}
+	})
+	
+	//滤光片焦距偏差值
+	$('#FilterFocusLengthCompensate').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入滤光片焦距偏差值（μm）", "");
+			v = $.trim(v);
+			while(v.length === 0)
+			{
+				alert('滤光片焦距偏差值输入有误!');
+				v = prompt("请输入滤光片焦距偏差值（μm）", "");
+			}
+			
+			$('#FilterFocusLengthCompensateVal').val(v);
+		}
+	})
+	
+	//插槽尺寸
+	$('#FilterSize').click(function () {
+		if ($(this).prop('checked'))
+		{
+			var v = prompt("请输入插槽尺寸（mm）", "[x,y,z]");
+			v = $.trim(v);
+			var patn = /^\[\d+,\d+,\d+\]$/;
+			while(!patn.test(v))
+			{
+				alert('插槽尺寸输入有误!');
+				v = prompt("请输入插槽尺寸（mm）", "[x,y,z]");
+			}
+			
+			$('#FilterSizeVal').val(v);
+		}
+	})
+	
+	//形状
+	$('#FilterShape').click(function () {
+		if ($(this).prop('checked'))
+		{
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 2,
+			  area: ['110px', '120px'],
+			  //shadeClose: true,
+			  //skin: 'yourclass',
+			  content: $('#FilterShapeVal'),
+			});
+		}
+	})
 //各选项询问框 js事件 结束/////////////////////////
 })
