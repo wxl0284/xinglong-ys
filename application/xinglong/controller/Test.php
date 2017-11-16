@@ -5,6 +5,7 @@ use think\Controller;
 use app\xinglong\model\User;
 use think\Cache;
 use think\Request;
+use app\xinglong\model\At60config;
 
 class Test extends Controller
 {
@@ -42,10 +43,22 @@ class Test extends Controller
 	
 	public function test ()
 	{
-		$a['aa'] = 'aaaa';
+		/* $a['aa'] = 'aaaa';
 		$a['bb'] = 'bbbb';
 		Cache::set('name', $a);
-		return view('table/a');
+		return view('table/a'); */
+		$At60config = new At60config;
+		$configData = $At60config->all();
+		//halt($configData[0]);
+		if (empty($configData))
+		{
+			return '请先配置60CM望远镜!';
+		}else{
+			$At60config->save([
+				'attype' => '2',
+				'filtercanfindhome' => '6'
+			],['pk_at60config' => $configData[0]['pk_at60config']]);
+		}
 	}
 	
 	public function valid ()

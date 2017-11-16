@@ -78,7 +78,7 @@
 			  type: 1,
 			  title: false,
 			  closeBtn: 2,
-			  area: ['110px', '170px'],
+			  area: ['110px', '198px'],
 			  //shadeClose: true,
 			  //skin: 'yourclass',
 			  content: $('#atTypeVal'),

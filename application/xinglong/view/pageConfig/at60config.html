@@ -74,6 +74,7 @@
 					<option value='2'>赤道式叉式</option>
 					<option value='3'>赤道式英式</option>
 					<option value='4'>赤道式轭式</option>
+					<option value='5'>赤道式摇篮式</option>
 					<option value='6'>地平式</option>
 				</select>
 				<span class='optionLeng inline'>焦点类型<input id='focustype' type='checkbox' name='viewOpt[]' value='focustype'></span>
@@ -121,10 +122,10 @@
 				<span class='optionLeng inline'>湿度传感器数目<input id='numHumiditySensor' type='checkbox' name='viewOpt[]' value='numHumiditySensor'></span>
 				<input type='hidden' id='numHumiditySensorVal' name='numHumiditySensorVal'>
 				<span class='optionLeng inline'>支持连接指令<input type='checkbox' name='viewOpt[]' value='gimbalCanConnect'></span>
-				<span class='optionLeng inline'>可找零<input type='checkbox' name='viewOpt[]' value='canFindHome'></span>
-				<span class='optionLeng inline'>可跟踪恒星<input type='checkbox' name='viewOpt[]' value='canTrackStar'></span>
-				<span class='optionLeng inline'>可设置目标名称<input type='checkbox' name='viewOpt[]' value='canSetObjectName'></span>
-				<span class='optionLeng inline'>可指向固定位置<input type='checkbox' name='viewOpt[]' value='canSlewAzEl'></span>
+				<span class='optionLeng inline'>支持找零<input type='checkbox' name='viewOpt[]' value='canFindHome'></span>
+				<span class='optionLeng inline'>支持跟踪恒星<input type='checkbox' name='viewOpt[]' value='canTrackStar'></span>
+				<span class='optionLeng inline'>支持设置目标名称<input type='checkbox' name='viewOpt[]' value='canSetObjectName'></span>
+				<span class='optionLeng inline'>支持指向固定位置<input type='checkbox' name='viewOpt[]' value='canSlewAzEl'></span>
 				<span class='optionLeng inline'>支持轴3指向固定位置<input type='checkbox' name='viewOpt[]' value='canSlewDerotator'></span>
 				<span class='optionLeng inline'>支持设置轴3工作模式<input type='checkbox' name='viewOpt[]' value='canConfigDerotator'></span>
 				<span class='optionLeng inline'>支持停止指令<input type='checkbox' name='viewOpt[]' value='canStop'></span>
@@ -246,7 +247,7 @@
 				<span class='optionLeng inline'>是否支持帧转移<input type='checkbox' name='viewOpt[]' value='IsSupportFullFrame'></span>
 				<span class='optionLeng inline'>是否支持EM<input type='checkbox' name='viewOpt[]' value='IsSupportEM'></span>
 				<span class='optionLeng inline'>支持CMOS noise filter<input type='checkbox' name='viewOpt[]' value='IsSupportsCmosNoiseFilter'></span>
-				<span class='optionLeng inline'>支持 base line<input type='checkbox' name='viewOpt[]' value='IsSupportBaseLine'></span>
+				<span class='optionLeng inline'>支持base line<input type='checkbox' name='viewOpt[]' value='IsSupportBaseLine'></span>
 				<span class='optionLeng inline'>支持Over scan<input type='checkbox' name='viewOpt[]' value='IsSupportOverScan'></span>
 				<span class='optionLeng inline'>BIN值<input id='binArray' type='checkbox' name='viewOpt[]' value='binArray'></span>
 				<select id='binArrayVal' name='binArrayVal' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
@@ -270,10 +271,10 @@
 				</select>
 				<span class='optionLeng inline'>最大EM<input id='EmMaxValue' type='checkbox' name='viewOpt[]' value='EmMaxValue'></span>
 				<input type='hidden' id='EmMaxValueVal' name='EmMaxValueVal'>
-				<span class='optionLeng inline'>最小EM<input id='EmMinValue' type='checkbox' name='viewOpt[]' value='EmMinValue'></span>
+				<span class='optionLeng inline'>最小EM<input id='EmMinValue' type='checkbox' name='viewOpt[]' value=''></span>
 				<input type='hidden' id='EmMinValueVal' name='EmMinValueVal'>
 				<span class='optionLeng inline'>支持连接<input type='checkbox' name='viewOpt[]' value='ccdCanConnect'></span>
-				<span class='optionLeng inline'>支持设置制冷温度<input type='checkbox' name='viewOpt[]' value='canSetCoolerT'></span>
+				<span class='optionLeng inline'>支持设置制冷温度<input type='checkbox' name='vieEmMinValuewOpt[]' value='canSetCoolerT'></span>
 				<span class='optionLeng inline'>支持设置曝光策略<input type='checkbox' name='viewOpt[]' value='canSetExposureParam'></span>
 				<span class='optionLeng inline'>支持开始曝光指令<input type='checkbox' name='viewOpt[]' value='canStartExposure'></span>
 				<span class='optionLeng inline'>支持停止曝光指令<input type='checkbox' name='viewOpt[]' value='canStopExposure'></span>
