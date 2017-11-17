@@ -402,7 +402,7 @@ class PageConfig extends Controller
 		if (in_array('imageBits', $option['viewOpt']))
 		{
 			$data['imagebits'] = '1';
-			$data['imagevitsval'] = $option['imageBitsVal'];
+			$data['imagebitsval'] = $option['imageBitsVal'];
 		}else{
 			$data['imagebits'] = '0';
 		}
@@ -478,7 +478,571 @@ class PageConfig extends Controller
 		}else{
 			$data['readoutspeed'] = '0';
 		}
+		
+		//转移速度模式4
+		if (in_array('transferSpeed', $option['viewOpt']))
+		{
+			$data['transferspeed'] = '1';
+			$data['transferspeedval'] = $option['transferSpeedVal'];
+		}else{
+			$data['transferspeed'] = '0';
+		}
+		
+		//增益模式2
+		if (in_array('gainmode', $option['viewOpt']))
+		{
+			$data['gainmode'] = '1';
+			$data['gainmodeval'] = $option['gainmodeVal'];
+		}else{
+			$data['gainmode'] = '0';
+		}
+		
+		//增益档位4
+		if (in_array('gainNumber', $option['viewOpt']))
+		{
+			$data['gainnumber'] = '1';
+			$data['gainnumberval'] = $option['gainNumberVal'];
+		}else{
+			$data['gainnumber'] = '0';
+		}
+		
+		//增益值
+		if (in_array('gainValueArray', $option['viewOpt']))
+		{
+			$data['gainvaluearray'] = '1';
+			$data['gainvaluearrayval'] = $option['gainValueArrayVal'];
+		}else{
+			$data['gainvaluearray'] = '0';
+		}
+		
+		//读出噪声值
+		if (in_array('readoutNoiseArray', $option['viewOpt']))
+		{
+			$data['readoutnoisearray'] = '1';
+			$data['readoutnoisearrayval'] = $option['readoutNoiseArrayVal'];
+		}else{
+			$data['readoutnoisearray'] = '0';
+		}
+		
+		//快门类型
+		if (in_array('ShutterType', $option['viewOpt']))
+		{
+			$data['shuttertype'] = '1';
+			$data['shuttertypeval'] = $option['ShutterTypeVal'];
+		}else{
+			$data['shuttertype'] = '0';
+		}
+		
+		//快门模式
+		if (in_array('ccdShutterMode', $option['viewOpt']))
+		{
+			$data['ccdshuttermode'] = '1';
+			$data['ccdshuttermodeval'] = $option['ccdShutterModeVal'];
+		}else{
+			$data['ccdshuttermode'] = '0';
+		}
+		
+		//是否支持帧转移
+		if (in_array('IsSupportFullFrame', $option['viewOpt']))
+		{
+			$data['issupportfullframe'] = '1';
+		}else{
+			$data['issupportfullframe'] = '0';
+		}
+		
+		//是否支持EM
+		if (in_array('IsSupportEM', $option['viewOpt']))
+		{
+			$data['issupportem'] = '1';
+		}else{
+			$data['issupportem'] = '0';
+		}
+		
+		//支持CMOS noise filter
+		if (in_array('IsSupportsCmosNoiseFilter', $option['viewOpt']))
+		{
+			$data['issupportscmosnoisefilter'] = '1';
+		}else{
+			$data['issupportscmosnoisefilter'] = '0';
+		}
+		
+		//支持base line
+		if (in_array('IsSupportBaseLine', $option['viewOpt']))
+		{
+			$data['issupportbaseline'] = '1';
+		}else{
+			$data['issupportbaseline'] = '0';
+		}
+		
+		//支持Over scan
+		if (in_array('IsSupportOverScan', $option['viewOpt']))
+		{
+			$data['issupportoverscan'] = '1';
+		}else{
+			$data['issupportoverscan'] = '0';
+		}
+		
+		//BIN值
+		if (in_array('binArray', $option['viewOpt']))
+		{
+			$data['binarray'] = '1';
+			$data['binarrayval'] = $option['binArrayVal'];
+		}else{
+			$data['binarray'] = '0';
+		}
+		
+		//支持开窗
+		if (in_array('IsSupportROI', $option['viewOpt']))
+		{
+			$data['issupportroi'] = '1';
+		}else{
+			$data['issupportroi'] = '0';
+		}
+		
+		//接口类型
+		if (in_array('InterfaceType', $option['viewOpt']))
+		{
+			$data['interfacetype'] = '1';
+			$data['interfacetypeval'] = $option['InterfaceTypeVal'];
+		}else{
+			$data['interfacetype'] = '0';
+		}
+		
+		//曝光触发模式
+		if (in_array('ExposeTriggerMode', $option['viewOpt']))
+		{
+			$data['exposetriggermode'] = '1';
+			$data['exposetriggermodeval'] = $option['ExposeTriggerModeVal'];
+		}else{
+			$data['exposetriggermode'] = '0';
+		}
+		
+		//最大EM
+		if (in_array('EmMaxValue', $option['viewOpt']))
+		{
+			$data['emmaxvalue'] = '1';
+			$data['emmaxvalueval'] = $option['EmMaxValueVal'];
+		}else{
+			$data['emmaxvalue'] = '0';
+		}
+		
+		//最小EM
+		if (in_array('EmMinValue', $option['viewOpt']))
+		{
+			$data['emminvalue'] = '1';
+			$data['emminvalueval'] = $option['EmMinValueVal'];
+		}else{
+			$data['emminvalue'] = '0';
+		}
+		
+		//支持连接
+		if (in_array('ccdCanConnect', $option['viewOpt']))
+		{
+			$data['ccdcanconnect'] = '1';
+		}else{
+			$data['ccdcanconnect'] = '0';
+		}
+		
+		//支持设置制冷温度
+		if (in_array('canSetCoolerT', $option['viewOpt']))
+		{
+			$data['cansetcoolert'] = '1';
+		}else{
+			$data['cansetcoolert'] = '0';
+		}
+		
+		//支持设置曝光策略
+		if (in_array('canSetExposureParam', $option['viewOpt']))
+		{
+			$data['cansetexposureparam'] = '1';
+		}else{
+			$data['cansetexposureparam'] = '0';
+		}
+		
+		//支持开始曝光指令
+		if (in_array('canStartExposure', $option['viewOpt']))
+		{
+			$data['canstartexposure'] = '1';
+		}else{
+			$data['canstartexposure'] = '0';
+		}
+		
+		//支持停止曝光指令
+		if (in_array('canStopExposure', $option['viewOpt']))
+		{
+			$data['canstopexposure'] = '1';
+		}else{
+			$data['canstopexposure'] = '0';
+		}
+		
+		//支持终止曝光指令
+		if (in_array('canAbortExposure', $option['viewOpt']))
+		{
+			$data['canabortexposure'] = '1';
+		}else{
+			$data['canabortexposure'] = '0';
+		}
+		
+		//支持设置增益
+		if (in_array('canSetGain', $option['viewOpt']))
+		{
+			$data['cansetgain'] = '1';
+		}else{
+			$data['cansetgain'] = '0';
+		}
+		
+		//可设置读出速度模式值
+		if (in_array('canSetReadoutSpeedMode', $option['viewOpt']))
+		{
+			$data['cansetreadoutspeedmode'] = '1';
+		}else{
+			$data['cansetreadoutspeedmode'] = '0';
+		}
+		
+		//可设置转移速度模式值
+		if (in_array('canSetTransferSpeedMode', $option['viewOpt']))
+		{
+			$data['cansettransferspeedmode'] = '1';
+		}else{
+			$data['cansettransferspeedmode'] = '0';
+		}
+		
+		//支持设置BIN
+		if (in_array('canSetBin', $option['viewOpt']))
+		{
+			$data['cansetbin'] = '1';
+		}else{
+			$data['cansetbin'] = '0';
+		}
+		
+		//支持设置ROI
+		if (in_array('canSetROI', $option['viewOpt']))
+		{
+			$data['cansetroi'] = '1';
+		}else{
+			$data['cansetroi'] = '0';
+		}
+		
+		//支持设置快门
+		if (in_array('canSetShutter', $option['viewOpt']))
+		{
+			$data['cansetshutter'] = '1';
+		}else{
+			$data['cansetshutter'] = '0';
+		}
+		
+		//支持设置帧转移
+		if (in_array('canSetFullFrame', $option['viewOpt']))
+		{
+			$data['cansetfullframe'] = '1';
+		}else{
+			$data['cansetfullframe'] = '0';
+		}
+		
+		//支持设置EM
+		if (in_array('canSetEM', $option['viewOpt']))
+		{
+			$data['cansetem'] = '1';
+		}else{
+			$data['cansetem'] = '0';
+		}
+		
+		//支持CMOS noise filter
+		if (in_array('canNoiseFilter', $option['viewOpt']))
+		{
+			$data['cannoisefilter'] = '1';
+		}else{
+			$data['cannoisefilter'] = '0';
+		}
+		
+		//支持设置base line
+		if (in_array('canSetBaseline', $option['viewOpt']))
+		{
+			$data['cansetbaseline'] = '1';
+		}else{
+			$data['cansetbaseline'] = '0';
+		}
+		
+		//支持设置base line
+		if (in_array('canSetBaseline', $option['viewOpt']))
+		{
+			$data['cansetbaseline'] = '1';
+		}else{
+			$data['cansetbaseline'] = '0';
+		}
+		
+		//支持设置over scan
+		if (in_array('canSetOverScan', $option['viewOpt']))
+		{
+			$data['cansetoverscan'] = '1';
+		}else{
+			$data['cansetoverscan'] = '0';
+		}
 	/***********CCD之配置 结束***********/
+	
+	/***********调校器之配置 开始***********/
+		//最大值
+		if (in_array('focusMaxValue', $option['viewOpt']))
+		{
+			$data['focusmaxvalue'] = '1';
+			$data['focusmaxvalueval'] = $option['focusMaxValueVal'];
+		}else{
+			$data['focusmaxvalue'] = '0';
+		}
+		
+		//最小值
+		if (in_array('focusMinValue', $option['viewOpt']))
+		{
+			$data['focusminvalue'] = '1';
+			$data['focusminvalueval'] = $option['focusMinValueVal'];
+		}else{
+			$data['focusminvalue'] = '0';
+		}
+		
+		//分辨率
+		if (in_array('focusIncrement', $option['viewOpt']))
+		{
+			$data['focusincrement'] = '1';
+			$data['focusincrementval'] = $option['focusIncrementVal'];
+		}else{
+			$data['focusincrement'] = '0';
+		}
+		
+		//支持找零
+		if (in_array('focusCanFindHome', $option['viewOpt']))
+		{
+			$data['focuscanfindhome'] = '1';
+		}else{
+			$data['focuscanfindhome'] = '0';
+		}
+		
+		//支持温度补偿
+		if (in_array('canTempertureCompensate', $option['viewOpt']))
+		{
+			$data['cantemperturecompensate'] = '1';
+		}else{
+			$data['cantemperturecompensate'] = '0';
+		}
+		
+		//最大速度
+		if (in_array('focusMaxSpeed', $option['viewOpt']))
+		{
+			$data['focusmaxspeed'] = '1';
+		}else{
+			$data['focusmaxspeed'] = '0';
+		}
+		
+		//支持连接指令
+		if (in_array('focusCanConnect', $option['viewOpt']))
+		{
+			$data['focuscanconnect'] = '1';
+		}else{
+			$data['focuscanconnect'] = '0';
+		}
+		
+		//支持连接指令
+		if (in_array('focusCanConnect', $option['viewOpt']))
+		{
+			$data['focuscanconnect'] = '1';
+		}else{
+			$data['focuscanconnect'] = '0';
+		}
+		
+		//支持设置目标位置
+		if (in_array('focusSetPosition', $option['viewOpt']))
+		{
+			$data['focussetposition'] = '1';
+		}else{
+			$data['focussetposition'] = '0';
+		}
+		
+		//支持设置恒速运动
+		if (in_array('focusCanSetSpeed', $option['viewOpt']))
+		{
+			$data['focuscansetspeed'] = '1';
+		}else{
+			$data['focuscansetspeed'] = '0';
+		}
+		
+		//支持停止运动指令
+		if (in_array('focusCanStop', $option['viewOpt']))
+		{
+			$data['focuscanstop'] = '1';
+		}else{
+			$data['focuscanstop'] = '0';
+		}
+		
+		//支持使能温度补偿
+		if (in_array('canEnableTempertureCompensate', $option['viewOpt']))
+		{
+			$data['canenabletemperturecompensate'] = '1';
+		}else{
+			$data['canenabletemperturecompensate'] = '0';
+		}
+		
+		//支持设置温度补偿系数
+		if (in_array('canSetTempertCompensatecoefficient', $option['viewOpt']))
+		{
+			$data['cansettempertcompensatecoefficient'] = '1';
+		}else{
+			$data['cansettempertcompensatecoefficient'] = '0';
+		}
+	/***********调校器之配置 结束***************/
+	/***********随动圆顶之配置 开始**************/
+		//圆顶类型
+		if (in_array('DomeType', $option['viewOpt']))
+		{
+			$data['dometype'] = '1';
+			$data['dometypeval'] = $option['DomeTypeVal'];
+		}else{
+			$data['dometype'] = '0';
+		}
+		
+		//是否具备风帘
+		if (in_array('HasShade', $option['viewOpt']))
+		{
+			$data['hasshade'] = '1';
+		}else{
+			$data['hasshade'] = '0';
+		}
+		
+		//最大转动速度
+		if (in_array('sDomeMaxSpeed', $option['viewOpt']))
+		{
+			$data['sdomemaxspeed'] = '1';
+			$data['sdomemaxspeedval'] = $option['sDomeMaxSpeedVal'];
+		}else{
+			$data['sdomemaxspeed'] = '0';
+		}
+		
+		//支持设置目标方位
+		if (in_array('canSetDomePositin', $option['viewOpt']))
+		{
+			$data['cansetdomepositin'] = '1';
+		}else{
+			$data['cansetdomepositin'] = '0';
+		}
+		
+		//支持设置风帘位置
+		if (in_array('canSetShadePosition', $option['viewOpt']))
+		{
+			$data['cansetshadeposition'] = '1';
+		}else{
+			$data['cansetshadeposition'] = '0';
+		}
+		
+		//支持设置转动速度
+		if (in_array('canSetRotateSpeed', $option['viewOpt']))
+		{
+			$data['cansetshadeposition'] = '1';
+		}else{
+			$data['cansetshadeposition'] = '0';
+		}
+		
+		//支持停止运动指令
+		if (in_array('sDomeCanStop', $option['viewOpt']))
+		{
+			$data['sdomecanstop'] = '1';
+		}else{
+			$data['sdomecanstop'] = '0';
+		}
+		
+		//支持打开天窗指令
+		if (in_array('canOpenShutter', $option['viewOpt']))
+		{
+			$data['canopenshutter'] = '1';
+		}else{
+			$data['canopenshutter'] = '0';
+		}
+		
+		//支持控制风帘运动
+		if (in_array('canSetShadeSpeed', $option['viewOpt']))
+		{
+			$data['cansetshadespeed'] = '1';
+		}else{
+			$data['cansetshadespeed'] = '0';
+		}
+		
+		//支持连接指令
+		if (in_array('sDomeCanConnect', $option['viewOpt']))
+		{
+			$data['sdomecanconnect'] = '1';
+		}else{
+			$data['sdomecanconnect'] = '0';
+		}
+	/***********随动圆顶之配置 结束*************/
+	
+	/***********滤光片之配置 结束*************/
+		//插槽数目
+		if (in_array('numberOfFilter', $option['viewOpt']))
+		{
+			$data['numberoffilter'] = '1';
+			$data['numberoffilterval'] = $option['numberOfFilterVal'];
+		}else{
+			$data['numberoffilter'] = '0';
+		}
+		
+		//滤光片类型
+		if (in_array('FilterSystem', $option['viewOpt']))
+		{
+			$data['filtersystem'] = '1';
+			$data['filtersystemval'] = $option['FilterSystemVal'];
+		}else{
+			$data['filtersystem'] = '0';
+		}
+		
+		//滤光片名称
+		if (in_array('FilterName', $option['viewOpt']))
+		{
+			$data['filtername'] = '1';
+			$data['filternameval'] = $option['FilterNameVal'];
+		}else{
+			$data['filtername'] = '0';
+		}
+		
+		//滤光片焦距偏差值
+		if (in_array('FilterFocusLengthCompensate', $option['viewOpt']))
+		{
+			$data['filterfocuslengthcompensate'] = '1';
+			$data['filterfocuslengthcompensateval'] = $option['FilterFocusLengthCompensateVal'];
+		}else{
+			$data['filterfocuslengthcompensate'] = '0';
+		}
+		
+		//插槽尺寸
+		if (in_array('FilterSize', $option['viewOpt']))
+		{
+			$data['filtersize'] = '1';
+			$data['filtersizeval'] = $option['FilterSizeVal'];
+		}else{
+			$data['filterfocuslengthcompensate'] = '0';
+		}
+		
+		//形状
+		if (in_array('FilterShape', $option['viewOpt']))
+		{
+			$data['filtershape'] = '1';
+			$data['filtershapeval'] = $option['FilterShapeVal'];
+		}else{
+			$data['filtershape'] = '0';
+		}
+		
+		//支持设置滤光片位置
+		if (in_array('canSetFilterPosition', $option['viewOpt']))
+		{
+			$data['cansetfilterposition'] = '1';
+		}else{
+			$data['cansetfilterposition'] = '0';
+		}
+		
+		//支持连接指令
+		if (in_array('filterCanConnect', $option['viewOpt']))
+		{
+			$data['filtercanconnect'] = '1';
+		}else{
+			$data['filtercanconnect'] = '0';
+		}
+	/***********滤光片之配置 结束*************/
 		$At60config = new At60config;
 		$configData = $At60config->all();
 		
