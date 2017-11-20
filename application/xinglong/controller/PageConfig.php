@@ -40,7 +40,8 @@ class PageConfig extends Controller
 	{
 		//未选中任何选项
 		$option = input();
-
+		//halt($option['canstop']);
+		if (!isset($option['canstop'])) return 'no';
 		if(empty($option['viewOpt'])) {
 			return '未做任何选择配置!';
 		}
@@ -780,7 +781,7 @@ class PageConfig extends Controller
 		}
 	/***********CCD之配置 结束***********/
 	
-	/***********调校器之配置 开始***********/
+	/***********调焦器之配置 开始***********/
 		//最大值
 		if (in_array('focusMaxValue', $option['viewOpt']))
 		{
@@ -828,6 +829,7 @@ class PageConfig extends Controller
 		if (in_array('focusMaxSpeed', $option['viewOpt']))
 		{
 			$data['focusmaxspeed'] = '1';
+			$data['focusmaxspeedval'] = $option['focusMaxSpeedVal'];
 		}else{
 			$data['focusmaxspeed'] = '0';
 		}
@@ -887,7 +889,7 @@ class PageConfig extends Controller
 		}else{
 			$data['cansettempertcompensatecoefficient'] = '0';
 		}
-	/***********调校器之配置 结束***************/
+	/***********调焦器之配置 结束***************/
 	/***********随动圆顶之配置 开始**************/
 		//圆顶类型
 		if (in_array('DomeType', $option['viewOpt']))
@@ -934,9 +936,9 @@ class PageConfig extends Controller
 		//支持设置转动速度
 		if (in_array('canSetRotateSpeed', $option['viewOpt']))
 		{
-			$data['cansetshadeposition'] = '1';
+			$data['cansetrotatespeed'] = '1';
 		}else{
-			$data['cansetshadeposition'] = '0';
+			$data['cansetrotatespeed'] = '0';
 		}
 		
 		//支持停止运动指令
@@ -1015,7 +1017,7 @@ class PageConfig extends Controller
 			$data['filtersize'] = '1';
 			$data['filtersizeval'] = $option['FilterSizeVal'];
 		}else{
-			$data['filterfocuslengthcompensate'] = '0';
+			$data['filtersize'] = '0';
 		}
 		
 		//形状
@@ -1041,6 +1043,14 @@ class PageConfig extends Controller
 			$data['filtercanconnect'] = '1';
 		}else{
 			$data['filtercanconnect'] = '0';
+		}
+		
+		//支持找零指令
+		if (in_array('filterCanFindHome', $option['viewOpt']))
+		{
+			$data['filtercanfindhome'] = '1';
+		}else{
+			$data['filtercanfindhome'] = '0';
 		}
 	/***********滤光片之配置 结束*************/
 		$At60config = new At60config;

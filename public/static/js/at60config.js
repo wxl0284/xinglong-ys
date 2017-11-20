@@ -50,9 +50,15 @@
 
 //提交60cm望远镜配置 js事件 /////////////////////////////
 	$('#at60ConfigBtn').click(function () {
-		var configForm = document.getElementById('allOption');
-		var formData = new FormData(configForm);
-		//console.log(formData);
+		var configForm = $('#allOption');
+		var check = configForm.find('input[type="checkbox"]:checked');
+		var radio = configForm.find('input[type="radio"]:checked');
+		//为选择任何选项
+		if (check.length == 0 && radio.length == 0)
+		{
+			alert('您未进行任何配置!');return;
+		}
+		var formData = new FormData(configForm[0]);
 		$.ajax({
 			url : '/xinglong/page_config/doAt60config',
 			type : 'post',
@@ -477,7 +483,7 @@
 				v = prompt("请输入最大曝光时间（S）", "");
 			}
 			
-			$('#maxExposureTimeTVal').val(v);
+			$('#maxExposureTimeVal').val(v);
 		}
 	})
 	
