@@ -220,18 +220,25 @@
         </div><!--望远镜子设备导航结束-->
           <div id='gimbalInfo' class='display'><!--转台指令和属性-->
              <nav class='center'><!--转台指令 导航-->
-			    <span name='trackStar'>跟踪恒星</span>	<span name='targetName'>设置目标名称</span>
-				<!--<span name='poitFix'>指向固定位置</span>-->  <!-- <span name='slewDerotator'>轴3指向固定位置</span> -->
-				<!-- <span name='axis3Mode'>轴3工作模式</span>-->  <span name='speedX'>速度修正</span> 
-				<span name='speedF'>恒速运动</span>  <span name='positionX'>位置修正</span>
-				<span name='coverOp'>镜盖操作</span>  <!--<span name='focusOp'>焦点切换镜</span>-->
-				<span name='saveData'>保存同步数据</span>  <!--<span name='trackS'>跟踪恒星</span>	<span name='PropCfg'>属性设置</span>-->
+			    <span name='trackStar'>跟踪恒星</span>
+				<span name='targetName'>设置目标名称</span>
+				<span name='poitFix'>指向固定位置</span>
+				<span name='slewDerotator'>轴3指向固定位置</span>
+				<span name='axis3Mode'>轴3工作模式</span>
+				<span name='speedX'>速度修正</span> 
+				<span name='speedF'>恒速运动</span>
+				<span name='positionX'>位置修正</span>
+				<span name='coverOp'>镜盖操作</span>
+				<span name='focusOp'>焦点切换镜</span>
+				<span name='saveData'>保存同步数据</span>
+				<span name='trackS'>跟踪卫星</span>
+				<span name='PropCfg'>属性设置</span>
 			 </nav>
 			 <div class='border2'><!--转台指令和可变属性-->
 				<div id='btnsGimbal' class='center_mrg center BtnsDiv'>
 					<input id='gimbalConnect' class='border1 btnCommand' type='button' value='连接望远镜' />
 					<input id='gimbalDisConnect' class='border1 btnCommand' type='button' value='断开望远镜' />
-                   <input id='gimbalFindhome' class='border1 btnCommand' type='button' value='找  零' style='color:#ccc;border-color:#ccc;cursor:not-allowed;' disabled='disabled'/>
+                   <input id='gimbalFindhome' class='border1 btnCommand' type='button' value='找  零'>
                    <input id='gimbalPark' class='border1 btnCommand' type='button' value='复 位' />              
                    <input id='gimbalStop' class='border1 btnCommand' type='button' value='停 止' />				   
                    <input id='gimbalEmergenceStop' class='border1 btnCommand' type='button' value='急 停' />
@@ -335,8 +342,8 @@
 						    </select>
 					</div>
 					<div id='trackS'>
-                           <input type='radio' name='command' value='12' />跟踪恒星：
-						   <input type="text" name='trackStar' class='blur'>
+                           <input type='radio' name='command' value='12' />跟踪卫星：
+						   <input type="text" name='trackSatellite' class='blur'>
 					</div>
 					<div id='PropCfg'>
                            <input type='radio' name='command' value='13' />属性设置：

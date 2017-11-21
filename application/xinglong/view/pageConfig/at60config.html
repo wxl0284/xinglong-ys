@@ -102,7 +102,7 @@
 				<span class='optionLeng inline'>轴3最大速度<input id='maxAxis3Speed' type='checkbox' name='viewOpt[]' value='maxaxis3speed'></span>
 				<input type='hidden' id='maxAxis3SpeedVal' name='maxaxis3speedval'>
 				<span class='optionLeng inline'>轴1最大加速度<input id='maxAxis1Acceleration' type='checkbox' name='viewOpt[]' value='maxaxis1acceleration'></span>
-				<input type='hidden' id='maxaxis1accelerationval' name='maxAxis1AccelerationVal'>
+				<input type='hidden' id='maxAxis1AccelerationVal' name='maxaxis1accelerationval'>
 				<span class='optionLeng inline'>轴2最大加速度<input id='maxAxis2Acceleration' type='checkbox' name='viewOpt[]' value='maxaxis2acceleration'></span>
 				<input type='hidden' id='maxAxis2AccelerationVal' name='maxaxis2accelerationval'>
 				<span class='optionLeng inline'>轴3最大加速度<input id='maxAxis3Acceleration' type='checkbox' name='viewOpt[]' value='maxaxis3acceleration'></span>
@@ -113,14 +113,14 @@
 				<input type='hidden' id='axis2ParkPositionVal' name='axis2parkpositionval'>
 				<span class='optionLeng inline'>轴3复位位置<input id='axis3ParkPosition' type='checkbox' name='viewOpt[]' value='axis3parkposition'></span>
 				<input type='hidden' id='axis3ParkPositionVal' name='axis3parkpositionval'>
-				<span class='optionLeng inline'>第3轴:有<input type='radio' name='haveaxis3' value='1'>&nbsp;无<input type='radio' name='haveaxis3' value='0'></span>
-				<span class='optionLeng inline'>镜盖（轴5）:有<input type='radio' name='haveaxis5' value='1'>&nbsp;无<input type='radio' name='haveaxis5' value='0'></span>
 				<span class='optionLeng inline'>俯仰最低值<input id='minElevation' type='checkbox' name='viewOpt[]' value='minelevation'></span>
 				<input type='hidden' id='minElevationVal' name='minelevationval'>
 				<span class='optionLeng inline'>温度传感器数目<input id='numTemperatureSensor' type='checkbox' name='viewOpt[]' value='numtemperaturesensor'></span>
 				<input type='hidden' id='numTemperatureSensorVal' name='numtemperaturesensorval'>
 				<span class='optionLeng inline'>湿度传感器数目<input id='numHumiditySensor' type='checkbox' name='viewOpt[]' value='numhumiditysensor'></span>
 				<input type='hidden' id='numHumiditySensorVal' name='numhumiditysensorval'>
+				<span class='optionLeng inline'>第3轴:有<input type='radio' name='haveaxis3' value='1'>&nbsp;无<input type='radio' name='haveaxis3' value='0'></span>
+				<span class='optionLeng inline'>镜盖（轴5）:有<input type='radio' name='haveaxis5' value='1'>&nbsp;无<input type='radio' name='haveaxis5' value='0'></span>
 				<span class='optionLeng inline'>支持连接指令:是<input type='radio' name='gimbalcanconnect' value='1'>&nbsp;否<input type='radio' name='gimbalcanconnect' value='0'></span>
 				<span class='optionLeng inline'>支持找零:是<input type='radio' name='canfindhome' value='1'>&nbsp;否<input type='radio' name='canfindhome' value='0'></span>
 				<span class='optionLeng inline'>支持跟踪恒星:是<input type='radio' name='cantrackstar' value='1'>&nbsp;否<input type='radio' name='cantrackstar' value='0'></span>
@@ -244,29 +244,29 @@
 					<option value='0'>GlobalShutter</option>
 					<option value='1'>RollingShutter</option>
 				</select>
-				<span class='optionLeng inline'>BIN值<input id='binArray' type='checkbox' name='viewOpt[]' value='binArray'></span>
-				<select id='binArrayVal' name='binArrayVal' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+				<span class='optionLeng inline'>BIN值<input id='binArray' type='checkbox' name='viewOpt[]' value='binarray'></span>
+				<select id='binArrayVal' name='binarrayval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
 					<option value=''>BIN值</option>
 					<option value='0'>[1 2 3 4]</option>
 					<option value='1'>[1 2 3 4]</option>
 				</select>
-				<span class='optionLeng inline'>接口类型<input id='InterfaceType' type='checkbox' name='viewOpt[]' value='InterfaceType'></span>
-				<select id='InterfaceTypeVal' name='InterfaceTypeVal' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+				<span class='optionLeng inline'>接口类型<input id='InterfaceType' type='checkbox' name='viewOpt[]' value='interfacetype'></span>
+				<select id='InterfaceTypeVal' name='interfacetypeval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
 					<option value=''>接口类型</option>
 					<option value='1'>CameraLink</option>
 					<option value='2'>USB2.0</option>
 					<option value='4'>USB3.0</option>
 				</select>
-				<span class='optionLeng inline'>曝光触发模式<input id='ExposeTriggerMode' type='checkbox' name='viewOpt[]' value='ExposeTriggerMode'></span>
-				<select id='ExposeTriggerModeVal' name='ExposeTriggerModeVal' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+				<span class='optionLeng inline'>曝光触发模式<input id='ExposeTriggerMode' type='checkbox' name='viewOpt[]' value='exposetriggermode'></span>
+				<select id='ExposeTriggerModeVal' name='exposetriggermodeval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
 					<option value=''>曝光触发模式</option>
 					<option value='1'>支持硬件触发</option>
 					<option value='2'>支持软件触发</option>
 				</select>
-				<span class='optionLeng inline'>最大EM<input id='EmMaxValue' type='checkbox' name='viewOpt[]' value='EmMaxValue'></span>
-				<input type='hidden' id='EmMaxValueVal' name='EmMaxValueVal'>
-				<span class='optionLeng inline'>最小EM<input id='EmMinValue' type='checkbox' name='viewOpt[]' value='EmMinValue'></span>
-				<input type='hidden' id='EmMinValueVal' name='EmMinValueVal'>
+				<span class='optionLeng inline'>最大EM<input id='EmMaxValue' type='checkbox' name='viewOpt[]' value='emmaxvalue'></span>
+				<input type='hidden' id='EmMaxValueVal' name='emmaxvalueval'>
+				<span class='optionLeng inline'>最小EM<input id='EmMinValue' type='checkbox' name='viewOpt[]' value='emminvalue'></span>
+				<input type='hidden' id='EmMinValueVal' name='emminvalueval'>
 				<span class='optionLeng inline'>支持开窗:是<input type='radio' name='issupportroi' value='1'>&nbsp;否<input type='radio' name='issupportroi' value='0'></span>
 				<span class='optionLeng inline'>设置Roi:能<input type='radio' name='cansetroi' value='0'>&nbsp;否<input type='radio' name='cansetroi' value='0'></span>
 				<span class='optionLeng inline'>支持帧转移:是<input type='radio' name='issupportfullframe' value='1'>&nbsp;否<input type='radio' name='issupportfullframe' value='0'></span>
@@ -321,40 +321,40 @@
 				<span class='optionLeng inline'>最大转动速度<input id='sDomeMaxSpeed' type='checkbox' name='viewOpt[]' value='sdomemaxspeed'></span>
 				<input type='hidden' id='sDomeMaxSpeedVal' name='sdomemaxspeedval'>
 				<span class='optionLeng inline'>具备风帘:是<input type='radio' name='hasshade' value='1'>&nbsp;否<input type='radio' name='hasshade' value='0'></span>
-				<span class='optionLeng inline'>支持设置目标方位<input type='checkbox' name='viewOpt[]' value='canSetDomePositin'></span><xxxxx>
-				<span class='optionLeng inline'>支持设置风帘位置<input type='checkbox' name='viewOpt[]' value='canSetShadePosition'></span>
-				<span class='optionLeng inline'>支持设置转动速度<input type='checkbox' name='viewOpt[]' value='canSetRotateSpeed'></span>
-				<span class='optionLeng inline'>支持停止运动指令<input type='checkbox' name='viewOpt[]' value='sDomeCanStop'></span>
-				<span class='optionLeng inline'>支持打开天窗指令<input type='checkbox' name='viewOpt[]' value='canOpenShutter'></span>
-				<span class='optionLeng inline'>支持控制风帘运动<input type='checkbox' name='viewOpt[]' value='canSetShadeSpeed'></span>
-				<span class='optionLeng inline'>支持连接指令<input type='checkbox' name='viewOpt[]' value='sDomeCanConnect'></span>
+				<span class='optionLeng inline'>设置风帘位置:支持<input type='radio' name='cansetshadeposition' value='1'>&nbsp;否<input type='radio' name='cansetshadeposition' value='0'></span>
+				<span class='optionLeng inline'>控制风帘运动:支持<input type='radio' name='cansetshadespeed' value='1'>&nbsp;否<input type='radio' name='cansetshadespeed' value='0'></span>
+				<span class='optionLeng inline'>设置目标方位:支持<input type='radio' name='cansetdomepositin' value='1'>&nbsp;否<input type='radio' name='cansetdomepositin' value='0'></span>
+				<span class='optionLeng inline'>设置转动速度:支持<input type='radio' name='cansetrotatespeed' value='1'>&nbsp;否<input type='radio' name='cansetrotatespeed' value='0'></span>
+				<span class='optionLeng inline'>停止运动指令:支持<input type='radio' name='sdomecanstop' value='1'>&nbsp;否<input type='radio' name='sdomecanstop' value='0'></span>
+				<span class='optionLeng inline'>打开天窗指令:支持<input type='radio' name='canopenshutter' value='1'>&nbsp;否<input type='radio' name='canopenshutter' value='0'></span>
+				<span class='optionLeng inline'>支持连接指令:是<input type='radio' name='sdomecanconnect' value='1'>&nbsp;否<input type='radio' name='sdomecanconnect' value='0'></span>
 			</div><!--随动圆顶 选项 结束-->
 			<div id='filter' class='displayNo border mrgTop'>
 				<span class='optionTitle'>滤光片固定属性</span><br>
-				<span class='optionLeng inline'>插槽数目<input id='numberOfFilter' type='checkbox' name='viewOpt[]' value='numberOfFilter'></span>
-				<input type='hidden' id='numberOfFilterVal' name='numberOfFilterVal'>
-				<span class='optionLeng inline'>滤光片类型<input id='FilterSystem' type='checkbox' name='viewOpt[]' value='FilterSystem'></span>
-				<select id='FilterSystemVal' name='FilterSystemVal' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+				<span class='optionLeng inline'>插槽数目<input id='numberOfFilter' type='checkbox' name='viewOpt[]' value='numberoffilter'></span>
+				<input type='hidden' id='numberOfFilterVal' name='numberoffilterval'>
+				<span class='optionLeng inline'>滤光片类型<input id='FilterSystem' type='checkbox' name='viewOpt[]' value='filtersystem'></span>
+				<select id='FilterSystemVal' name='filtersystemval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
 					<option value=''>滤光片类型</option>
 					<option value='0'>Johnshon-Bessel</option>
 					<option value='1'>Sloan</option>
 					<option value='2'>Strömgrem</option>
 				</select>
-				<span class='optionLeng inline'>滤光片名称<input id='FilterName' type='checkbox' name='viewOpt[]' value='FilterName'></span>
-				<input type='hidden' id='FilterNameVal' name='FilterNameVal'>
-				<span class='optionLeng inline'>滤光片焦距偏差值<input id='FilterFocusLengthCompensate' type='checkbox' name='viewOpt[]' value='FilterFocusLengthCompensate'></span>
-				<input type='hidden' id='FilterFocusLengthCompensateVal' name='FilterFocusLengthCompensateVal'>
-				<span class='optionLeng inline'>插槽尺寸<input id='FilterSize' type='checkbox' name='viewOpt[]' value='FilterSize'></span>
-				<input type='hidden' id='FilterSizeVal' name='FilterSizeVal'>
-				<span class='optionLeng inline'>形状<input id='FilterShape' type='checkbox' name='viewOpt[]' value='FilterShape'></span>
-				<select id='FilterShapeVal' name='FilterShapeVal' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+				<span class='optionLeng inline'>滤光片名称<input id='FilterName' type='checkbox' name='viewOpt[]' value='filtername'></span>
+				<input type='hidden' id='FilterNameVal' name='filternameval'>
+				<span class='optionLeng inline'>滤光片焦距偏差值<input id='FilterFocusLengthCompensate' type='checkbox' name='viewOpt[]' value='filterfocuslengthcompensate'></span>
+				<input type='hidden' id='FilterFocusLengthCompensateVal' name='filterfocuslengthcompensateval'>
+				<span class='optionLeng inline'>插槽尺寸<input id='FilterSize' type='checkbox' name='viewOpt[]' value='filtersize'></span>
+				<input type='hidden' id='FilterSizeVal' name='filtersizeval'>
+				<span class='optionLeng inline'>形状<input id='FilterShape' type='checkbox' name='viewOpt[]' value='filtershape'></span>
+				<select id='FilterShapeVal' name='filtershapeval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
 					<option value=''>选择形状</option>
 					<option value='0'>圆形</option>
 					<option value='1'>矩形</option>
 				</select>
-				<span class='optionLeng inline'>支持设置滤光片位置<input type='checkbox' name='viewOpt[]' value='canSetFilterPosition'></span>
-				<span class='optionLeng inline'>支持连接指令<input type='checkbox' name='viewOpt[]' value='filterCanConnect'></span>
-				<span class='optionLeng inline'>支持找零指令<input type='checkbox' name='viewOpt[]' value='filterCanFindHome'></span>
+				<span class='optionLeng inline'>支持连接指令:是<input type='radio' name='filtercanconnect' value='1'>&nbsp;否<input type='radio' name='filtercanconnect' value='0'></span>
+				<span class='optionLeng inline'>支持找零指令:是<input type='radio' name='filtercanfindhome' value='1'>&nbsp;否<input type='radio' name='filtercanfindhome' value='0'></span>
+				<span class='optionLeng inline' style='width:240px'>设置滤光片位置:支持<input type='radio' name='cansetfilterposition' value='1'>&nbsp;否<input type='radio' name='cansetfilterposition' value='0'></span>
 			</div><!--滤光片 选项 结束-->
 		</form><!--60cm各子设备 指令属性选项结束 -->
 		<br>

@@ -8,6 +8,7 @@ use think\Cookie;
 use think\Db;
 use think\Config;
 use think\Cache;
+use app\xinglong\model\At60config;
 
 //60cm号望远镜控制器
 class At60 extends Controller
@@ -38,7 +39,7 @@ class At60 extends Controller
     public function index ()
     {
 		//判断60cm望远镜是否已配置，否则先配置并存入缓存
-		$at60Page = Cache::get('at60Page');
+		/* $at60Page = Cache::get('at60Page');
 		
 		if(!isset($at60Page['data']))
 		{
@@ -47,7 +48,14 @@ class At60 extends Controller
 			$this->assign([
                 'cacheStr' => $at60Page,
             ]);
-		}
+		} */
+		//读取60cm望远镜配置
+		$At60config = new At60config;
+		$configData = $At60config->all();
+		//halt($configData[0]['attype']);
+		$this->assign([
+            'configData' => $configData[0],
+        ]);
 		return view('at60-m');  
 		
     }
@@ -565,6 +573,17 @@ class At60 extends Controller
 			//socket发送数据
 			$sendMsg = $headInfo;
 			echo '属性设置指令：' .udpSend($sendMsg, $this->ip, $this->port);	
+		}elseif (input('command') == 12) //跟踪卫星
+		{
+			return '此指令未完成';
+			/* $length = 48;      //该结构体总长度
+			$headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device);
+
+			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=18);
+			
+			//socket发送数据
+			$sendMsg = $headInfo;
+			echo '属性设置指令：' .udpSend($sendMsg, $this->ip, $this->port);	 */
 		}
 		
 		//至此，转台指令发送代码结束
