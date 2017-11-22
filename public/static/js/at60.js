@@ -548,6 +548,48 @@
 		$(this).data('err', err);
 	});////验证 设置目标名称 结束//////////////////////////
 	
+	//验证 指向固定位置 之方位和俯仰/////////////////////////////
+	//方位
+	$('#azimuth').blur(function () {
+		var v = $.trim($(this).val());
+		var err = 0;
+		
+		if (!$.isNumeric(v) || v < 0 || v > 360)
+		{
+			err = 1;
+			layer.tips('参数超限!', $(this), {tipsMore: true});
+		}		
+		$(this).data('err', err);
+	});
+	
+	//俯仰
+	$('#elevationV').blur(function () {
+		var v = $.trim($(this).val());
+		var err = 0;
+		
+		if (!$.isNumeric(v)  || v < minelevationval || v > 90)
+		{
+			err = 1;
+			layer.tips('参数超限!', $(this), {tipsMore: true});
+		}		
+		$(this).data('err', err);
+	});
+	//验证 指向固定位置 之方位和俯仰 结束//////////////////////////
+	
+	//验证 轴3指向固定位置 //////////////////////////////////
+	$('#slewDerotatorV').blur(function () {
+		var v = $.trim($(this).val());
+		var err = 0;
+		
+		if ((!$.isNumeric(v)) || v < 0 || v > 360)
+		{
+			err = 1;
+			layer.tips('参数超限!', $(this), {tipsMore: true});
+		}
+		
+		$(this).data('err', err);
+	});////验证 轴3指向固定位置 结束//////////////////////////
+	
 	//验证 速度修正-轴 //////////////////////////////////
 	$('#speedXInput').blur(function () {
 		var v = $.trim($(this).val());

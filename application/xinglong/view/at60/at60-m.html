@@ -210,6 +210,84 @@
 			</div>
         </div><!--重要信息区域 结束-->
 		<br ><br>
+<script><!--子设备之固定属性值-->
+	//转台之 俯仰最低值
+	var minelevationval = {$configData.minelevationval};
+	//转台之 轴1最大速度
+	var maxaxis1speedval = {$configData.maxaxis1speedval};
+	//转台之 轴2最大速度
+	var maxaxis2speedval = {$configData.maxaxis2speedval};
+	//转台之 轴3最大速度
+	var maxaxis3speedval = {$configData.maxaxis3speedval};
+	//转台之 轴1最大加速度
+	var maxaxis1accelerationval = {$configData.maxaxis1accelerationval};
+	//转台之 轴2最大加速度
+	var maxaxis2accelerationval = {$configData.maxaxis2accelerationval};
+	//转台之 轴3最大加速度
+	var maxaxis3accelerationval = {$configData.maxaxis3accelerationval};
+	//转台之 轴1复位位置
+	var axis1parkpositionval = {$configData.axis1parkpositionval};
+	//转台之 轴2复位位置
+	var axis2parkpositionval = {$configData.axis2parkpositionval};
+	//转台之 轴3复位位置
+	var axis3parkpositionval = {$configData.axis3parkpositionval};
+	/*******************以下为ccd*********************/
+	//CCD之 x像素值
+	var xpixelval = {$configData.xpixelval};
+	//CCD之 y像素值
+	var ypixelval = {$configData.ypixelval};
+	//CCD之 x像元大小
+	var xpixelsizeval = {$configData.xpixelsizeval};
+	//CCD之 y像元大小
+	var ypixelsizeval = {$configData.ypixelsizeval};
+	//CCD之 最低制冷温度
+	var lowcoolertval = {$configData.lowcoolertval};
+	//CCD之 最大曝光时间
+	var maxexposuretimeval = {$configData.maxexposuretimeval};
+	//CCD之 最小曝光时间
+	var minexposuretimeval = {$configData.minexposuretimeval};
+	//CCD之 曝光时间分辨率
+	var exposuretimerationval = {$configData.exposuretimerationval};
+	//CCD之 满井电荷
+	var fullwelldepthval = {$configData.fullwelldepthval};
+	//CCD之 读出模式5
+	var readoutmode5val = {$configData.readoutmode5val};
+	//CCD之 读出速度模式4
+	var readoutspeedval = {$configData.readoutspeedval};
+	//CCD之 转移速度模式4
+	var transferspeedval = {$configData.transferspeedval};
+	//CCD之 增益模式2
+	var gainmodeval = {$configData.gainmodeval};
+	//CCD之 增益档位4
+	var gainnumberval = {$configData.gainnumberval};
+	//CCD之 增益值
+	var gainvaluearrayval = {$configData.gainvaluearrayval};
+	//CCD之 读出噪声值
+	var readoutnoisearrayval = {$configData.readoutnoisearrayval};
+	//CCD之 BIN值
+	var binarrayval = {$configData.binarrayval};
+	//CCD之 最大EM
+	var emmaxvalueval = {$configData.emmaxvalueval};
+	//CCD之 最小EM
+	var emminvalueval = {$configData.emminvalueval};
+	/*******************以下为调焦器*********************/
+	//调焦器之 最大值
+	var focusmaxvalueval = {$configData.focusmaxvalueval};
+	//调焦器之 最小值
+	var focusminvalueval = {$configData.focusminvalueval};
+	//调焦器之 分辨率
+	var focusincrementval = {$configData.focusincrementval};
+	//调焦器之 最大速度
+	var focusmaxspeedval = {$configData.focusmaxspeedval};
+	/*******************以下为圆顶*********************/
+	//随动圆顶之 最大转动速度
+	var sdomemaxspeedval = {$configData.sdomemaxspeedval};
+	/*******************以下为滤光片*********************/
+	//滤光片之 滤光片名称
+	var filternameval = {$configData.filternameval};
+	//滤光片之 滤光片焦距偏差值
+	var filterfocuslengthcompensateval = {$configData.filterfocuslengthcompensateval};
+</script><!--子设备之固定属性值 结束-->
         <div id='devsNav'><!--望远镜子设备导航:js用code/public/static/js/dev1.js-->
             <table>
                 <tr>
@@ -220,28 +298,60 @@
         </div><!--望远镜子设备导航结束-->
           <div id='gimbalInfo' class='display'><!--转台指令和属性-->
              <nav class='center'><!--转台指令 导航-->
+				{if condition="$configData.cantrackstar eq '1'"}
 			    <span name='trackStar'>跟踪恒星</span>
+				{/if}
+				{if condition="$configData.cansetobjectname eq '1'"}
 				<span name='targetName'>设置目标名称</span>
+				{/if}
+				{if condition="$configData.canslewazel eq '1'"}
 				<span name='poitFix'>指向固定位置</span>
+				{/if}
+				{if condition="$configData.canslewderotator eq '1'"}
 				<span name='slewDerotator'>轴3指向固定位置</span>
+				{/if}
+				{if condition="$configData.canconfigderotator eq '1'"}
 				<span name='axis3Mode'>轴3工作模式</span>
-				<span name='speedX'>速度修正</span> 
+				{/if}
+				<span name='speedX'>速度修正</span>
+				{if condition="$configData.canfixedmove eq '1'"}
 				<span name='speedF'>恒速运动</span>
+				{/if}
+				{if condition="$configData.canpositioncorrect eq '1'"}
 				<span name='positionX'>位置修正</span>
+				{/if}
+				{if condition="$configData.cancoveroperation eq '1'"}
 				<span name='coverOp'>镜盖操作</span>
+				{/if}
+				{if condition="$configData.canfocusoperation eq '1'"}
 				<span name='focusOp'>焦点切换镜</span>
+				{/if}
+				{if condition="$configData.cansavesyncdata eq '1'"}
 				<span name='saveData'>保存同步数据</span>
+				{/if}
+				{if condition="$configData.cantracksatellite eq '1'"}
 				<span name='trackS'>跟踪卫星</span>
+				{/if}
 				<span name='PropCfg'>属性设置</span>
 			 </nav>
 			 <div class='border2'><!--转台指令和可变属性-->
 				<div id='btnsGimbal' class='center_mrg center BtnsDiv'>
-					<input id='gimbalConnect' class='border1 btnCommand' type='button' value='连接望远镜' />
-					<input id='gimbalDisConnect' class='border1 btnCommand' type='button' value='断开望远镜' />
+					{if condition="$configData.gimbalcanconnect eq '1'"}
+					<input id='gimbalConnect' class='border1 btnCommand' type='button' value='连接望远镜'>
+					{/if}
+					<input id='gimbalDisConnect' class='border1 btnCommand' type='button' value='断开望远镜'>
+					{if condition="$configData.canfindhome eq '1'"}
                    <input id='gimbalFindhome' class='border1 btnCommand' type='button' value='找  零'>
-                   <input id='gimbalPark' class='border1 btnCommand' type='button' value='复 位' />              
-                   <input id='gimbalStop' class='border1 btnCommand' type='button' value='停 止' />				   
-                   <input id='gimbalEmergenceStop' class='border1 btnCommand' type='button' value='急 停' />
+				   {/if}
+				   {if condition="$configData.canpark eq '1'"}
+                   <input id='gimbalPark' class='border1 btnCommand' type='button' value='复 位'>
+					{/if}
+					{if condition="$configData.canstop eq '1'"}
+                   <input id='gimbalStop' class='border1 btnCommand' type='button' value='停 止'>
+					{/if}
+					{if condition="$configData.canemergencystop eq '1'"}
+                   <input id='gimbalEmergenceStop' class='border1 btnCommand' type='button' value='急 停'>
+				   {/if}
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
 				<form id='at60Gimbal' class='center command'>
@@ -286,12 +396,12 @@
 					  </div>
 					<div id='poitFix'>
 						   <input type='radio' name='command' value='3' />
-						   方位：<input type="text" name='azimuth' class='blur'>
-						   俯仰：<input type="text" name='elevation' class='blur'>
+						   方位：<input id='azimuth' type="text" name='azimuth' class='blur'>
+						   俯仰：<input id='elevationV' type="text" name='elevation' class='blur'>
 					</div>
 					<div id='slewDerotator'>
 					   <input type='radio' name='command' value='4' />轴3指向固定位置：
-					   <input type="text" name='slewDerotator' class='blur'>
+					   <input id='slewDerotatorV' type="text" name='slewDerotator' class='blur'>
 					</div>
 					<div id='axis3Mode'>
 					   <input type='radio' name='command' value='5' />
