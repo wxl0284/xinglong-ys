@@ -27,7 +27,7 @@
 //望远镜列表js代码结束///////////////////////////////////
 
 //转台 ccd等子设备选中 js事件//////////////////////////////	
-	$('#at60devs').on('click', 'input', function () {
+	$('#at80devs').on('click', 'input', function () {
 		if ($(this).prop('checked')){
 			//转台被选中 则显示转台的指令和属性选项
 			var e = $(this).val();
@@ -49,12 +49,19 @@
 //转台 ccd等子设备选中 js事件 结束/////////////////////////
 
 //提交60cm望远镜配置 js事件 /////////////////////////////
-	$('#at60ConfigBtn').click(function () {
-		var configForm = document.getElementById('allOption');
-		var formData = new FormData(configForm);
-		//console.log(formData);
+	$('#at80ConfigBtn').click(function () {
+		var configForm = $('#allOption');
+		var check = configForm.find('input[type="checkbox"]:checked');
+		var radio = configForm.find('input[type="radio"]:checked');
+		//为选择任何选项
+		if (check.length == 0 && radio.length == 0)
+		{
+			alert('您未进行任何配置!');return;
+		}
+		var formData = new FormData(configForm[0]);
+		
 		$.ajax({
-			url : '/xinglong/page_config/doAt60config',
+			url : '/xinglong/page_config/doAt80config',
 			type : 'post',
 			processData : false,
             contentType : false, 

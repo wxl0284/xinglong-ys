@@ -483,4 +483,10 @@ class PageConfig extends Controller
 	{
 		return view('pageConfig/at80config');
 	}
+	
+	//显示80cm望远镜配置选择页
+	public function doAt80config ()
+	{
+		return 'ok';
+	}
 }
