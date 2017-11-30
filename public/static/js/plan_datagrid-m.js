@@ -127,52 +127,49 @@
 //导入计划文件 上传////////////////////////////////////////////
 	function importPlan ()
 	{
-		$(function (){
-			var planForm = $('#imptPlan');
-			var plan = planForm.find('input');
-			planForm[0].reset();//重置表单数据
-			plan.click(); //打开上传文件的选择窗口
-			
-			plan.one('change', function () {
-				var formData = new FormData(planForm[0]);
-				$.ajax({
-					type: 'post',
-		            url : '/xinglong/at60/importPlan',
-		            data : formData,
-					processData : false,
-					contentType : false, 
-		            success: function (info) {
-						if (!info.match("^\{(.+:.+,*){1,}\}$"))
-						{//非json数据
-							alert(info);
-							if (info.indexOf('登录') !== -1)
-							{
-								location.href = '/';
-							}
-						}else{			
-							var info = jQuery.parseJSON(info);
-							var arr = [];
-							var ii = 0;
-							for (var p in info)
-							{
-								arr[ii] = info[p];
-								ii ++;
-							}
-					
-							table.datagrid({
-									data: arr,
-							});
-							
-							editRow = undefined; //否则 导入后无法插入新行
+		var planForm = $('#imptPlan');
+		var plan = planForm.find('input');
+		planForm[0].reset();//重置表单数据
+		plan.click(); //打开上传文件的选择窗口
+		
+		plan.one('change', function () {
+			var formData = new FormData(planForm[0]);
+			$.ajax({
+				type: 'post',
+	            url : '/xinglong/at60/importPlan',
+	            data : formData,
+				processData : false,
+				contentType : false, 
+	            success: function (info) {
+					if (!info.match("^\{(.+:.+,*){1,}\}$"))
+					{//非json数据
+						alert(info);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
 						}
+					}else{			
+						var info = jQuery.parseJSON(info);
+						var arr = [];
+						var ii = 0;
+						for (var p in info)
+						{
+							arr[ii] = info[p];
+							ii ++;
+						}
+				
+						table.datagrid({
+								data: arr,
+						});
 						
-					},
-		            error:  function () {
-		               alert('网络异常,请重新导入计划');
-		            },
-				});
+						editRow = undefined; //否则 导入后无法插入新行
+					}
+					
+				},
+	            error:  function () {
+	               alert('网络异常,请重新导入计划');
+	            },
 			});
-
 		});
 	}
 	

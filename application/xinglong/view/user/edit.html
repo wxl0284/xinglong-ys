@@ -73,6 +73,14 @@
 					   </select>
 					</td>
 				</tr>
+				{else/}
+				<tr><td>用户权限</td>
+					<td>
+					    <select class='border ipt' name="role">
+						   <option value="1">管理员</option>
+					   </select>
+					</td>
+				</tr>
 				{/if}
 				<tr>
 					<td colspan='2' class='center'><input class='border1' id='btn' type='submit' value='确认提交' /></td>
@@ -90,10 +98,10 @@
 			var nameVal = form.find('input[name="username"]').val();
 			var passwd = form.find('input[name="passwd"]').val();
 			var roleVal = form.find('select').val();
-			
+	
 			if(nameVal === username && passwd === '' && roleVal == role)
 			{
-				alert('您未改动任何用户信息!')
+				alert('您未改动任何用户信息!');
 				return false; //表单未改动，不提交
 			}
 		});
