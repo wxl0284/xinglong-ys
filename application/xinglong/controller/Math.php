@@ -35,12 +35,17 @@ class Math
 		*/
 		function GetJD ()
 		{
-			$hms = gmdate('H:i:s');  //用格林威治标准时
+			$hms = gmdate('H:i');  //用格林威治标准时
 			$hms = explode(':', $hms);
-			$mSec = explode('.', microtime(true)); //$mSec为1505785366.6164
-			$mSec = $mSec[1]; //$mSec为 6164
+			/* $mSec = explode('.', microtime(true)); //$mSec为1505785366.6164
+			$mSec = $mSec[1]; //$mSec为 6164 */
+			//
+			list($usec, $sec) = explode(" ", microtime());
+			$second = (float)$usec + (float)$sec;
 			
-			$h = $hms[0] + $hms[1]/60 + ($hms[2] + $mSec/1000)/3600;
+			
+			
+			$h = $hms[0] + $hms[1]/60 + $second/3600;
 			$h = floatval ($h);
 			$ymd = ymd();
 			$result = ModifiedJulianDay($ymd[0], $ymd[1], $ymd[2], $h);

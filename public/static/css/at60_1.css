@@ -135,5 +135,7 @@ form input[type='radio'], form div {display:none;}
 
 #modeVal {width:145px;z-index:99;background-color:#fff;}
 
+#modeSpan {width:117px;}
+
 #planExe {top:0px;right:20px;}
 /*观测计划模式：单选钮和按钮的样式 结束*/

@@ -3,6 +3,7 @@ namespace app\xinglong\controller;
 
 use think\Controller;
 use app\xinglong\model\User;
+use think\Db;
 use think\Cache;
 use think\Request;
 use app\xinglong\model\At60config;
@@ -33,12 +34,12 @@ class Test extends Controller
 	
 	public function index1 ()
 	{
-		if (Cache::get('name')) {
-			$res = Cache::get('name');
-			return $res['data'];
-		}else{
-			return 'no cache';
-		}
+		return view('table/a');
+	}
+	
+	public function index2 ()
+	{
+		return $this->index1();
 	}
 	
 	public function test ()

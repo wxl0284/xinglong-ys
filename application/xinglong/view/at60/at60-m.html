@@ -1073,14 +1073,20 @@
            </div>
 		   <!--观测计划的模式按钮-->
 		   <div id='planModes' class='pos_a'>
-			  <div id='modeSpan'>执行模式
+			<!--   <div id='modeSpan'>执行模式1
 				  <div id='modeVal' class='border displayNo'>
 					Single：<input type='radio' name='planMode' value='1' >
 					SingleLoop：<input type='radio' name='planMode' value='2' >
 					Sequence：<input type='radio' name='planMode' value='3' >
 					SequenceLoop：<input type='radio' name='planMode' value='4' >
 				  </div>
-			  </div>
+			  </div> -->
+			  执行模式:<select id='modeSpan'>
+			    <option value='1'>single</option>
+			    <option value='2'>singleloop</option>
+			    <option value='3'>sequence</option>
+			    <option value='4'>sequenceloop</option>
+			  </select>
 		      
 				<div id='planExe' class='pos_a'>
 					<button id='planStart'>开始</button>

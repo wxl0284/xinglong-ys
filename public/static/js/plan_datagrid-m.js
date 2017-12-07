@@ -530,7 +530,7 @@
 			alert('请检查第' + (editRow+1) + '行必填数据!'); return;
 		}
 		//获取模式值
-		var modeVal = $('#planModes').find('input:checked').val();
+		var modeVal = $('#modeSpan').val();
 		var option = $(this).attr('id');
 		var btnText = $(this).html();
 		var rows = table.datagrid('getSelections');
@@ -570,7 +570,7 @@
 				
 				if (info.indexOf('计划停止') !== -1)
 				{
-					$('#planStart').show();
+					$('#planStart').prop('disabled', false);
 				}
             },
             error:  function () {
@@ -662,7 +662,7 @@
 				
 				if (info.indexOf('计划发送完毕') !== -1)
 				{
-					$('#planStart').hide();
+					$('#planStart').prop('disabled', true);
 				}
 			},
 			error: function (){
