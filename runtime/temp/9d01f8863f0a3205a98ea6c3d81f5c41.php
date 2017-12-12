@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:75:"D:\xampp\htdocs\demo\public/../application/xinglong\view\control\login.html";i:1500269814;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:75:"D:\xampp\htdocs\demo\public/../application/xinglong\view\control\login.html";i:1513060817;}*/ ?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -31,7 +31,7 @@
 				   <!-- <input type='submit' value='登录' />  -->
                </form>
 			</div>
-			<div id='btn' onclick='sbmt()'>
+			<div id='btn'>
 			  <img src='/static/images-0/log.png' />
 			  <div><a href='javascript:;' >登 录</a></div>
 			</div>

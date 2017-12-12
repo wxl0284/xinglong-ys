@@ -12,10 +12,12 @@ class At60status extends Controller
 	public function devsStatus () 
 	{
 		$status = [];	//存放各种状态信息的数组
-		//时间信息
-		$time = explode('#', date('Y.m.d#H:i:s', time()));
-		$status['date'] = $time[0];
-		$status['time'] = $time[1];
+		
+		//获取UTC时间 格式：12:30:30.5
+		$hms = gmdate('H:i:s');
+		$usec = substr(microtime(), 2, 1);
+		$UTC = $hms . '.' . $usec;
+		$status['UTC'] = $UTC;
 		//读取转台状态数据///////////////////////////////////////////
 		$gimbalStatus = Db::table('at60gimbalstatus')->order('id desc')->find();
 		/* if ($gimbalStatus['error'] === '0')
@@ -27,74 +29,73 @@ class At60status extends Controller
 		$status['gimbalStatus'] = $gimbalError; */
 		
 		//60cm望远镜 当前状态信息/////////////////////////////
-		if ($gimbalStatus['curstatus'] == 1)
+		switch ($gimbalStatus['curstatus'])
 		{
-			$status['curstatus'] = '离线1';
-		}elseif ($gimbalStatus['curstatus'] == 2)
-		{
-			$status['curstatus'] = '连接中2';
-		}elseif ($gimbalStatus['curstatus'] == 3)
-		{
-			$status['curstatus'] = '断开中3';
-		}elseif ($gimbalStatus['curstatus'] == 4)
-		{
-			$status['curstatus'] = '未找零4';
-		}elseif ($gimbalStatus['curstatus'] == 5)
-		{
-			$status['curstatus'] = '找零中5';
-		}elseif ($gimbalStatus['curstatus'] == 6)
-		{
-			$status['curstatus'] = '停止中6';
-		}elseif ($gimbalStatus['curstatus'] == 7)
-		{
-			$status['curstatus'] = '停止7';
-		}elseif ($gimbalStatus['curstatus'] == 8)
-		{
-			$status['curstatus'] = '急停中8';
-		}elseif ($gimbalStatus['curstatus'] == 9)
-		{
-			$status['curstatus'] = '急停9';
-		}elseif ($gimbalStatus['curstatus'] == 10)
-		{
-			$status['curstatus'] = '复位中10';
-		}elseif ($gimbalStatus['curstatus'] == 11)
-		{
-			$status['curstatus'] = '复位11';
-		}elseif ($gimbalStatus['curstatus'] == 12)
-		{
-			$status['curstatus'] = '等待恒速跟踪12';
-		}elseif ($gimbalStatus['curstatus'] == 13)
-		{
-			$status['curstatus'] = '恒速跟踪13';
-		}elseif ($gimbalStatus['curstatus'] == 14)
-		{
-			$status['curstatus'] = '速度修正中14';
-		}elseif ($gimbalStatus['curstatus'] == 15)
-		{
-			$status['curstatus'] = '位置修正中15'; //？存疑
-		}elseif ($gimbalStatus['curstatus'] == 16)
-		{
-			$status['curstatus'] = '等待变速跟踪16';
-		}elseif ($gimbalStatus['curstatus'] == 17)
-		{
-			$status['curstatus'] = '变速跟踪中17';
-		}elseif ($gimbalStatus['curstatus'] == 18)
-		{
-			$status['curstatus'] = '指向中18';
-		}elseif ($gimbalStatus['curstatus'] == 19)
-		{
-			$status['curstatus'] = '指向到位19';
-		}elseif ($gimbalStatus['curstatus'] == 20)
-		{
-			$status['curstatus'] = '等待恒速20';
-		}elseif ($gimbalStatus['curstatus'] == 21)
-		{
-			$status['curstatus'] = '恒速运动21';
-		}elseif ($gimbalStatus['curstatus'] == 22)
-		{
-			$status['curstatus'] = '异常22';
+			case 1:
+				$status['curstatus'] = '离线';
+				break;
+			case 2:
+				$status['curstatus'] = '连接中';
+				break;
+			case 3:
+				$status['curstatus'] = '断开中';
+				break;
+			case 4:
+				$status['curstatus'] = '未找零';
+				break;
+			case 5:
+				$status['curstatus'] = '找零中';
+				break;
+			case 6:
+				$status['curstatus'] = '停止中';
+				break;
+			case 7:
+				$status['curstatus'] = '停止';
+				break;
+			case 8:
+				$status['curstatus'] = '急停中';
+				break;
+			case 9:
+				$status['curstatus'] = '急停';
+				break;
+			case 10:
+				$status['curstatus'] = '急停中';
+				break;
+			case 11:
+				$status['curstatus'] = '急停';
+				break;
+			case 12:
+				$status['curstatus'] = '等待恒速跟踪';
+				break;
+			case 13:
+				$status['curstatus'] = '恒速跟踪';
+				break;
+			case 14:
+				$status['curstatus'] = '速度修正中';
+				break;
+			case 15:
+				$status['curstatus'] = '等待变速跟踪';
+				break;
+			case 16:
+				$status['curstatus'] = '变速跟踪中';
+				break;
+			case 17:
+				$status['curstatus'] = '指向中';
+				break;
+			case 18:
+				$status['curstatus'] = '指向到位';
+				break;
+			case 19:
+				$status['curstatus'] = '等待恒速';
+				break;
+			case 20:
+				$status['curstatus'] = '等待恒速';
+				break;
+			case 21:
+				$status['curstatus'] = '异常';
+				break;
 		}
-		//当前状态结束///////////////////////////////////////
+		//转台当前状态结束///////////////////////////////////////
 		
 		$status['trackError'] = 2.11; //位置信息：跟踪误差（？咋获取）
 		//位置信息：当前时角
@@ -111,21 +112,30 @@ class At60status extends Controller
 		$status['rightAscension'] = round($gimbalStatus['rightAscension'], 5); //当前赤经
 		$status['declination'] = round($gimbalStatus['declination'], 5); //当前赤纬
 		$status['trackObjectName'] = $gimbalStatus['trackObjectName']; //目标名
-		if ($gimbalStatus['trackType'] === 0)	//获取跟踪目标类型
+		//获取跟踪目标类型
+		switch ($gimbalStatus['trackType'])
 		{
-			$status['trackType'] = '恒星';
-		}elseif ($gimbalStatus['trackType'] === 1){
-			$status['trackType'] = '太阳';
-		}elseif ($gimbalStatus['trackType'] === 2){
-			$status['trackType'] = '月亮';
-		}elseif ($gimbalStatus['trackType'] === 3){
-			$status['trackType'] = '彗星';
-		}elseif ($gimbalStatus['trackType'] === 4){
-			$status['trackType'] = '行星';
-		}elseif ($gimbalStatus['trackType'] === 5){
-			$status['trackType'] = '卫星';
-		}elseif ($gimbalStatus['trackType'] === 6){
-			$status['trackType'] = '固定位置';
+			case 0:
+				$status['trackType'] = '恒星';
+				break;
+			case 1:
+				$status['trackType'] = '太阳';
+				break;
+			case 2:
+				$status['trackType'] = '月亮';
+				break;
+			case 3:
+				$status['trackType'] = '彗星';
+				break;
+			case 4:
+				$status['trackType'] = '行星';
+				break;
+			case 5:
+				$status['trackType'] = '卫星';
+				break;
+			case 6:
+				$status['trackType'] = '固定位置';
+				break;
 		}
 		
 		$gimbalStatus['targetRightAscension'] = floatval ($gimbalStatus['targetRightAscension']);
@@ -171,33 +181,35 @@ class At60status extends Controller
 		$status['ccdStatus'] = $ccdError; */
 		
 		//ccd可变属性：当前状态信息/////////////////////////////////
-		if ($ccdStatus['curstatus'] == 1)
+		switch ($ccdStatus['curstatus'])
 		{
-			$status['ccdCurStatus'] = '离线1';
-		}elseif ($ccdStatus['curstatus'] == 2)
-		{
-			$status['ccdCurStatus'] = '连接中2';
-		}elseif ($ccdStatus['curstatus'] == 3)
-		{
-			$status['ccdCurStatus'] = '断开中3';
-		}elseif ($ccdStatus['curstatus'] == 4)
-		{
-			$status['ccdCurStatus'] = '等待曝光4';
-		}elseif ($ccdStatus['curstatus'] == 5)
-		{
-			$status['ccdCurStatus'] = '曝光中5';
-		}elseif ($ccdStatus['curstatus'] == 6)
-		{
-			$status['ccdCurStatus'] = '读出中6';
-		}elseif ($ccdStatus['curstatus'] == 7)
-		{
-			$status['ccdCurStatus'] = '图像存储中7';
-		}elseif ($ccdStatus['curstatus'] == 8)
-		{
-			$status['ccdCurStatus'] = '终止中8';
-		}elseif ($ccdStatus['curstatus'] == 9)
-		{
-			$status['ccdCurStatus'] = '空闲9';
+			case 1:
+				$status['ccdCurStatus'] = '离线';
+				break;
+			case 2:
+				$status['ccdCurStatus'] = '连接中';
+				break;
+			case 3:
+				$status['ccdCurStatus'] = '断开中';
+				break;
+			case 4:
+				$status['ccdCurStatus'] = '等待曝光';
+				break;
+			case 5:
+				$status['ccdCurStatus'] = '曝光中';
+				break;
+			case 6:
+				$status['ccdCurStatus'] = '读出中';
+				break;
+			case 7:
+				$status['ccdCurStatus'] = '图像存储中';
+				break;
+			case 8:
+				$status['ccdCurStatus'] = '终止中';
+				break;
+			case 9:
+				$status['ccdCurStatus'] = '空闲';
+				break;
 		}
  
 		$status['ccdBaseline'] = $ccdStatus['baseline'];  //ccd可变属性：baseline值
@@ -218,40 +230,42 @@ class At60status extends Controller
 			$focusError = '其他情况';
 		}
 		$status['focusStatus'] = $focusError;  //是否正常 */
-		//调焦器当前状态//////////////////////////////////////////////
-		if ($focusStatus['curstatus'] == 1)
+		//调焦器当前状态////////////////////////////////////////////
+		switch ($focusStatus['curstatus'])
 		{
-			$status['focusCurStatus'] = '离线';
-		}elseif($focusStatus['curstatus'] == 2)
-		{
-			$status['focusCurStatus'] = '连接中';
-		}elseif($focusStatus['curstatus'] == 3)
-		{
-			$status['focusCurStatus'] = '断开中';
-		}elseif($focusStatus['curstatus'] == 4)
-		{
-			$status['focusCurStatus'] = '停止中';
-		}elseif($focusStatus['curstatus'] == 5)
-		{
-			$status['focusCurStatus'] = '已停止';
-		}elseif($focusStatus['curstatus'] == 6)
-		{
-			$status['focusCurStatus'] = '转动中';
-		}elseif($focusStatus['curstatus'] == 7)
-		{
-			$status['focusCurStatus'] = '转动到位';
-		}elseif($focusStatus['curstatus'] == 8)
-		{
-			$status['focusCurStatus'] = '未找零';
-		}elseif($focusStatus['curstatus'] == 9)
-		{
-			$status['focusCurStatus'] = '找零中';
-		}elseif($focusStatus['curstatus'] == 10)
-		{
-			$status['focusCurStatus'] = '急停中';
-		}elseif($focusStatus['curstatus'] == 11)
-		{
-			$status['focusCurStatus'] = '急停';
+			case 1:
+				$status['focusCurStatus'] = '离线';
+				break;
+			case 2:
+				$status['focusCurStatus'] = '连接中';
+				break;
+			case 3:
+				$status['focusCurStatus'] = '断开中';
+				break;
+			case 4:
+				$status['focusCurStatus'] = '停止中';
+				break;
+			case 5:
+				$status['focusCurStatus'] = '已停止';
+				break;
+			case 6:
+				$status['focusCurStatus'] = '转动中';
+				break;
+			case 7:
+				$status['focusCurStatus'] = '转动到位';
+				break;
+			case 8:
+				$status['focusCurStatus'] = '未找零';
+				break;
+			case 9:
+				$status['focusCurStatus'] = '找零中';
+				break;
+			case 10:
+				$status['focusCurStatus'] = '急停中';
+				break;
+			case 11:
+				$status['focusCurStatus'] = '急停';
+				break;
 		}
 		//调焦器当前状态 结束/////////////////////////////////////////
 		
@@ -271,43 +285,45 @@ class At60status extends Controller
 			$slaveDomeError = '其他情况';
 		}
 		$status['slaveDomeStatus'] = $slaveDomeError; //圆顶：是否正常 */
-		//圆顶当前状态////////////////////////////////////////////////
-		if($slaveDomeStatus['curstatus'] == 1)
+		//圆顶当前状态/////////////////////////////////////////////
+		switch ($slaveDomeStatus['curstatus'])
 		{
-			$status['slaveDomeCurstatus'] = '离线1';
-		}elseif($slaveDomeStatus['curstatus'] == 2)
-		{
-			$status['slaveDomeCurstatus'] = '连接中2';
-		}elseif($slaveDomeStatus['curstatus'] == 3)
-		{
-			$status['slaveDomeCurstatus'] = '断开中3';
-		}elseif($slaveDomeStatus['curstatus'] == 4)
-		{
-			$status['slaveDomeCurstatus'] = '停止中4';
-		}elseif($slaveDomeStatus['curstatus'] == 5)
-		{
-			$status['slaveDomeCurstatus'] = '已停止5';
-		}elseif($slaveDomeStatus['curstatus'] == 6)
-		{
-			$status['slaveDomeCurstatus'] = '复位中6';
-		}elseif($slaveDomeStatus['curstatus'] == 7)
-		{
-			$status['slaveDomeCurstatus'] = '复位7';
-		}elseif($slaveDomeStatus['curstatus'] == 8)
-		{
-			$status['slaveDomeCurstatus'] = '指向中8';
-		}elseif($slaveDomeStatus['curstatus'] == 9)
-		{
-			$status['slaveDomeCurstatus'] = '指向到位9';
-		}elseif($slaveDomeStatus['curstatus'] == 10)
-		{
-			$status['slaveDomeCurstatus'] = '等待随动10';
-		}elseif($slaveDomeStatus['curstatus'] == 11)
-		{
-			$status['slaveDomeCurstatus'] = '随动中11';
-		}elseif($slaveDomeStatus['curstatus'] == 12)
-		{
-			$status['slaveDomeCurstatus'] = '异常12';
+			case 1:
+				$status['slaveDomeCurstatus'] = '离线';
+				break;
+			case 2:
+				$status['slaveDomeCurstatus'] = '连接中';
+				break;
+			case 3:
+				$status['slaveDomeCurstatus'] = '断开中';
+				break;
+			case 4:
+				$status['slaveDomeCurstatus'] = '停止中';
+				break;
+			case 5:
+				$status['slaveDomeCurstatus'] = '已停止';
+				break;
+			case 6:
+				$status['slaveDomeCurstatus'] = '复位中';
+				break;
+			case 7:
+				$status['slaveDomeCurstatus'] = '复位';
+				break;
+			case 8:
+				$status['slaveDomeCurstatus'] = '指向中';
+				break;
+			case 9:
+				$status['slaveDomeCurstatus'] = '指向到位';
+				break;
+			case 10:
+				$status['slaveDomeCurstatus'] = '等待随动';
+				break;
+			case 11:
+				$status['slaveDomeCurstatus'] = '随动中';
+				break;
+			case 12:
+				$status['slaveDomeCurstatus'] = '异常';
+				break;
 		}
 		//圆顶当前状态结束/////////////////////////////////////////////
 		
@@ -327,49 +343,46 @@ class At60status extends Controller
 		$status['filterStatus'] = $filterError; //滤光片 是否正常 */
 		
 		//滤光片当前状态///////////////////////////////////////////
-		if($filterStatus['curstatus'] == 1)
+		switch ($filterStatus['curstatus'])
 		{
-			$status['filterCurstatus'] = '离线';
-		}elseif($filterStatus['curstatus'] == 2)
-		{
-			$status['filterCurstatus'] = '连接中';
-		}elseif($filterStatus['curstatus'] == 3)
-		{
-			$status['filterCurstatus'] = '断开中';
-		}elseif($filterStatus['curstatus'] == 4)
-		{
-			$status['filterCurstatus'] = '停止中';
-		}elseif($filterStatus['curstatus'] == 5)
-		{
-			$status['filterCurstatus'] = '已停止';
-		}elseif($filterStatus['curstatus'] == 6)
-		{
-			$status['filterCurstatus'] = '转动中';
-		}elseif($filterStatus['curstatus'] == 7)
-		{
-			$status['filterCurstatus'] = '转动到位';
-		}elseif($filterStatus['curstatus'] == 8)
-		{
-			$status['filterCurstatus'] = '未找零';
-		}elseif($filterStatus['curstatus'] == 9)
-		{
-			$status['filterCurstatus'] = '找零中';
-		}elseif($filterStatus['curstatus'] == 10)
-		{
-			$status['filterCurstatus'] = '急停中';
-		}elseif($filterStatus['curstatus'] == 11)
-		{
-			$status['filterCurstatus'] = '急停';
+			case 1:
+				$status['filterCurstatus'] = '离线';
+				break;
+			case 2:
+				$status['filterCurstatus'] = '连接中';
+				break;
+			case 3:
+				$status['filterCurstatus'] = '断开中';
+				break;
+			case 4:
+				$status['filterCurstatus'] = '停止中';
+				break;
+			case 5:
+				$status['filterCurstatus'] = '已停止';
+				break;
+			case 6:
+				$status['filterCurstatus'] = '转动中';
+				break;
+			case 7:
+				$status['filterCurstatus'] = '转动到位';
+				break;
+			case 8:
+				$status['filterCurstatus'] = '未找零';
+				break;
+			case 9:
+				$status['filterCurstatus'] = '找零中';
+				break;
+			case 10:
+				$status['filterCurstatus'] = '急停中';
+				break;
+			case 11:
+				$status['filterCurstatus'] = '急停';
+				break;
 		}
 		//滤光片当前状态 结束 /////////////////////////////////////
 		$status['filterIsHomed'] = $filterStatus['isHomed']; //是否找零
-		$status['filterErrorStatus'] = $filterStatus['errorString']; //错误标识
-		
-		//当前计划
-		$planNum = Db::table('at60plan')->order('id desc')->value('tag');
-		
-		$status['planNum'] = $planNum;
-		
+		//错误标识
+		$status['filterErrorStatus'] = $filterStatus['errorString']; 
 		return json_encode($status);
 	}
 }

@@ -14,7 +14,7 @@
 				err = 0; //将err变量重置为0
                 var info = eval( '(' + info +')' );
 				$('#date').html(info.date);
-				$('#bjTime').html(info.time);
+				$('#utcTime').html(info.UTC);
 				$('#siderealTime').html(info.siderealTime);
 				$('#curstatus').html(info.curstatus); //转台状态
 				$('#trackError').html(info.trackError);
@@ -374,8 +374,7 @@
          $(this).find('input:radio').prop('checked', true);
          var notcheck = gimbalSelect.not($(this));
          notcheck.addClass('notCheck');
-         $(this).removeClass('notCheck');
-         
+         $(this).removeClass('notCheck'); 
      });
 	 
 //转台 轴3工作模式 仅对模式2有效 js事件////////////////////////////
