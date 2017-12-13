@@ -34,7 +34,7 @@ class User extends Controller
 			$this->error('您无权查看用户信息!');
 		}
 		
-		if($keyword = trim(input('keyword')))
+		if($keyword = input('keyword'))
 		{
 			
 		}else{
@@ -62,9 +62,9 @@ class User extends Controller
 		}
 		
 		$inputData = input(); //获取表单数据
-		$username = trim($inputData['username']);
-		$passwd = trim($inputData['passwd']);
-		$rePasswd = trim($inputData['rePasswd']);
+		$username = $inputData['username'];
+		$passwd = $inputData['passwd'];
+		$rePasswd = $inputData['rePasswd'];
 		$role = $inputData['role'];
 		//验证数据
 		$result	= $this->validate(
@@ -148,8 +148,8 @@ class User extends Controller
 		
 		$inputData = input(); //获取表单数据
 		$id = $inputData['id'];
-		$username = trim($inputData['username']);
-		$passwd = trim($inputData['passwd']);
+		$username = $inputData['username'];
+		$passwd = $inputData['passwd'];
 		if (!input('?post.role'))
 		{
 			$role = 1; //若是管理员 修改自己信息 role默认为1
@@ -276,9 +276,9 @@ class User extends Controller
 		//halt(input());
 		$inputData = input(); //获取表单数据
 		$username = $inputData['username'];
-		$passwd = trim($inputData['passwd']);
-		$passwdNew = trim($inputData['passwdNew']);
-		$RepasswdNew = trim($inputData['RepasswdNew']);
+		$passwd = $inputData['passwd'];
+		$passwdNew = $inputData['passwdNew'];
+		$RepasswdNew = $inputData['RepasswdNew'];
 		//验证数据
 		$result	= $this->validate(
             [

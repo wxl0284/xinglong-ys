@@ -26,8 +26,8 @@ class Control extends Controller
     //登录的方法/////////////////////////////////////////////////////////
     public function dologin ()
     {
-        $username = trim(input('username'));
-        $password = trim(input('password'));
+        $username = input('username');
+        $password = input('password');
         
         //验证数据 validate方法
         $result	= $this->validate(

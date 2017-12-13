@@ -15,6 +15,7 @@ class At60 extends Controller
 {
 	public $ip = '';  //socket通信 ip
 	public $port = '';  //socket通信 port
+	public $at = 37;   //60cm号望远镜控制器 编号
     //检测是否登录////////////////////////////////////////////////
     public function _initialize ()
     {
@@ -90,13 +91,13 @@ class At60 extends Controller
             return;
         } 
         //望远镜
-        $at = 37;
+        $at = $this->at;
         $msg = 11; $magic = 439041101; $version = 1;
         
         $length = 28 +20;      //只发送头部前面的信息
         $headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device=0);
         dump(input('takeOver'));return;
-        $takeOver = trim(input('takeOver'));
+        $takeOver = input('takeOver');
         if (!preg_match('/^[0-1]$/', $takeOver))
         {
            echo '连接指令无效!'; return; 
@@ -144,7 +145,7 @@ class At60 extends Controller
 			return;
 		} 
 		//60cm 望远镜
-		$at  = 37; 
+		$at  = $this->at; 
 		 //转台
 		$device = 64;            
 		$msg = 6; $magic = 439041101; $version = 1;
@@ -154,7 +155,8 @@ class At60 extends Controller
 		//发送连接指令
 		if (($connect=input('connect')) !== null)
 		{
-			if (!preg_match('/^[1-2]$/', $connect)) //匹配1和2
+			if (!($connect == 1 || $connect == 2)) //匹配1和2
+			
 			{
 			   echo '连接指令无效!'; return; 
 			}
@@ -240,6 +242,7 @@ class At60 extends Controller
 			
 			//处理赤经数据
 			$postData = input();
+		
 			if (!preg_match('/^\d{1,2}$/', $postData['rightAscension1']) || $postData['rightAscension1'] > 24 || $postData['rightAscension1'] < 0)
 			{
 				return '赤经之小时参数超限!';
@@ -320,7 +323,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=4);
 			
-			if (($objectName=trim(input('objectName'))) !== '')
+			if (($objectName=input('objectName')) !== '')
 			{//目标名称
 				if (preg_match('/[\x{4e00}-\x{9af5} ]/u', $objectName))
 				{
@@ -350,7 +353,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=5);
 			
-			if (($azimuth=trim(input('azimuth'))) !== '') //方位
+			if (($azimuth=input('azimuth')) !== '') //方位
 			{
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $azimuth))
 				{
@@ -361,7 +364,7 @@ class At60 extends Controller
 				$sendMsg = pack('d', 0);
 			}
 			
-			if (($elevation=trim(input('elevation')))  !== '') //俯仰
+			if (($elevation=input('elevation'))  !== '') //俯仰
 			{
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $elevation))
 				{
@@ -381,7 +384,7 @@ class At60 extends Controller
 			$headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device);
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=6);
-			$slewDerotator=trim(input('slewDerotator'));
+			$slewDerotator = input('slewDerotator');
 			if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $slewDerotator))
 			{
 				echo '轴3指向固定位置必须为数字！';return;
@@ -398,7 +401,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=7);
 			
-			if (($mode=trim(input('mode'))) !== '')
+			if (($mode=input('mode')) !== '')
 			{//工作模式
 				if (!preg_match('/^\d{1,15}$/', $mode))
 				{
@@ -409,7 +412,7 @@ class At60 extends Controller
 				$sendMsg = pack('S', 0);
 			}
 			
-			if (($polarizingAngle=trim(input('polarizingAngle'))) !== '')
+			if (($polarizingAngle=input('polarizingAngle')) !== '')
 			{//轴三 起偏角
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $polarizingAngle))
 				{
@@ -430,7 +433,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=9);
 			
-			if (($axis=trim(input('axis'))) !== '')  //轴
+			if (($axis=input('axis')) !== '')  //轴
 			{
 				if (!preg_match('/^\d{1}$/', $axis))
 				{
@@ -441,7 +444,7 @@ class At60 extends Controller
 				$sendMsg = pack('S', 0);
 			}
 			
-			if (($correction=trim(input('correction'))) !== '')
+			if (($correction=input('correction')) !== '')
 			{//修正值
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $correction))
 				{
@@ -462,7 +465,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=11);
 			
-			if (($FixedMoveAxis=trim(input('FixedMoveAxis'))) !== '')
+			if (($FixedMoveAxis=input('FixedMoveAxis')) !== '')
 			{//恒速运动  轴
 				if (!preg_match('/^\d{1,5}$/', $FixedMoveAxis))
 				{
@@ -473,7 +476,7 @@ class At60 extends Controller
 				$sendMsg = pack('S', 0);
 			}
 			
-			if (($FixedMoveSpeed=trim(input('FixedMoveSpeed'))) !== '')
+			if (($FixedMoveSpeed=input('FixedMoveSpeed')) !== '')
 			{//恒速运动  速度
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $FixedMoveSpeed))
 				{
@@ -494,7 +497,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=12);
 			
-			if (($PositionCorrectAxis=trim(input('PositionCorrectAxis'))) !== '')
+			if (($PositionCorrectAxis=input('PositionCorrectAxis')) !== '')
 			{//位置修正 轴
 				if (!preg_match('/^\d{1,5}$/', $PositionCorrectAxis))
 				{
@@ -505,7 +508,7 @@ class At60 extends Controller
 				$sendMsg = pack('S', 0);
 			}
 			
-			if (( $PositionCorrectVal=trim(input('PositionCorrectVal'))) !== '')
+			if (( $PositionCorrectVal=input('PositionCorrectVal')) !== '')
 			{// 修正值
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $PositionCorrectVal))
 				{
@@ -526,7 +529,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=13);
 			
-			$openCover = trim(input('openCover'));
+			$openCover = input('openCover');
 			if (!preg_match('/^[0-2]$/', $openCover))
 			{
 				return '镜盖操作参数超限！';
@@ -613,7 +616,7 @@ class At60 extends Controller
 			echo '提交数据失败！'; return;
 		} 
 		//60cm 望远镜
-		$at  = 37; 
+		$at  = $this->at; 
 		 //CCD设备
 		$device = 65;            
 		$msg = 6; $magic = 439041101; $version = 1; 
@@ -627,7 +630,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=1);
 			
-			if (!preg_match('/^[1-2]$/', $ccdConnect))
+			if (!($ccdConnect == 1 || $ccdConnect == 2))
 			{
 			   echo 'ccd连接指令无效!'; return; 
 			}
@@ -688,7 +691,7 @@ class At60 extends Controller
 			
 			$postData = input();
 			
-			if (($validFlag=trim(input('validFlag'))) !== '')    //数据有效标志位
+			if (($validFlag=input('validFlag')) !== '')    //数据有效标志位
 			{
 				if (!preg_match('/^\d{1,5}$/', $validFlag))
 				{
@@ -699,7 +702,7 @@ class At60 extends Controller
 				$sendMsg = pack('d', 0); //unsigned long long
 			}
 			
-			if (($startTime=trim(input('startTime'))) !== '')      //起始时刻
+			if (($startTime=input('startTime')) !== '')      //起始时刻
 			{
 				if (!preg_match('/^\d{1,10}$/', $startTime))
 				{
@@ -710,7 +713,7 @@ class At60 extends Controller
 				$sendMsg .= pack('I', 0);   //unsigned int
 			}
 			
-			if (($duration=trim(input('duration'))) !== '')   //曝光时间
+			if (($duration=input('duration')) !== '')   //曝光时间
 			{
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $duration))
 				{
@@ -721,7 +724,7 @@ class At60 extends Controller
 				$sendMsg .= pack('d', 0);
 			}
 			
-			if (($delay=trim(input('delay'))) !== '')   //延迟时间
+			if (($delay=input('delay')) !== '')   //延迟时间
 			{
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $delay))
 				{
@@ -830,7 +833,7 @@ class At60 extends Controller
 				$sendMsg .= pack('S', 0);   //unsigned short
 			}
 			
-			if (($objectBand = trim(input('objectBand'))) !== '')      //拍摄波段
+			if (($objectBand = input('objectBand')) !== '')      //拍摄波段
 			{  
 				if (!preg_match('/^[a-zA-Z0-9_-]{1,8}$/', $objectBand))
 				{
@@ -863,7 +866,7 @@ class At60 extends Controller
 				$sendMsg .= pack('S', 0);   //uint16
 			}
 			
-			if (($weatherGatherTime=trim(input('weatherGatherTime'))) !== '')   
+			if (($weatherGatherTime=input('weatherGatherTime')) !== '')   
 			{//气象数据采集时间
 				if (!preg_match('/^\d{1,10}$/', $weatherGatherTime))
 				{
@@ -874,7 +877,7 @@ class At60 extends Controller
 				$sendMsg .= pack('I', 0); //unsigned int
 			}
 			
-			if (($temperature1=trim(input('temperature1'))) !== '')    //温度
+			if (($temperature1=input('temperature1')) !== '')    //温度
 			{
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $temperature1))
 				{
@@ -885,7 +888,7 @@ class At60 extends Controller
 				$sendMsg .= pack('d', 0);
 			}
 			
-			if (($humidity=trim(input('humidity'))) !== '')    //湿度
+			if (($humidity=input('humidity')) !== '')    //湿度
 			{
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $humidity))
 				{
@@ -896,7 +899,7 @@ class At60 extends Controller
 				$sendMsg .= pack('d', 0);
 			}
 			
-			if (($windSpeed=trim(input('windSpeed'))) !== '')  //风速
+			if (($windSpeed=input('windSpeed')) !== '')  //风速
 			{
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $windSpeed))
 				{
@@ -907,7 +910,7 @@ class At60 extends Controller
 				$sendMsg .= pack('d', 0);
 			}
 			
-			if (($pressure=trim(input('pressure'))) !== '')      //气压
+			if (($pressure=input('pressure')) !== '')      //气压
 			{
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $pressure))
 				{
@@ -918,7 +921,7 @@ class At60 extends Controller
 				$sendMsg .= pack('d', 0);
 			}
 			
-			if (($skyGatherTime=trim(input('skyGatherTime'))) !== '')   //天气状态采集时间
+			if (($skyGatherTime=input('skyGatherTime')) !== '')   //天气状态采集时间
 			{
 				if (!preg_match('/^\d{1,10}$/', $skyGatherTime))
 				{
@@ -929,7 +932,7 @@ class At60 extends Controller
 				$sendMsg .= pack('I', 0);   //unsigned int
 			}
 			
-			if (($skyState=trim(input('skyState'))) !== '')  //天气状态
+			if (($skyState=input('skyState')) !== '')  //天气状态
 			{
 				if (!preg_match('/^\d{1,5}$/', $skyState))
 				{
@@ -940,7 +943,7 @@ class At60 extends Controller
 				$sendMsg .= pack('S', 0);   //unsigned short
 			}
 			
-			if (($clouds=trim(input('clouds'))) !== '')      //云量
+			if (($clouds=input('clouds')) !== '')      //云量
 			{
 				if (!preg_match('/^\d{1,5}$/', $clouds))
 				{
@@ -951,7 +954,7 @@ class At60 extends Controller
 				$sendMsg .= pack('S', 0); //unsigned short
 			}
 			
-			if (($seeingGatherTime=trim(input('seeingGatherTime'))) !== '')   //视宁度采集时间
+			if (($seeingGatherTime=input('seeingGatherTime')) !== '')   //视宁度采集时间
 			{
 				if (!preg_match('/^\d{1,10}$/', $seeingGatherTime))
 				{
@@ -962,7 +965,7 @@ class At60 extends Controller
 				$sendMsg .= pack('I', 0); //unsigned int
 			}
 			
-			if (($seeing=trim(input('seeing'))) !== '')   //视宁度
+			if (($seeing=input('seeing')) !== '')   //视宁度
 			{
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $seeing))
 				{
@@ -975,7 +978,7 @@ class At60 extends Controller
 			
 			if (input('dustGatherTime') !== '')      //粉尘采集时间
 			{
-				$dustGatherTime = trim(input('dustGatherTime'));
+				$dustGatherTime = input('dustGatherTime');
 				if (!preg_match('/^\d{1,10}$/', $dustGatherTime))
 				{
 					echo '粉尘采集时间只能是数字！'; return;
@@ -987,7 +990,7 @@ class At60 extends Controller
 			
 			if (input('dust') !== '')      //粉尘
 			{
-				$dust = trim(input('dust'));
+				$dust = input('dust');
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $dust))
 				{
 					echo '粉尘数据只能是数字！'; return;
@@ -999,7 +1002,7 @@ class At60 extends Controller
 			
 			if (input('AMS') !== '')      //AMS
 			{
-				$AMS = trim(input('AMS'));
+				$AMS = input('AMS');
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $AMS))
 				{
 					echo 'AMS数据只能是数字！'; return;
@@ -1011,7 +1014,7 @@ class At60 extends Controller
 			
 			if (input('extinctionGatherTime') !== '')    //消光系数采集时间
 			{
-				$extinctionGatherTime = trim(input('extinctionGatherTime'));
+				$extinctionGatherTime = input('extinctionGatherTime');
 				if (!preg_match('/^\d{1,10}$/', $extinctionGatherTime))
 				{
 					echo '消光系数采集时间只能是数字！'; return;
@@ -1023,7 +1026,7 @@ class At60 extends Controller
 			
 			if (input('rightAscension') !== '')    //赤经
 			{
-				$rightAscension = trim(input('rightAscension'));
+				$rightAscension = input('rightAscension');
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $rightAscension))
 				{
 					echo '赤经只能是数字！'; return;
@@ -1035,7 +1038,7 @@ class At60 extends Controller
 			
 			if (input('declination') !== '')      //赤纬
 			{
-				$declination = trim(input('declination'));
+				$declination = input('declination');
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $declination))
 				{
 					echo '赤纬只能是数字！'; return;
@@ -1047,7 +1050,7 @@ class At60 extends Controller
 			
 			 if (input('band') !== '')      //波段
 			{
-				$band = trim(input('band'));
+				$band = input('band');
 				if (!preg_match('/^[a-zA-Z0-9]{1,8}$/', $band))
 				{
 					echo '波段只能是数字！'; return;
@@ -1059,7 +1062,7 @@ class At60 extends Controller
 			
 			if (input('extinctionFactor1') !== '')      
 			{//消光系数1
-				$extinctionFactor1 = trim(input('extinctionFactor1'));
+				$extinctionFactor1 = input('extinctionFactor1');
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $extinctionFactor1))
 				{
 					echo '消光系数1只能是数字！'; return;
@@ -1071,7 +1074,7 @@ class At60 extends Controller
 			
 			if (input('extinctionFactor2') !== '')      //消光系数2
 			{
-				 $extinctionFactor2 = trim(input('extinctionFactor2'));
+				 $extinctionFactor2 = input('extinctionFactor2');
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $extinctionFactor2))
 				{
 					echo '消光系数2只能是数字！'; return;
@@ -1083,7 +1086,7 @@ class At60 extends Controller
 			
 			if (input('extinctionFactor3') !== '')      //消光系数3
 			{
-				 $extinctionFactor3 = trim(input('extinctionFactor3'));
+				 $extinctionFactor3 = input('extinctionFactor3');
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $extinctionFactor3))
 				{
 					echo '消光系数3只能是数字！'; return;
@@ -1095,7 +1098,7 @@ class At60 extends Controller
 			
 			if (input('telescopeRightAscension') !== '')      //望远镜赤经
 			{
-				$telescopeRightAscension = trim(input('telescopeRightAscension'));
+				$telescopeRightAscension = input('telescopeRightAscension');
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $telescopeRightAscension))
 				{
 					echo '望远镜赤经只能是数字！'; return;
@@ -1107,7 +1110,7 @@ class At60 extends Controller
 			
 			if (input('telescopeDeclination') !== '')      //望远镜赤纬
 			{
-				$telescopeDeclination = trim(input('telescopeDeclination'));
+				$telescopeDeclination = input('telescopeDeclination');
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $telescopeDeclination))
 				{
 					echo '望远镜赤纬只能是数字！'; return;
@@ -1119,7 +1122,7 @@ class At60 extends Controller
 			
 			if (input('focusLength') !== '')      //焦距
 			{
-				$focusLength = trim(input('focusLength'));
+				$focusLength = input('focusLength');
 				if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $focusLength))
 				{
 					echo '焦距数据只能是数字！'; return;
@@ -1131,7 +1134,7 @@ class At60 extends Controller
 			
 			if (input('frameNum') !== '')      //帧数
 			{
-				$frameNum = trim(input('frameNum'));
+				$frameNum = input('frameNum');
 				if (!preg_match('/^\d{1,10}$/', $frameNum))
 				{
 					echo '帧数只能是数字！'; return;
@@ -1154,7 +1157,7 @@ class At60 extends Controller
 			
 			if (input('isReadFrameSeq') !== '')      //是否读取帧序号
 			{
-				$isReadFrameSeq = trim(input('isReadFrameSeq'));
+				$isReadFrameSeq = input('isReadFrameSeq');
 				if (!preg_match('/^\d{1}$/', $isReadFrameSeq))
 				{
 					echo '是否读取帧序号只能是数字！'; return;
@@ -1166,7 +1169,7 @@ class At60 extends Controller
 			
 			if (input('frameSequence') !== '')      //帧序号
 			{
-				$frameSequence = trim(input('frameSequence'));
+				$frameSequence = input('frameSequence');
 				if (!preg_match('/^\d{1,10}$/', $frameSequence))
 				{
 					echo '起始时间只能是数字！'; return;
@@ -1188,7 +1191,7 @@ class At60 extends Controller
 			
 			if (input('mode') !== '')      //增益模式
 			{
-				$mode = trim(input('mode'));
+				$mode = input('mode');
 				if (!preg_match('/^\d{1,5}$/', $mode))
 				{
 					echo '增益模式只能是数字！'; return;
@@ -1200,7 +1203,7 @@ class At60 extends Controller
 			
 			if (input('gear') !== '')      //增益档位
 			{
-				$gear = trim(input('gear'));
+				$gear = input('gear');
 				if (!preg_match('/^\d{1,5}$/', $gear))
 				{
 					echo '增益模式只能是数字！'; return;
@@ -1221,7 +1224,7 @@ class At60 extends Controller
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=8);
 			
 		
-			$ReadSpeedMode = trim(input('ReadSpeedMode'));
+			$ReadSpeedMode = input('ReadSpeedMode');
 			if (!preg_match('/^\d{1,10}$/', $ReadSpeedMode))
 			{
 				echo '读出速度模式值只能是数字！'; return;
@@ -1238,7 +1241,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=9);
 			
-			$SetTransferSpeed = trim(input('SetTransferSpeed'));
+			$SetTransferSpeed = input('SetTransferSpeed');
 			if (!preg_match('/^\d{1,10}$/', $SetTransferSpeed))
 			{
 				echo '转移速度模式值只能是数字！'; return;
@@ -1256,7 +1259,7 @@ class At60 extends Controller
 			
 			if (input('BinX') !== '')      //binx
 			{
-				$BinX = trim(input('BinX'));
+				$BinX = input('BinX');
 				if (!preg_match('/^\d{1,10}$/', $BinX))
 				{
 					echo 'BinX值只能是数字！'; return;
@@ -1268,7 +1271,7 @@ class At60 extends Controller
 			
 			if (input('BinY') !== '')      //BinY
 			{
-				$BinY = trim(input('BinY'));
+				$BinY = input('BinY');
 				if (!preg_match('/^\d{1,10}$/', $BinY))
 				{
 					echo 'BinY值只能是数字！'; return;
@@ -1290,7 +1293,7 @@ class At60 extends Controller
 			
 			if (input('startX') !== '')      //startX
 			{
-				$startX = trim(input('startX'));
+				$startX = input('startX');
 				if (!preg_match('/^\d{1,10}$/', $startX))
 				{
 					echo 'startX值只能是数字！'; return;
@@ -1302,7 +1305,7 @@ class At60 extends Controller
 			
 			if (input('startY') !== '')      //unsigned int
 			{
-				$startY = trim(input('startY'));
+				$startY = input('startY');
 				if (!preg_match('/^\d{1,10}$/', $startY))
 				{
 					echo 'startY值只能是数字！'; return;
@@ -1314,7 +1317,7 @@ class At60 extends Controller
 			
 			if (input('imageWidth') !== '')      //imageWidth
 			{
-				$imageWidth = trim(input('imageWidth'));
+				$imageWidth = input('imageWidth');
 				if (!preg_match('/^\d{1,10}$/', $imageWidth))
 				{
 					echo 'imageWidth值只能是数字！'; return;
@@ -1326,7 +1329,7 @@ class At60 extends Controller
 			
 			if (input('imageHeight') !== '')      //imageWidth
 			{
-				$imageHeight = trim(input('imageHeight'));
+				$imageHeight = input('imageHeight');
 				if (!preg_match('/^\d{1,10}$/', $imageHeight))
 				{
 					echo 'imageHeight值只能是数字！'; return;
@@ -1363,7 +1366,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=13);
 			
-			$isFullFrame = trim(input('isFullFrame'));
+			$isFullFrame = input('isFullFrame');
 			if (!preg_match('/^\d{1,10}$/', $isFullFrame))
 			{
 				echo 'isFullFrame值只能是数字！'; return;
@@ -1382,7 +1385,7 @@ class At60 extends Controller
 			
 			if (input('isEM') !== '')      //isEM
 			{
-				$isEM = trim(input('isEM'));
+				$isEM = input('isEM');
 				if (!preg_match('/^\d{1,5}$/', $isEM))
 				{
 					echo 'isEM值只能是数字！'; return;
@@ -1394,7 +1397,7 @@ class At60 extends Controller
 			
 			if (input('eMValue') !== '')      //eMValue
 			{
-				$eMValue = trim(input('eMValue'));
+				$eMValue = input('eMValue');
 				if (!preg_match('/^\d{1,10}$/', $eMValue))
 				{
 					echo 'eMValue值只能是数字！'; return;
@@ -1414,7 +1417,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=15);
 			
-			$isNoiseFilter = trim(input('isNoiseFilter'));
+			$isNoiseFilter = input('isNoiseFilter');
 			if (!preg_match('/^\d{1,5}$/', $isNoiseFilter))
 			{
 				echo 'isNoiseFilter值只能是数字！'; return;
@@ -1433,7 +1436,7 @@ class At60 extends Controller
 			
 			if (input('isBaseline') !== '')      //isBaseline
 			{
-				$isBaseline = trim(input('isBaseline'));
+				$isBaseline = input('isBaseline');
 				if (!preg_match('/^\d{1,5}$/', $isBaseline))
 				{
 					echo 'isBaseline值只能是数字！'; return;
@@ -1445,7 +1448,7 @@ class At60 extends Controller
 			
 			if (input('baselineValue') !== '')      //baselineValue
 			{
-				$baselineValue = trim(input('baselineValue'));
+				$baselineValue = input('baselineValue');
 				if (!preg_match('/^\d{1,10}$/', $baselineValue))
 				{
 					echo 'baselineValue值只能是数字！'; return;
@@ -1465,7 +1468,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=17);
 			
-			$isOverScan = trim(input('isOverScan'));  //isOverScan
+			$isOverScan = input('isOverScan');  //isOverScan
 			if (!preg_match('/^\d{1,5}$/', $isOverScan))
 			{
 				echo 'isOverScan值只能是数字！'; return;
@@ -1504,7 +1507,7 @@ class At60 extends Controller
 			echo '提交数据失败！'; return;
 		} 
 		//60cm 望远镜
-		$at  = 37; 
+		$at  = $this->at; 
 		 //调焦器设备
 		$device = 69;            
 		$msg = 6; $magic = 439041101; $version = 1; 
@@ -1556,7 +1559,7 @@ class At60 extends Controller
 			$headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device);
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=2);
-			$setPosition=trim(input('setPosition'));
+			$setPosition = input('setPosition');
 			if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $setPosition))
 			{
 				echo '目标位置的值必须是数字！';return; 
@@ -1572,7 +1575,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=3);
 			
-			$speed = trim(input('speed'));
+			$speed = input('speed');
 			if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $speed))
 			{
 				echo '恒速转动的值必须是数字！';return; 
@@ -1588,7 +1591,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=5);
 			
-			$enable = trim(input('enable'));
+			$enable = input('enable');
 			if (!preg_match('/^\d{1,5}$/', $enable))
 			{
 				echo '使能温度补偿的值必须是数字！';return; 
@@ -1604,7 +1607,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=6);
 			
-			$coefficient = trim(input('coefficient'));
+			$coefficient = input('coefficient');
 			if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $coefficient))
 			{
 				echo '温度补偿系数的值必须是数字！';return; 
@@ -1643,7 +1646,7 @@ class At60 extends Controller
 			echo '提交数据失败！'; return;
 		} 
 		//60cm 望远镜
-		$at  = 37; 
+		$at  = $this->at; 
 		 //slave dome设备
 		$device = 67;            
 		$msg = 6; $magic = 439041101; $version = 1; 
@@ -1707,7 +1710,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=2);
 			
-			$domePosition = trim(input('domePosition')); //double64
+			$domePosition = input('domePosition'); //double64
 			if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $domePosition))
 			{
 				echo '目标方位值必须是数字！';return;
@@ -1723,7 +1726,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=4);
 			
-			$RotateSpeed = trim(input('RotateSpeed'));    //double64
+			$RotateSpeed = input('RotateSpeed');    //double64
 			if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $RotateSpeed))
 			{
 				echo '转动速度值必须是数字！';return; //double64
@@ -1739,7 +1742,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=3);
 			
-			$shadePosition = trim(input('shadePosition'));
+			$shadePosition = input('shadePosition');
 			if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $shadePosition))
 			{
 				echo '风帘位置的值必须是数字！';return; //double64
@@ -1756,7 +1759,7 @@ class At60 extends Controller
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=7);
 			
-			$shadeAction = trim(input('shadeAction'));    //unsigned short
+			$shadeAction = input('shadeAction');    //unsigned short
 			if (!preg_match('/^\d{1,10}$/', $shadeAction))
 			{
 				echo '风帘运动值必须是数字！';return; 
@@ -1796,7 +1799,7 @@ class At60 extends Controller
 			return;
 		} 
 		//望远镜
-		$at  = 37; 
+		$at  = $this->at; 
 		 //望远镜子设备
 		$device = 68;            
 		$msg = 6; $magic = 439041101; $version = 1;
@@ -1877,7 +1880,7 @@ class At60 extends Controller
 			return;
 		} 
 		//望远镜
-		$at  = 37; 
+		$at  = $this->at; 
 		 //望远镜子设备
 		$device = 66;            
 		$msg = 6; $magic = 439041101; $version = 1;
@@ -1954,7 +1957,7 @@ class At60 extends Controller
             }
      
             //望远镜
-            $at  = 37;
+            $at  = $this->at;
              //望远镜子设备
             $device = 66;           
             $msg = 8; $magic = 439041101; $version = 1;
@@ -2175,7 +2178,7 @@ class At60 extends Controller
 		}
  
 		//望远镜
-		$at  = 37;
+		$at  = $this->at;
 		 //望远镜子设备
 		$device = 66;           
 		$msg = 8; $magic = 439041101; $version = 1;
@@ -2468,7 +2471,7 @@ class At60 extends Controller
 		}
  
 		//望远镜
-		$at  = 37;
+		$at  = $this->at;
 		 //望远镜子设备
 		$device = 66;           
 		$msg = 9; $magic = 439041101; $version = 1;

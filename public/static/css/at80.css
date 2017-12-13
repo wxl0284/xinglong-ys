@@ -61,6 +61,8 @@ ul.properUl li span {color:#00B5EE;}
 
 .submitBtn {width:135px;height:32px;font-size:18px;}
 
+.border_b {border:0}
+
 #exposStratic span {width:320px;display:inline-block;text-align:right;margin-bottom:10px;}/*曝光策略指令样式*/
 
 footer {background-color:#656565;height:41px;}
@@ -118,7 +120,22 @@ form input[type='radio'], form div {display:none;}
 #smallPic .mrgR {margin-left:10px;margin-right:9px;}
 
 #bigPic button { right:38px;bottom:8px; cursor:pointer;}
+/*转台和ccd 之赤经赤纬输入框样式*/
+#trackStar .hourMin {width:28px;margin-right: 0;}
+
+#trackStar .sec {width:86px;}
+
+#exposStratic .hourMin {width:28px;margin-right: 0;}
+
+#exposStratic .sec {width:86px;}
+/*转台和ccd 之赤经赤纬输入框样式 结束*/
 
 /*观测计划模式：单选钮和按钮的样式*/
-#planModes {top:29.5px;right:230px;}
+#planModes {top:29.5px;right:460px;width:300px;}
+
+#modeVal {width:145px;z-index:99;background-color:#fff;}
+
+#modeSpan {width:117px;}
+
+#planExe {top:0px;right:20px;}
 /*观测计划模式：单选钮和按钮的样式 结束*/
