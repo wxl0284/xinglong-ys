@@ -12,9 +12,10 @@ use app\xinglong\model\At60config;
 //80cm号望远镜控制器
 class At80 extends Controller
 {
-	public $ip = '';  //socket通信 ip
-	public $port = '';  //socket通信 port
-	public $at = 36;   //80cm号望远镜控制器 编号
+	protected $ip = '';  //socket通信 ip
+	protected $port = '';  //socket通信 port
+	protected $at = 36;   //80cm号望远镜控制器 编号
+	protected $user = 1;   //操作者
     //检测是否登录////////////////////////////////////////////////
     public function _initialize ()
     {
@@ -78,7 +79,7 @@ class At80 extends Controller
 		$device = 64;            
 		$msg = 6; $magic = 439041101; $version = 1;
 		//头部后部数据
-		$user = 1;  $plan = 0; 
+		$user = $this->user;  $plan = 0; 
 		
 		//发送连接指令
 		if (($connect=input('connect')) !== null)
@@ -547,7 +548,7 @@ class At80 extends Controller
 		$device = 65;            
 		$msg = 6; $magic = 439041101; $version = 1; 
 		//头部后部数据
-		$user = 1;  $plan = 0; 
+		$user = $this->user;  $plan = 0; 
 		
 		if (($ccdConnect=input('ccdConnect')) !== null) //ccd 连接指令
 		{
@@ -1438,7 +1439,7 @@ class At80 extends Controller
 		$device = 69;            
 		$msg = 6; $magic = 439041101; $version = 1; 
 		//头部后部数据
-		$user = 1;  $plan = 0;
+		$user = $this->user;  $plan = 0;
 		
 		if (input('focusConnect') !== null)
 		{//调焦器 连接指令
@@ -1577,7 +1578,7 @@ class At80 extends Controller
 		$device = 67;            
 		$msg = 6; $magic = 439041101; $version = 1; 
 		//头部后部数据
-		$user = 1;  $plan = 0;
+		$user = $this->user;  $plan = 0;
 		
 		if (($sDomeConnect=input('sDomeConnect')) !== null)
 		{//随动圆顶 连接指令
@@ -1730,7 +1731,7 @@ class At80 extends Controller
 		$device = 68;            
 		$msg = 6; $magic = 439041101; $version = 1;
 		//头部后部数据
-		$user = 1;  $plan = 0;
+		$user = $this->user;  $plan = 0;
 		
 		if (($fDomeConnect=input('fDomeConnect')) !== null)
 		{//连接指令
@@ -1811,7 +1812,7 @@ class At80 extends Controller
 		$device = 66;            
 		$msg = 6; $magic = 439041101; $version = 1;
 		//头部后部数据
-		$user = 1;  $plan = 0;
+		$user = $this->user;  $plan = 0;
 		
 		if (($filterConnect=input('filterConnect')) !== null)
 		{//连接指令
@@ -1888,7 +1889,7 @@ class At80 extends Controller
             $device = 66;           
             $msg = 8; $magic = 439041101; $version = 1;
             //头部后部数据
-            $user = 1;  $plan = 0; $length =28 + 204;
+            $user = $this->user;  $plan = 0; $length =28 + 204;
            
             $headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device);
             $sendMsg = pack('S', $at);
@@ -2109,7 +2110,7 @@ class At80 extends Controller
 		$device = 66;           
 		$msg = 8; $magic = 439041101; $version = 1;
 		//头部后部数据
-		$user = 1;  $plan = 0; $length =28 + 208;
+		$user = $this->user;  $plan = 0; $length =28 + 208;
 	   
 		$headInfo = planPackHead($magic,$version,$msg,$length,$sequence,$at,$device);
 		
@@ -2402,7 +2403,7 @@ class At80 extends Controller
 		$device = 66;           
 		$msg = 9; $magic = 439041101; $version = 1;
 		//头部后部数据
-		$user = 1;  $plan = 0; $length =28 + 16; //长度有变
+		$user = $this->user;  $plan = 0; $length =28 + 16; //长度有变
 	   
 		$headInfo = planPackHead($magic,$version,$msg,$length,$sequence,$at,$device);
 		

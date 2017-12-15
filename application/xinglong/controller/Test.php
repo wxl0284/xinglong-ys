@@ -34,12 +34,9 @@ class Test extends Controller
 	
 	public function index1 ()
 	{
-		return view('table/a');
-	}
-	
-	public function index2 ()
-	{
-		return $this->index1();
+		$a = Db::table('at60config');
+		//$res = $a::select();
+		dump($a);
 	}
 	
 	public function test ()

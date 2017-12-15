@@ -62,7 +62,7 @@
 				{if condition="$userData.role !== 1"}
 				<tr><td>用户权限</td>
 					<td>
-					    <select class='border ipt' name="role">
+					    <select class='border ipt' name="role" style='width:212px; height:32px;'>
 						   <option value="2" {if condition="$userData.role == 2"}
 						   selected='selected' {/if}
 						   >普通用户</option>
@@ -76,7 +76,7 @@
 				{else/}
 				<tr><td>用户权限</td>
 					<td>
-					    <select class='border ipt' name="role">
+					    <select class='border ipt' name="role" style='width:212px; height:32px;'>>
 						   <option value="1">管理员</option>
 					   </select>
 					</td>
