@@ -456,25 +456,6 @@ class PageConfig extends Controller
 				return '60CM望远镜配置失败!';
 			}
 		}
-		
-		/* if (!in_array('siderealTime_1', $option['viewOpt']))
-		{
-			$cachePage['siderealTime_1'] = '';
-		}else{
-			
-			$cachePage['siderealTime_1'] = "<li class='li fl'>当前恒星时:<span id='siderealTime_1'></span></li>";
-			$cachePage['data'] = 1;
-		}
-		
-		//将60cm望远镜页面的html 写入缓存
-		$ok = Cache::set('at60Page', $cachePage);
-		
-		if ($ok)
-		{//页面缓存成功
-			return '页面设置成功!';
-		}else{
-			return '页面设置失败!';
-		} */
 	
 	}//保存60CM配置数据 结束////////////////////////////////
 	

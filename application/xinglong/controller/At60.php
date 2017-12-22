@@ -2064,11 +2064,10 @@ class At60 extends Controller
 			return $result;
 		}
 		// 移动到框架应用根目录/public/uploads/ 目录下
-		$dir = date('Y/m/d', time());
-		$dir = str_replace('/', '', $dir);
-		$name = time(). cookie('login');
+		$dir = date('Ymd', time());
+		$name = time(). session('login');
 		//文件存储存储路径
-		$path = ROOT_PATH . 'public' . DS . 'uploads/'.$dir;
+		$path = ROOT_PATH . 'public' . DS . 'uploads/' .$dir;
 		$info = $file->move($path, $name.'.txt');
 
 		if($info){

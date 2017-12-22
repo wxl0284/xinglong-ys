@@ -32,11 +32,10 @@ class Test extends Controller
 		
 	}
 	
-	public function index1 ()
+	public function index1 ($a='mm')
 	{
-		$a = Db::table('at60config');
-		//$res = $a::select();
-		dump($a);
+		$res = rename("../../../public/uploads/20171222/1513914520atccs01.txt", "../../../public/uploads/20171222/33.txt");
+		dump($res);
 	}
 	
 	public function test ()
