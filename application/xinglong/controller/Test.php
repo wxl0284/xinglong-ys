@@ -34,8 +34,7 @@ class Test extends Controller
 	
 	public function index1 ($a='mm')
 	{
-		$res = rename("../../../public/uploads/20171222/1513914520atccs01.txt", "../../../public/uploads/20171222/33.txt");
-		dump($res);
+		dump($_SERVER["DOCUMENT_ROOT"] . $_SERVER["REQUEST_URI"]);
 	}
 	
 	public function test ()
