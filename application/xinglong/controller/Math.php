@@ -18,10 +18,10 @@ class Math
 		getPosSun($sun_azi, $sun_ele);
 		
 		//将计算结果返回 数组形式
-		$result['moon_azi'] = $moon_azi;
-		$result['moon_ele'] = $moon_ele;
-		$result['sun_azi'] = $sun_azi;
-		$result['sun_ele'] = $sun_ele;
+		$result['moon_azi'] = round($moon_azi, 6);
+		$result['moon_ele'] = round($moon_ele, 6);
+		$result['sun_azi'] = round($sun_azi, 6);
+		$result['sun_ele'] = round($sun_ele, 6);
 	
 		dump($result);
 		
@@ -30,7 +30,8 @@ class Math
 	
 	public function f ()
 	{
-		$res = data2Time (5.5806619387891);
-		return $res;
+		$hms = gmdate('H:i:s');
+		$a = date('H:i:s');
+		echo $hms.'-'.$a;
 	}
 }//class Math 结束 ///////////////////////////////////////
