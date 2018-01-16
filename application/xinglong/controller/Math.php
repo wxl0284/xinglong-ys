@@ -30,8 +30,7 @@ class Math
 	
 	public function f ()
 	{
-		$hms = gmdate('H:i:s');
-		$a = date('H:i:s');
-		echo $hms.'-'.$a;
+		$hms = data2Time(5.762449);
+		echo $hms;
 	}
 }//class Math 结束 ///////////////////////////////////////

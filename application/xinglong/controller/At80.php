@@ -40,11 +40,11 @@ class At80 extends Controller
     public function index ()
     {
 		
-		$At60config = new At60config;
-		$configData = $At60config->all();
-		$this->assign([
-            'configData' => $configData[0],
-        ]);		
+		// $At60config = new At60config;
+		// $configData = $At60config->all();
+		// $this->assign([
+        //     'configData' => $configData[0],
+        // ]);		
 		return view('at80');
     }
 	
@@ -73,7 +73,7 @@ class At80 extends Controller
 			echo '提交数据失败！';
 			return;
 		} 
-		//60cm 望远镜
+		//80cm 望远镜
 		$at  = $this->at; 
 		 //转台
 		$device = 64;            
