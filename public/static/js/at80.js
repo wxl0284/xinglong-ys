@@ -1022,8 +1022,8 @@
 			layer.tips('小时之数据输入有误!', $(this), {tipsMore: true});
 		} */
 
-		$(this).data('err', err);
-	}); */
+	//	$(this).data('err', err);
+	//}); */
 	
 	//验证 帧序号
 	/* $('#frameSequenceIn').blur(function () {
@@ -1035,8 +1035,8 @@
 			layer.tips('小时之数据输入有误!', $(this), {tipsMore: true});
 		} */
 
-		$(this).data('err', err);
-	}); */
+	//	$(this).data('err', err);
+	//}); */
 	
 	//验证 读出速度模式值
 	/* $('#ReadSpeedModeIn').blur(function () {
