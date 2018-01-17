@@ -15,18 +15,18 @@
 	});
 	
 	//赤经之小时 blur事件
-	$('#planInfo').on('blur', 'td[field="rightAscension1"] input.datagrid-editable-input', function () {
+	// $('#planInfo').on('blur', 'td[field="rightAscension1"] input.datagrid-editable-input', function () {
 		
-		var patn = /^\d{1,2}$/;
-		var v = $.trim($(this).val());
-		if (!patn.test(v) || v >= 24 || v < 0)
-		{
-			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		}else{
-			$('#planInfo div.datagrid-body td[field="rightAscension2"] input.datagrid-editable-input').focus();
-		}
+	// 	var patn = /^\d{1,2}$/;
+	// 	var v = $.trim($(this).val());
+	// 	if (!patn.test(v) || v >= 24 || v < 0)
+	// 	{
+	// 		layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
+	// 	}else{
+	// 		$('#planInfo div.datagrid-body td[field="rightAscension2"] input.datagrid-editable-input').focus();
+	// 	}
 	
-	});
+	// });
 	
 	//赤经之分钟 js事件
 	$('#planInfo').on('keyup', 'td[field="rightAscension2"] input.datagrid-editable-input', function () {
@@ -39,26 +39,26 @@
 	})
 	
 	//赤经之分钟 blur事件
-	$('#planInfo').on('blur', 'td[field="rightAscension2"] input.datagrid-editable-input', function () {
-		var patn = /^\d{1,2}$/;
-		var v = $.trim($(this).val());
-		if (!patn.test(v) || v < 0 || v >= 60)
-		{
-			layer.tips('参数超限', $(this), {tips: 1, tipsMore: true});
-		}else{
-			$('#planInfo div.datagrid-body td[field="rightAscension3"] input.datagrid-editable-input').focus();
-		}
+	// $('#planInfo').on('blur', 'td[field="rightAscension2"] input.datagrid-editable-input', function () {
+	// 	var patn = /^\d{1,2}$/;
+	// 	var v = $.trim($(this).val());
+	// 	if (!patn.test(v) || v < 0 || v >= 60)
+	// 	{
+	// 		layer.tips('参数超限', $(this), {tips: 1, tipsMore: true});
+	// 	}else{
+	// 		$('#planInfo div.datagrid-body td[field="rightAscension3"] input.datagrid-editable-input').focus();
+	// 	}
 	
-	})
+	// })
 	
 	//赤经之秒 js事件
-	$('#planInfo').on('blur', 'td[field="rightAscension3"] input.datagrid-editable-input', function () {
-		var v = $.trim($(this).val());
-		if (!$.isNumeric(v) || v >= 60 || v < 0)
-		{
-			layer.tips('秒参数超限', $(this), {tips : 1,tipsMore: true});
-		}	
-	})
+	// $('#planInfo').on('blur', 'td[field="rightAscension3"] input.datagrid-editable-input', function () {
+	// 	var v = $.trim($(this).val());
+	// 	if (!$.isNumeric(v) || v >= 60 || v < 0)
+	// 	{
+	// 		layer.tips('秒参数超限', $(this), {tips : 1,tipsMore: true});
+	// 	}	
+	// })
 	//赤经 的js事件 结束/////////////////////////////////////
 	
 	//赤纬 的js事件//////////////////////////////////
@@ -74,17 +74,17 @@
 	});
 	
 	//赤纬之小时 blur事件
-	$('#planInfo').on('blur', 'td[field="declination1"] input.datagrid-editable-input', function () {
-		var v = $.trim($(this).val());
-		var patn = /^-?\d{1,2}$/;
-		if (!patn.test(v) || v > 90 || v < -90)
-		{
-			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		}else{
-			$('#planInfo div.datagrid-body td[field="declination2"] input.datagrid-editable-input').focus();
-		}
+	// $('#planInfo').on('blur', 'td[field="declination1"] input.datagrid-editable-input', function () {
+	// 	var v = $.trim($(this).val());
+	// 	var patn = /^-?\d{1,2}$/;
+	// 	if (!patn.test(v) || v > 90 || v < -90)
+	// 	{
+	// 		layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
+	// 	}else{
+	// 		$('#planInfo div.datagrid-body td[field="declination2"] input.datagrid-editable-input').focus();
+	// 	}
 	
-	});
+	// });
 	
 	//赤纬之分钟 js事件
 	$('#planInfo').on('keyup', 'td[field="declination2"] input.datagrid-editable-input', function () {
@@ -98,27 +98,27 @@
 	})
 	
 	//赤纬之分钟 blur事件
-	$('#planInfo').on('blur', 'td[field="declination2"] input.datagrid-editable-input', function () {
-		var v = $.trim($(this).val());
-		var patn = /^\d{1,2}$/;
+	// $('#planInfo').on('blur', 'td[field="declination2"] input.datagrid-editable-input', function () {
+	// 	var v = $.trim($(this).val());
+	// 	var patn = /^\d{1,2}$/;
 		
-		if (!patn.test(v) || v > 59 || v < 0)
-		{
-			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		}else{
-			$('#planInfo div.datagrid-body td[field="declination3"] input.datagrid-editable-input').focus();
-		}
+	// 	if (!patn.test(v) || v > 59 || v < 0)
+	// 	{
+	// 		layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
+	// 	}else{
+	// 		$('#planInfo div.datagrid-body td[field="declination3"] input.datagrid-editable-input').focus();
+	// 	}
 	
-	});
+	// });
 	
 	//赤纬之秒 js事件
-	$('#planInfo').on('blur', 'td[field="declination3"] input.datagrid-editable-input', function () {
-		var v = $.trim($(this).val());
-		if (!$.isNumeric(v) || v >= 60 || v < 0)
-		{
-			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		}	
-	})
+	// $('#planInfo').on('blur', 'td[field="declination3"] input.datagrid-editable-input', function () {
+	// 	var v = $.trim($(this).val());
+	// 	if (!$.isNumeric(v) || v >= 60 || v < 0)
+	// 	{
+	// 		layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
+	// 	}	
+	// })
 	//赤纬 的js事件//////////////////////////////////
 //观测计划的赤经和赤纬 js事件//////////////////////////////
 	var table = $('#dg'); //定义全局table 变量
@@ -691,8 +691,9 @@
 		{//编辑行 必填项有未填写的数据
 			return false;			
 		}
-	}
+	}//数据验证函数 ///////////////////////////////////////////
 	
+	//以下为测试easyui之mouseover
 	$('#tst').click(function () {
 		/* tstdata = table.datagrid('clearSelections');
 		var n = tstdata.length;

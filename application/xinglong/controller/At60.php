@@ -97,7 +97,6 @@ class At60 extends Controller
         
         $length = 28 +20;      //只发送头部前面的信息
         $headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device=0);
-        dump(input('takeOver'));return;
         $takeOver = input('takeOver');
         if (!preg_match('/^[0-1]$/', $takeOver))
         {
