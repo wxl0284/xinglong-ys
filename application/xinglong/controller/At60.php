@@ -708,9 +708,9 @@ class At60 extends Controller
 				{
 					echo '起始时刻只能是数字！'; return;
 				}
-				$sendMsg .= pack('I', $startTime);     
+				$sendMsg .= pack('L', $startTime);     
 			}else{
-				$sendMsg .= pack('I', 0);   //unsigned int
+				$sendMsg .= pack('L', 0);   //unsigned int
 			}
 			
 			if (($duration=input('duration')) !== '')   //曝光时间
@@ -872,9 +872,9 @@ class At60 extends Controller
 				{
 					echo '象数据采集时间只能是数字！'; return;
 				}
-				$sendMsg .= pack('I', $weatherGatherTime);     //uint32
+				$sendMsg .= pack('L', $weatherGatherTime);     //uint32
 			}else{
-				$sendMsg .= pack('I', 0); //unsigned int
+				$sendMsg .= pack('L', 0); //unsigned int
 			}
 			
 			if (($temperature1=input('temperature1')) !== '')    //温度
@@ -927,9 +927,9 @@ class At60 extends Controller
 				{
 					echo '气象数据采集时间只能是数字！'; return;
 				}
-				$sendMsg .= pack('I', $skyGatherTime);     //uint32
+				$sendMsg .= pack('L', $skyGatherTime);     //uint32
 			}else{
-				$sendMsg .= pack('I', 0);   //unsigned int
+				$sendMsg .= pack('L', 0);   //unsigned int
 			}
 			
 			if (($skyState=input('skyState')) !== '')  //天气状态
@@ -960,9 +960,9 @@ class At60 extends Controller
 				{
 					echo '视宁度采集时间只能是数字！'; return;
 				}
-				$sendMsg .= pack('I', $seeingGatherTime);     //uint32
+				$sendMsg .= pack('L', $seeingGatherTime);     //uint32
 			}else{
-				$sendMsg .= pack('I', 0); //unsigned int
+				$sendMsg .= pack('L', 0); //unsigned int
 			}
 			
 			if (($seeing=input('seeing')) !== '')   //视宁度
@@ -983,9 +983,9 @@ class At60 extends Controller
 				{
 					echo '粉尘采集时间只能是数字！'; return;
 				}
-				$sendMsg .= pack('I', $dustGatherTime);     //uint32
+				$sendMsg .= pack('L', $dustGatherTime);     //uint32
 			}else{
-				$sendMsg .= pack('I', 0);
+				$sendMsg .= pack('L', 0);
 			}
 			
 			if (input('dust') !== '')      //粉尘
@@ -1019,9 +1019,9 @@ class At60 extends Controller
 				{
 					echo '消光系数采集时间只能是数字！'; return;
 				}
-				$sendMsg .= pack('I', $extinctionGatherTime);     
+				$sendMsg .= pack('L', $extinctionGatherTime);     
 			}else{
-				$sendMsg .= pack('I', 0); //unsigned int
+				$sendMsg .= pack('L', 0); //unsigned int
 			}
 			
 			if (input('rightAscension') !== '')    //赤经
@@ -1139,9 +1139,9 @@ class At60 extends Controller
 				{
 					echo '帧数只能是数字！'; return;
 				}
-				$sendMsg .= pack('I', $frameNum);     //uint32
+				$sendMsg .= pack('L', $frameNum);     //uint32
 			}else{
-				$sendMsg .= pack('I', 0);
+				$sendMsg .= pack('L', 0);
 			}
 			
 			//socket发送数据        
@@ -1174,9 +1174,9 @@ class At60 extends Controller
 				{
 					echo '起始时间只能是数字！'; return;
 				}
-				$sendMsg .= pack('I', $frameSequence);    //unsigned int
+				$sendMsg .= pack('L', $frameSequence);    //unsigned int
 			}else{
-				$sendMsg .= pack('I', 0);
+				$sendMsg .= pack('L', 0);
 			}
 			
 			//socket发送数据        
@@ -1264,9 +1264,9 @@ class At60 extends Controller
 				{
 					echo 'BinX值只能是数字！'; return;
 				}
-				$sendMsg = pack('I', $BinX);     //uint32
+				$sendMsg = pack('L', $BinX);     //uint32
 			}else{
-				$sendMsg = pack('I', 0);
+				$sendMsg = pack('L', 0);
 			}
 			
 			if (input('BinY') !== '')      //BinY
@@ -1276,9 +1276,9 @@ class At60 extends Controller
 				{
 					echo 'BinY值只能是数字！'; return;
 				}
-				$sendMsg .= pack('I', $BinY);     //uint32
+				$sendMsg .= pack('L', $BinY);     //uint32
 			}else{
-				$sendMsg .= pack('I', 0);
+				$sendMsg .= pack('L', 0);
 			}
 			
 			//socket发送数据        
@@ -1298,9 +1298,9 @@ class At60 extends Controller
 				{
 					echo 'startX值只能是数字！'; return;
 				}
-				$sendMsg = pack('I', $startX);     //unsigned int
+				$sendMsg = pack('L', $startX);     //unsigned int
 			}else{
-				$sendMsg = pack('I', 0);
+				$sendMsg = pack('L', 0);
 			}
 			
 			if (input('startY') !== '')      //unsigned int
@@ -1310,9 +1310,9 @@ class At60 extends Controller
 				{
 					echo 'startY值只能是数字！'; return;
 				}
-				$sendMsg .= pack('I', $startY);     //unsigned int
+				$sendMsg .= pack('L', $startY);     //unsigned int
 			}else{
-				$sendMsg .= pack('I', 0);
+				$sendMsg .= pack('L', 0);
 			}
 			
 			if (input('imageWidth') !== '')      //imageWidth
@@ -1322,9 +1322,9 @@ class At60 extends Controller
 				{
 					echo 'imageWidth值只能是数字！'; return;
 				}
-				$sendMsg .= pack('I', $imageWidth);     //unsigned int
+				$sendMsg .= pack('L', $imageWidth);     //unsigned int
 			}else{
-				$sendMsg .= pack('I', 0);
+				$sendMsg .= pack('L', 0);
 			}
 			
 			if (input('imageHeight') !== '')      //imageWidth
@@ -1334,9 +1334,9 @@ class At60 extends Controller
 				{
 					echo 'imageHeight值只能是数字！'; return;
 				}
-				$sendMsg .= pack('I', $imageHeight);     //unsigned int
+				$sendMsg .= pack('L', $imageHeight);     //unsigned int
 			}else{
-				$sendMsg .= pack('I', 0);
+				$sendMsg .= pack('L', 0);
 			}
 			
 			//socket发送数据        
@@ -1402,9 +1402,9 @@ class At60 extends Controller
 				{
 					echo 'eMValue值只能是数字！'; return;
 				}
-				$sendMsg .= pack('I', $eMValue);     //unsigned int
+				$sendMsg .= pack('L', $eMValue);     //unsigned int
 			}else{
-				$sendMsg .= pack('I', 0);
+				$sendMsg .= pack('L', 0);
 			}
 			
 			//socket发送数据        
@@ -1453,9 +1453,9 @@ class At60 extends Controller
 				{
 					echo 'baselineValue值只能是数字！'; return;
 				}
-				$sendMsg .= pack('I', $baselineValue);     //unsigned int
+				$sendMsg .= pack('L', $baselineValue);     //unsigned int
 			}else{
-				$sendMsg .= pack('I', 0);
+				$sendMsg .= pack('L', 0);
 			}
 				
 			//socket发送数据        
@@ -1969,13 +1969,13 @@ class At60 extends Controller
             $sendMsg .= pack('a48', '01'); //user
             $sendMsg .= pack('a48', '02'); //project
             $sendMsg .= pack('a48', 'star'); //target
-            $sendMsg .= pack('I', 0); //type
+            $sendMsg .= pack('L', 0); //type
             $sendMsg .= pack('d', 10.0); //rightAscension
             $sendMsg .= pack('d', 45.0); //declination
-            $sendMsg .= pack('I', 1); //epoch
+            $sendMsg .= pack('L', 1); //epoch
             $sendMsg .= pack('d', 5); //exposureTime
             $sendMsg .= pack('d', 1); //delayTime
-            $sendMsg .= pack('I', 5); //exposureCount
+            $sendMsg .= pack('L', 5); //exposureCount
             $sendMsg .= pack('a8', 'I'); //filter
             $sendMsg .= pack('S', 0); //gain
             $sendMsg .= pack('S', 1); //bin
@@ -1993,13 +1993,13 @@ class At60 extends Controller
             $sendMsg .= pack('a48', '01'); //user
             $sendMsg .= pack('a48', '02'); //project
             $sendMsg .= pack('a48', 'star2'); //target
-            $sendMsg .= pack('I', 0); //type
+            $sendMsg .= pack('L', 0); //type
             $sendMsg .= pack('d', 10.2); //rightAscension
             $sendMsg .= pack('d', 45.0); //declination
-            $sendMsg .= pack('I', 1); //epoch
+            $sendMsg .= pack('L', 1); //epoch
             $sendMsg .= pack('d', 4); //exposureTime
             $sendMsg .= pack('d', 1); //delayTime
-            $sendMsg .= pack('I', 3); //exposureCount
+            $sendMsg .= pack('L', 3); //exposureCount
             $sendMsg .= pack('a8', 'B'); //filter
             $sendMsg .= pack('S', 1); //gain
             $sendMsg .= pack('S', 1); //bin
@@ -2017,13 +2017,13 @@ class At60 extends Controller
             $sendMsg .= pack('a48', '01'); //user
             $sendMsg .= pack('a48', '02'); //project
             $sendMsg .= pack('a48', 'star3'); //target
-            $sendMsg .= pack('I', 0); //type
+            $sendMsg .= pack('L', 0); //type
             $sendMsg .= pack('d', 10.4); //rightAscension
             $sendMsg .= pack('d', 45.0); //declination
-            $sendMsg .= pack('I', 1); //epoch
+            $sendMsg .= pack('L', 1); //epoch
             $sendMsg .= pack('d', 6); //exposureTime
             $sendMsg .= pack('d', 1); //delayTime
-            $sendMsg .= pack('I', 4); //exposureCount
+            $sendMsg .= pack('L', 4); //exposureCount
             $sendMsg .= pack('a8', 'U'); //filter
             $sendMsg .= pack('S', 2); //gain
             $sendMsg .= pack('S', 1); //bin
@@ -2193,7 +2193,7 @@ class At60 extends Controller
 		for ($i = 0; $i < $planNum; $i ++) //循环提交上来的 每一条计划
 		{
 			//每条指令的tag
-			$sendMsg = pack('I', $i+1);  //unsigned int 
+			$sendMsg = pack('L', $i+1);  //unsigned int 
 			
 			$sendMsg .= pack('S', $at);
             $sendMsg .= pack('a48', '01'); //user
@@ -2212,7 +2212,7 @@ class At60 extends Controller
 			}else{ //目标类型 有值
 				if (preg_match('/^[0-9]{1}$/', $type)) //数字类型
 				{
-					$sendMsg .= pack('I', $type); 
+					$sendMsg .= pack('L', $type); 
 				}else{//直接为汉字类型数据
 					if(!in_array($type, ['太阳','月亮','恒星','彗星',
 						'行星', '卫星', '固定位置', '本底', '暗流', '平场']))
@@ -2221,25 +2221,25 @@ class At60 extends Controller
 					}else{
 						if($type == '恒星')
 						{
-							$sendMsg .= pack('I', 0); 
+							$sendMsg .= pack('L', 0); 
 						}elseif($type == '太阳'){
-							$sendMsg .= pack('I', 1); 
+							$sendMsg .= pack('L', 1); 
 						}elseif($type == '月亮'){
-							$sendMsg .= pack('I', 2); 
+							$sendMsg .= pack('L', 2); 
 						}elseif($type == '彗星'){
-							$sendMsg .= pack('I', 3); 
+							$sendMsg .= pack('L', 3); 
 						}elseif($type == '行星'){
-							$sendMsg .= pack('I', 4); 
+							$sendMsg .= pack('L', 4); 
 						}elseif($type == '卫星'){
-							$sendMsg .= pack('I', 5); 
+							$sendMsg .= pack('L', 5); 
 						}elseif($type == '固定位置'){
-							$sendMsg .= pack('I', 6); 
+							$sendMsg .= pack('L', 6); 
 						}elseif($type == '本底'){
-							$sendMsg .= pack('I', 7); 
+							$sendMsg .= pack('L', 7); 
 						}elseif($type == '暗流'){
-							$sendMsg .= pack('I', 8); 
+							$sendMsg .= pack('L', 8); 
 						}elseif($type == '平场'){
-							$sendMsg .= pack('I', 9); 
+							$sendMsg .= pack('L', 9); 
 						}
 					}
 				}
@@ -2295,7 +2295,7 @@ class At60 extends Controller
 			}else{ //历元 有值
 				if (preg_match('/^[0-9]{1}$/', $epoch)) //数字类型
 				{
-					$sendMsg .= pack('I', $epoch); 
+					$sendMsg .= pack('L', $epoch); 
 				}else{//直接为汉字类型数据
 					if(!in_array($epoch, ['real','Real','j2000','J2000','B1950', 'b1950','j2050', 'J2050']))
 					{
@@ -2303,13 +2303,13 @@ class At60 extends Controller
 					}else{
 						if($epoch == 'real' || $epoch == 'Real')
 						{
-							$sendMsg .= pack('I', 0); 
+							$sendMsg .= pack('L', 0); 
 						}elseif($epoch == 'j2000' || $epoch == 'J2000'){
-							$sendMsg .= pack('I', 1); 
+							$sendMsg .= pack('L', 1); 
 						}elseif($epoch == 'b1950' || $epoch == 'B1950'){
-							$sendMsg .= pack('I', 2); 
+							$sendMsg .= pack('L', 2); 
 						}elseif($epoch == 'j2050' || $epoch == 'J2050'){
-							$sendMsg .= pack('I', 3); 
+							$sendMsg .= pack('L', 3); 
 						}
 					}
 				}
@@ -2351,7 +2351,7 @@ class At60 extends Controller
 			}else{
 				if(preg_match('/^[0-9]+$/', $exposureCount) && $exposureCount>0 && $exposureCount <= 100)//曝光时间最大值？
 				{
-					$sendMsg .= pack('I', $exposureCount); 
+					$sendMsg .= pack('L', $exposureCount); 
 				}else{
 					return '第'. ($i+1) .'条计划:曝光数量数据有误!'; 
 				}
@@ -2482,26 +2482,26 @@ class At60 extends Controller
 		$input = input();
 		if($input['planOption'] == 'planStart')
 		{
-			$sendMsg = pack('I', 1);
-			$sendMsg .= pack('I', $input['mode']);
-			$sendMsg .= pack('I', $input['start']);
-			$sendMsg .= pack('I', 0);
+			$sendMsg = pack('L', 1);
+			$sendMsg .= pack('L', $input['mode']);
+			$sendMsg .= pack('L', $input['start']);
+			$sendMsg .= pack('L', 0);
 			
 			$sendMsg = $headInfo . $sendMsg;
 			echo '计划开始:' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif($input['planOption'] == 'planStop'){
-			$sendMsg = pack('I', 2);
-			$sendMsg .= pack('I', $input['mode']);
-			$sendMsg .= pack('I', $input['start']);
-			$sendMsg .= pack('I', 0);
+			$sendMsg = pack('L', 2);
+			$sendMsg .= pack('L', $input['mode']);
+			$sendMsg .= pack('L', $input['start']);
+			$sendMsg .= pack('L', 0);
 			
 			$sendMsg = $headInfo . $sendMsg;
 			echo '计划停止:' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif($input['planOption'] == 'planNext'){
-			$sendMsg = pack('I', 3);
-			$sendMsg .= pack('I', $input['mode']);
-			$sendMsg .= pack('I', $input['start']);
-			$sendMsg .= pack('I', 0);
+			$sendMsg = pack('L', 3);
+			$sendMsg .= pack('L', $input['mode']);
+			$sendMsg .= pack('L', $input['start']);
+			$sendMsg .= pack('L', 0);
 			
 			$sendMsg = $headInfo . $sendMsg;
 			echo '下一条计划:' .udpSend($sendMsg, $this->ip, $this->port);
