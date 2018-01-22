@@ -243,20 +243,20 @@ class At60 extends Controller
 			//处理赤经数据
 			$postData = input();
 		
-			if (!preg_match('/^\d{1,2}$/', $postData['rightAscension1']) || $postData['rightAscension1'] > 24 || $postData['rightAscension1'] < 0)
-			{
-				return '赤经之小时参数超限!';
-			}
+			// if (!is_numeric($postData['rightAscension1']) || $postData['rightAscension1'] > 24 || $postData['rightAscension1'] < 0)
+			// {
+			// 	return '赤经之小时参数超限!';
+			// }
 			
-			if (!preg_match('/^\d{1,2}$/', $postData['rightAscension2']) || $postData['rightAscension2'] > 59 || $postData['rightAscension2'] < 0)
-			{
-				return '赤经之分钟参数超限!';
-			}
+			// if (!preg_match('/^\d{1,2}$/', $postData['rightAscension2']) || $postData['rightAscension2'] > 59 || $postData['rightAscension2'] < 0)
+			// {
+			// 	return '赤经之分钟参数超限!';
+			// }
 			
-			if (!is_numeric($postData['rightAscension3']) || $postData['rightAscension3'] >= 60 || $postData['rightAscension3'] < 0)
-			{
-				return '赤经之秒参数超限!';
-			}
+			// if (!is_numeric($postData['rightAscension3']) || $postData['rightAscension3'] >= 60 || $postData['rightAscension3'] < 0)
+			// {
+			// 	return '赤经之秒参数超限!';
+			// }
 			$rightAscension = $postData['rightAscension1'].':'.$postData['rightAscension2'].':'.$postData['rightAscension3'];
 			
 			$rightAscension = time2Data($rightAscension);
@@ -269,20 +269,20 @@ class At60 extends Controller
 			}
 			
 			//处理赤纬数据
-			if (!preg_match('/^\d{1,2}$/', $postData['declination1']) || $postData['declination1'] > 90 || $postData['declination1'] < -90)
-			{
-				return '赤纬之小时参数超限!';
-			}
+			// if (!is_numeric($postData['declination1']) || $postData['declination1'] > 90 || $postData['declination1'] < -90)
+			// {
+			// 	return '赤纬之小时参数超限!';
+			// }
 			
-			if (!preg_match('/^\d{1,2}$/', $postData['declination2']) || $postData['declination2'] > 59 || $postData['declination2'] < 0)
-			{
-				return '赤纬之分钟参数超限!';
-			}
+			// if (!preg_match('/^\d{1,2}$/', $postData['declination2']) || $postData['declination2'] > 59 || $postData['declination2'] < 0)
+			// {
+			// 	return '赤纬之分钟参数超限!';
+			// }
 			
-			if (!is_numeric($postData['declination3']) || $postData['declination3'] >= 60 || $postData['declination3'] < 0)
-			{
-				return '赤纬之秒参数超限!';
-			}
+			// if (!is_numeric($postData['declination3']) || $postData['declination3'] >= 60 || $postData['declination3'] < 0)
+			// {
+			// 	return '赤纬之秒参数超限!';
+			// }
 			
 			$declination = $postData['declination1'].':'.$postData['declination2'].':'.$postData['declination3'];
 			
@@ -577,8 +577,8 @@ class At60 extends Controller
 			echo '属性设置指令：' .udpSend($sendMsg, $this->ip, $this->port);	
 		}elseif (input('command') == 12) //跟踪卫星
 		{
-			return '此指令未完成';
-			/* $length = 48;      //该结构体总长度
+			/*return '此指令未完成';
+			 $length = 48;      //该结构体总长度
 			$headInfo = packHead($magic,$version,$msg,$length,$sequence,$at,$device);
 
 			$headInfo .= packHead2 ($user,$plan,$at,$device,$sequence,$operation=18);
@@ -762,20 +762,20 @@ class At60 extends Controller
 			
 			if ($objectRightAscension !== '::')  
 			{//拍摄目标赤经
-				if (!preg_match('/^\d{1,2}$/', $postData['objectRightAscension1']) || $postData['objectRightAscension1'] > 24 || $postData['objectRightAscension1'] < 0)
-				{
-					return '曝光策略:赤经之小时参数超限!';
-				}
+				// if (!preg_match('/^\d{1,2}$/', $postData['objectRightAscension1']) || $postData['objectRightAscension1'] > 24 || $postData['objectRightAscension1'] < 0)
+				// {
+				// 	return '曝光策略:赤经之小时参数超限!';
+				// }
 				
-				if (!preg_match('/^\d{1,2}$/', $postData['objectRightAscension2']) || $postData['objectRightAscension2'] > 59 || $postData['objectRightAscension2'] < 0)
-				{
-					return '曝光策略:赤经之分钟参数超限!';
-				}
+				// if (!preg_match('/^\d{1,2}$/', $postData['objectRightAscension2']) || $postData['objectRightAscension2'] > 59 || $postData['objectRightAscension2'] < 0)
+				// {
+				// 	return '曝光策略:赤经之分钟参数超限!';
+				// }
 				
-				if (!is_numeric($postData['objectRightAscension3']) || $postData['objectRightAscension3'] >= 60 || $postData['objectRightAscension3'] < 0)
-				{
-					return '曝光策略:赤经之秒参数超限!';
-				}
+				// if (!is_numeric($postData['objectRightAscension3']) || $postData['objectRightAscension3'] >= 60 || $postData['objectRightAscension3'] < 0)
+				// {
+				// 	return '曝光策略:赤经之秒参数超限!';
+				// }
 				
 				$objectRightAscension = time2Data($objectRightAscension);
 				
@@ -795,20 +795,20 @@ class At60 extends Controller
 			
 			if ($objectDeclination !== '::')    
 			{//当前拍摄目标赤纬
-				if (!preg_match('/^\d{1,2}$/', $postData['objectDeclination1']) || $postData['objectDeclination1'] > 90 || $postData['objectDeclination1'] < -90)
-				{
-					return '曝光策略:赤纬之小时参数超限!';
-				}
+				// if (!preg_match('/^\d{1,2}$/', $postData['objectDeclination1']) || $postData['objectDeclination1'] > 90 || $postData['objectDeclination1'] < -90)
+				// {
+				// 	return '曝光策略:赤纬之小时参数超限!';
+				// }
 				
-				if (!preg_match('/^\d{1,2}$/', $postData['objectDeclination2']) || $postData['objectDeclination2'] > 59 || $postData['objectDeclination2'] < 0)
-				{
-					return '曝光策略:赤纬之分钟参数超限!';
-				}
+				// if (!preg_match('/^\d{1,2}$/', $postData['objectDeclination2']) || $postData['objectDeclination2'] > 59 || $postData['objectDeclination2'] < 0)
+				// {
+				// 	return '曝光策略:赤纬之分钟参数超限!';
+				// }
 				
-				if (!is_numeric($postData['objectDeclination3']) || $postData['objectDeclination3'] >= 60 || $postData['objectDeclination3'] < 0)
-				{
-					return '曝光策略:赤纬之秒参数超限!';
-				}
+				// if (!is_numeric($postData['objectDeclination3']) || $postData['objectDeclination3'] >= 60 || $postData['objectDeclination3'] < 0)
+				// {
+				// 	return '曝光策略:赤纬之秒参数超限!';
+				// }
 
 				$objectDeclination = time2Data($objectDeclination);
 				if ($objectDeclination > 90 || $objectDeclination < -90)
@@ -2257,7 +2257,7 @@ class At60 extends Controller
 				}
 				
 				$rightAscension = time2Data($rightAscension);
-				if ($rightAscension > 90 || $rightAscension < -90)
+				if ($rightAscension > 24 || $rightAscension < 0)
 				{
 					return '第'. ($i+1) .'条计划:赤经数据有误!';
 				}

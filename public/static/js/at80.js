@@ -9,7 +9,7 @@
 	{
 		$.ajax({
 			type : 'post',
-            url : '/xinglong/at60status/devsStatus',           
+            url : '/xinglong/at80status/devsStatus',           
             success:  function (info) {
 				err = 0; //将err变量重置为0
                 var info = eval( '(' + info +')' );
