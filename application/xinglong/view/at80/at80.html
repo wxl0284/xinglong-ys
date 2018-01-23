@@ -284,7 +284,7 @@
 	var sdomemaxspeedval = {//$configData.sdomemaxspeedval};
 	/*******************以下为滤光片*********************/
 	滤光片之 滤光片名称
-	var filternameval = {//$configData.filternameval};
+	var filternameval = "{//$configData.filternameval}";
 	滤光片之 滤光片焦距偏差值
 	var filterfocuslengthcompensateval = {//$configData.filterfocuslengthcompensateval};  -->
 </script><!--子设备之固定属性值 结束-->
@@ -413,26 +413,44 @@
 					</div>
 					<div id='speedX'>
                            <input type='radio' name='command' value='6' />
-                           轴：<input id='speedXInput' type="text" name='axis' class='blur'>
+						   轴：<!-- 轴：<input id='speedXInput' type="text" name='axis' class='blur'> -->
+						   <select name="axis" style='width:129px;'> 
+							<option value="1">轴1</option>
+							<option value="2">轴2</option>
+							<option value="3">轴3</option>
+						  </select>
                            速度：<input id='speedCorrect'type="text" name='correction' class='blur'>
 					</div>
 					<div id='speedF'>
                            <input type='radio' name='command' value='7' />
-                           轴：<input id='speedFAxis' type="text" name='FixedMoveAxis' class='blur'>
+						   轴：<!-- 轴：<input id='speedFAxis' type="text" name='FixedMoveAxis' class='blur'> -->
+						   <select name="FixedMoveAxis" style='width:129px;'> 
+							<option value="1">轴1</option>
+							<option value="2">轴2</option>
+							<option value="3">轴3</option>
+						  </select>
                            速度：<input id='speedFVal' type="text" name='FixedMoveSpeed' class='blur'>
 					</div>
 					<div id='positionX'>
                            <input type='radio' name='command' value='8' />
-                           轴：<input id='PositionCorrectAxis' type="text" name='PositionCorrectAxis' class='blur'>
+						   轴：<!-- 轴：<input id='PositionCorrectAxis' type="text" name='PositionCorrectAxis' class='blur'> -->
+						   <select name="PositionCorrectAxis" style='width:129px;'> 
+							<option value="1">轴1</option>
+							<option value="2">轴2</option>
+							<option value="3">轴3</option>
+						  </select>
                            修正值：<input id='PositionCorrectVal' type="text" name='PositionCorrectVal' class='blur'>
 					</div>
 					<div id='coverOp'>
-                           <input type='radio' name='command' value='9' />镜盖操作：
-						   <select name="openCover" style='width:56px;'>
-						           <option value="1">开</option>
-								   <option value="2">关</option>
-								   <option value="0">停</option>
-						    </select>                        
+						<input type='radio' name='command' value='9' />镜盖操作：
+						<!-- <select name="openCover" style='width:56px;'>
+								<option value="1">开</option>
+								<option value="2">关</option>
+								<option value="0">停</option>
+						 </select>                      -->
+						 <input type='button' value="打开">
+						 <input type='button' value="关闭">
+						 <input type='button' value="停止">                    
 					</div>
 					<div id='focusOp'>
                            <input type='radio' name='command' value='10' />焦点切换镜：
@@ -445,10 +463,13 @@
                           
 					</div>
 					<div id='saveData'>
-                           <input type='radio' name='command' value='11' />保存同步数据：<select name="saveSyncData" style='width:56px;'>
+						   <input type='radio' name='command' value='11' />保存同步数据：
+						   <!-- <select name="saveSyncData" style='width:56px;'>
 						        <option value="0">否</option>
 							    <option value="1">是</option>
-						    </select>
+							</select> -->
+							<input type="button" value="是" style="width:80px">
+							<input type="button" value="否" style="width:80px">
 					</div>
 					<div id='trackS'>
                            <input type='radio' name='command' value='12' />跟踪卫星：
@@ -679,44 +700,49 @@
 					  </div>
 					  <div id='setGear'>
 					   <input type='radio' name='command' value='4' />
-					   增益模式：<select name="mode" style='width:60px;'>
-						           <option value="0">0</option>
-								   <option value="1">1</option>
-								   <option value="2">2</option>
-								   <option value="3">3</option>
-								   <option value="4">4</option>
-						    </select>
-					   增益档位：<select name="gear" style='width:60px;'>
-						           <option value="0">0</option>
-								   <option value="1">1</option>
-								   <option value="2">2</option>
-								   <option value="3">3</option>
-								   <option value="4">4</option>
-						    </select>
+					   增益模式：<select name="mode" style='width:auto;'> 
+									<option value="1">High Capacity</option>
+									<option value="2">High Sensitivity</option>
+							   </select>
+			   			增益档位：<select name="gear" style='width:60px;'>
+						   			<option value="1">1x</option>
+						   			<option value="2">2x</option>
+						   			<option value="3">3x</option>
+						   			<option value="4">4x</option>
+								</select>
 					  </div>
 					  <div id='readOut'>
-					   <input type='radio' name='command' value='5' />读出速度模式：
-					   <input type="text" id='ReadSpeedModeIn' name='ReadSpeedMode' placeholder='整数' class='blur'>		   
+						<input type='radio' name='command' value='5' />读出速度模式：
+						<!-- <input type="text" id='ReadSpeedModeIn' name='ReadSpeedMode' placeholder='整数' class='blur'> -->
+						<select name="ReadSpeedMode" style="width:80px">
+							<option value="1">A</option>
+							<option value="2">B</option>
+							<option value="3">C</option>
+						</select>	   
 					  </div>
 					  <div id='transSpeed'>
                            <input type='radio' name='command' value='6' />转移速度模式：
-						   <input type="text" id='TransferSpeedIn' name='SetTransferSpeed' placeholder='整数' class='blur'>	
+						   <!-- <input type="text" id='TransferSpeedIn' name='SetTransferSpeed' placeholder='整数' class='blur'> -->
+						   <select name="SetTransferSpeed" style="width:80px">
+								<option value="1">A</option>
+								<option value="2">B</option>
+							</select>
 					  </div>
 					  <div id='setBin'>
                            <input type='radio' name='command' value='7' />
                            BinX：<select name="BinX" style='width:60px;'>
-						           <option value="0">0</option>
-								   <option value="1">1</option>
-								   <option value="2">2</option>
-								   <option value="3">3</option>
-								   <option value="4">4</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
 						    </select>
                            BinY：<select name="BinY" style='width:60px;'>
-						           <option value="0">0</option>
-								   <option value="1">1</option>
-								   <option value="2">2</option>
-								   <option value="3">3</option>
-								   <option value="4">4</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
 						    </select>
 					  </div>
 					  <div id='setRoi'>
@@ -734,25 +760,39 @@
 						    </select>
 					  </div>
 					  <div id='setFrame'>
-                           <input type='radio' name='command' value='10' />帧转移：<select name="isFullFrame" style='width:66px;'>
+						   <input type='radio' name='command' value='10' />帧转移：
+						   <!-- <select name="isFullFrame" style='width:66px;'>
 						           <option value="0">否</option>
 								   <option value="1">是</option>
-						    </select>                          
+							</select>                           -->
+							<label for='isFullFrame1'>是</label>
+							<input id='isFullFrame1' type="radio" name='isFullFrame' value="1" style='display:inline;'>
+							&nbsp;&nbsp;&nbsp;&nbsp;<label for='isFullFrame2'>否</label>
+							<input id='isFullFrame2' type="radio" name='isFullFrame' value="0" style='display:inline;'>
 					  </div>
 					  <div id='setEm'>
                            <input type='radio' name='command' value='11' />
-						   设置Em：<select name="isEM" style='width:66px;'>
+						   设置Em：
+						   <!-- <select name="isEM" style='width:66px;'>
 						           <option value="0">否</option>
 								   <option value="1">是</option>
-						    </select> 					   
+							</select> 					    -->
+							<label for='isEM1'>是</label>
+							<input id='isEM1' type="radio" name='isEM' value="1" style='display:inline;'>
+							&nbsp;&nbsp;&nbsp;&nbsp;<label for='isEM2'>否</label>
+							<input id='isEM2' type="radio" name='isEM' value="0" style='display:inline;'>
 						  EmValue：<input id='eMValueIn' type="text" name='eMValue' class='blur'>						   
 					  </div>
 					  <div id='setCmos'>
                            <input type='radio' name='command' value='12' />CMOS noise filter：
-						   <select name="isNoiseFilter" style='width:66px;'>
+						   <!-- <select name="isNoiseFilter" style='width:66px;'>
 						           <option value="0">否</option>
 								   <option value="1">是</option>
-						    </select>
+							</select> -->
+							<label for='isNoiseFilter1'>是</label>
+							<input id='isNoiseFilter1' type="radio" name='isNoiseFilter' value="1" style='display:inline;'>
+							&nbsp;&nbsp;&nbsp;&nbsp;<label for='isNoiseFilter2'>否</label>
+							<input id='isNoiseFilter2' type="radio" name='isNoiseFilter' value="0" style='display:inline;'>
 					  </div>
 					  <div id='setBase'>
                            <input type='radio' name='command' value='13' />

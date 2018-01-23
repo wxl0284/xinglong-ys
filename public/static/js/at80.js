@@ -807,7 +807,7 @@
     var ccdSelect = ccdForm.find('div');
 
     ccdSelect.click(function () {
-         $(this).find('input:radio').prop('checked', true);
+         $(this).find('input[name="command"]').prop('checked', true);
          var notcheck = ccdSelect.not($(this));
          notcheck.addClass('notCheck');
          $(this).removeClass('notCheck');
@@ -1754,4 +1754,77 @@
 	});
 
 //观测计划 若为single和singleLoop 隐藏‘下一个’按钮 结束/////////
+/******************转台之镜盖操作指令 js事件**********************/
+$('#coverOp').on('click', 'input:button', function () {
+	var val;  //不同按钮对应的提交数据值
+	var that = $(this); //当前被点击的元素
+	var notThis = that.siblings('input[type="button"]'); //另外2个按钮
+	var v = that.val();
+
+	if (v == '打开')
+	{
+		val = 1;
+	}else if (v == '关闭'){
+		val = 2;
+	}else if (v == '停止'){
+		val = 0;
+	}
+	$.ajax({
+		url: '/xinglong/at80/at80GimbalSendData',
+		type: 'post',
+		data: {
+			command: 9,
+			openCover: val,
+		},
+		success:  function (info) {
+                alert(info);
+			that.addClass('click');
+			notThis.removeClass('click');
+			if (info.indexOf('登录') !== -1)
+			{
+				location.href = '/';
+			}
+            },
+            error:  function () {
+               alert('网络异常,请再次点击镜盖操作!');
+            },
+	});
+});
+/******************转台之镜盖操作指令 js事件 结束*****************/
+
+/******************转台之保存同步数据 js事件**********************/
+$('#saveData').on('click', 'input:button', function () {
+	var val;  //不同按钮对应的提交数据值
+	var that = $(this); //当前被点击的元素
+	var notThis = that.siblings('input[type="button"]'); //另外1个按钮
+	var v = that.val();
+
+	if (v == '是')
+	{
+		val = 1;
+	}else if (v == '否'){
+		val = 0;
+	}
+	$.ajax({
+		url: '/xinglong/at80/at80GimbalSendData',
+		type: 'post',
+		data: {
+			command: 11,
+			saveSyncData: val,
+		},
+		success:  function (info) {
+            alert(info);
+			that.addClass('click');
+			notThis.removeClass('click');
+			if (info.indexOf('登录') !== -1)
+			{
+				location.href = '/';
+			}
+            },
+            error:  function () {
+               alert('网络异常,请再次发送同步数据指令!');
+            },
+	});
+});
+/****************转台之保存同步数据 js事件 结束***************/
 })

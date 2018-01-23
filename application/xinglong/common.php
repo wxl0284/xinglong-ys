@@ -111,7 +111,6 @@ function udpSend ($sendMsg = '', $ip, $port)
    return "ERROR: {$errno} - {$errstr}\n"; 
   } 
 
-
   $res = fwrite($handle, $sendMsg);
   
    fclose($handle); 
@@ -140,11 +139,9 @@ function udpSendPlan ($sendMsg = '', $ip, $port)
    return "ERROR: {$errno} - {$errstr}\n"; 
   } 
 
-
   $res = fwrite($handle, $sendMsg);
   
    fclose($handle); 
-  
 }
 
 //数据库的时角/恒星时/赤经/赤纬 转为时间 的函数///////////////////
