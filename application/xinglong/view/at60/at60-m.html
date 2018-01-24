@@ -693,10 +693,14 @@
 					</div><!--ccd 曝光策略结束-->
 					  <div id='startExp'>
 					   <input type='radio' name='command' value='3' />
-					   是否读取帧序号：<select name="isReadFrameSeq" style='width:118px;'>
+					   <!-- 是否读取帧序号：<select name="isReadFrameSeq" style='width:118px;'> 
 						           <option value="0">是</option>
 								   <option value="1">否</option>
-						    </select>
+							</select>-->
+							是否读取帧序号：<label for='isReadFrameSeq1'>是</label>
+							<input id='isReadFrameSeq1' type="radio" checked='checked' name='isReadFrameSeq' value="1" style='display:inline;'>
+							&nbsp;&nbsp;&nbsp;&nbsp;<label for='isReadFrameSeq2'>否</label>
+							<input id='isReadFrameSeq2' type="radio" name='isReadFrameSeq' value="0" style='display:inline;'>
 					   帧序号：<input id='frameSequenceIn' type="text" name='frameSequence' class='blur'>
 					  </div>
 					  <div id='setGear'>
@@ -797,18 +801,26 @@
 					  </div>
 					  <div id='setBase'>
                            <input type='radio' name='command' value='13' />
-						   isBaseline：<select name="isBaseline" style='width:66px;'>
+						   <!-- isBaseline：<select name="isBaseline" style='width:66px;'>
 						           <option value="0">否</option>
 								   <option value="1">是</option>
-						    </select>
+							</select> -->
+							isBaseline：<label for='isBaseline1'>是</label>
+							<input id='isBaseline1' type="radio" name='isBaseline' value="1" style='display:inline;'>
+							&nbsp;&nbsp;&nbsp;&nbsp;<label for='isBaseline2'>否</label>
+							<input id='isBaseline2' type="radio" name='isBaseline' value="0" style='display:inline;'>
 						  baselineValue：<input id='baselineValueIn' type="text" name='baselineValue' class='blur'>
 					  </div>
 					  <div id='setOverScan'>
                            <input type='radio' name='command' value='14' />
-						   Over Scan：<select name="isOverScan" style='width:66px;'>
+						   <!-- Over Scan：<select name="isOverScan" style='width:66px;'>
 						           <option value="0">否</option>
 								   <option value="1">是</option>
-						    </select>
+							</select> -->
+							Over Scan：<label for='isOverScan1'>是</label>
+							<input id='isOverScan1' type="radio" name='isOverScan' value="1" style='display:inline;'>
+							&nbsp;&nbsp;&nbsp;&nbsp;<label for='isOverScan2'>否</label>
+							<input id='isOverScan2' type="radio" name='isOverScan' value="0" style='display:inline;'>
 					  </div>
 					<br>
 					<input id='ccdSbmt' class='border submitBtn' type="button" value="确认提交指令">
@@ -918,10 +930,15 @@
 					  <input type="text" id='speedIn' name='speed' placeholder='数字' class='blur'>
 					</div>
 					<div id='temperaEnable'>
-					   <input type='radio' name='command' value='3' />使能温度补偿：<select name="enable" style='width:66px;'>
+					   <input type='radio' name='command' value='3' />使能温度补偿：
+					   <!-- <select name="enable" style='width:66px;'>
 						           <option value="0">否</option>
 								   <option value="1">是</option>
-						    </select>
+							</select> -->
+							<label for='enable1'>是</label>
+							<input id='enable1' type="radio" name='enable' value="1" style='display:inline;'>
+							&nbsp;&nbsp;&nbsp;&nbsp;<label for='enable2'>否</label>
+							<input id='enable2' type="radio" name='enable' value="0" style='display:inline;'>
 					</div>
 					<div id='temperaCoeficnt'>
 					   <input type='radio' name='command' value='4' />温度补偿系数：

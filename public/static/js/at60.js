@@ -1199,7 +1199,7 @@
     var focusSelect = focusForm.find('div');
 
     focusSelect.click(function () {
-         $(this).find('input:radio').prop('checked', true);
+         $(this).find('input[name="command"]').prop('checked', true);
          var notcheck = focusSelect.not($(this));
          notcheck.addClass('notCheck');
          $(this).removeClass('notCheck');
