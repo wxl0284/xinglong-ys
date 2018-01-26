@@ -99,8 +99,14 @@ class At80status extends Controller
 		
 		$status['trackError'] = 2.11; //位置信息：跟踪误差（？咋获取）
 		//位置信息：当前时角
-		$gimbalStatus['hourAngle'] = floatval ($gimbalStatus['hourAngle']);
-		$status['hourAngle'] = data2Time($gimbalStatus['hourAngle']);
+		if (is_numeric($gimbalStatus['hourAngle']))
+		{
+			$gimbalStatus['hourAngle'] = floatval ($gimbalStatus['hourAngle']);
+			$status['hourAngle'] = data2Time($gimbalStatus['hourAngle']);
+		}else{
+			$status['hourAngle'] = $gimbalStatus['hourAngle'];
+		}
+		
 		//获取镜盖 开/关 情况
 		if ($gimbalStatus['coverIndex'] === 0)
 		{
@@ -138,10 +144,21 @@ class At80status extends Controller
 				break;
 		}
 		
-		$gimbalStatus['targetRightAscension'] = floatval ($gimbalStatus['targetRightAscension']);
-		$status['targetRightAscension'] = data2Time($gimbalStatus['targetRightAscension']/15); //目标赤经
-		$gimbalStatus['targetDeclination'] = floatval ($gimbalStatus['targetDeclination']);
-		$status['targetDeclination'] = data2Time($gimbalStatus['targetDeclination']); //目标赤纬
+		if (is_numeric($gimbalStatus['targetRightAscension']))
+		{
+			$gimbalStatus['targetRightAscension'] = floatval ($gimbalStatus['targetRightAscension']);
+			$status['targetRightAscension'] = data2Time($gimbalStatus['targetRightAscension']/15); //目标赤经
+		}else{
+			$status['targetRightAscension'] = $gimbalStatus['targetRightAscension'];
+		}
+		
+		if (is_numeric($gimbalStatus['targetDeclination']))
+		{
+			$gimbalStatus['targetDeclination'] = floatval ($gimbalStatus['targetDeclination']);
+			$status['targetDeclination'] = data2Time($gimbalStatus['targetDeclination']); //目标赤纬
+		}else{
+			$status['targetDeclination'] = $gimbalStatus['targetDeclination'];
+		}
 		$status['azmiuth'] = round($gimbalStatus['azmiuth'],5); //当前方位
 		$status['elevation'] = round($gimbalStatus['elevation'],5); //当前俯仰
 		$status['RightAscensionSpeed'] = 12.3; //赤经速度 ?咋获取
@@ -151,23 +168,48 @@ class At80status extends Controller
 		$status['axis1TrackError'] = $gimbalStatus['axis1TrackError']; //轴1跟踪误差
 		$status['axis2TrackError'] = $gimbalStatus['axis2TrackError']; //轴2跟踪误差
 		$status['axis3TrackError'] = $gimbalStatus['axis3TrackError']; //轴3跟踪误差
-		//当前恒星时
-		$gimbalStatus['siderealTime'] = floatval ($gimbalStatus['siderealTime']);
-		$status['siderealTime'] = data2Time($gimbalStatus['siderealTime']);
+		
+		if (is_numeric($gimbalStatus['siderealTime']))
+		{//当前恒星时
+			$gimbalStatus['siderealTime'] = floatval ($gimbalStatus['siderealTime']);
+			$status['siderealTime'] = data2Time($gimbalStatus['siderealTime']);
+		}else{
+			$status['siderealTime'] = $gimbalStatus['siderealTime'];
+		}
 		//接下来：转台可变属性
 		$status['timeStamp'] = time(); //时间戳
-		//j2000赤经
-		$gimbalStatus['J2000RightAscension'] = floatval ($gimbalStatus['J2000RightAscension']);
-		$status['J2000RightAscension'] = data2Time($gimbalStatus['J2000RightAscension']/15);
-		//j2000赤纬
-		$gimbalStatus['J2000Declination'] = floatval($gimbalStatus['J2000Declination']);
-		$status['J2000Declination'] = data2Time($gimbalStatus['J2000Declination']);
-		//目标j2000赤经
-		$gimbalStatus['targetJ2000RightAscension'] = floatval($gimbalStatus['targetJ2000RightAscension']);
-		$status['targetJ2000RightAscension'] = data2Time($gimbalStatus['targetJ2000RightAscension']/15);
-		//目标j2000赤纬
-		$gimbalStatus['targetJ2000Declination'] = floatval($gimbalStatus['targetJ2000Declination']);
-		$status['targetJ2000Declination'] = data2Time($gimbalStatus['targetJ2000Declination']);
+				
+		if (is_numeric())
+		{//j2000赤经
+			$gimbalStatus['J2000RightAscension'] = floatval ($gimbalStatus['J2000RightAscension']);
+			$status['J2000RightAscension'] = data2Time($gimbalStatus['J2000RightAscension']/15);
+		}else{
+			$status['J2000RightAscension'] = $gimbalStatus['J2000RightAscension'];
+		}
+		
+		if (is_numeric($gimbalStatus['J2000Declination']))
+		{//j2000赤纬
+			$gimbalStatus['J2000Declination'] = floatval($gimbalStatus['J2000Declination']);
+			$status['J2000Declination'] = data2Time($gimbalStatus['J2000Declination']);
+		}else{
+			$status['J2000Declination'] = $gimbalStatus['J2000Declination'];
+		}
+		
+		if (is_numeric($gimbalStatus['targetJ2000RightAscension']))
+		{//目标j2000赤经
+			$gimbalStatus['targetJ2000RightAscension'] = floatval($gimbalStatus['targetJ2000RightAscension']);
+			$status['targetJ2000RightAscension'] = data2Time($gimbalStatus['targetJ2000RightAscension']/15);
+		}else{
+			$status['targetJ2000RightAscension'] = $gimbalStatus['targetJ2000RightAscension'];
+		}
+		
+		if (is_numeric($gimbalStatus['targetJ2000Declination']))
+		{//目标j2000赤纬
+			$gimbalStatus['targetJ2000Declination'] = floatval($gimbalStatus['targetJ2000Declination']);
+			$status['targetJ2000Declination'] = data2Time($gimbalStatus['targetJ2000Declination']);
+		}else{
+			$status['targetJ2000Declination'] = $gimbalStatus['targetJ2000Declination'];
+		}
 		//转台 数据结束///////////////////////////////////////////////////////
 		
 		//读取ccd状态数据///////////////////////////////////////////
@@ -215,10 +257,23 @@ class At80status extends Controller
 		$status['ccdBaseline'] = $ccdStatus['baseline'];  //ccd可变属性：baseline值
 		$status['ccdReadOutMode'] = $ccdStatus['readMode'];  //ccd可变属性：读出模式
 		$status['ccdObserveBand'] = $ccdStatus['band'];  //ccd可变属性：当前拍摄波段
-		$ccdStatus['J2000RightAscension'] = floatval($ccdStatus['J2000RightAscension']);
-		$status['ccdJ2000RightAscension'] = data2Time($ccdStatus['J2000RightAscension']/15);  //ccd可变属性：当前拍摄目标赤经
-		$ccdStatus['J2000Declination'] = floatval($ccdStatus['J2000Declination']);
-		$status['ccdJ2000Declination'] = data2Time($ccdStatus['J2000Declination']);  //ccd可变属性：当前拍摄目标赤纬
+		
+		if (is_numeric($ccdStatus['J2000RightAscension']))
+		{
+			$ccdStatus['J2000RightAscension'] = floatval($ccdStatus['J2000RightAscension']);
+			$status['ccdJ2000RightAscension'] = data2Time($ccdStatus['J2000RightAscension']/15);  //ccd可变属性：当前拍摄目标赤经
+		}else{
+			$status['ccdJ2000RightAscension'] = $ccdStatus['J2000RightAscension']; 
+		}
+
+		if (is_numeric($ccdStatus['J2000Declination']))
+		{
+			$ccdStatus['J2000Declination'] = floatval($ccdStatus['J2000Declination']);
+			$status['ccdJ2000Declination'] = data2Time($ccdStatus['J2000Declination']);  //ccd可变属性：当前拍摄目标赤纬
+		}else{
+			$status['ccdJ2000Declination'] = $ccdStatus['J2000Declination'];
+		}
+		
 		//ccd 数据结束///////////////////////////////////////////////
 		
 		//读取调焦器状态数据///////////////////////////////////////////
