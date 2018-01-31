@@ -19,7 +19,7 @@ class At80status extends Controller
 		$UTC = $hms . '.' . $usec;
 		$status['UTC'] = $UTC;
 		//读取转台状态数据///////////////////////////////////////////
-		$gimbalStatus = Db::table('at60gimbalstatus')->order('id desc')->find();
+		$gimbalStatus = Db::table('at80gimbalstatus')->order('id desc')->find();
 		/* if ($gimbalStatus['error'] === '0')
 		{
 			$gimbalError = '转台状态正常';
@@ -213,7 +213,7 @@ class At80status extends Controller
 		//转台 数据结束///////////////////////////////////////////////////////
 		
 		//读取ccd状态数据///////////////////////////////////////////
-		$ccdStatus = Db::table('at60ccdstatus')->order('id desc')->find();
+		$ccdStatus = Db::table('at80ccdstatus')->order('id desc')->find();
 		/* if ($ccdStatus['error'] === '0')
 		{
 			$ccdError = 'CCD状态正常';
@@ -332,7 +332,7 @@ class At80status extends Controller
 		//调焦器 状态数据结束/////////////////////////////////////////////
 		
 		//读取圆顶状态数据///////////////////////////////////////////
-		$slaveDomeStatus = Db::table('at60slavedomestatus')->order('id desc')->find();
+		$slaveDomeStatus = Db::table('at80slavedomestatus')->order('id desc')->find();
 		/* if ($slaveDomeStatus['error'] === '0')
 		{
 			$slaveDomeError = '圆顶状态正常';
@@ -388,7 +388,7 @@ class At80status extends Controller
 		//圆顶状态数据 结束/////////////////////////////////////////////
 		
 		//读取滤光片状态数据///////////////////////////////////////////
-		$filterStatus = Db::table('at60filterstatus')->order('id desc')->find();
+		$filterStatus = Db::table('at80filterstatus')->order('id desc')->find();
 		/* if ($filterStatus['error'] === '0')
 		{
 			$filterError = '滤光片状态正常';
