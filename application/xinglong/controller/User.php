@@ -87,7 +87,7 @@ class User extends Controller
         }
 		
 		//添加用户
-		$userData = Db::query('SELECT * FROM user WHERE username=?',[$username]);
+		$userData = Db::query('SELECT * FROM atccsuser WHERE username=?',[$username]);
 		if ($userData) 
 		{
 			return '此用户名已存在，请重新填写用户名!';
@@ -141,33 +141,38 @@ class User extends Controller
 	public function doEdit ()
 	{
 		//权限和是否登录的判断	
-		if (Session::get('role') != 1)
-		{
-			 $this->error('您无权编辑用户！', '/');
-		}
+		// if (Session::get('role') != 1)
+		// {
+		// 	 $this->error('您无权编辑用户！', '/');
+		// }
 		
 		$inputData = input(); //获取表单数据
 		$id = $inputData['id'];
 		$username = $inputData['username'];
-		$passwd = $inputData['passwd'];
-		if (!input('?post.role'))
+		$passwd = $inputData['password'];
+		$role = $inputData['role'];
+
+		if ($role == 2)
 		{
-			$role = 1; //若是管理员 修改自己信息 role默认为1
-			$des = '管理员';
-		}else{
-			$role = trim($inputData['role']);
-			if ($role == 2)
-			{
-				$des = '普通用户';
-			}elseif ($role == 3)
-			{
-				$des = '操作员';
-			}elseif ($role ==4)
-			{
-				$des = '科学家';
-			}
+			$des = '普通用户';
+		}elseif ($role == 3)
+		{
+			$des = '操作员';
+		}elseif ($role == 4)
+		{
+			$des = '科学家';
+		}elseif ($role == 1)
+		{
+			$des = '科学家';
 		}
-		
+
+		//验证用户名唯一
+		$user = Db::table('atccsuser')->where('id', $id)->value('username');
+		if(!$user)
+		{
+			return '网络异常，请重新提交数据!';
+		}
+
 		//验证数据
 		$result	= $this->validate(
             [
@@ -180,15 +185,15 @@ class User extends Controller
 		
         if(true	!==	$result)    //验证失败 输出错误信息
         { 
-            $this->error($result);
+            return $result;
         }
 		
 		//验证密码
 		if($passwd) //有提交的密码
 		{
-			if (!preg_match('/[\w-]{6,10}/', $passwd))
+			if (!preg_match('/[\w-]{6,12}/', $passwd))
 			{
-				$this->error('密码须是6-12为数字字母_及-!');
+				return '密码须是6-12位数字字母_及-!';
 			}else{
 				$passwd = md5($passwd);
 			}
@@ -196,18 +201,21 @@ class User extends Controller
 			$passwd = Db::table('atccsuser')->where('id', $id)->value('password');
 			if(!$passwd)
 			{
-				$this->error('网络异常，请重新提交数据!');
+				return '网络异常，请重新提交数据!';
 			}
 		}
 		
 		//更新数据
 		$res = Db::table('atccsuser')->where('id', $id)
 			->update(['username'=>$username, 'password'=>$passwd, 'role'=>$role, 'description'=>$des,]);
+		//halt($res);
 		if ($res)
 		{
-			$this->success('更新用户信息成功!', '/xinglong/user');
+			//$this->success('编辑用户成功!', '/xinglong/user');
+			return '编辑用户成功!';
 		}else{
-			$this->error('更新用户信息失败!');
+			//$this->error('编辑用户失败!');
+			return '编辑用户失败,请重新操作!';
 		}
 	}
 	
@@ -299,32 +307,31 @@ class User extends Controller
 		
         if(true	!==	$result)    //验证失败 输出错误信息
         { 
-            $this->error($result);
+            return $result;
         }
 		
 		$user = Db::table('atccsuser');
-		//根据cookie中的用户名 查原来密码
+		//根据session中的用户名 查原来密码
 		$oldPaswd = Db::table('atccsuser')->where('username', $username)->value('password');
 	
 		if($oldPaswd)
 		{
 			if(md5($passwd) !== $oldPaswd)
 			{
-				$this->error('您输入的原密码错误!');
+				return '您输入的原密码错误!';
 			}else{
 				$res = $user->where('username', $username)
 				     ->update(['password'=>md5($passwdNew)]);
 				if ($res)
 				{
-					$this->success('密码更改成功!', '/xinglong/control/front');
+					return '密码更改成功!';
 				}else{
-					$this->error('密码更改失败!请重新更改。');
+					return '密码更改失败!请重新更改!';
 				}
-			}			
-			
+			}
 		}else{
-			$this->error('网络异常，请重新提交!');
+			return '网络异常，请重新提交!';
 		}
-	}
+	}//修改密码////////////////////////////////////////////////
 	
 }
