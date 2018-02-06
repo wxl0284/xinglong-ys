@@ -24,11 +24,12 @@ class Test extends Controller
 		//return time2Data ('-11:23:12.34'); */
 		//$userData = User::where('id','>',10)->column('username','password');
 		//print_r($userData);
-		$cacheStr['a'] = "aaa";
-		$cacheStr['b'] = "bbb";
-		$cacheStr['data'] = 1;
-		Cache::set('name', $cacheStr);
-		
+		// $cacheStr['a'] = "aaa";
+		// $cacheStr['b'] = "bbb";
+		// $cacheStr['data'] = 1;
+		// Cache::set('name', $cacheStr);
+		//return url('a/b/c');
+		return url('aa/bb/cc/vv/mm', 'v1=gg&v2=mm', true, true);
 		
 	}
 	

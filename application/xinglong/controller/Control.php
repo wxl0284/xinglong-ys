@@ -100,7 +100,7 @@ class Control extends Controller
         if (!Session::has('login'))
         {
             $request = Request::instance();
-            Cookie::set('url', $request->url());
+            Cookie::set('url', $request->url(true));
             $this->error('请完成登录后，再进行相关操作！', '/');
         }
         
@@ -270,7 +270,7 @@ class Control extends Controller
         if (!Session::has('login'))
         {
             $request = Request::instance();
-            Cookie::set('url', $request->url());
+            Cookie::set('url', $request->url(true));
             $this->error('请完成登录后，再进行相关操作！', '/');
         }
 		
