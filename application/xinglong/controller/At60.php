@@ -2073,25 +2073,23 @@ class At60 extends Controller
 			//获取计划文件的字符编码
 			$planData = file_get_contents($path.'/'.$name.'.txt');
 			
-			$encoding = mb_detect_encoding($planData, array('GB2312','GBK','UTF-16','UCS-2','UTF-8','BIG5','ASCII'));
-			
-			$fileData=array(); //存储计划的每行数据
-			
+			$encoding = mb_detect_encoding($planData, array('GB2312','GBK','UTF-16','UCS-2','UTF-8','BIG5','ASCII','CP936'));
+			$fileData=[]; //存储计划的每行数据
+			halt($encoding);
 			$file = fopen($path.'/'.$name.'.txt', 'r'); //只读方式打开文件
 			
 			while(!feof($file)) //输出文本中所有的行，直到文件结束为止。
 			{
 				$str = trim(fgets($file));   //fgets()从文件指针中读取一行
-				if ($encoding != false)
-				{
-					$str = iconv($encoding, 'UTF-8', $str);
-
+				if ($encoding !== false && $encoding !== 'CP936')
+				{ 
+					$str = iconv($encoding, "UTF-8//IGNORE", $str);
 					  if ($str)
 					  {
 						  $fileData[] = $str;
 					  }
 				}else{
-					$str = mb_convert_encoding ($str, 'UTF-8','Unicode');
+					$str = mb_convert_encoding ($str, 'UTF-8');
 
 					  if ($str)
 					  {
@@ -2196,9 +2194,8 @@ class At60 extends Controller
 			$sendMsg = pack('L', $i+1);  //unsigned int 
 			
 			$sendMsg .= pack('S', $at);
-            $sendMsg .= pack('a48', '01'); //user
+            $sendMsg .= pack('a48', $user); //user
             $sendMsg .= pack('a48', '02'); //project
-			
 			$target = trim($planData['planData'][$i]['target']);
 			
 			$sendMsg .= pack('a48', $target); 

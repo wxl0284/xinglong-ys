@@ -163,6 +163,7 @@
 						});
 						
 						editRow = undefined; //否则 导入后无法插入新行
+						planErr = 0;	//将提交计划的错误标识改为0
 					}
 					
 				},
@@ -285,8 +286,8 @@
 			
 		}
 		
-		//将editRow 置为初始的undefined
-		editRow = undefined;
+		editRow = undefined;	//将editRow 置为初始的undefined
+		planErr = 0;	//将提交计划的错误标识改为0
 	}
 
 	//datagrid 属性////////////////////////////////////////
@@ -671,6 +672,11 @@
 					if (info.indexOf('计划发送完毕') !== -1)
 					{
 						$('#planStart').prop('disabled', true);
+					}
+
+					if (info.indexOf('有误') !== -1)
+					{//提交的计划有数据不合要求
+						planErr = 1; //将标识计划提交错误 改为1 
 					}
 				},
 				error: function (){
