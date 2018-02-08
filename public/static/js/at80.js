@@ -4,14 +4,14 @@
 
  $(function () {
  	//ajax 实时更新60cm望远镜子设备状态数据///////////////////////	
-	var err = 0;  //控制错误时，弹窗数量
+	var getStatusErr = 0;  //控制错误时，弹窗数量
 	function getStatus()
 	{
 		$.ajax({
 			type : 'post',
             url : '/xinglong/at80status/devsStatus',           
             success:  function (info) {
-				err = 0; //将err变量重置为0
+				getStatusErr = 0; //将err变量重置为0
                 var info = eval( '(' + info +')' );
 				$('#date').html(info.date);
 				$('#utcTime').html(info.UTC);
@@ -130,12 +130,11 @@
 				//60cm各子设备状态结束//////////////////////////////
             },
 			error: function (){
-				err ++;
-				if(err <= 1)
+				getStatusErr ++;
+				if(getStatusErr <= 1)
 				{
 					alert('网络异常,设备实时数据无法获取!');
-				}
-				
+				}		
 			},
 		});
 	}
