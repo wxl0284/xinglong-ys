@@ -523,6 +523,7 @@
 
 //观测计划的 开始 停止 下一个按钮////////////////////////////
 //观测计划的开始 按钮//////////////////////////////////
+	var planErr = 0; //观测计划发送时的错误标识
 	$('#planModes').on('click', 'button', function () {
 		//执行验证
 		if (!valid())
@@ -554,29 +555,32 @@
 			}
 			
 		} */
-		$.ajax({
-            type : 'post',
-            url : '/xinglong/at60/at60PlanOption',
-            data : {planOption : option,
-					mode : modeVal,
-					start : index +1,
-					},             
-            success:  function (info) {
-               alert(info);
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
-				
-				if (info.indexOf('计划停止') !== -1)
-				{
-					$('#planStart').prop('disabled', false);
-				}
-            },
-            error:  function () {
-               alert('网络异常,请再次点击'+ btnText +'按钮!');
-            },
-        });
+		if (planErr === 0)
+		{
+			$.ajax({
+				type : 'post',
+				url : '/xinglong/at60/at60PlanOption',
+				data : {planOption : option,
+						mode : modeVal,
+						start : index +1,
+						},             
+	            success:  function (info) {
+	               alert(info);
+					if (info.indexOf('登录') !== -1)
+					{
+						location.href = '/';
+					}
+					
+					if (info.indexOf('计划停止') !== -1)
+					{
+						$('#planStart').prop('disabled', false);
+					}
+	            },
+	            error:  function () {
+	               alert('网络异常,请再次点击'+ btnText +'按钮!');
+	            },
+			});
+		}
 	
 	});
 	//观测计划的开始 按钮 结束/////////////////////////////
@@ -592,7 +596,8 @@
 		var n = plans.length;
 		if ( n< 1) 
 		{
-			alert('无计划数据，请先导入计划或添加计划!');return;
+			planErr = 1;
+			alert('无计划数据，请先导入计划或添加计划!');
 		}
 		
 		/*//js验证数据
@@ -649,26 +654,30 @@
 		}*/
 		
 		//ajax 发送数据到后台
-		$.ajax({
-			type: 'post',
-			url: '/xinglong/at60/savePlan',
-			data: {planData: plans},
-			success: function (info){
-				alert(info);
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
-				
-				if (info.indexOf('计划发送完毕') !== -1)
-				{
-					$('#planStart').prop('disabled', true);
-				}
-			},
-			error: function (){
-				alert('网络异常,请重新提交计划！');
-			},
-		});
+		if (planErr === 0)
+		{
+			$.ajax({
+				type: 'post',
+				url: '/xinglong/at60/savePlan',
+				data: {planData: plans},
+				success: function (info){
+					alert(info);
+					if (info.indexOf('登录') !== -1)
+					{
+						location.href = '/';
+					}
+					
+					if (info.indexOf('计划发送完毕') !== -1)
+					{
+						$('#planStart').prop('disabled', true);
+					}
+				},
+				error: function (){
+					alert('网络异常,请重新提交计划！');
+				},
+			});
+		}
+		
 	}//保存并提交计划  结束//////////////////////////////////////////
 	
 //数据验证函数 /////////////////////////////////////////////

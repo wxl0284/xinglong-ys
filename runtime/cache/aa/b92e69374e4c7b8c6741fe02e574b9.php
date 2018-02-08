@@ -1,7 +1,7 @@
 <?php
 //000000003600
  exit();?>
-s:67743:"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+s:67749:"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
  <head> 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"> 
@@ -620,9 +620,6 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         精细预报
        </div> 
        <div style="font-size: 12px;">
-        14:00
-       </div> 
-       <div style="font-size: 12px;">
         17:00
        </div> 
        <div style="font-size: 12px;">
@@ -642,6 +639,9 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        </div> 
        <div style="font-size: 12px;">
         11:00
+       </div> 
+       <div style="font-size: 12px;">
+        14:00
        </div> 
       </div> 
       <div class="row second tqxx"> 
@@ -667,7 +667,7 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
        </div> 
        <div>
         <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
@@ -676,9 +676,6 @@ var ctxStatic = 'http://image.nmc.cn/static2';
       <div class="row wd"> 
        <div class="label h3_wd">
         气温
-       </div> 
-       <div>
-        -6.8℃ 
        </div> 
        <div>
         -6.2℃ 
@@ -700,6 +697,9 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        </div> 
        <div>
         -7.3℃ 
+       </div> 
+       <div>
+        -5.2℃ 
        </div> 
       </div> 
       <div class="row js"> 
@@ -736,9 +736,6 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         风速
        </div> 
        <div>
-        4.1米/秒
-       </div> 
-       <div>
         2.2米/秒
        </div> 
        <div>
@@ -758,6 +755,9 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        </div> 
        <div>
         1.9米/秒
+       </div> 
+       <div>
+        3.7米/秒
        </div> 
       </div> 
       <div class="row windd"> 
@@ -783,10 +783,10 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         北风
        </div> 
        <div>
-        北风
+        西风
        </div> 
        <div>
-        西风
+        西南风
        </div> 
       </div> 
       <div class="row qy"> 
@@ -823,9 +823,6 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         相对湿度
        </div> 
        <div>
-        42%
-       </div> 
-       <div>
         43.3%
        </div> 
        <div>
@@ -846,13 +843,13 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        <div>
         38.8%
        </div> 
+       <div>
+        48.4%
+       </div> 
       </div> 
       <div class="row yl"> 
        <div class="label h3_yl">
         云量
-       </div> 
-       <div>
-        7.3%
        </div> 
        <div>
         10%
@@ -875,15 +872,15 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        <div>
         10.1%
        </div> 
+       <div>
+        10.1%
+       </div> 
       </div> 
       <div class="row njd"> 
        <div class="label h3_njd">
         能见度
        </div> 
        <div>
-         &nbsp;≥10公里 
-       </div> 
-       <div>
          - 
        </div> 
        <div>
@@ -903,6 +900,9 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        </div> 
        <div>
          - 
+       </div> 
+       <div>
+         &nbsp;≥10公里 
        </div> 
       </div> 
      </div> 
@@ -2778,6 +2778,6 @@ var ctxStatic = 'http://image.nmc.cn/static2';
 	document.write(unescape("%3Cspan id='cnzz_stat_icon_1254743953'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "w.cnzz.com/c.php%3Fid%3D1254743953' type='text/javascript'%3E%3C/script%3E"));
 </script>
   </div>   
-  <input type="hidden" name="页面生成时间" value="2018-02-05 13:03:13">
+  <input type="hidden" name="页面生成时间" value="2018-02-05 15:30:32">
  </body>
 </html>";
