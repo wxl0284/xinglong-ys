@@ -565,6 +565,7 @@
 						start : index +1,
 						},             
 	            success:  function (info) {
+		           planErr = 0;
 	               alert(info);
 					if (info.indexOf('登录') !== -1)
 					{
@@ -660,7 +661,8 @@
 				url: '/xinglong/at80/savePlan',
 				data: {planData: plans},
 				success: function (info){
-					alert(info + 'mm');
+					planErr = 0;
+					alert(info);
 					if (info.indexOf('登录') !== -1)
 					{
 						location.href = '/';
