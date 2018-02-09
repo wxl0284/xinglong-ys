@@ -526,11 +526,7 @@
 //观测计划的开始 按钮//////////////////////////////////
 	var planErr = 0; //观测计划发送时的错误标识
 	$('#planModes').on('click', 'button', function () {
-		//执行验证
-		if (!valid())
-		{
-			alert('请检查第' + (editRow+1) + '行必填数据!'); return;
-		}
+		
 		//获取模式值
 		var modeVal = $('#modeSpan').val();
 		var option = $(this).attr('id');
@@ -593,15 +589,21 @@
 	function submitPlan ()
 	{
 		var plans = table.datagrid('getRows');	//选中所有记录
-		//console.log(plans);return; 输出表格所有数据
 		
 		var n = plans.length;
 		if ( n< 1) 
 		{
 			planErr = 1;
-			alert('无计划数据，请先导入计划或添加计划!');
+			$.messager.alert('警告','请先导入计划或添加计划!','warning');
 		}
 		
+		//执行验证
+		if (!valid())
+		{
+			planErr = 1;
+			$.messager.alert('警告', '请检查第' + (editRow+1) + '行必填数据!', 'warning');
+		}
+
 		/*//js验证数据
 		for(var i = 0; i < n; i++)
 		{
@@ -664,20 +666,10 @@
 				data: {planData: plans},
 				success: function (info){
 					planErr = 0;
-					alert(info);
+					$.messager.alert('警告', info, 'warning');
 					if (info.indexOf('登录') !== -1)
 					{
 						location.href = '/';
-					}
-					
-					if (info.indexOf('计划发送完毕') !== -1)
-					{
-						$('#planStart').prop('disabled', true);
-					}
-
-					if (info.indexOf('有误') !== -1)
-					{//提交的计划有数据不合要求
-						planErr = 1; //将标识计划提交错误 改为1 
 					}
 				},
 				error: function (){
