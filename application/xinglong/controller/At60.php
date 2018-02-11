@@ -2183,8 +2183,7 @@ class At60 extends Controller
 		$user = $this->user;  $plan = 0; $length =28 + 208;
 	   
 		$headInfo = planPackHead($magic,$version,$msg,$length,$sequence,$at,$device);
-		
-		//halt($planData['planData'][1]['bin']);
+		//return $planData['planData'][0]['type'];
 		//验证计划数据
 		$planNum = count($planData['planData']);
 		$errMsg = '';	//错误提示
@@ -2202,7 +2201,8 @@ class At60 extends Controller
 			//验证目标类型
 			$type = $planData['planData'][$i]['type'];
 			
-			if( $type === '' || !preg_match('/^[0-9]{1}$/', $type) )//目标类型未填写
+			
+			if( $type === '' || !(preg_match('/^[0-9]{1}$/', $type) || in_array($type, ['恒星','太阳','月亮','彗星','行星','卫星','固定位置','本底','暗流','平场'])) )
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:目标类型参数超限!<br>';
 			}
@@ -2255,7 +2255,7 @@ class At60 extends Controller
 				$errMsg .= '第'. ($i+1) .'条计划:历元参数超限!<br>';
 			}else{ //历元 有值
 				$epoch = strtolower ($epoch);
-				if ( !preg_match('/^[0-3]{1}$/', $epoch) )
+				if ( !( preg_match('/^[0-3]{1}$/', $epoch) || in_array($epoch, ['real','j2000','b1950','j2050']) ) )
 				{
 					$errMsg .= '第'. ($i+1) .'条计划:历元参数超限!<br>';
 				}
@@ -2365,262 +2365,103 @@ class At60 extends Controller
 			
 			$target = $planData['planData'][$i]['target']; //目标名		
 			$sendMsg .= pack('a48', $target);
+			
+			//目标类型
+			if (preg_match('/^[0-9]{1}$/', $type)) //数字类型
+			{
+				$sendMsg .= pack('L', $type); 
+			}else{//直接为汉字类型数据
+				if($type == '恒星')
+				{
+					$sendMsg .= pack('L', 0); 
+				}elseif($type == '太阳'){
+					$sendMsg .= pack('L', 1); 
+				}elseif($type == '月亮'){
+					$sendMsg .= pack('L', 2); 
+				}elseif($type == '彗星'){
+					$sendMsg .= pack('L', 3); 
+				}elseif($type == '行星'){
+					$sendMsg .= pack('L', 4); 
+				}elseif($type == '卫星'){
+					$sendMsg .= pack('L', 5); 
+				}elseif($type == '固定位置'){
+					$sendMsg .= pack('L', 6); 
+				}elseif($type == '本底'){
+					$sendMsg .= pack('L', 7); 
+				}elseif($type == '暗流'){
+					$sendMsg .= pack('L', 8); 
+				}elseif($type == '平场'){
+					$sendMsg .= pack('L', 9); 
+				}
+			}
 
-			$type = trim($planData['planData'][$i]['type']); //目标类型
-			$sendMsg .= pack('L', $type);
 			
 			//赤经 rightAscension	
 			$rightAscension = $planData['planData'][$i]['rightAscension1'].':'.$planData['planData'][$i]['rightAscension2'].':'.$planData['planData'][$i]['rightAscension3'];			
 			$rightAscension = time2Data($rightAscension);
 			$sendMsg .= pack('d', $rightAscension);
-		}	//给中控 发送数据 结束///////////////
-
-
-		// for ($i = 0; $i < $planNum; $i ++) //循环提交上来的 每一条计划
-		// {
-		// 	//每条指令的tag
-		// 	$sendMsg = pack('L', $i+1);  //unsigned int 
-			
-		// 	$sendMsg .= pack('S', $at);
-        //     $sendMsg .= pack('a48', $user); //user
-        //     $sendMsg .= pack('a48', '02'); //project
-		// 	$target = trim($planData['planData'][$i]['target']);
-			
-		// 	$sendMsg .= pack('a48', $target); 
+			//赤纬
+			$declination = $planData['planData'][$i]['declination1'].':'.$planData['planData'][$i]['declination2'].':'.$planData['planData'][$i]['declination3'];
+			$declination = time2Data($declination);
+			$sendMsg .= pack('d', $declination);
+			//历元
+			$epoch = $planData['planData'][$i]['epoch'];
 		
+			if ( preg_match('/^[0-9]{1}$/', $epoch) ) //数字类型
+			{
+				$sendMsg .= pack('L', $epoch); 
+			}else{//直接为字符类型数据
+				$epoch = strtolower ($epoch);
+				if( $epoch == 'real' )
+				{
+					$sendMsg .= pack('L', 0); 
+				}elseif( $epoch == 'j2000' ){
+					$sendMsg .= pack('L', 1); 
+				}elseif( $epoch == 'b1950' ){
+					$sendMsg .= pack('L', 2); 
+				}elseif( $epoch == 'j2050' ){
+					$sendMsg .= pack('L', 3); 
+				}
+			}	//历元结束
+
+			//曝光时间
+			$exposureTime = $planData['planData'][$i]['exposureTime'];
+			$sendMsg .= pack('d', $exposureTime); 
+
+			//delayTime
+			 $delayTime = $planData['planData'][$i]['delayTime'];
+			 $sendMsg .= pack('d', $delayTime);
+
+			 //曝光数量
+			 $exposureCount = $planData['planData'][$i]['exposureCount'];
+			 $sendMsg .= pack('L', $exposureCount);
+
+			 //滤光片
+			 $filter = trim($planData['planData'][$i]['filter']);
+			 $filter = strtoupper ($filter);
+			 $sendMsg .= pack('a8', $filter); 
+
+			//增益 gain
+			$gain = $planData['planData'][$i]['gain'];
+			$sendMsg .= pack('S', $gain); 
 			
-		// 	//验证目标类型
-		// 	$type = trim($planData['planData'][$i]['type']);
-		// 	if($type === '')//目标类型未填写
-		// 	{
-		// 		return '请选择第'. ($i+1) .'条计划:目标类型!'; 
-		// 	}else{ //目标类型 有值
-		// 		if (preg_match('/^[0-9]{1}$/', $type)) //数字类型
-		// 		{
-		// 			$sendMsg .= pack('L', $type); 
-		// 		}else{//直接为汉字类型数据
-		// 			if(!in_array($type, ['太阳','月亮','恒星','彗星',
-		// 				'行星', '卫星', '固定位置', '本底', '暗流', '平场']))
-		// 			{
-		// 				return '第'. ($i+1) .'条计划:目标类型有误!';
-		// 			}else{
-		// 				if($type == '恒星')
-		// 				{
-		// 					$sendMsg .= pack('L', 0); 
-		// 				}elseif($type == '太阳'){
-		// 					$sendMsg .= pack('L', 1); 
-		// 				}elseif($type == '月亮'){
-		// 					$sendMsg .= pack('L', 2); 
-		// 				}elseif($type == '彗星'){
-		// 					$sendMsg .= pack('L', 3); 
-		// 				}elseif($type == '行星'){
-		// 					$sendMsg .= pack('L', 4); 
-		// 				}elseif($type == '卫星'){
-		// 					$sendMsg .= pack('L', 5); 
-		// 				}elseif($type == '固定位置'){
-		// 					$sendMsg .= pack('L', 6); 
-		// 				}elseif($type == '本底'){
-		// 					$sendMsg .= pack('L', 7); 
-		// 				}elseif($type == '暗流'){
-		// 					$sendMsg .= pack('L', 8); 
-		// 				}elseif($type == '平场'){
-		// 					$sendMsg .= pack('L', 9); 
-		// 				}
-		// 			}
-		// 		}
-		// 	}
+			//bin
+			$bin = $planData['planData'][$i]['bin'];
+			$sendMsg .= pack('S', $bin);
 			
-		// 	//处理赤经数据
-		// 	$rightAscension = trim($planData['planData'][$i]['rightAscension1']).':'.trim($planData['planData'][$i]['rightAscension2']).':'.trim($planData['planData'][$i]['rightAscension3']);
+			//读出速度
+			$readout = $planData['planData'][$i]['readout'];
+			$sendMsg .= pack('S', $readout);
 			
-		// 	//验证 rightAscension
-		// 	if ($rightAscension !== '::')
-		// 	{//赤经：数字 0-24
-		// 		if (!is_numeric(str_replace(':', '', $rightAscension)))
-		// 		{
-		// 			return '第'. ($i+1) .'条计划:赤经数据有误!';
-		// 		}
-				
-		// 		$rightAscension = time2Data($rightAscension);
-		// 		if ($rightAscension > 24 || $rightAscension < 0)
-		// 		{
-		// 			return '第'. ($i+1) .'条计划:赤经数据有误!';
-		// 		}
-		// 		$sendMsg .= pack('d', $rightAscension);
-		// 	}else{
-		// 		return '第'. ($i+1) .'条计划:赤经数据有误!';
-		// 	} 
 			
-		// 	//处理赤纬数据
-		// 	$declination = trim($planData['planData'][$i]['declination1']).':'.trim($planData['planData'][$i]['declination2']).':'.trim($planData['planData'][$i]['declination3']);
-			
-		// 	//验证 赤纬
-		// 	if ($declination !== '::')
-		// 	{
-		// 		if (!is_numeric(str_replace(':', '', $declination)))
-		// 		{
-		// 			return '第'. ($i+1) .'条计划:赤纬数据有误!';
-		// 		}
-				
-		// 		$declination = time2Data($declination);
-		// 		if ($declination > 90 || $declination < -90)
-		// 		{
-		// 			return '第'. ($i+1) .'条计划:赤纬数据有误!';
-		// 		}
-		// 		$sendMsg .= pack('d', $declination);
-		// 	}else{
-		// 		return '第'. ($i+1) .'条计划:赤纬数据有误!';
-		// 	}
-			
-		// 	//验证历元 
-		// 	$epoch = trim($planData['planData'][$i]['epoch']);
-		// 	if($epoch === '')//目标类型未填写
-		// 	{
-		// 		return '请选择第'. ($i+1) .'条计划:历元!'; 
-		// 	}else{ //历元 有值
-		// 		if (preg_match('/^[0-9]{1}$/', $epoch)) //数字类型
-		// 		{
-		// 			$sendMsg .= pack('L', $epoch); 
-		// 		}else{//直接为汉字类型数据
-		// 			if(!in_array($epoch, ['real','Real','j2000','J2000','B1950', 'b1950','j2050', 'J2050']))
-		// 			{
-		// 				return '第'. ($i+1) .'条计划:历元数据有误!';
-		// 			}else{
-		// 				if($epoch == 'real' || $epoch == 'Real')
-		// 				{
-		// 					$sendMsg .= pack('L', 0); 
-		// 				}elseif($epoch == 'j2000' || $epoch == 'J2000'){
-		// 					$sendMsg .= pack('L', 1); 
-		// 				}elseif($epoch == 'b1950' || $epoch == 'B1950'){
-		// 					$sendMsg .= pack('L', 2); 
-		// 				}elseif($epoch == 'j2050' || $epoch == 'J2050'){
-		// 					$sendMsg .= pack('L', 3); 
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-			
-		// 	//验证 曝光时间
-		// 	$exposureTime = trim($planData['planData'][$i]['exposureTime']);
-		// 	if($exposureTime === '')
-		// 	{
-		// 		return '请填写第'. ($i+1) .'条计划:曝光时间!'; 
-		// 	}else{
-		// 		if(true)//曝光时间最大值？
-		// 		{
-		// 			$sendMsg .= pack('d', $exposureTime); 
-		// 		}else{
-		// 			return '第'. ($i+1) .'条计划:曝光时间数据有误!'; 
-		// 		}
-		// 	}
-			
-		// 	//验证 delayTime
-		// 	$delayTime = trim($planData['planData'][$i]['delayTime']);
-		// 	if($delayTime === '')
-		// 	{
-		// 		return '请填写第'. ($i+1) .'条计划:delayTime!'; 
-		// 	}else{
-		// 		if(true)//曝光时间最大值？
-		// 		{
-		// 			$sendMsg .= pack('d', $delayTime); 
-		// 		}else{
-		// 			return '第'. ($i+1) .'条计划:delayTime数据有误!'; 
-		// 		}
-		// 	}
-			
-		// 	//验证 exposureCount
-		// 	$exposureCount = trim($planData['planData'][$i]['exposureCount']);
-		// 	if($exposureCount === '')
-		// 	{
-		// 		return '请填写第'. ($i+1) .'条计划:曝光数量!'; 
-		// 	}else{
-		// 		if(preg_match('/^[0-9]+$/', $exposureCount) && $exposureCount>0 && $exposureCount <= 100)//曝光时间最大值？
-		// 		{
-		// 			$sendMsg .= pack('L', $exposureCount); 
-		// 		}else{
-		// 			return '第'. ($i+1) .'条计划:曝光数量数据有误!'; 
-		// 		}
-		// 	}
-			
-		// 	//验证 滤光片数据
-		// 	$filter = trim($planData['planData'][$i]['filter']);
-		// 	if($filter === '')//目标类型未填写
-		// 	{
-		// 		return '请选择第'. ($i+1) .'条计划:滤光片!'; 
-		// 	}else{ //filter有值
-		// 		if (preg_match('/^[0-9]{1}$/', $filter)) //数字类型
-		// 		{
-		// 			$sendMsg .= pack('a8', $filter); 
-		// 		}else{//直接为汉字类型数据
-		// 			if(!in_array($filter, ['U','V','B','R','I', 'u','b', 'v', 'r', 'i']))
-		// 			{
-		// 				return '第'. ($i+1) .'条计划:滤光片数据有误!';
-		// 			}else{
-		// 				if($filter == 'u' || $filter == 'U')
-		// 				{
-		// 					$sendMsg .= pack('a8', 'U'); 
-		// 				}elseif($filter == 'b' || $filter == 'B'){
-		// 					$sendMsg .= pack('a8', 'B'); 
-		// 				}elseif($filter == 'V' || $filter == 'v'){
-		// 					$sendMsg .= pack('a8', 'V'); 
-		// 				}elseif($filter == 'R' || $filter == 'r'){
-		// 					$sendMsg .= pack('a8', 'R'); 
-		// 				}elseif ($filter == 'i' || $filter == 'I'){
-		// 					$sendMsg .= pack('a8', 'I'); 
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-			
-		// 	//验证增益 
-		// 	$gain = trim($planData['planData'][$i]['gain']);
-		// 	if($gain === '')//目标类型未填写
-		// 	{
-		// 		return '请填写第'. ($i+1) .'条计划:增益值!'; 
-		// 	}else{
-		// 		if (preg_match('/^[0-9]{1}$/', $gain))
-		// 		{
-		// 			$sendMsg .= pack('S', $gain); 
-		// 		}else{
-		// 			return '第'. ($i+1) .'条计划:增益数据有误!';
-		// 		}
-		// 	}
-			
-		// 	//验证Bin 
-		// 	$bin = trim($planData['planData'][$i]['bin']);
-		// 	if($bin === '')//目标类型未填写
-		// 	{
-		// 		return '请填写第'. ($i+1) .'条计划:增益值!'; 
-		// 	}else{
-		// 		if (preg_match('/^[0-9]{1}$/', $bin))
-		// 		{
-		// 			$sendMsg .= pack('S', $bin); 
-		// 		}else{
-		// 			return '第'. ($i+1) .'条计划:Bin数据有误!';
-		// 		}
-		// 	}
-			
-		// 	//验证读出速度 
-		// 	$readout = trim($planData['planData'][$i]['readout']);
-		// 	if($readout === '')//目标类型未填写
-		// 	{
-		// 		return '请填写第'. ($i+1) .'条计划:读出速度!'; 
-		// 	}else{
-		// 		if (preg_match('/^[0-9]{1}$/', $readout))
-		// 		{
-		// 			$sendMsg .= pack('S', $readout); 
-		// 		}else{
-		// 			return '第'. ($i+1) .'条计划:读出速度数据有误!';
-		// 		}
-		// 	}
-			
-		// 	//发送 计划数据
-        //     $sendMsg = $headInfo . $sendMsg;
+			//发送 计划数据
+        	$sendMsg = $headInfo . $sendMsg;
            
-        //     udpSendPlan($sendMsg, $this->ip, $this->port); //无返回值	
-		// } //结束循环提交上来的计划
+            udpSendPlan($sendMsg, $this->ip, $this->port); //无返回值
+		}	//给中控 发送数据 结束///////////////
+		//在此 把计划数据写入cache
 		
-		//return '观测计划发送完毕!';
+		return '观测计划发送完毕!';
 
 	} //发送观测计划 结束/////////////////////////////////////////////
 	
@@ -2639,7 +2480,8 @@ class At60 extends Controller
 		}*/
 		
 		//获取提交数据
-		if (!input())
+		$postData = input();
+		if (!$postData)
 		{
 			return '网络异常,请重新提交计划!';
 		}
@@ -2664,35 +2506,33 @@ class At60 extends Controller
 	   
 		$headInfo = planPackHead($magic,$version,$msg,$length,$sequence,$at,$device);
 		
-		$input = input();
-		if($input['planOption'] == 'planStart')
+	
+		if($postData['planOption'] == 'planStart')
 		{
 			$sendMsg = pack('L', 1);
-			$sendMsg .= pack('L', $input['mode']);
-			$sendMsg .= pack('L', $input['start']);
+			$sendMsg .= pack('L', $postData['mode']);
+			$sendMsg .= pack('L', $postData['start']);
 			$sendMsg .= pack('L', 0);
 			
 			$sendMsg = $headInfo . $sendMsg;
-			echo '计划开始33:' .udpSend($sendMsg, $this->ip, $this->port);
-		}elseif($input['planOption'] == 'planStop'){
+			echo '计划开始:' .udpSend($sendMsg, $this->ip, $this->port);
+		}elseif($postData['planOption'] == 'planStop'){
 			$sendMsg = pack('L', 2);
-			$sendMsg .= pack('L', $input['mode']);
-			$sendMsg .= pack('L', $input['start']);
+			$sendMsg .= pack('L', $postData['mode']);
+			$sendMsg .= pack('L', $postData['start']);
 			$sendMsg .= pack('L', 0);
 			
 			$sendMsg = $headInfo . $sendMsg;
 			echo '计划停止:' .udpSend($sendMsg, $this->ip, $this->port);
-		}elseif($input['planOption'] == 'planNext'){
+		}elseif($postData['planOption'] == 'planNext'){
 			$sendMsg = pack('L', 3);
-			$sendMsg .= pack('L', $input['mode']);
-			$sendMsg .= pack('L', $input['start']);
+			$sendMsg .= pack('L', $postData['mode']);
+			$sendMsg .= pack('L', $postData['start']);
 			$sendMsg .= pack('L', 0);
 			
 			$sendMsg = $headInfo . $sendMsg;
 			echo '下一条计划:' .udpSend($sendMsg, $this->ip, $this->port);
 		}
-		
-		
 	}
 	//观测计划的 开始 停止 下一个 结束//////////////////////////////
 }

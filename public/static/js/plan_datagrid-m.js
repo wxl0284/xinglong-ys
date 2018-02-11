@@ -533,11 +533,7 @@
 		var btnText = $(this).html();
 		var rows = table.datagrid('getSelections');
 		var index = table.datagrid('getRowIndex', rows[0]);
-		//alert(index);return;
-		if(option === 'planStart')
-		{//如果点击开始 执行计划数据提交
-			submitPlan();			
-		}
+	
 		if(index < 0){
 			index = 0;
 		}
@@ -557,16 +553,21 @@
 			$.ajax({
 				type : 'post',
 				url : '/xinglong/at60/at60PlanOption',
-				data : {planOption : option,
-						mode : modeVal,
-						start : index +1,
-						},             
+				data : {
+					planOption : option,
+					mode : modeVal,
+					start : index +1,
+				},             
 	            success:  function (info) {
 		            planErr = 0;
 					alert(info);
 					if (info.indexOf('登录') !== -1)
 					{
 						location.href = '/';
+					}
+					if (info.indexOf('计划开始') !== -1)
+					{
+						$('#planStart').prop('disabled', true);
 					}
 					
 					if (info.indexOf('计划停止') !== -1)
@@ -666,7 +667,7 @@
 				data: {planData: plans},
 				success: function (info){
 					planErr = 0;
-					$.messager.alert('警告', info, 'warning');
+					$.messager.alert('警告', info);
 					if (info.indexOf('登录') !== -1)
 					{
 						location.href = '/';
