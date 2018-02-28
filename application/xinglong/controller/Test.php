@@ -29,8 +29,9 @@ class Test extends Controller
 		// $cacheStr['data'] = 1;
 		// Cache::set('name', $cacheStr);
 		//return url('a/b/c');
-		return url('aa/bb/cc/vv/mm', 'v1=gg&v2=mm', true, true);
-		
+		//return url('aa/bb/cc/vv/mm', 'v1=gg&v2=mm', true, true);
+		$a = input();
+		dump($a);
 	}
 	
 	public function index1 ($a='mm')

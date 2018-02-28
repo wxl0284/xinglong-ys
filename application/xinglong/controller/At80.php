@@ -384,7 +384,7 @@ class At80 extends Controller
 			
 			//socket发送数据
 			$sendMsg = $headInfo . $sendMsg;
-			echo '位置修正指令：' .udpSend($sendMsg, $this->ip, $this->port);		
+			echo '速度修正指令：' .udpSend($sendMsg, $this->ip, $this->port);		
 		}elseif (input('command') == 7)  //恒速运动
 		{
 			$length = 48 + 10;      //该结构体总长度
