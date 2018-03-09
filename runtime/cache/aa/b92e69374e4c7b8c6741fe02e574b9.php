@@ -1,7 +1,7 @@
 <?php
 //000000003600
  exit();?>
-s:67529:"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+s:67532:"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
  <head> 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"> 
@@ -619,9 +619,6 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         精细预报
        </div> 
        <div style="font-size: 12px;">
-        14:00
-       </div> 
-       <div style="font-size: 12px;">
         17:00
        </div> 
        <div style="font-size: 12px;">
@@ -641,6 +638,9 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        </div> 
        <div style="font-size: 12px;">
         11:00
+       </div> 
+       <div style="font-size: 12px;">
+        14:00
        </div> 
       </div> 
       <div class="row second tqxx"> 
@@ -677,9 +677,6 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         气温
        </div> 
        <div>
-        5.9℃ 
-       </div> 
-       <div>
         6.8℃ 
        </div> 
        <div>
@@ -699,6 +696,9 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        </div> 
        <div>
         7.8℃ 
+       </div> 
+       <div>
+        10.8℃ 
        </div> 
       </div> 
       <div class="row js"> 
@@ -735,9 +735,6 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         风速
        </div> 
        <div>
-        4.3米/秒
-       </div> 
-       <div>
         2.3米/秒
        </div> 
        <div>
@@ -758,13 +755,13 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        <div>
         2.5米/秒
        </div> 
+       <div>
+        3.6米/秒
+       </div> 
       </div> 
       <div class="row windd"> 
        <div class="label h3_fx">
         风向
-       </div> 
-       <div>
-        南风
        </div> 
        <div>
         南风
@@ -786,6 +783,9 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        </div> 
        <div>
         北风
+       </div> 
+       <div>
+        西南风
        </div> 
       </div> 
       <div class="row qy"> 
@@ -822,9 +822,6 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         相对湿度
        </div> 
        <div>
-        52.3%
-       </div> 
-       <div>
         51.7%
        </div> 
        <div>
@@ -845,13 +842,13 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        <div>
         20.1%
        </div> 
+       <div>
+        26.1%
+       </div> 
       </div> 
       <div class="row yl"> 
        <div class="label h3_yl">
         云量
-       </div> 
-       <div>
-        10%
        </div> 
        <div>
         6%
@@ -874,15 +871,15 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        <div>
         0%
        </div> 
+       <div>
+        0%
+       </div> 
       </div> 
       <div class="row njd"> 
        <div class="label h3_njd">
         能见度
        </div> 
        <div>
-         &nbsp;≥10公里 
-       </div> 
-       <div>
          - 
        </div> 
        <div>
@@ -902,6 +899,9 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        </div> 
        <div>
          - 
+       </div> 
+       <div>
+         &nbsp;≥10公里 
        </div> 
       </div> 
      </div> 
@@ -2777,6 +2777,6 @@ var ctxStatic = 'http://image.nmc.cn/static2';
 	document.write(unescape("%3Cspan id='cnzz_stat_icon_1254743953'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "w.cnzz.com/c.php%3Fid%3D1254743953' type='text/javascript'%3E%3C/script%3E"));
 </script>
   </div>   
-  <input type="hidden" name="页面生成时间" value="2018-03-09 12:30:04">
+  <input type="hidden" name="页面生成时间" value="2018-03-09 14:03:11">
  </body>
 </html>";

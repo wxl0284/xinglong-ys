@@ -2047,13 +2047,12 @@ class At80 extends Controller
 					$plan["plan".$k]["rightAscension2"] = $rightAscension [1];
 					$plan["plan".$k]["rightAscension3"] = $rightAscension [2];
 					
-					//处理赤经
+					//处理赤纬
 					$declination = explode (':', trim($row[3]));
 					$plan["plan".$k]["declination1"] = $declination [0];
 					$plan["plan".$k]["declination2"] = $declination [1];
 					$plan["plan".$k]["declination3"] = $declination [2];
 					
-					$plan["plan".$k]["declination"] = trim($row[3]);
 					$plan["plan".$k]["epoch"] = trim($row[4]);
 					$plan["plan".$k]["exposureTime"] = trim($row[5]);
 					$plan["plan".$k]["delayTime"] = trim($row[6]);
