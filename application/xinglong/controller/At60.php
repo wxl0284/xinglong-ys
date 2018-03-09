@@ -54,10 +54,8 @@ class At60 extends Controller
 		//读取60cm望远镜配置
 		$At60config = new At60config;
 		$configData = $At60config->all();
-		$this->assign([
-            'configData' => $configData[0],
-        ]);
-		return view('at60-m');  
+		$vars['configData'] = $configData[0];
+		return view('at60-m', $vars);  
 		
     }
     

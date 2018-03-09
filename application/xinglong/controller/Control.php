@@ -152,7 +152,7 @@ class Control extends Controller
             }
         }else{//缓存获取失败，从网络抓取
 			$ch = curl_init();
-			curl_setopt ($ch, CURLOPT_URL, 'http://www.nmc.cn/publish/forecast/AHE/xing-long.html');
+			curl_setopt ($ch, CURLOPT_URL, 'http://www.nmc.cn/publish/forecast/AHE/xinglong.html');
 			curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1); //返回字符串数据
 			curl_setopt($ch, CURLOPT_FAILONERROR, 1); //出错时停止
 			$weathStr = curl_exec($ch); //将远程数据存入变量
@@ -216,7 +216,7 @@ class Control extends Controller
         //白天 天气数据模板赋值
         if (isset($day))
         {
-            $this->assign([
+           $vars = [
                 'day' => $day,
                 'dayPic' => $dayPic,            
                 'nightPic' => $nightPic,         
@@ -228,39 +228,34 @@ class Control extends Controller
                 'windNight' => $windNight,
                 'windPowerDay' => $windPowerDay,
                 'windPowerNight' => $windPowerNight,
-            ]);
+            ];
         }
         
         //夜晚天气数据模板赋值
         if (isset($night))
         {
-            $this->assign([
+            $vars = [
                 'night' => $night,                
                 'nightPic' => $nightPic,                
                 'weatherNight' => $weatherNight,                
                 'tmpNight' => $tmpNight,
                 'windNight' => $windNight,
                 'windPowerNight' => $windPowerNight,               
-            ]);
+            ];
         }
         //云图错误
         if (isset($wxytError))
         {
-           $this->assign('wxytError', $wxytError);
+           $vars['wxytError'] = $wxytError;
         }
         
         //天气获取错误
         if (isset($weatherError))
         {
-           $this->assign('weatherError', $weatherError);
+           $vars['weatherError'] = $weatherError;
         }
-        //卫星云图赋值
-        if (isset($cloudPic))
-        {
-           $this->assign('cloudPic', $cloudPic); 
-        }
-		
-        return view('front');
+      		
+        return view('front', $vars);
     }////////////////////////////////////////////////////////////
 	
 	//更多气象信息 页面 ////////////////////////////////////////////
@@ -311,16 +306,18 @@ class Control extends Controller
 		//云图错误
         if (isset($wxytError))
         {
-           $this->assign('wxytError', $wxytError);
+           //$this->assign('wxytError', $wxytError);
+           $vars['wxytError'] = $wxytError;
         }
         
         //卫星云图赋值
         if (isset($cloudPic))
         {
-           $this->assign('cloudPic', $cloudPic); 
+           //$this->assign('cloudPic', $cloudPic);
+           $vars['cloudPic'] = $cloudPic;
         }
 
-		return view('weather');
+		return view('weather', $vars);
     }
     
     //退出  ////////////////////////////////////////////////

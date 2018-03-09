@@ -10,6 +10,34 @@ use app\xinglong\model\At60config;
 
 class Test extends Controller
 {
+	protected $err = 0;
+	protected function _initialize ()
+	{
+		// echo $this->request->controller();
+		// echo $this->request->action();
+		//$this->success('新增成功', 'At60/index');
+		//$this->redirect('At80/index');
+		// $aa = $this->request->isAjax();
+		// halt($aa);
+		// $input = input();
+		// if ($input['a'] == 2)
+		// {
+		// 	if($this->request->isAjax())
+		// 	{
+		// 		//echo '您无权限';exit();
+		// 		if ($input['b'] == 2)
+		// 		{
+		// 			$this->err = 1;
+		// 		}
+		// 		//$this->err = 1;
+				
+		// 	}else{
+		// 		$this->redirect('At80/index');
+		// 	}
+		// 	//$this->error('无权限');
+		// }
+	}
+
 	public function index ()
 	{
 		/*  $mjd = GetJD(); //获取修正儒略日
@@ -30,13 +58,21 @@ class Test extends Controller
 		// Cache::set('name', $cacheStr);
 		//return url('a/b/c');
 		//return url('aa/bb/cc/vv/mm', 'v1=gg&v2=mm', true, true);
-		$a = input();
-		dump($a);
+		//$vars = ['mmm'=>5888];
+		$vars['nn'] = ['j' => 'kk'];
+		return view('table/a', $vars);
 	}
 	
 	public function index1 ($a='mm')
 	{
-		dump($_SERVER["DOCUMENT_ROOT"] . $_SERVER["REQUEST_URI"]);
+		//dump($_SERVER["DOCUMENT_ROOT"] . $_SERVER["REQUEST_URI"]);
+		if ($this->err == 1)
+		{
+			return '无权限';
+			//$this->error('无权限');
+		}
+		//return json(['aa'=>22, 'bb'=>33]);
+		return json('b:3');
 	}
 	
 	public function test ()
@@ -62,7 +98,7 @@ class Test extends Controller
 	public function valid ()
 	{
 		$data = Cache::get('name');
-		halt($data);
+		halt('cc');
 	/* 	$result	= $this->validate(
             [
                 '用户名' =>	$a['n'],
