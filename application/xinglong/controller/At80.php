@@ -2116,7 +2116,7 @@ class At80 extends Controller
 		//验证计划数据
 		$planNum = count($planData['planData']);
 		$errMsg = '';	//错误提示
-
+		
 		//循环验证每条计划数据
 		for ($i = 0; $i < $planNum; $i ++)
 		{

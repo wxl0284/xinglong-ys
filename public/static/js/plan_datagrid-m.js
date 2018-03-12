@@ -149,7 +149,7 @@
 							location.href = '/';
 						}
 					}else{			
-						var info = jQuery.parseJSON(info);
+						var info = $.parseJSON(info);
 						var arr = [];
 						var ii = 0;
 						for (var p in info)
@@ -157,7 +157,7 @@
 							arr[ii] = info[p];
 							ii ++;
 						}
-				
+						
 						table.datagrid({
 								data: arr,
 						});
