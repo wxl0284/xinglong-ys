@@ -88,7 +88,7 @@ class Control extends Controller
         {
             $this->redirect(Cookie::get('url'));
         }else{
-            $this->redirect('/xinglong/control/front'); //去首页
+            $this->redirect('/front'); //去首页
         }
         
     }

@@ -41,17 +41,17 @@
 		   </div>
 		  <!-- <a href="{:url('/xinglong/result')}" class='pos_r' id='res'>观测结果</a> -->
 		   <p class='pos_a'>
-				<a href="{:url('xinglong/control/front')}">首页&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="{:url('/front')}">首页&nbsp;&nbsp;&nbsp;&nbsp;
 				</a>
 				{if	condition="$Think.session.role == 1 "}
-				<a href='/xinglong/user'>用户管理&nbsp;&nbsp;&nbsp;&nbsp;</a>
+				<a href="{:url('/user')}">用户管理&nbsp;&nbsp;&nbsp;&nbsp;</a>
 				{/if}
 				<a href='/xinglong/user/passwd'>修改密码&nbsp;&nbsp;&nbsp;&nbsp;
 				</a>
 				<span>欢迎!&nbsp;&nbsp;{$Think.session.login ?? ''}&nbsp;
 				</span>
 		   </p>
-		   <div class='pos_a'><a href='/xinglong/control/logout'>&nbsp;&nbsp;&nbsp;退出&nbsp;&nbsp;&nbsp;</a></div> 
+		   <div class='pos_a'><a href="{:url('/logout')}">&nbsp;&nbsp;&nbsp;退出&nbsp;&nbsp;&nbsp;</a></div> 
 	    </div>
 	</header>
     <div id='all'>

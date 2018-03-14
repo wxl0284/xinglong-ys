@@ -59,8 +59,9 @@ class Test extends Controller
 		//return url('a/b/c');
 		//return url('aa/bb/cc/vv/mm', 'v1=gg&v2=mm', true, true);
 		//$vars = ['mmm'=>5888];
-		$vars['nn'] = ['j' => 'kk'];
-		return view('table/a', $vars);
+		// $vars['nn'] = ['j' => 'kk'];
+		// return view('table/a', $vars);
+		dump($this->request->routeInfo()['rule'][0]);
 	}
 	
 	public function index1 ($a='mm')

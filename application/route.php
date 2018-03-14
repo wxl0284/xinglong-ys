@@ -8,6 +8,15 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-return [
-    '/' => ['xinglong/control/index', ['method' => 'get']], //首页路由
-];
+use think\Route;
+
+//登陆页 路由
+Route::get('/', 'xinglong/control/index');
+//登陆 路由
+Route::post('login', 'xinglong/control/dologin');
+//首页 路由
+Route::get('front', 'xinglong/control/front');
+//退出 路由
+Route::get('logout', 'xinglong/control/logout');
+//用户管理 路由
+Route::any('user', 'xinglong/user/index');
