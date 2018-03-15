@@ -67,30 +67,13 @@ class Control extends Controller
             $this->error('此用户已被禁用!');
         }
 		
-		//计算晨光始、昏影终
-		$mjd = GetJD();  //修正儒略日
-		 
-		$sunRise = 0; //晨光始
-		$sunSet = 0; //昏影终
-		 
-		sunTwilight ($sunRise, $sunSet, $mjd, 8);
-		//halt(data2Time ($sunRise));
-		$sunRise = substr(data2Time ($sunRise), 1, 8);
-		$sunSet = substr(data2Time ($sunSet), 1, 8);
-
-        //登录成功，写入Cookie, 跳转至主页面
-        Session::set('login', $userData[0]['username']);
-        Session::set('role', $userData[0]['role']);
-        Session::set('sunRise', $sunRise);
-        Session::set('sunSet', $sunSet);
         //session中已有之前的url,则跳转回此url
         if (Cookie::has('url'))
         {
             $this->redirect(Cookie::get('url'));
         }else{
             $this->redirect('/front'); //去首页
-        }
-        
+        }  
     }
     
     //显示首页//////////////////////////////////////////////////

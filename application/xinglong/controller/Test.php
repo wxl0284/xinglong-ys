@@ -38,7 +38,7 @@ class Test extends Controller
 		// }
 	}
 
-	public function index ()
+	public function index (Request $request)
 	{
 		/*  $mjd = GetJD(); //获取修正儒略日
 		
@@ -61,7 +61,7 @@ class Test extends Controller
 		//$vars = ['mmm'=>5888];
 		// $vars['nn'] = ['j' => 'kk'];
 		// return view('table/a', $vars);
-		dump($this->request->routeInfo()['rule'][0]);
+		var_dump($request);
 	}
 	
 	public function index1 ($a='mm')

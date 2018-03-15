@@ -44,7 +44,22 @@ class At80 extends Controller
 		// $configData = $At60config->all();
 		// $this->assign([
         //     'configData' => $configData[0],
-        // ]);		
+		// ]);
+		//计算晨光始、昏影终
+		$mjd = GetJD();  //修正儒略日
+		 
+		$sunRise = 0; //晨光始
+		$sunSet = 0; //昏影终
+		 
+		sunTwilight ($sunRise, $sunSet, $mjd, 8);
+		//halt(data2Time ($sunRise));
+		$sunRise = substr(data2Time ($sunRise), 1, 8);
+		$sunSet = substr(data2Time ($sunSet), 1, 8);
+
+        //将晨光始 昏影终 存入session
+        Session::set('sunRise', $sunRise);
+		Session::set('sunSet', $sunSet);
+			
 		return view('at80');
     }
 	
