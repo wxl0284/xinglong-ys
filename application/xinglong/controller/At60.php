@@ -8,7 +8,7 @@ use think\Cookie;
 use think\Db;
 use think\Config;
 use think\Cache;
-use app\xinglong\model\At60config;
+//use app\xinglong\model\At60config;
 
 //60cm号望远镜控制器
 class At60 extends Controller
@@ -67,11 +67,16 @@ class At60 extends Controller
         Session::set('sunRise', $sunRise);
 		Session::set('sunSet', $sunSet);
 		//读取60cm望远镜配置
-		$At60config = new At60config;
-		$configData = $At60config->all();
-		$vars['configData'] = $configData[0];
-		return view('at60-m', $vars);  
-		
+		$res = file_get_contents('60conf.txt'); //后期将60conf动态获取
+		if (!$res)
+		{
+			$this->error('读取60页面配置数据失败！'); //后期将60conf动态获取
+		}
+		//获取配置数据成功
+		$confData = json_decode($res, true);
+		//halt($confData['focuscanfindhome']);
+		$vars['configData'] = $confData;
+		return view('at60-m', $vars);  		
     }
     
     //at60 望远镜 接管指令////////////////////////////////////////////

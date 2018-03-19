@@ -49,16 +49,27 @@
 //转台 ccd等子设备选中 js事件 结束/////////////////////////
 
 //提交60cm望远镜配置 js事件 /////////////////////////////
+	var configForm = $('#allOption');	//获取配置项表单元素
+
 	$('#at60ConfigBtn').click(function () {
-		var configForm = $('#allOption');
+		var at = $('#atNo').val();			//获取要配置的望远镜
+	
 		var check = configForm.find('input[type="checkbox"]:checked');
 		var radio = configForm.find('input[type="radio"]:checked');
+
+		//若未选择任何望远镜
+		if (at === '0')
+		{
+			alert('请选择要配置的望远镜!');return;
+		}
 		//为选择任何选项
 		if (check.length == 0 && radio.length == 0)
 		{
 			alert('您未进行任何配置!');return;
 		}
 		var formData = new FormData(configForm[0]);
+		formData.append("atNo", at); //将配置的望远镜序号加入表单数据
+
 		$.ajax({
 			url : '/xinglong/page_config/doAt60config',
 			type : 'post',

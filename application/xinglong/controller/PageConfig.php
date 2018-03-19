@@ -38,6 +38,24 @@ class PageConfig extends Controller
 	//根据用户提交的选项，进行60cm望远镜
 	public function doAt60config ()
 	{
+		$option = input();	//获取配置信息
+		$atNo = $option['atNo'] ; //获取配置的望远镜序号
+		if ($atNo=== '0')
+		{
+			return '请选择您要配置的望远镜';
+		}
+		$option = json_encode($option);	//将配置信息数组转为json
+		$fileName = $atNo.'conf'.'.txt';  //60的配置写入60conf.txt文件
+		$res = file_put_contents ($fileName, $option);
+		if ($res > 1)
+		{//写入文件成功
+			return $atNo . '望远镜配置ok!';
+		}
+		//将json数据存入文件
+	}
+	//根据用户提交的选项，进行60cm望远镜
+	public function doAt60config0 ()
+	{
 		//未选中任何选项
 		$option = input();
 		
