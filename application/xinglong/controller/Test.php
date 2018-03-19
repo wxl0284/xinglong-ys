@@ -38,7 +38,7 @@ class Test extends Controller
 		// }
 	}
 
-	public function index ($a)
+	public function index (Request $request)
 	{
 		/*  $mjd = GetJD(); //获取修正儒略日
 		
@@ -59,11 +59,8 @@ class Test extends Controller
 		//return url('a/b/c');
 		//return url('aa/bb/cc/vv/mm', 'v1=gg&v2=mm', true, true);
 		//$vars = ['mmm'=>5888];
-		// $vars['n'] = ['j' => 'kk', 'jj'=>null];
-		// return view('table/a', $vars);
-		file_put_contents('2.txt',$a);
-		$a = file_get_contents('2.txt');
-		dump($a);
+		$vars['n'] = ['j' => 'kk', 'jj'=>null];
+	    return view('table/a', $vars);
 		//var_dump($request->routeInfo());
 	}
 	

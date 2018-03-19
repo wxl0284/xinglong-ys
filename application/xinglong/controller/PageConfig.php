@@ -470,29 +470,4 @@ class PageConfig extends Controller
 	{
 		return 'ok';
 	}
-
-	public function doAt60config1 ()
-	{
-		//未选中任何选项
-		$option = input();
-		$option = json_encode($option);
-		file_put_contents('2.txt', $option);
-		$a = file_get_contents('2.txt');
-		$a = json_decode($a, true);
-		dump($a);
-		
-		// if (isset($option['viewOpt']))
-		// {
-		// 	$num = count($option['viewOpt']);
-		// 	if ($num > 0)
-		// 	{
-		// 		foreach ($option['viewOpt'] as $v)
-		// 		{
-		// 			//组装入库数组
-		// 			$data[$v] = 1;
-		// 			$data[$v.'val'] = $option[$v.'val'];
-		// 		}
-		// 	}
-		// }
-	}
 }
