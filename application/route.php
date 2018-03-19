@@ -11,7 +11,7 @@
 use think\Route;
 
 //登陆页 路由
-Route::get('/aaaa', 'xinglong/control/index');
+Route::get('/', 'xinglong/control/index');
 //登陆 路由
 Route::post('login', 'xinglong/control/dologin');
 //首页 路由
