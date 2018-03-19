@@ -54,10 +54,10 @@
 		var check = configForm.find('input[type="checkbox"]:checked');
 		var radio = configForm.find('input[type="radio"]:checked');
 		//为选择任何选项
-		if (check.length == 0 && radio.length == 0)
-		{
-			alert('您未进行任何配置!');return;
-		}
+		// if (check.length == 0 && radio.length == 0)
+		// {
+		// 	alert('您未进行任何配置!');return;
+		// }
 		var formData = new FormData(configForm[0]);
 		$.ajax({
 			url : '/xinglong/page_config/doAt60config',

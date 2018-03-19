@@ -7,7 +7,7 @@ return [
         'type'            => 'mysql',
         
         // 服务器地址
-        //'hostname'        => '192.168.160.15',
+        //'hostname'        => '192.168.160.100',
         'hostname'        => '127.0.0.1',
        
         // 数据库名
@@ -15,7 +15,7 @@ return [
         'database'        => 'xinglong',   
         
         // 数据库用户名
-        //'username'        => 'lenovo', 
+        //'username'        => 'atccs', 
         'username'        => 'root',
 
         // 数据库密码

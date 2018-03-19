@@ -66,8 +66,11 @@ class Control extends Controller
         {
             $this->error('此用户已被禁用!');
         }
-		
-        //session中已有之前的url,则跳转回此url
+
+        //登录成功，写入session, 跳转至主页面
+        Session::set('login', $userData[0]['username']);
+        Session::set('role', $userData[0]['role']);
+        //cookie中已有之前的url,则跳转回此url
         if (Cookie::has('url'))
         {
             $this->redirect(Cookie::get('url'));
