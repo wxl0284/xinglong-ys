@@ -50,10 +50,9 @@
 
 //提交60cm望远镜配置 js事件 /////////////////////////////
 	var configForm = $('#allOption');	//获取配置项表单元素
-
+	var childDevice = $('#at60devs');	//获取望远镜的子设备
 	$('#at60ConfigBtn').click(function () {
 		var at = $('#atNo').val();			//获取要配置的望远镜
-	
 		var check = configForm.find('input[type="checkbox"]:checked');
 		var radio = configForm.find('input[type="radio"]:checked');
 
@@ -69,6 +68,11 @@
 		}
 		var formData = new FormData(configForm[0]);
 		formData.append("atNo", at); //将配置的望远镜序号加入表单数据
+
+		childDevice.find('input[type="checkbox"]:checked').each(function(){//遍历子设备复选框，获取选中的选项值
+			var deviceVal = $(this).val();
+			formData.append(deviceVal, deviceVal);   
+		});
 
 		$.ajax({
 			url : '/xinglong/page_config/doAt60config',

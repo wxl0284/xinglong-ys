@@ -198,7 +198,7 @@
 			</div>
 			<div class='pos_a' style='left:526px;top:168px;width:150px;'>
 				<!-- <img src='/static/images-1/tjq.png' > -->
-				<img src='/static/images-1/ok.jpg' ><p id='focusStatus' style="color:#ccc;"></p>
+				<img src='/static/images-1/ok.jpg' ><p id='focusStatus'></p>
 			</div>
 			<div class='pos_a' style='left:772px;top:168px;width:150px;'>
 				<!-- <img src='/static/images-1/yd.png' > -->
@@ -291,7 +291,25 @@
         <div id='devsNav'><!--望远镜子设备导航:js用code/public/static/js/dev1.js-->
             <table>
                 <tr>
-                  <td><a name='planInfo'>观测计划</a></td><td><a name='at60Res'>观测图像</a></td><td><a name='gimbalInfo' class='borderBtm'>转台</a></td><td><a name='ccdInfo'>CCD</a></td><td><a name='focusInfo'>调焦器</a></td><td><a name='domeInfo'>圆顶</a></td><td><a name='filterInfo'>滤光片</a></td><td><a>数据处理</a></td><td><a>光谱终端</a></td><td><a>导星</a></td>
+				  <td><a name='planInfo'>观测计划</a></td>
+				  <td><a name='at60Res'>观测图像</a></td>
+				  {if condition="isset($configData.gimbal)"}
+				  <td><a name='gimbalInfo' class='borderBtm'>转台</a></td>
+				  {/if}
+				  {if condition="isset($configData.ccd)"}
+				  <td><a name='ccdInfo'>CCD</a></td>{/if}
+				  {if condition="isset($configData.focus)"}
+				  <td><a name='focusInfo'>调焦器</a></td>{/if}
+				  {if condition="isset($configData.slaveDome)"}
+				  <td><a name='domeInfo'>随动圆顶</a></td>{/if}
+				  {if condition="isset($configData.filter)"}
+				  <td><a name='filterInfo'>滤光片</a></td>{/if}
+				  {if condition="isset($configData.dataHandle)"}
+				  <td><a>数据处理</a></td>{/if}
+				  {if condition="isset($configData.spectrum)"}
+				  <td><a>光谱终端</a></td>{/if}
+				  {if condition="isset($configData.guider)"}
+				  <td><a>导星</a></td>{/if}
                 </tr>
             </table>
 			<hr style='height:3px;border:none;border-top:3px solid #ccc;'/>
@@ -323,7 +341,6 @@
 				{if condition="( isset($configData.cancoveroperation) ) && ($configData.cancoveroperation eq '1')"}
 				<span name='coverOp'>镜盖操作</span>
 				{/if}
-				{if condition="$configData.canfocusoperation eq '1'"}
 				{if condition="( isset($configData.canfocusoperation) ) && ($configData.canfocusoperation eq '1')"}
 				<span name='focusOp'>焦点切换镜</span>
 				{/if}
@@ -1078,12 +1095,12 @@
 	   <div id='filterInfo' class='displayNo'><!--滤光片 指令和属性-->
 			<div class='border2'><!--滤光片 指令和可变属性-->
 				<div id='btnsFilter' class='center_mrg center BtnsDiv' style='width:850px;'>
-				{if condition="$configData.filtercanconnect == '1'"/}
+				{if condition="( isset($configData.filtercanconnect) ) && ($configData.filtercanconnect eq '1')"}
 					<input id='filterConnect' class='border1 btnCommand' type='button' value='连接滤光片'>&nbsp;&nbsp;&nbsp;&nbsp;
 					<input id='filterDisConnect' class='border1 btnCommand' type='button' value='断开滤光片'>&nbsp;&nbsp;&nbsp;&nbsp;{/if}
-				{if condition="$configData.filtercanfindhome == '1'"/}
+				{if condition="( isset($configData.filtercanfindhome) ) && ($configData.filtercanfindhome eq '1')"}
 					<input id='filterFindHome' class='border1 btnCommand' type='button' value='找 零'>&nbsp;&nbsp;&nbsp;&nbsp;{/if}
-				{if condition="$configData.cansetfilterposition == '1'"/}
+				{if condition="( isset($configData.cansetfilterposition) ) && ($configData.cansetfilterposition eq '1')"}
 					滤光片位置：<select id='filterPosi' class='border1 btnCommand' name="filterPos" style='width:90px;color:#000;border:1px solid #7a7a7a;'>
 								<option value="">请选择</option>
 							   <option value="0">0</option>
@@ -1117,8 +1134,9 @@
 			   </span></li>
 			   <li class='li fl'>滤光片焦距偏差值:&nbsp;&nbsp;<span>
 			   {$configData.filterfocuslengthcompensateval}</span></li>
-			   <li class='li fl'>可否设置滤光片位置:&nbsp;&nbsp;<span> {if condition="$configData.cansetfilterposition == '0'"/}否
-			   {elseif condition="$configData.cansetfilterposition == '1'"/}能
+			   <li class='li fl'>可否设置滤光片位置:&nbsp;&nbsp;<span>
+			   {if condition="( isset($configData.cansetfilterposition) ) && ($configData.cansetfilterposition eq '1')"}能
+			   {else /}否
 				{/if}
 			   </span></li>
              </ul>
@@ -1178,7 +1196,7 @@
 				<img id='next' class='pos_a' src='/static/images-1/right.jpg'>
 			</div>
 		</div><!--观测图像 结束-->
-    </div><!-- id='all' 结束 --><br>
+	</div><!-- id='all' 结束 --><br>
 	<footer class='center clear'>
 		<span>中科院国家天文台兴隆观测基地</span>
 	</footer>

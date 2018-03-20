@@ -40,6 +40,7 @@ class PageConfig extends Controller
 	{
 		$option = input();	//获取配置信息
 		$atNo = $option['atNo'] ; //获取配置的望远镜序号
+		//halt($option['gimbal']);
 		if ($atNo=== '0')
 		{
 			return '请选择您要配置的望远镜';
