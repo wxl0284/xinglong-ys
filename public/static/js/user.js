@@ -1,3 +1,4 @@
+/*用户管理首页 js*/
 $(function () {
 	//显示导航栏望远镜列表   
    var ul = $('#atListUl');
@@ -47,5 +48,29 @@ $(function () {
             },
         });
     });
+
+    //禁用用户
+    $('table a.userOff').on('click', function (){
+        var r = confirm('确定禁用此用户？');
+        var uid = $(this).attr('uid');
+        if (r)
+        {
+            $(this).attr('href', "/user/off/" + uid);
+        }else {
+            $(this).attr('href', '#');
+        }
+    });//禁用用户 结束
+    
+    //启用用户
+    $('table a.userOn').on('click', function (){
+        var r = confirm('确定启用此用户？');
+        var uid = $(this).attr('uid');
+        if (r)
+        {
+            $(this).attr('href', "/user/on/" + uid);
+        }else {
+            $(this).attr('href', '#');
+        }
+    });//启用用户 结束
 
 })

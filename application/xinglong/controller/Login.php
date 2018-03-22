@@ -104,4 +104,10 @@ class Login extends Controller
         //返回首页
          return view('login');
     }//退出的方法  结束
+
+    //测试之方法
+    public function test()
+    {
+        return view ('a');
+    }
 }

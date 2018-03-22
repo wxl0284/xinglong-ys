@@ -13,6 +13,7 @@ class Base extends Controller
     //_initialize方法进行登陆及权限的验证,暂时不写
     protected function _initialize ()
 	{
+        //$this->request->routeInfo()['route']; //获取路由
         // echo $this->request->controller();
         // echo $this->request->action();
         //$this->success('新增成功', 'At60/index');

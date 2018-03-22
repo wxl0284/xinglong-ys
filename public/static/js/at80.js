@@ -194,7 +194,7 @@
 				getStatusErr ++;
 				if(getStatusErr <= 1)
 				{
-					alert('网络异常,设备实时数据无法获取!');
+					layer.alert('网络异常,设备实时数据无法获取!');
 				}		
 			},
 		});
@@ -755,7 +755,7 @@
               processData : false,
               contentType : false,  
               success:  function (info) {
-                alert(info);
+                layer.alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
@@ -1231,7 +1231,7 @@
               processData : false,
               contentType : false,  
               success:  function (info) {
-                alert(info);
+                layer.alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
@@ -1421,7 +1421,7 @@
              processData : false,
              contentType : false,  
              success:  function (info) {
-                alert(info);
+                layer.alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
@@ -1613,7 +1613,7 @@
               processData : false,
               contentType : false,  
               success:  function (info) {
-                alert(info);
+                layer.alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
@@ -1666,7 +1666,7 @@
             url : '/xinglong/at80/at80fDomeSendData',
             data : {openDome:fDomeVal,},             
             success:  function (info) {
-			    alert(info); 
+			    layer.alert(info); 
             },
             error:  function () {
                alert('网络异常,请再次选择该指令!');
@@ -1837,7 +1837,7 @@ $('#coverOp').on('click', 'input:button', function () {
 			openCover: val,
 		},
 		success:  function (info) {
-                alert(info);
+            layer.alert(info);
 			that.addClass('click');
 			notThis.removeClass('click');
 			if (info.indexOf('登录') !== -1)
@@ -1873,7 +1873,7 @@ $('#saveData').on('click', 'input:button', function () {
 			saveSyncData: val,
 		},
 		success:  function (info) {
-            alert(info);
+            layer.alert(info);
 			that.addClass('click');
 			notThis.removeClass('click');
 			if (info.indexOf('登录') !== -1)

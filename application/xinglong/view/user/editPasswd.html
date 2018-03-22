@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
     <meta charset='utf-8'>
-    <title>用户添加</title>
+    <title>修改密码</title>
      {load href='/static/css/common-1.css'}
      {load href='/static/css/userAdd.css'}
 	 {load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
-	 {load href='/static/js/user.js'}
+	 {load href='/static/js/editPasswd.js'}
+	 {load href='/static/plugin/layer/layer.js'}
 </head>
 <body>
 	<img src='/static/images-1/top.jpg' style='width:100%'/>
@@ -25,10 +26,10 @@
 					<li><a href='{:url("/xinglong/at100")}' target='_blank'>1米</a></li>
 				</ul>
 		   </div>
-		   <div id='atConfig' class='pos_a'>
+		  <div id='atConfig' class='pos_a'>
 				配置望远镜
 				<ul id='atConfigList' class='center displayNo'>
-					<<li><a href='{:url("/atconfig")}' target='_blank'>各望远镜</a></li>
+					<li><a href='{:url("/atconfig")}' target='_blank'>各望远镜</a></li>
 					<hr>
 					<li><a href='{:url("/xinglong/page_config/at80config")}' target='_blank'>配置80CM</a></li>
 					<hr>
@@ -41,7 +42,7 @@
 				{if	condition="$Think.session.role == 1 "}
 				<a href="{:url('/user')}">用户管理&nbsp;&nbsp;&nbsp;&nbsp;</a>
 				{/if}
-				<a href="{:url('/user/passwd')}">修改密码&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href={:url('/user/passwd')}>修改密码&nbsp;&nbsp;&nbsp;&nbsp;
 				</a>
 				<span>欢迎!&nbsp;&nbsp;{$Think.session.login ?? ''}&nbsp;
 				</span>
@@ -50,34 +51,30 @@
 	    </div>
 	</header>
 	<div id='all'>
-		 <form id='fm' class='center_mrg'>
+		  <form id='fm' class='center_mrg'>
+			<input type='hidden' name='username' value='{$Request.session.login}' />
 			<table>
 				<tr>
-				   <td>用户名</td><td><input class='border ipt' type='text' name='username' placeholder='6-12位字母数字_及-'/></td>
+				   <td>原密码</td>
+				   <td><input class='border ipt text' type='password' name='passwd' placeholder='6-12位字母数字_及-' />
+				   </td>
 				</tr>
 				<tr>
-					<td>密 码</td><td><input class='border ipt' type='password' name='passwd' placeholder='6-12位字母数字_及-'/></td>
+					<td>新密码</td>
+					<td><input class='border ipt text' type='password' name='passwdNew' placeholder='6-12位字母数字_及-' /></td>
 				</tr>
 				<tr>
-					<td>确认密码</td><td><input class='border ipt' type='password' name='rePasswd' placeholder='6-12位字母数字_及-'/></td>
-				</tr>
-					<tr><td>用户权限</td>
-					<td>
-					    <select class='border ipt' name="role">
-						   <option value="2">普通用户</option>
-						   <option value="3">操作者</option>
-						   <option value="4">科学家</option>
-					    </select>
-					</td>
+					<td>确认密码</td>
+					<td><input class='border ipt text' type='password' name='RepasswdNew' placeholder='6-12位字母数字_及-' /></td>
 				</tr>
 				<tr>
-					<td colspan='2' class='center'><input class='border1' id='btn' type='button' value='确认提交' /></td>
+					<td colspan='2' class='center'><input class='border1' type='button' id='btn' value='确认提交' /></td>
 				</tr> 
-			</table>
-		  </form>
-    </div><br />
-	<footer class='center clear'>
-		<span>中科院国家天文台兴隆观测基地</span>
-	</footer>
+			</table>	
+		  </form> 
+    </div>
+<footer class='center clear'>
+	<span>中科院国家天文台兴隆观测基地</span>
+</footer>
 </body>
 </html>

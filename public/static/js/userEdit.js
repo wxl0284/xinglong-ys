@@ -88,14 +88,13 @@ $(function () {
                     location.href = '/';
                 }else if (info.indexOf('用户成功') !== -1)
                 {
-                    location.href = '/xinglong/user';
+                    location.href = '/user';
                 }
             },
              error:  function () {
                   alert('网络异常,请重新提交');
              },
         });//ajax结束/////////////////////////
-
     })
 
 })

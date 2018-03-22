@@ -3,11 +3,54 @@ namespace app\xinglong\controller;
 
 use app\xinglong\controller\Base;
 use think\Cache;
-//use think\Session;
+use think\Session;
 //use think\Db;
 
 class Page extends Base
 {
+    //根据at参数显示不同望远镜页面
+    public function at_page($at)
+    {
+        $confFile = $at . 'conf.txt'; //文件位60conf.txt
+
+        if (!file_exists($confFile) || !file_get_contents($confFile))
+        {
+            $this->error('请先配置相应望远镜!', '/atconfig');
+        }else{
+            //计算晨光始、昏影终
+            $mjd = GetJD();  //修正儒略日
+            
+            $sunRise = 0; //晨光始
+            $sunSet = 0; //昏影终
+            
+            sunTwilight ($sunRise, $sunSet, $mjd, 8);
+            //halt(data2Time ($sunRise));
+            $sunRise = substr(data2Time ($sunRise), 1, 8);
+            $sunSet = substr(data2Time ($sunSet), 1, 8);
+
+            //将晨光始 昏影终 存入session
+            Session::set('sunRise', $sunRise);
+            Session::set('sunSet', $sunSet);
+            //读取60cm望远镜配置
+            $res = file_get_contents($confFile);
+            if (!$res)
+            {
+                $this->error("读取{$at}页面配置数据失败!");
+            }
+            //获取配置数据成功
+            $confData = json_decode($res, true);
+            //halt($confData['focuscanfindhome']);
+            $vars['configData'] = $confData;
+            return view('atpage', $vars); 	
+        }
+    }//根据at参数显示不同望远镜页面 结束
+
+    //望远镜配置页面 /////////
+    public function at_config()
+    {
+        return view('config');
+    }//望远镜配置页面 结束
+
     //显示首页
     public function front ()
     {
@@ -164,4 +207,54 @@ class Page extends Base
       		
         return view('front', $vars);
     }//显示首页 结束
+
+    //显示天气详情页
+    public function weather ()
+    {		
+		//获取卫星云图图片///////////////////////////////////////////// 
+        if ($wxyt = Cache::get('wxyt'))    //缓存有效
+        {
+            preg_match('/<img id="imgpath"([\s\S]){50,260}不存在！\'">/', $wxyt, $match);
+            preg_match('/src="http:\/\/([\s\S]){50,200}\d+"/', $match[0], $match1);
+            $cloudPic = $match1[0];
+        }else{//从网络抓取数据            
+			$ch = curl_init();
+			curl_setopt ($ch, CURLOPT_URL, 'http://www.nmc.cn/publish/satellite/fy2.htm');
+			curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1); //返回字符串数据
+			curl_setopt($ch, CURLOPT_FAILONERROR, 1); //出错时停止
+			$cloudPicStr = curl_exec($ch); //将远程数据存入变量
+
+			if( curl_errno($ch) )
+			{
+				$wxytError = '网络异常，暂未获取卫星云图,检查您的网络设置!';
+				$cloudPic  = null;
+			}
+			curl_close($ch);
+			
+            if ($cloudPicStr)
+            {//抓取成功
+                Cache::set('wxyt', $cloudPicStr, 3600); //写入缓存
+				
+				$wxyt = Cache::get('wxyt');
+				preg_match('/<img id="imgpath"([\s\S]){50,260}不存在！\'">/', $wxyt, $match);
+				preg_match('/src="http:\/\/([\s\S]){50,200}\d+"/', $match[0], $match1);
+				$cloudPic = $match1[0];
+            }
+              
+        } //气象云图获取ok//////////////////////////////////////////
+		
+		//云图错误
+        if (isset($wxytError))
+        {
+           $vars['wxytError'] = $wxytError;
+        }
+        
+        //卫星云图赋值
+        if (isset($cloudPic))
+        {
+           $vars['cloudPic'] = $cloudPic;
+        }
+
+		return view('weather', $vars);
+    }//显示天气详情页 结束///
 }

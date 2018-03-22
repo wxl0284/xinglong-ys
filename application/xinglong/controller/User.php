@@ -95,12 +95,6 @@ class User extends Base
     //显示编辑用户页面 ////////////////////////////
 	public function edit ($id)
 	{
-		//权限的判断	
-		if (Session::get('role') != 1)
-		{
-			 $this->error('您无权编辑用户！', '/');
-		}
-		
 		$userData = Db::table('atccsuser')->where('id', $id)->find();
 		if ($userData)
 		{
@@ -110,5 +104,178 @@ class User extends Base
 		}
 		
 		return view('edit',$vars);
-	}//显示编辑用户页面 结束
+    }//显示编辑用户页面 结束
+    
+    //编辑用户 /////////////////////////////////////////////////////
+	public function doEdit ()
+	{
+		$inputData = input(); //获取表单数据
+		$id = $inputData['id'];
+		$username = $inputData['username'];
+		$passwd = $inputData['password'];
+		$role = $inputData['role'];
+
+		if ($role == 2)
+		{
+			$des = '普通用户';
+		}elseif ($role == 3)
+		{
+			$des = '操作员';
+		}elseif ($role == 4)
+		{
+			$des = '科学家';
+		}elseif ($role == 1)
+		{
+			$des = '科学家';
+		}
+
+		//验证用户名唯一
+		$user = Db::table('atccsuser')->where('id', $id)->value('username');
+		if(!$user)
+		{
+			return '网络异常，请重新提交数据!';
+		}
+
+		//验证数据
+		$result	= $this->validate(
+            [
+                '用户名' =>	$username,
+            ],
+            [
+                '用户名' =>	'require|max:12|min:6|alphaDash',
+			],
+		    ['用户名'=>['alphaDash'=>'用户名只能数字字母_及-','min'=>'用户名长度最少须6位','max'=>'用户名长度最多12位','require'=>'用户名不能为空'],]);
+		
+        if(true	!==	$result)    //验证失败 输出错误信息
+        { 
+            return $result;
+        }
+		
+		//验证密码
+		if($passwd) //有提交的密码
+		{
+			if (!preg_match('/[\w-]{6,12}/', $passwd))
+			{
+				return '密码须是6-12位数字字母_及-!';
+			}else{
+				$passwd = md5($passwd);
+			}
+		}else{//没有密码提交 用原来的密码
+			$passwd = Db::table('atccsuser')->where('id', $id)->value('password');
+			if(!$passwd)
+			{
+				return '网络异常，请重新提交数据!';
+			}
+		}
+		
+		//更新数据
+		$res = Db::table('atccsuser')->where('id', $id)
+			->update(['username'=>$username, 'password'=>$passwd, 'role'=>$role, 'description'=>$des,]);
+		//halt($res);
+		if ($res)
+		{
+			//$this->success('编辑用户成功!', '/xinglong/user');
+			return '编辑用户成功!';
+		}else{
+			//$this->error('编辑用户失败!');
+			return '编辑用户失败,请重新操作!';
+		}
+    }//用户编辑 结束///////////////////
+    
+    //禁用  用户
+	public function off ()
+	{	
+		if($id = input('id'))
+		{
+			$res = Db::table('atccsuser')->where('id', $id)
+				 ->update(['status' => 2]);
+			if($res)
+			{
+				$this->success('操作成功!');
+			}else{
+				$this->error('操作失败!请重新执行操作!');
+			}
+		}else{
+			$this->error('网络异常，请重新操作!');
+		}
+    }//禁用用户  结束/////////////////
+    
+    //启用  用户////////////////
+	public function on ()
+	{		
+		if($id = input('id'))
+		{
+			$res = Db::table('atccsuser')->where('id', $id)
+				 ->update(['status' => 1]);
+			if($res)
+			{
+				$this->success('操作成功!');
+			}else{
+				$this->error('操作失败!请重新执行操作!');
+			}
+		}else{
+			$this->error('网络异常，请重新操作!');
+		}
+    }//启用  用户 结束////////////
+    
+    //显示修改密码页面  /////////////////////////////
+	public function passwd ()
+	{
+		return view('editPasswd');
+    }
+    
+    //执行密码修改  /////////////////////////////
+	public function editPasswd ()
+	{
+		$inputData = input(); //获取表单数据
+		$username = $inputData['username'];
+		$passwd = $inputData['passwd'];
+		$passwdNew = $inputData['passwdNew'];
+		$RepasswdNew = $inputData['RepasswdNew'];
+		//验证数据
+		$result	= $this->validate(
+            [
+                '原密码' =>	$passwd,
+                '新密码' => $passwdNew,
+                '确认密码' => $RepasswdNew ,
+            ],
+            
+            [
+                '原密码' =>	'require|max:12|min:6|alphaDash',
+                '新密码' => 'require|min:6|max:12|alphaDash',
+                '确认密码' => 'require|confirm:新密码',
+        ],
+		['原密码'=>['alphaDash'=>'原密码只能数字字母_及-','min'=>'原密码长度最少须6位','max'=>'原密码长度最多12位','require'=>'原密码不能为空'],
+		 '新密码'=>['alphaDash'=>'新密码只能数字字母_及-','min'=>'新密码长度最少须6位','max'=>'原密码长度最多12位','require'=>'新密码不能为空'],
+		 '确认密码'=>['require'=>'确认密码不能为空','confirm'=>'两次密码不一致'],
+		]);
+		
+        if(true	!==	$result)    //验证失败 输出错误信息
+        { 
+            return $result;
+        }
+		
+		$user = Db::table('atccsuser');
+		//根据session中的用户名 查原来密码
+		$oldPaswd = Db::table('atccsuser')->where('username', $username)->value('password');
+	
+		if($oldPaswd)
+		{
+			if(md5($passwd) !== $oldPaswd)
+			{
+				return '您输入的原密码错误!';
+			}else{
+				$res = $user->where('username', $username)
+				     ->update(['password'=>md5($passwdNew)]);
+				if ($res)
+				{
+					return '密码更改成功!';
+				}else{
+					return '密码更改失败!请重新更改!';
+				}
+			}
+		}else{
+			return '网络异常，请重新提交!';
+		}
+	}//修改密码 结束
 }

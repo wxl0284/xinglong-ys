@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset='utf-8'>
+    <title>配置60CM望远镜</title>
+     {load href='/static/css/common-1.css'}
+     {load href='/static/css/at60config.css'}
+     {load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
+	 {load href='/static/plugin/layer/layer.js'}
+     {load href='/static/js/at60config.js'}
+</head>
+<body>
+	<header class='pos_r'>
+	   <div class='pos_r'>
+	      <img class='pos_a' src='/static/images-0/logo1.png'/>
+		  <div id='atList' class='pos_a'>
+				望远镜列表
+				<ul id='atListUl' class='center displayNo'>
+					<li><a href='{:url("xinglong/page/at_page", ["at"=>60])}' target='_blank'>60CM</a></li>
+					<hr>
+					<li><a href='{:url("xinglong/page/at_page", ["at"=>80])}' target='_blank'>80CM</a></li>
+					<hr>
+					<li><a href='{:url("/xinglong/at85")}' target='_blank'>85CM</a></li>
+					<hr>
+					<li><a href='{:url("/xinglong/at100")}' target='_blank'>1米</a></li>
+				</ul>
+		   </div>
+		   <div id='atConfig' class='pos_a'>
+				配置望远镜
+				<ul id='atConfigList' class='center displayNo'>
+					<li><a href='{:url("/atconfig")}' target='_blank'>各望远镜</a></li>
+					<hr>
+					<li><a href='{:url("/xinglong/page_config/at80config")}' target='_blank'>配置80CM</a></li>
+					<hr>
+					<li>配置85CM</li>
+				</ul>
+		   </div>
+		  <!-- <a href="{:url('/xinglong/result')}" class='pos_r' id='res'>观测结果</a> -->
+		   <p class='pos_a'>
+				<a href="{:url('/front')}">首页&nbsp;&nbsp;&nbsp;&nbsp;
+				</a>
+				{if	condition="$Think.session.role == 1 "}
+				<a href="{:url('/user')}">用户管理&nbsp;&nbsp;&nbsp;&nbsp;</a>
+				{/if}
+				<a href='/xinglong/user/passwd'>修改密码&nbsp;&nbsp;&nbsp;&nbsp;
+				</a>
+				<span>欢迎!&nbsp;&nbsp;{$Think.session.login ?? ''}&nbsp;
+				</span>
+		   </p>
+		   <div class='pos_a'><a href="{:url('/logout')}">&nbsp;&nbsp;&nbsp;退出&nbsp;&nbsp;&nbsp;</a></div> 
+	    </div>
+	</header>
+    <div id='all'>
+		<h3 class='center'>配置望远镜
+			<select id='atNo'>
+				<option value="0">请选择望远镜</option>
+				<option value="60">60CM望远镜</option>
+				<option value="80">80CM望远镜</option>
+			</select>
+		</h3>
+		
+		<br>
+		<form id='at60devs' class='center_mrg center'><!--60cm子设备-->
+			转台<input type='checkbox' name='devs[]' value='gimbal'>
+			CCD<input type='checkbox' name='devs[]' value='ccd'>
+			调焦器<input type='checkbox' name='devs[]' value='focus'>
+			随动圆顶<input type='checkbox' name='devs[]' value='slaveDome'>
+			滤光片<input type='checkbox' name='devs[]' value='filter'>
+			全开圆顶<input type='checkbox' name='devs[]' value='openDome'>
+			数据处理<input type='checkbox' name='devs[]' value='dataHandle'>
+			光谱终端<input type='checkbox' name='devs[]' value='spectrum'>
+			导星<input type='checkbox' name='devs[]' value='guider'>
+		</form><!--60cm子设备 结束-->
+		<br>
+		<hr>
+		<form id='allOption'><!--60cm各子设备 指令属性选项-->
+			<div id='gimbal' class='displayNo border mrgTop'>
+				<span class='optionTitle'>转台固定属性</span><br>
+				<span class='optionLeng inline'>类型<input id='atType' type='checkbox' name='viewOpt[]' value='attype'></span>
+				<select id='atTypeVal' name='attypeval' class='displayNo' style='margin:10px 0 0 6px'>
+					<option value=''>请选择类型</option>
+					<option value='1'>赤道式德国</option>
+					<option value='2'>赤道式叉式</option>
+					<option value='3'>赤道式英式</option>
+					<option value='4'>赤道式轭式</option>
+					<option value='5'>赤道式摇篮式</option>
+					<option value='6'>地平式</option>
+				</select>
+				<span class='optionLeng inline'>焦点类型<input id='focustype' type='checkbox' name='viewOpt[]' value='focustype'></span>
+				<select id='focustypeVal' name='focustypeval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>请选择类型</option>
+					<option value='1'>[cassegrain coude]</option>
+					<option value='2'>[nasmyth1 nasmyth2]</option>
+				</select>
+				<span class='optionLeng inline'>焦比<input id='focusratio' type='checkbox' name='viewOpt[]' value='focusratio'></span>
+				<select id='focusratioVal' name='focusratioval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>请选择焦比</option>
+					<option value='1'>[9 45]</option>
+					<option value='2'>[8 8]</option>
+				</select>
+				<span class='optionLeng inline'>焦距<input id='focuslength' type='checkbox' name='viewOpt[]' value='focuslength'></span>
+				<select id='focuslengthVal' name='focuslengthval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>请选择焦距</option>
+					<option value='1'>[8000 8000]</option>
+					<option value='2'>[19.4 97.2]</option>
+				</select>
+				<span class='optionLeng inline'>轴1最大速度<input id='maxAxis1Speed' type='checkbox' name='viewOpt[]' value='maxaxis1speed'></span>
+				<input type='hidden' id='maxAxis1SpeedVal' name='maxaxis1speedval'>
+				<span class='optionLeng inline'>轴2最大速度<input id='maxAxis2Speed' type='checkbox' name='viewOpt[]' value='maxaxis2speed'></span>
+				<input type='hidden' id='maxAxis2SpeedVal' name='maxaxis2speedval'>
+				<span class='optionLeng inline'>轴3最大速度<input id='maxAxis3Speed' type='checkbox' name='viewOpt[]' value='maxaxis3speed'></span>
+				<input type='hidden' id='maxAxis3SpeedVal' name='maxaxis3speedval'>
+				<span class='optionLeng inline'>轴1最大加速度<input id='maxAxis1Acceleration' type='checkbox' name='viewOpt[]' value='maxaxis1acceleration'></span>
+				<input type='hidden' id='maxAxis1AccelerationVal' name='maxaxis1accelerationval'>
+				<span class='optionLeng inline'>轴2最大加速度<input id='maxAxis2Acceleration' type='checkbox' name='viewOpt[]' value='maxaxis2acceleration'></span>
+				<input type='hidden' id='maxAxis2AccelerationVal' name='maxaxis2accelerationval'>
+				<span class='optionLeng inline'>轴3最大加速度<input id='maxAxis3Acceleration' type='checkbox' name='viewOpt[]' value='maxaxis3acceleration'></span>
+				<input type='hidden' id='maxAxis3AccelerationVal' name='maxaxis3accelerationval'>
+				<span class='optionLeng inline'>轴1复位位置<input id='axis1ParkPosition' type='checkbox' name='viewOpt[]' value='axis1parkposition'></span>
+				<input type='hidden' id='axis1ParkPositionVal' name='axis1parkpositionval'>
+				<span class='optionLeng inline'>轴2复位位置<input id='axis2ParkPosition' type='checkbox' name='viewOpt[]' value='axis2parkposition'></span>
+				<input type='hidden' id='axis2ParkPositionVal' name='axis2parkpositionval'>
+				<span class='optionLeng inline'>轴3复位位置<input id='axis3ParkPosition' type='checkbox' name='viewOpt[]' value='axis3parkposition'></span>
+				<input type='hidden' id='axis3ParkPositionVal' name='axis3parkpositionval'>
+				<span class='optionLeng inline'>俯仰最低值<input id='minElevation' type='checkbox' name='viewOpt[]' value='minelevation'></span>
+				<input type='hidden' id='minElevationVal' name='minelevationval'>
+				<span class='optionLeng inline'>温度传感器数目<input id='numTemperatureSensor' type='checkbox' name='viewOpt[]' value='numtemperaturesensor'></span>
+				<input type='hidden' id='numTemperatureSensorVal' name='numtemperaturesensorval'>
+				<span class='optionLeng inline'>湿度传感器数目<input id='numHumiditySensor' type='checkbox' name='viewOpt[]' value='numhumiditysensor'></span>
+				<input type='hidden' id='numHumiditySensorVal' name='numhumiditysensorval'>
+				<span class='optionLeng inline'>第3轴:有<input type='radio' name='haveaxis3' value='1'>&nbsp;无<input type='radio' name='haveaxis3' value='0'></span>
+				<span class='optionLeng inline'>镜盖（轴5）:有<input type='radio' name='haveaxis5' value='1'>&nbsp;无<input type='radio' name='haveaxis5' value='0'></span>
+				<span class='optionLeng inline'>支持连接指令:是<input type='radio' name='gimbalcanconnect' value='1'>&nbsp;否<input type='radio' name='gimbalcanconnect' value='0'></span>
+				<span class='optionLeng inline'>支持找零:是<input type='radio' name='canfindhome' value='1'>&nbsp;否<input type='radio' name='canfindhome' value='0'></span>
+				<span class='optionLeng inline'>支持跟踪恒星:是<input type='radio' name='cantrackstar' value='1'>&nbsp;否<input type='radio' name='cantrackstar' value='0'></span>
+				<span class='optionLeng inline'>设置目标名称:能<input type='radio' name='cansetobjectname' value='1'>&nbsp;否<input type='radio' name='cansetobjectname' value='0'></span>
+				<span class='optionLeng inline'>指向固定位置:能<input type='radio' name='canslewazel' value='1'>&nbsp;否<input type='radio' name='canslewazel' value='0'></span>
+				<span class='optionLeng inline'>轴3指向固定位置:能<input type='radio' name='canslewderotator' value='1'>&nbsp;否<input type='radio' name='canslewderotator' value='0'></span>
+				<span class='optionLeng inline'>设置轴3工作模式:能<input type='radio' name='canconfigderotator' value='1'>&nbsp;否<input type='radio' name='canconfigderotator' value='0'></span>
+				<span class='optionLeng inline'>支持停止指令:是<input type='radio' name='canstop' value='1'>&nbsp;否<input type='radio' name='canstop' value='0'></span>
+				<span class='optionLeng inline'>设置跟踪速度:能<input type='radio' name='cansettrackspeed' value='1'>&nbsp;否<input type='radio' name='cansettrackspeed' value='0'></span>
+				<span class='optionLeng inline'>支持复位:是<input type='radio' name='canpark' value='1'>&nbsp;否<input type='radio' name='canpark' value='0'></span>
+				<span class='optionLeng inline'>支持恒速运动:是<input type='radio' name='canfixedmove' value='1'>&nbsp;否<input type='radio' name='canfixedmove' value='0'></span>
+				<span class='optionLeng inline'>支持位置修正:是<input type='radio' name='canpositioncorrect' value='1'>&nbsp;否<input type='radio' name='canpositioncorrect' value='0'></span>
+				<span class='optionLeng inline'>支持镜盖操作:是<input type='radio' name='cancoveroperation' value='1'>&nbsp;否<input type='radio' name='cancoveroperation' value='0'></span>
+				<span class='optionLeng inline'>焦点切换镜操作:能<input type='radio' name='canfocusoperation' value='1'>&nbsp;否<input type='radio' name='canfocusoperation' value='0'></span>
+				<span class='optionLeng inline'>支持急停:是<input type='radio' name='canemergencystop' value='1'>&nbsp;否<input type='radio' name='canemergencystop' value='0'></span>
+				<span class='optionLeng inline'>保存同步数据:能<input type='radio' name='cansavesyncdata' value='1'>&nbsp;否<input type='radio' name='cansavesyncdata' value='0'></span>
+				<span class='optionLeng inline'>支持跟踪卫星:是<input type='radio' name='cantracksatellite' value='1'>&nbsp;否<input type='radio' name='cantracksatellite' value='0'></span>
+			</div><!--转台的选项 结束-->
+			<div id='ccd' class='displayNo border mrgTop'><!--ccd选项-->
+				<span class='optionTitle'>CCD固定属性</span><br>
+				<span class='optionLeng inline'>探测器类型<input id='ccdType' type='checkbox' name='viewOpt[]' value='ccdtype'></span>
+				<select id='ccdTypeVal' name='ccdtypeval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>请选择CCD类型</option>
+					<option value='0'>CCD</option>
+					<option value='1'>FullFrame CCD</option>
+					<option value='2'>EMCCD</option>
+					<option value='3'>sCMOS</option>
+				</select>
+				<span class='optionLeng inline'>x像素<input id='xPixel' type='checkbox' name='viewOpt[]' value='xpixel'></span>
+				<input type='hidden' id='xPixelVal' name='xpixelval'>
+				<span class='optionLeng inline'>y像素<input id='yPixel' type='checkbox' name='viewOpt[]' value='ypixel'></span>
+				<input type='hidden' id='yPixelVal' name='ypixelval'>
+				<span class='optionLeng inline'>x像元大小<input id='xPixelSize' type='checkbox' name='viewOpt[]' value='xpixelsize'></span>
+				<input type='hidden' id='xPixelSizeVal' name='xpixelsizeval'>
+				<span class='optionLeng inline'>y像元大小<input id='yPixelSize' type='checkbox' name='viewOpt[]' value='ypixelsize'></span>
+				<input type='hidden' id='yPixelSizeVal' name='ypixelsizeval'>
+				<span class='optionLeng inline'>传感器名称<input id='sensorName' type='checkbox' name='viewOpt[]' value='sensorname'></span>
+				<input type='hidden' id='sensorNameVal' name='sensornameval'>
+				<span class='optionLeng inline'>图像位数<input id='imageBits' type='checkbox' name='viewOpt[]' value='imagebits'></span>
+				<select id='imageBitsVal' name='imagebitsval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>选择图像位数</option>
+					<option value='0'>18</option>
+					<option value='1'>16</option>
+					<option value='2'>8</option>
+				</select>
+				<span class='optionLeng inline'>制冷方式<input id='coolerMode' type='checkbox' name='viewOpt[]' value='coolermode'></span>
+				<select id='coolerModeVal' name='coolermodeval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>选择制冷方式</option>
+					<option value='0'>无制冷</option>
+					<option value='1'>半导体-风冷</option>
+					<option value='2'>半导体-水冷</option>
+					<option value='3'>液氮制冷</option>
+				</select>
+				<span class='optionLeng inline'>最低制冷温度<input id='lowCoolerT' type='checkbox' name='viewOpt[]' value='lowcoolert'></span>
+				<input type='hidden' id='lowCoolerTVal' name='lowcoolertval'>
+				<span class='optionLeng inline'>最大曝光时间<input id='maxExposureTime' type='checkbox' name='viewOpt[]' value='maxexposuretime'></span>
+				<input type='hidden' id='maxExposureTimeVal' name='maxexposuretimeval'>
+				<span class='optionLeng inline'>最小曝光时间<input id='minExposureTime' type='checkbox' name='viewOpt[]' value='minexposuretime'></span>
+				<input type='hidden' id='minExposureTimeVal' name='minexposuretimeval'>
+				<span class='optionLeng inline'>曝光时间分辨率<input id='exposureTimeRation' type='checkbox' name='viewOpt[]' value='exposuretimeration'></span>
+				<input type='hidden' id='exposureTimeRationVal' name='exposuretimerationval'>
+				<span class='optionLeng inline'>满阱电荷<input id='fullWellDepth' type='checkbox' name='viewOpt[]' value='fullwelldepth'></span>
+				<input type='hidden' id='fullWellDepthVal' name='fullwelldepthval'>
+				<span class='optionLeng inline'>读出模式5<input id='readoutMode5' type='checkbox' name='viewOpt[]' value='readoutmode5'></span>
+				<select id='readoutMode5Val' name='readoutmode5val' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>选择读出模式</option>
+					<option value='1'>单门读出</option>
+					<option value='2'>双门读出</option>
+					<option value='4'>四门读出</option>
+					<option value='5'>单门和四门读出</option>
+				</select>
+				<span class='optionLeng inline'>读出速度模式4<input id='readoutSpeed' type='checkbox' name='viewOpt[]' value='readoutspeed'></span>
+				<select id='readoutSpeedVal' name='readoutspeedval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>选择模式</option>
+					<option value='1'>A</option>
+					<option value='2'>B</option>
+					<option value='3'>C</option>
+				</select>
+				<span class='optionLeng inline'>转移速度模式4<input id='transferSpeed' type='checkbox' name='viewOpt[]' value='transferspeed'></span>
+				<select id='transferSpeedVal' name='transferspeedval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>选择模式</option>
+					<option value='1'>a</option>
+					<option value='2'>b</option>
+				</select>
+				<span class='optionLeng inline'>增益模式2<input id='gainmode' type='checkbox' name='viewOpt[]' value='gainmode'></span>
+				<select id='gainmodeVal' name='gainmodeval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>选择增益模式</option>
+					<option value='1'>支持High Capacity</option>
+					<option value='2'>支持High Sensitivity</option>
+				</select>
+				<span class='optionLeng inline'>增益档位4<input id='gainNumber' type='checkbox' name='viewOpt[]' value='gainnumber'></span>
+				<select id='gainNumberVal' name='gainnumberval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>选择增益档位</option>
+					<option value='1'>1</option>
+					<option value='2'>2</option>
+					<option value='3'>3</option>
+					<option value='4'>4</option>
+				</select>
+				<span class='optionLeng inline'>增益值<input id='gainValueArray' type='checkbox' name='viewOpt[]' value='gainvaluearray'></span>
+				<select id='gainValueArrayVal' name='gainvaluearrayval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>选择增益值</option>
+					<option value='1'>[Aai1 Aai2 Aa3 Aa4]</option>
+					<option value='2'>[Bai1 Bai2 Ba3 Ba4]</option>
+					<option value='3'>[Cai1 Cai2 Ca3 Ca4]</option>
+				</select>
+				<span class='optionLeng inline'>读出噪声值<input id='readoutNoiseArray' type='checkbox' name='viewOpt[]' value='readoutnoisearray'></span>
+				<select id='readoutNoiseArrayVal' name='readoutnoisearrayval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>选择噪声值</option>
+					<option value='1'>[4*4*2*4]</option>
+				</select>
+				<span class='optionLeng inline'>快门类型<input id='ShutterType' type='checkbox' name='viewOpt[]' value='shuttertype'></span>
+				<select id='ShutterTypeVal' name='shuttertypeval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>快门类型</option>
+					<option value='0'>无快门</option>
+					<option value='1'>机械快门</option>
+					<option value='2'>电子快门</option>
+				</select>
+				<span class='optionLeng inline'>快门模式<input id='ccdShutterMode' type='checkbox' name='viewOpt[]' value='ccdshuttermode'></span>
+				<select id='ccdShutterModeVal' name='ccdshuttermodeval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>快门模式</option>
+					<option value='0'>GlobalShutter</option>
+					<option value='1'>RollingShutter</option>
+				</select>
+				<span class='optionLeng inline'>BIN值<input id='binArray' type='checkbox' name='viewOpt[]' value='binarray'></span>
+				<select id='binArrayVal' name='binarrayval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>BIN值</option>
+					<option value='0'>[1 2 3 4]</option>
+					<option value='1'>[1 2 3 4]</option>
+				</select>
+				<span class='optionLeng inline'>接口类型<input id='InterfaceType' type='checkbox' name='viewOpt[]' value='interfacetype'></span>
+				<select id='InterfaceTypeVal' name='interfacetypeval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>接口类型</option>
+					<option value='1'>CameraLink</option>
+					<option value='2'>USB2.0</option>
+					<option value='4'>USB3.0</option>
+				</select>
+				<span class='optionLeng inline'>曝光触发模式<input id='ExposeTriggerMode' type='checkbox' name='viewOpt[]' value='exposetriggermode'></span>
+				<select id='ExposeTriggerModeVal' name='exposetriggermodeval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>曝光触发模式</option>
+					<option value='1'>支持硬件触发</option>
+					<option value='2'>支持软件触发</option>
+				</select>
+				<span class='optionLeng inline'>最大EM<input id='EmMaxValue' type='checkbox' name='viewOpt[]' value='emmaxvalue'></span>
+				<input type='hidden' id='EmMaxValueVal' name='emmaxvalueval'>
+				<span class='optionLeng inline'>最小EM<input id='EmMinValue' type='checkbox' name='viewOpt[]' value='emminvalue'></span>
+				<input type='hidden' id='EmMinValueVal' name='emminvalueval'>
+				<span class='optionLeng inline'>支持开窗:是<input type='radio' name='issupportroi' value='1'>&nbsp;否<input type='radio' name='issupportroi' value='0'></span>
+				<span class='optionLeng inline'>设置Roi:能<input type='radio' name='cansetroi' value='1'>&nbsp;否<input type='radio' name='cansetroi' value='0'></span>
+				<span class='optionLeng inline'>支持帧转移:是<input type='radio' name='issupportfullframe' value='1'>&nbsp;否<input type='radio' name='issupportfullframe' value='0'></span>
+				<span class='optionLeng inline'>设置帧转移:能<input type='radio' name='cansetfullframe' value='1'>&nbsp;否<input type='radio' name='cansetfullframe' value='0'></span>
+				<span class='optionLeng inline'>支持EM:是<input type='radio' name='issupportem' value='1'>&nbsp;否<input type='radio' name='issupportem' value='0'></span>
+				<span class='optionLeng inline'>设置EM:能<input type='radio' name='cansetem' value='1'>&nbsp;否<input type='radio' name='cansetem' value='0'></span>
+				<span class='optionLeng inline'>支持base line:是<input type='radio' name='issupportbaseline' value='1'>&nbsp;否<input type='radio' name='issupportbaseline' value='0'></span>
+				<span class='optionLeng inline'>设置base line:能<input type='radio' name='cansetbaseline' value='1'>&nbsp;否<input type='radio' name='cansetbaseline' value='0'></span>
+				<span class='optionLeng inline'>支持Over scan:是<input type='radio' name='issupportoverscan' value='1'>&nbsp;否<input type='radio' name='issupportoverscan' value='0'></span>
+				<span class='optionLeng inline'>设置Over scan:能<input type='radio' name='cansetoverscan' value='1'>&nbsp;否<input type='radio' name='cansetoverscan' value='0'></span>
+				<span class='optionLeng inline'>支持连接指令:是<input type='radio' name='ccdcanconnect' value='1'>&nbsp;否<input type='radio' name='ccdcanconnect' value='0'></span>
+				<span class='optionLeng inline'>设置制冷温度:能<input type='radio' name='cansetcoolert' value='1'>&nbsp;否<input type='radio' name='cansetcoolert' value='0'></span>
+				<span class='optionLeng inline'>设置曝光策略:能<input type='radio' name='cansetexposureparam' value='1'>&nbsp;否<input type='radio' name='cansetexposureparam' value='0'></span>
+				<span class='optionLeng inline'>开始曝光指令:支持<input type='radio' name='canstartexposure' value='1'>&nbsp;否<input type='radio' name='canstartexposure' value='0'></span>
+				<span class='optionLeng inline'>停止曝光指令:支持<input type='radio' name='canstopexposure' value='1'>&nbsp;否<input type='radio' name='canstopexposure' value='0'></span>
+				<span class='optionLeng inline'>终止曝光指令:支持<input type='radio' name='canabortexposure' value='1'>&nbsp;否<input type='radio' name='canabortexposure' value='0'></span>
+				<span class='optionLeng inline'>设置增益:支持<input type='radio' name='cansetgain' value='1'>&nbsp;否<input type='radio' name='cansetgain' value='0'></span>
+				<span class='optionLeng inline'>设置Bin:支持<input type='radio' name='cansetbin' value='1'>&nbsp;否<input type='radio' name='cansetbin' value='0'></span>
+				<span class='optionLeng inline'>设置快门:支持<input type='radio' name='cansetshutter' value='1'>&nbsp;否<input type='radio' name='cansetshutter' value='0'></span>
+				<span class='optionLeng inline' style='width:240px;'>设置读出速度模式值:能<input type='radio' name='cansetreadoutspeedmode' value='1'>&nbsp;否<input type='radio' name='cansetreadoutspeedmode' value='0'></span>
+				<span class='optionLeng inline' style='width:240px;'>设置转移速度模式值:能<input type='radio' name='cansettransferspeedmode' value='1'>&nbsp;否<input type='radio' name='cansettransferspeedmode' value='0'></span>
+				<span class='optionLeng inline' style='width:240px;'>支持CMOS noise filter:是<input type='radio' name='issupportscmosnoisefilter' value='1'>&nbsp;否<input type='radio' name='issupportscmosnoisefilter' value='0'></span>
+				<span class='optionLeng inline' style='width:240px;'>设置CMOS noise filter:能<input type='radio' name='cannoisefilter' value='1'>&nbsp;否<input type='radio' name='cannoisefilter' value='0'></span>
+			</div><!--ccd选项 结束-->
+			<div id='focus' class='displayNo border mrgTop'>
+				<span class='optionTitle'>调焦器固定属性</span><br>
+				<span class='optionLeng inline'>最大值<input id='focusMaxValue' type='checkbox' name='viewOpt[]' value='focusmaxvalue'></span>
+				<input type='hidden' id='focusMaxValueVal' name='focusmaxvalueval'>
+				<span class='optionLeng inline'>最小值<input id='focusMinValue' type='checkbox' name='viewOpt[]' value='focusminvalue'></span>
+				<input type='hidden' id='focusMinValueVal' name='focusminvalueval'>
+				<span class='optionLeng inline'>分辨率<input id='focusIncrement' type='checkbox' name='viewOpt[]' value='focusincrement'></span>
+				<input type='hidden' id='focusIncrementVal' name='focusincrementval'>
+				<span class='optionLeng inline'>最大速度<input id='focusMaxSpeed' type='checkbox' name='viewOpt[]' value='focusmaxspeed'></span>
+				<input type='hidden' id='focusMaxSpeedVal' name='focusmaxspeedval'>
+				<span class='optionLeng inline'>支持找零:是<input type='radio' name='focuscanfindhome' value='1'>&nbsp;否<input type='radio' name='focuscanfindhome' value='0'></span>
+				<span class='optionLeng inline'>支持连接指令:是<input type='radio' name='focuscanconnect' value='1'>&nbsp;否<input type='radio' name='focuscanconnect' value='0'></span>
+				<span class='optionLeng inline'>设置目标位置:能<input type='radio' name='focussetposition' value='1'>&nbsp;否<input type='radio' name='focussetposition' value='0'></span>
+				<span class='optionLeng inline'>设置恒速运动:能<input type='radio' name='focuscansetspeed' value='1'>&nbsp;否<input type='radio' name='focuscansetspeed' value='0'></span>
+				<span class='optionLeng inline'>支持停止运动:是<input type='radio' name='focuscanstop' value='1'>&nbsp;否<input type='radio' name='focuscanstop' value='0'></span>
+				<span class='optionLeng inline'>支持温度补偿:是<input type='radio' name='cantemperturecompensate' value='1'>&nbsp;否<input type='radio' name='cantemperturecompensate' value='0'></span>
+				<span class='optionLeng inline'>使能温度补偿:支持<input type='radio' name='canenabletemperturecompensate' value='1'>&nbsp;否<input type='radio' name='canenabletemperturecompensate' value='0'></span>
+				<span class='optionLeng inline' style='width:240px;'>设置温度补偿系数:支持<input type='radio' name='cansettempertcompensatecoefficient' value='1'>&nbsp;否<input type='radio' name='cansettempertcompensatecoefficient' value='0'></span>
+			</div><!--调焦器选项 结束-->
+			<div id='slaveDome' class='displayNo border mrgTop'>
+				<span class='optionTitle'>随动圆顶固定属性</span><br>
+				<span class='optionLeng inline'>类型<input id='DomeType' type='checkbox' name='viewOpt[]' value='dometype'></span>
+				<select id='DomeTypeVal' name='dometypeval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>圆顶类型</option>
+					<option value='0'>半球</option>
+					<option value='1'>超半球</option>
+				</select>
+				<span class='optionLeng inline'>最大转动速度<input id='sDomeMaxSpeed' type='checkbox' name='viewOpt[]' value='sdomemaxspeed'></span>
+				<input type='hidden' id='sDomeMaxSpeedVal' name='sdomemaxspeedval'>
+				<span class='optionLeng inline'>具备风帘:是<input type='radio' name='hasshade' value='1'>&nbsp;否<input type='radio' name='hasshade' value='0'></span>
+				<span class='optionLeng inline'>设置风帘位置:支持<input type='radio' name='cansetshadeposition' value='1'>&nbsp;否<input type='radio' name='cansetshadeposition' value='0'></span>
+				<span class='optionLeng inline'>控制风帘运动:支持<input type='radio' name='cansetshadespeed' value='1'>&nbsp;否<input type='radio' name='cansetshadespeed' value='0'></span>
+				<span class='optionLeng inline'>设置目标方位:支持<input type='radio' name='cansetdomepositin' value='1'>&nbsp;否<input type='radio' name='cansetdomepositin' value='0'></span>
+				<span class='optionLeng inline'>设置转动速度:支持<input type='radio' name='cansetrotatespeed' value='1'>&nbsp;否<input type='radio' name='cansetrotatespeed' value='0'></span>
+				<span class='optionLeng inline'>停止运动指令:支持<input type='radio' name='sdomecanstop' value='1'>&nbsp;否<input type='radio' name='sdomecanstop' value='0'></span>
+				<span class='optionLeng inline'>打开天窗指令:支持<input type='radio' name='canopenshutter' value='1'>&nbsp;否<input type='radio' name='canopenshutter' value='0'></span>
+				<span class='optionLeng inline'>支持连接指令:是<input type='radio' name='sdomecanconnect' value='1'>&nbsp;否<input type='radio' name='sdomecanconnect' value='0'></span>
+			</div><!--随动圆顶 选项 结束-->
+			<div id='filter' class='displayNo border mrgTop'>
+				<span class='optionTitle'>滤光片固定属性</span><br>
+				<span class='optionLeng inline'>插槽数目<input id='numberOfFilter' type='checkbox' name='viewOpt[]' value='numberoffilter'></span>
+				<input type='hidden' id='numberOfFilterVal' name='numberoffilterval'>
+				<span class='optionLeng inline'>滤光片类型<input id='FilterSystem' type='checkbox' name='viewOpt[]' value='filtersystem'></span>
+				<select id='FilterSystemVal' name='filtersystemval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>滤光片类型</option>
+					<option value='0'>Johnshon-Bessel</option>
+					<option value='1'>Sloan</option>
+					<option value='2'>Strömgrem</option>
+				</select>
+				<span class='optionLeng inline'>滤光片名称<input id='FilterName' type='checkbox' name='viewOpt[]' value='filtername'></span>
+				<input type='hidden' id='FilterNameVal' name='filternameval'>
+				<span class='optionLeng inline'>滤光片焦距偏差值<input id='FilterFocusLengthCompensate' type='checkbox' name='viewOpt[]' value='filterfocuslengthcompensate'></span>
+				<input type='hidden' id='FilterFocusLengthCompensateVal' name='filterfocuslengthcompensateval'>
+				<span class='optionLeng inline'>插槽尺寸<input id='FilterSize' type='checkbox' name='viewOpt[]' value='filtersize'></span>
+				<input type='hidden' id='FilterSizeVal' name='filtersizeval'>
+				<span class='optionLeng inline'>形状<input id='FilterShape' type='checkbox' name='viewOpt[]' value='filtershape'></span>
+				<select id='FilterShapeVal' name='filtershapeval' class='displayNo' style='margin:10px 0 0 6px;width:auto;'>
+					<option value=''>选择形状</option>
+					<option value='0'>圆形</option>
+					<option value='1'>矩形</option>
+				</select>
+				<span class='optionLeng inline'>支持连接指令:是<input type='radio' name='filtercanconnect' value='1'>&nbsp;否<input type='radio' name='filtercanconnect' value='0'></span>
+				<span class='optionLeng inline'>支持找零指令:是<input type='radio' name='filtercanfindhome' value='1'>&nbsp;否<input type='radio' name='filtercanfindhome' value='0'></span>
+				<span class='optionLeng inline' style='width:240px'>设置滤光片位置:支持<input type='radio' name='cansetfilterposition' value='1'>&nbsp;否<input type='radio' name='cansetfilterposition' value='0'></span>
+			</div><!--滤光片 选项 结束-->
+		</form><!--60cm各子设备 指令属性选项结束 -->
+		<br>
+		<div class='center' style='margin-bottom:30px;'>
+			<button id='at60ConfigBtn' style='font-size:18px;'>提交设置</button>
+		</div>
+    </div><!-- id='all' 结束 --><br>
+	<footer class='center clear'>
+		<span>中科院国家天文台兴隆观测基地</span>
+	</footer>
+</body>
+</html>

@@ -143,7 +143,7 @@
 	            success: function (info) {
 					if (!info.match("^\{(.+:.+,*){1,}\}$"))
 					{//非json数据
-						alert(info);
+						layer.alert(info);
 						if (info.indexOf('登录') !== -1)
 						{
 							location.href = '/';
@@ -254,7 +254,7 @@
 				table.datagrid('beginEdit', n);
 				editRow = n;
 			}else if (num > 1){//选中的多于1行
-				alert('添加时:只能选择一条数据!');return;
+				layer.alert('添加时:只能选择一条数据!');return;
 			}else if (num == 1){
 				var num = table.datagrid('getRowIndex', selectRows[0]);
 				table.datagrid('insertRow', {
@@ -269,7 +269,7 @@
 			//滚动至新插入的行那里
 			table.datagrid('scrollTo', editRow);
 		}else{
-			alert('请先保存编辑的第'+ (editRow+1) +'条数据!');return;
+			layer.alert('请先保存编辑的第'+ (editRow+1) +'条数据!');return;
 		}
 		
 	}//添加计划  结束/////////////////////////////////////
@@ -282,7 +282,7 @@
 		var res = table.datagrid('validateRow', editRow); //验证编辑的行
 		if (!res)
 		{
-			alert('请检查第' + (editRow+1) + '行必填数据!'); return;
+			layer.alert('请检查第' + (editRow+1) + '行必填数据!'); return;
 			
 		}
 		
@@ -560,7 +560,7 @@
 				},             
 	            success:  function (info) {
 		            planErr = 0;
-					alert(info);
+					layer.alert(info);
 					if (info.indexOf('登录') !== -1)
 					{
 						location.href = '/';
@@ -595,14 +595,14 @@
 		if ( n< 1) 
 		{
 			planErr = 1;
-			$.messager.alert('警告','请先导入计划或添加计划!','warning');
+			layer.alert('警告','请先导入计划或添加计划!','warning');
 		}
 		
 		//执行验证
 		if (!valid())
 		{
 			planErr = 1;
-			$.messager.alert('警告', '请检查第' + (editRow+1) + '行必填数据!', 'warning');
+			layer.alert('警告', '请检查第' + (editRow+1) + '行必填数据!', 'warning');
 		}
 
 		/*//js验证数据
@@ -667,14 +667,14 @@
 				data: {planData: plans},
 				success: function (info){
 					planErr = 0;
-					$.messager.alert('警告', info);
+					layer.alert('警告', info);
 					if (info.indexOf('登录') !== -1)
 					{
 						location.href = '/';
 					}
 				},
 				error: function (){
-					alert('网络异常,请重新提交计划！');
+					layer.alert('网络异常,请重新提交计划！');
 				},
 			});
 		}

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset='utf-8'>
+	<title>气象信息</title>
+	{load href='/static/css/common-1.css'}
+	{load href='/static/css/weather1.css'}
+	{load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
+	{load href='/static/js/weather1.js'}
+	
+</head>
+<body>
+	<img src='/static/images-1/top.jpg' style='width:100%'/>
+	<header class='pos_r'>
+	     <div class='pos_r'>
+	      <img class='pos_a' src='/static/images-0/logo1.png'/>
+		  <div id='atList' class='pos_a'>
+				望远镜列表
+				<ul id='atListUl' class='center displayNo'>
+					<li><a href='{:url("xinglong/page/at_page", ["at"=>60])}' target='_blank'>60CM</a></li>
+					<hr>
+					<li><a href='{:url("xinglong/page/at_page", ["at"=>80])}' target='_blank'>80CM</a></li>
+					<hr>
+					<li><a href='{:url("/xinglong/at85")}' target='_blank'>85CM</a></li>
+					<hr>
+					<li><a href='{:url("/xinglong/at100")}' target='_blank'>1米</a></li>
+				</ul>
+		   </div>
+		   <div id='atConfig' class='pos_a'>
+				配置望远镜
+				<ul id='atConfigList' class='center displayNo'>
+					<li><a href='{:url("/atconfig")}' target='_blank'>各望远镜</a></li>
+					<hr>
+					<li><a href='{:url("/xinglong/page_config/at80config")}' target='_blank'>配置80CM</a></li>
+					<hr>
+					<li>配置85CM</li>
+				</ul>
+		   </div>
+		   <p class='pos_a'>
+				<a href="{:url('/front')}">首页&nbsp;&nbsp;&nbsp;&nbsp;
+				</a>
+				{if	condition="$Think.session.role == 1 "}
+				<a href="{:url('/user')}">用户管理&nbsp;&nbsp;&nbsp;&nbsp;</a>
+				{/if}
+				<a href="{:url('/user/passwd')}">修改密码&nbsp;&nbsp;&nbsp;&nbsp;
+				</a>
+				<span>欢迎!&nbsp;&nbsp;{$Think.session.login ?? ''}&nbsp;
+				</span>
+		   </p>
+		   <div class='pos_a'><a href="{:url('/logout')}">&nbsp;&nbsp;&nbsp;退出&nbsp;&nbsp;&nbsp;</a></div> 
+	    </div>
+	</header>
+	<div id='all'>
+		<div class='pos_r'><!--气象云图和云量计图片-->
+			<div id='cloud_1' class='center'>
+				<p class='title_text'>气象云图</p>
+				<a class='border1 more' style='visibility:hidden;'>查看更多</a><br /><br />
+				{if	condition="isset($wxytError)"}
+					<div style='height:395px;'>{$wxytError}</div>
+				{/if}
+				{if	condition="isset($cloudPic)"}
+					<img {$cloudPic} alt='卫星云图'/>
+				{/if}
+			</div>
+			<div id='cloud_2' class='pos_a center'>
+				<p class='title_text'>云量相机</p>
+				<a class='border1 more' href="{:url('weather/clouds')}">查看更多</a><br /><br />
+				<img src='/static/images-1/ylxj.jpg' alt='云量计照片'>
+			</div>
+		</div><br />
+		<div class='pos_r'><!--2个 数据表格-->
+			<div id='tb_1' class='center'>
+				<p class='title_text'>气象信息</p>
+				<a class='border1 more' href="{:url('weather/weatherDetail')}">查看详情</a><br /><br />
+			  <table>
+			   <tr>
+					<th class='leng_1'>数据名称</th> <th class='leng_2'>数据值</th>
+			   </tr>
+			   <tr>
+					<td>采集时间</td> <td>2017.7.10 8:10:10</td>
+			   </tr>
+			   <tr>
+					<td>环境温度</td> <td>20℃</td>
+			   </tr>
+			   <tr>
+					<td>环境湿度</td> <td>30%</td>
+			   </tr>
+			   <tr>
+					<td>露点温度</td> <td>20℃</td>
+			   </tr>
+			   <tr>
+					<td>气压</td> <td>10.2 Hpa</td>
+			   </tr>
+			   <tr>
+					<td>瞬时风速</td> <td>5.1 m/s</td>
+			   </tr>
+			   <tr>
+					<td>2分钟风速</td>	<td>5.1 m/s</td>
+			   </tr>
+			   <tr>
+					<td>10分钟风速</td>	<td>5.1 m/s</td>
+			   </tr>
+			   <tr>
+					<td>风向</td> <td>东南风</td>
+			   </tr>
+			</table>
+			</div>
+			<div id='tb_2' class='pos_a center'>
+				<p class='title_text'>云量计</p>
+				<a class='border1 more' href="{:url('weather/clouds')}">查看详情</a><br /><br />
+			 <table>
+			   <tr>
+					<th class='leng_1'>数据名称</th> <th class='leng_2'>数据值</th>
+			   </tr>
+			   <tr>
+					<td>采集时间</td> <td>2017.7.10 8:10:10</td>
+			   </tr>
+			   <tr>
+					<td>天气状况</td> <td>多云</td>
+			   </tr>
+			   <tr>
+					<td>空中环境温度</td> <td>18℃</td>
+			   </tr>
+			   <tr>
+					<td>地面环境温度</td> <td>20℃</td>
+			   </tr>
+			   <tr>
+					<td>传感器温度</td>	<td>22℃</td>
+			   </tr>
+			   <tr>
+					<td>湿度</td> <td>30%</td>
+			   </tr>
+			   <tr>
+					<td>风速</td> <td>5.1 m/s</td>
+			   </tr>
+			   <tr>
+					<td>露点温度</td> <td>12℃</td>
+			   </tr>
+			   <tr>
+					<td>Rain Heater</td><td>100%</td>
+			   </tr>
+			</table>
+			</div>
+		</div><!--2个 数据表格 结束-->
+		<div class='center_mrg' style='width:1100px;'><!--3个图标 -->
+			<div class='inline mrg'>
+				<img src='/static/images-1/ytg.jpg' class='fl' style='margin-right:18px;'>
+				<span class='inline' style='margin-top:16px'>夜天光</span>
+				<br><br><span class='fnt'>300</span>
+			</div>
+			<div class='inline mrg'>
+				<img src='/static/images-1/snd.jpg' class='fl' style='margin-right:16px'>
+				<span class='inline' style='margin-top:16px'>视宁度</span>
+				<br><br><span class='fnt'>300</span>
+			</div>
+			<div class='inline mrg'>
+				<img src='/static/images-1/fcy.jpg' class='fl' style='margin-right:16px'>
+				<span class='inline' style='margin-top:16px'>粉尘仪</span>
+				<br><br><span class='fnt'>300</span>
+			</div>
+		</div><!--3个图标 结束-->
+	</div><!--主体结束-->
+	<footer class='center'>
+		<span>中科院国家天文台兴隆观测基地</span>
+	</footer>
+</body>
+</html>

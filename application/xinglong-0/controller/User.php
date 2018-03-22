@@ -238,7 +238,7 @@ class User extends Controller
 		
 	}
 	
-		//禁用  用户
+	//启用  用户
 	public function on ()
 	{
 		//权限的判断	
