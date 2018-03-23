@@ -267,7 +267,7 @@
        
        if (!v1 || !v2)
        {
-           alert('请正确输入:起始/结束时间！');return;
+           layer.alert('请正确输入:起始/结束时间！');return;
        }
         $.ajax({
             type : 'post',
@@ -306,17 +306,19 @@
 		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
         $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60GimbalSendData',
-            data : {connect:1},             
+            url : '/gimbal',
+			data : {connect:1,
+				at:at,	//望远镜序号
+			},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
               error:  function () {
-               alert('网络异常,请再次连接！');
+	              layer.alert('网络异常,请再次连接！');
             },
         });
     }); 
@@ -327,17 +329,17 @@
 		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
         $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60GimbalSendData',
-            data : {connect:2},             
+            url : '/gimbal',
+            data : {connect:2, at:at},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
               error:  function () {
-               alert('网络异常,请再次断开连接！');
+	              layer.alert('网络异常,请再次断开连接！');
             },
         });
     }); 
@@ -348,17 +350,17 @@
 		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
         $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60GimbalSendData',
-            data : {findHome:1,},             
+            url : '/gimbal',
+            data : {findHome:1,at:at},             
             success:  function (info) {
-               alert(info);
+               layer.alert(info);
 			   if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次点击：找零按钮!');
+               layer.alert('网络异常,请再次点击：找零按钮!');
             },
         });
     });
@@ -369,17 +371,17 @@
 		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
         $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60GimbalSendData',
-            data : {park:1,},             
+            url : '/gimbal',
+            data : {park:1, at:at},             
             success:  function (info) {
-               alert(info);
+               layer.alert(info);
 			   if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次复位!');
+               layer.alert('网络异常,请再次复位!');
             },
         });
     }); 
@@ -390,17 +392,17 @@
 		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
         $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60GimbalSendData',
-            data : {stop:1,},             
+            url : '/gimbal',
+            data : {stop:1, at:at},             
             success:  function (info) {
-               alert(info);
+              layer.alert(info);
 			   if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次点击：停止按钮!');
+	            layer.alert('网络异常,请再次点击：停止按钮!');
             },
         });
     });  
@@ -411,17 +413,17 @@
 		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
         $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60GimbalSendData',
-            data : {EmergenceStop:1,},             
+            url : '/gimbal',
+            data : {EmergenceStop:1, at:at},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 			   if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次点击：急停按钮!');
+	              layer.alert('网络异常,请再次点击：急停按钮!');
             },
         });
     });/////////////////////////////////////////// 
@@ -747,10 +749,11 @@
 		}
 		
         var formData = new FormData(form[0]);  //将jquery对象转为js-dom对象
+		formData.append('at', at);
 		//执行ajax
 			$.ajax ({
               type: 'post',
-              url : '/xinglong/at60/at60GimbalSendData',
+              url : '/gimbal',
               data : formData,
               processData : false,
               contentType : false,  
@@ -762,7 +765,7 @@
 				}
               },
               error:  function () {
-               alert('网络异常,请重新提交');
+	              layer.alert('网络异常,请重新提交');
               },
         	});
 	});
@@ -787,14 +790,14 @@
             url : '/xinglong/at60/at60CcdSendData',
             data : {ccdConnect:1,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 			   if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次连接ccd!');
+	              layer.alert('网络异常,请再次连接ccd!');
             },
         });
    });
@@ -808,14 +811,14 @@
             url : '/xinglong/at60/at60CcdSendData',
             data : {ccdConnect:2,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次断开ccd!');
+	              layer.alert('网络异常,请再次断开ccd!');
             },
         });
    });
@@ -829,14 +832,14 @@
             url : '/xinglong/at60/at60CcdSendData',
             data : {StopExpose:1,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次停止曝光!');
+	              layer.alert('网络异常,请再次停止曝光!');
             },
         });
    });
@@ -850,14 +853,14 @@
             url : '/xinglong/at60/at60CcdSendData',
             data : {AbortExpose:1,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次终止曝光!');
+	              layer.alert('网络异常,请再次终止曝光!');
             },
         });
    });
@@ -1239,7 +1242,7 @@
 				}
              },
              error:  function () {
-               alert('网络异常,请重新提交');
+	              layer.alert('网络异常,请重新提交');
             },
           })    
     });
@@ -1274,14 +1277,14 @@
             url : '/xinglong/at60/at60FocusSendData',
             data : {focusConnect:1,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次连接调焦器!');
+	              layer.alert('网络异常,请再次连接调焦器!');
             },
       });
    });
@@ -1295,14 +1298,14 @@
             url : '/xinglong/at60/at60FocusSendData',
             data : {focusConnect:2,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次断开调焦器!');
+	              layer.alert('网络异常,请再次断开调焦器!');
             },
         });
    });
@@ -1316,14 +1319,14 @@
             url : '/xinglong/at60/at60FocusSendData',
             data : {focusStop:1,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次点击停止按钮!');
+	              layer.alert('网络异常,请再次点击停止按钮!');
             },
         });
    });
@@ -1337,14 +1340,14 @@
             url : '/xinglong/at60/at60FocusSendData',
             data : {findHome:1,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次点击找零按钮!');
+	              layer.alert('网络异常,请再次点击找零按钮!');
             },
         });
    }); 
@@ -1429,7 +1432,7 @@
 				}
              },
              error:  function () {
-               alert('网络异常,请重新提交');
+	              layer.alert('网络异常,请重新提交');
             },
          })        
     });
@@ -1443,14 +1446,14 @@
             url : '/xinglong/at60/at60sDomeSendData',
             data : {sDomeConnect:1,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 			   if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次连接圆顶!');
+	              layer.alert('网络异常,请再次连接圆顶!');
             },
         });
    });
@@ -1464,14 +1467,14 @@
             url : '/xinglong/at60/at60sDomeSendData',
             data : {sDomeConnect:2,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 			   if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次断开圆顶!');
+	              layer.alert('网络异常,请再次断开圆顶!');
             },
         });
    });
@@ -1485,14 +1488,14 @@
             url : '/xinglong/at60/at60sDomeSendData',
             data : {sDomeStop:1,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 			   if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次点击该按钮!');
+	              layer.alert('网络异常,请再次点击该按钮!');
            },
         });
    });
@@ -1506,14 +1509,14 @@
             url : '/xinglong/at60/at60sDomeSendData',
             data : {OpenScuttle:1,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
                if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次打开天窗!');
+	              layer.alert('网络异常,请再次打开天窗!');
             },
         });
    });
@@ -1527,14 +1530,14 @@
             url : '/xinglong/at60/at60sDomeSendData',
             data : {OpenScuttle:2,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
                if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次关闭天窗!');
+	              layer.alert('网络异常,请再次关闭天窗!');
             },
         });
    });
@@ -1621,7 +1624,7 @@
 				}
              },
              error:  function () {
-               alert('网络异常,请重新提交');
+	              layer.alert('网络异常,请重新提交');
             },
         })           
     });
@@ -1648,7 +1651,7 @@
             url : '/xinglong/at60/at60fDomeSendData',
             data : {fDomeConnect:val,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
                 if (fDomeConnectFlag % 2 == 1 && info.indexOf('成功') != -1)
                 {//连接圆顶指令 发送成功
                     e.val('断开圆顶');
@@ -1657,7 +1660,7 @@
                 }
             },
             error:  function () {
-               alert('网络异常,请再次点击该按钮!');
+	              layer.alert('网络异常,请再次点击该按钮!');
             },
         });
    });
@@ -1677,7 +1680,7 @@
 			    layer.alert(info); 
             },
             error:  function () {
-               alert('网络异常,请再次选择该指令!');
+	              layer.alert('网络异常,请再次选择该指令!');
             },
         });
 	   }
@@ -1693,14 +1696,14 @@
             url : '/xinglong/at60/at60FilterSendData',
             data : {filterConnect:1,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次连接滤光片!');
+	              layer.alert('网络异常,请再次连接滤光片!');
             },
         });
    });
@@ -1714,14 +1717,14 @@
             url : '/xinglong/at60/at60FilterSendData',
             data : {filterConnect:2,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次断开滤光片!');
+	              layer.alert('网络异常,请再次断开滤光片!');
             },
         });
    });
@@ -1735,14 +1738,14 @@
             url : '/xinglong/at60/at60FilterSendData',
             data : {filterFindHome:1,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
 				{
 					location.href = '/';
 				}
             },
             error:  function () {
-               alert('网络异常,请再次进行找零!');
+	              layer.alert('网络异常,请再次进行找零!');
             },
         });
    });
@@ -1756,7 +1759,7 @@
             url : '/xinglong/at60/at60FilterSendData',
             data : {filterPos:filterPosVal,},             
             success:  function (info) {
-               alert(info);
+	              layer.alert(info);
 			   filterPosEle.val('');
 				if (info.indexOf('登录') !== -1)
 				{
@@ -1764,7 +1767,7 @@
 				}
             },
             error:  function () {
-               alert('网络异常,请再次提交滤光片位置!');
+	              layer.alert('网络异常,请再次提交滤光片位置!');
 			   filterPosEle.val('');
             },
         });
@@ -1804,7 +1807,7 @@
 	
 	/* if(planMode.eq(0).prop('checked') || planMode.eq(1).prop('checked'))
 	{
-		//alert(planMode[0])
+		//layer.alert(planMode[0])
 		$('#planNext').hide();
 	}else if(planMode.eq(2).prop('checked') || planMode.eq(3).prop('checked')){
 		$('#planNext').show();
@@ -1855,7 +1858,7 @@ $('#coverOp').on('click', 'input:button', function () {
 			}
             },
             error:  function () {
-               alert('网络异常,请再次点击镜盖操作!');
+	              layer.alert('网络异常,请再次点击镜盖操作!');
             },
 	});
 });
@@ -1891,7 +1894,7 @@ $('#saveData').on('click', 'input:button', function () {
 			}
             },
             error:  function () {
-               alert('网络异常,请再次发送同步数据指令!');
+	              layer.alert('网络异常,请再次发送同步数据指令!');
             },
 	});
 });

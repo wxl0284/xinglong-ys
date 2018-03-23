@@ -42,3 +42,5 @@ Route::get('user/passwd$', 'xinglong/user/passwd');
 Route::post('user/edit_passwd$', 'xinglong/user/editPasswd');
 //天气 显示详情 路由
 Route::get('weather$', 'xinglong/page/weather');
+//发送转台指令 路由
+Route::post('gimbal$', 'xinglong/gimbal/sendCommand');
