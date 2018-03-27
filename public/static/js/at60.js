@@ -787,7 +787,7 @@
 	   $('#btnsCCD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60CcdSendData',
+            url : '/ccd',
             data : {ccdConnect:1,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -808,7 +808,7 @@
 	   $('#btnsCCD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60CcdSendData',
+            url : '/ccd',
             data : {ccdConnect:2,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -829,7 +829,7 @@
 	   $('#btnsCCD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60CcdSendData',
+            url : '/ccd',
             data : {StopExpose:1,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -850,7 +850,7 @@
 	   $('#btnsCCD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60CcdSendData',
+            url : '/ccd',
             data : {AbortExpose:1,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -1230,7 +1230,7 @@
         //执行ajax
 			$.ajax ({
               type: 'post',
-              url : '/xinglong/at60/at60CcdSendData',
+              url : '/ccd',
               data : formData,
               processData : false,
               contentType : false,  

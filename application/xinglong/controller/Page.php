@@ -51,6 +51,18 @@ class Page extends Base
         return view('config');
     }//望远镜配置页面 结束
 
+    //显示添加望远镜页面 /////////
+    public function at_add()
+    {
+        return view('add');
+    }//显示添加望远镜页面 结束
+
+    //执行添加望远镜 /////////
+    public function at_doadd()
+    {
+        return 'do_add';
+    }//执行添加望远镜 结束
+
     //显示首页
     public function front ()
     {

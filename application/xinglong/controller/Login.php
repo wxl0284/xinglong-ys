@@ -106,8 +106,14 @@ class Login extends Controller
     }//退出的方法  结束
 
     //测试之方法
-    public function test()
+    public function Test()
     {
         return view ('a');
     }
+
+     //测试之方法
+     public function test1()
+     {
+        return $this->request->routeInfo()['route'];
+     }
 }
