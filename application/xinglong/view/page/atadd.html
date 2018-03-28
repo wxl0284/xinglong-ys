@@ -15,10 +15,13 @@
 <body>
 	{include file="common/common"/}
     <div id='all'>
-		<div>
+		<div class="center">
+            <a href="{:url('/atlist')}">查看望远镜列表</a><br><br>
+            <hr>
+            <span>添加望远镜</span><br><br>
             <form id='form' style="width:500px;padding-left:150px;" class='center_mrg'>
-                新望远镜ID:<input type='text' name='atId' placeholder="0X000（X号望远镜）"><br>
-                望远镜名:&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='atName' placeholder="2.16/1.26望远镜"><br>
+                新望远镜ID:<input type='text' name='atid' placeholder="0X000（X号望远镜）"><br>
+                望远镜名:&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='atname' placeholder="2.16/1.26望远镜"><br>
                 隶属观测站:<input type='text' name='address' placeholder="国家天文台兴隆观测基地"><br>
                 经度:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='longitude' placeholder="-180.0°~+180.0°"><br>
                 纬度:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='latitude' placeholder="-90.0°~+90.0°"><br>

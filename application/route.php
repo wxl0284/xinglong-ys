@@ -20,6 +20,8 @@ Route::get('logout$', 'xinglong/login/logout');
 Route::get('atpage/:at$', 'xinglong/page/at_page', [], ['at'=>'\d{2}']);
 //显示添加望远镜 路由
 Route::get('atadd$', 'xinglong/page/at_add');
+//显示望远镜列表 路由
+Route::get('atlist$', 'xinglong/page/atlist');
 //执行添加望远镜 路由
 Route::post('at_doadd$', 'xinglong/page/at_doadd');
 //显示望远镜配置页面 路由
@@ -52,3 +54,11 @@ Route::post('gimbal$', 'xinglong/gimbal/sendCommand');
 Route::post('ccd$', 'xinglong/ccd/sendCommand');
 //发送调焦器指令 路由
 Route::post('focus$', 'xinglong/focus/sendCommand');
+//显示望远镜编辑页面 路由
+Route::get('atedit/:at$', 'xinglong/page/at_edit', [], ['at'=>'\d{5}']);
+//执行望远镜编辑 路由
+Route::post('at_doedit$', 'xinglong/page/at_doedit');
+//删除望远镜 路由
+Route::get('at_delete/:atid$', 'xinglong/page/at_delete');
+//显示需动态增减的固定属性配置入口页 路由
+Route::get('conf_option$', 'xinglong/conf/index');

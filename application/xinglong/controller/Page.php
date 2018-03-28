@@ -4,7 +4,7 @@ namespace app\xinglong\controller;
 use app\xinglong\controller\Base;
 use think\Cache;
 use think\Session;
-//use think\Db;
+use think\Db;
 
 class Page extends Base
 {
@@ -45,23 +45,136 @@ class Page extends Base
         }
     }//根据at参数显示不同望远镜页面 结束
 
-    //望远镜配置页面 /////////
+    //显示望远镜配置页面 /////////
     public function at_config()
     {
+        //之前配置页面的模板文件是page/config-0.html
         return view('config');
     }//望远镜配置页面 结束
+
+    //显示望远镜列表 /////////
+    public function atlist()
+    {
+        $res = Db::table('atlist')->select(); //获取望远镜列表中的望远镜数量
+        if(!$res)
+        {
+            $vars['noAt'] = '无望远镜!';
+        }else{
+            $vars['atList'] = $res;
+        }
+        return view('atlist', $vars);
+    }//显示望远镜列表 结束
 
     //显示添加望远镜页面 /////////
     public function at_add()
     {
-        return view('add');
+        return view('atadd');
     }//显示添加望远镜页面 结束
 
     //执行添加望远镜 /////////
     public function at_doadd()
     {
-        return 'do_add';
+        //判断ajax 请求时 是否有权限
+        // if ($this->ajaxAuthErr == 1)
+        // {
+        //     return '您无权执行此操作!';
+        // }
+
+        $postData = input();
+        if (!$postData)
+        {
+            return '提交数据失败!';
+        }
+        //查询新提交的望远镜id或望远镜名 是否在数据表中唯一
+        $old = Db::table('atlist')->where('atid', $postData['atid'])->whereOr('atname', $postData['atname'])->find();
+        
+        if ($old)
+        {
+            return '望远镜Id或望远镜名重复,请重新填写!';
+        }
+        //执行数据添加
+        $res = Db::table('atlist')->insert($postData);
+        if ($res)
+        {
+            return '添加望远镜ok!';
+        }else{
+            return '添加望远镜失败!';
+        }
+
     }//执行添加望远镜 结束
+
+    //显示要编辑的望远镜数据  /////////
+    public function at_edit($at)
+    {   
+        //查对应望远镜数据
+        $res = Db::table('atlist')->where('atid', $at)->find();
+        if (!$res)
+        {
+           $this->error('读取数据失败!');
+        }else{
+            $vars['atData'] = $res;
+            return view ('atedit', $vars);
+        }
+
+    }//显示要编辑的望远镜数据 结束
+
+    //执行编辑望远镜数据  /////////
+    public function at_doedit()
+    {   
+        //判断ajax 请求时 是否有权限
+        // if ($this->ajaxAuthErr == 1)
+        // {
+        //     return '您无权执行此操作!';
+        // }
+
+        $postData = input();
+        if (!$postData)
+        {
+            return '提交数据失败!';
+        }
+        //查询新提交的望远镜名 是否在数据表中唯一
+        $old = Db::table('atlist')->where('atname', $postData['atname'])->find();
+        
+        if ($old)
+        {
+            return '望远镜名重复,请重新填写!';
+        }
+        //执行更新
+        $res = Db::table('atlist')->where('atid', $postData['atid'])->update($postData);
+        if ($res)
+        {
+            return '编辑望远镜信息ok!';
+        }else{
+            return '编辑望远镜信息失败!';
+        }
+
+    }//执行编辑望远镜数据 结束
+
+    //删除望远镜 
+    public function at_delete ($atid)
+    {
+        //首先删除望远镜列表中相应数据
+        $res = Db::table('atlist')->where('atid', $atid)->delete();
+        if ($res)
+        {
+            $this->success ('删除成功!', '/atlist');
+        }else{
+            $this->error ('删除失败!');
+        }
+        //然后开始事务 去删除此atid关联的此望远镜其他数据
+        /*
+        Db::startTrans();
+        
+        //删除其他表相关数据
+        if ($res && 其他表删除ok)
+        {
+            Db::commit();
+        }else{
+            Db::rollback();
+        }
+        */
+
+    }//删除望远镜  结束
 
     //显示首页
     public function front ()

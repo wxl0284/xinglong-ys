@@ -27,7 +27,6 @@ $(function () {
     //望远镜列表js代码结束/////////////////////////////////
     //提交新增望远镜的数据
     var atForm = $('#form');
-    var atId = atForm.find('input[name="atid"]'); //望远镜id
     var atName = atForm.find('input[name="atname"]'); //望远镜名称
     var address = atForm.find('input[name="address"]'); //望远镜地址
     var longitude = atForm.find('input[name="longitude"]'); //经度
@@ -36,20 +35,6 @@ $(function () {
     var aperture = atForm.find('input[name="aperture"]'); //口径
 
     //各input框的blur
-    //验证望远镜id 之blur
-    atId.blur(function () {
-        var v = $.trim($(this).val());
-		//var patn = /0\d{4}/;
-		var err = 0;
-		
-		if ( v.length != 5 || !$.isNumeric(v) || v.indexOf('0') !== 0)
-		{
-			err = 1;
-			layer.tips('望远镜id格式错误!', $(this), {tipsMore: true});
-		}		
-		$(this).data('err', err);
-    });//验证望远镜id 之blur 结束
-
     //验证望远镜名 之blur
     atName.blur(function () {
         var v = $.trim($(this).val());
@@ -152,15 +137,17 @@ $(function () {
     
         $.ajax ({
             type: 'post',
-            url : '/at_doadd',
+            url : '/at_doedit',
             data : formData,
             processData : false,
             contentType : false,  
             success:  function (info) {
-                layer.alert(info);
+                alert(info);
                 if (info.indexOf('登录') !== -1)
                 {
                     location.href = '/';
+                }else if(info.indexOf('编辑望远镜信息ok') !== -1){
+                    location.href = '/atlist';
                 }
            },
            error: function () {
