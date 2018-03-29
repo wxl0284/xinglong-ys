@@ -62,3 +62,5 @@ Route::post('at_doedit$', 'xinglong/page/at_doedit');
 Route::get('at_delete/:atid$', 'xinglong/page/at_delete');
 //显示需动态增减的固定属性配置入口页 路由
 Route::get('conf_option$', 'xinglong/conf/index');
+//添加：动态增减的固定属性 路由
+Route::post('conf_option_add$', 'xinglong/conf/conf_add');

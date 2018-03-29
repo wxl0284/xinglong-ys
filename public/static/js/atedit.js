@@ -1,4 +1,4 @@
-/*添加望远镜页面 js*/
+/*编辑望远镜页面 js*/
 $(function () {
     //页面加载完成后，默认所有选项为 未选中状态
         $('input').prop('checked', false);
@@ -25,7 +25,7 @@ $(function () {
             } 
        );
     //望远镜列表js代码结束/////////////////////////////////
-    //提交新增望远镜的数据
+    //提交望远镜的数据
     var atForm = $('#form');
     var atName = atForm.find('input[name="atname"]'); //望远镜名称
     var address = atForm.find('input[name="address"]'); //望远镜地址

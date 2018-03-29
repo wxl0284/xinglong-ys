@@ -2,62 +2,189 @@
 <html lang="en">
 <head>
     <meta charset='utf-8'>
-    <title>添加望远镜</title>
+    <title>固定属性选项</title>
      {load href='/static/css/common-1.css'}
      {load href='/static/css/conf_index.css'}
      {load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
 	 {load href='/static/plugin/layer/layer.js'}
-     {load href='/static/js/atedit.js'}
-     <style>
-        table {width:400px;}
-        table,td{border:solid 1px;border-collapse: collapse;line-height: 32px;}
-     </style>
+     {load href='/static/js/conf_index.js'}
 </head>
 <body>
 	{include file="common/common"/}
     <div id='all'>
-		<table class="center_mrg center">
+		<table id='tbl' class="center_mrg pos_r">
             <tr>
                 <td>
-                    <a href=''>添加焦点类型</a>
+                    焦点类型：<input type="text" id='focustype'>
+                    <input type="button" id='focustypeBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看焦点类型</a>
+                    <a href=''>查看：焦点类型</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <a href=''>添加焦点类型</a>
+                    焦距：<input type="text" id='focusratio'>
+                    <input type="button" id='focusratioBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看焦点类型</a>
+                    <a href=''>查看：焦距</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <a href=''>添加焦点类型</a>
+                    图像位数：<input type="text" id='imageBits'>
+                    <input type="button" id='imageBitsBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看焦点类型</a>
+                    <a href=''>查看：图像位数</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <a href=''>添加焦点类型</a>
+                    制冷方式：<input type="text" id='coolerMode'>
+                    <input type="button" id='coolerModeBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看焦点类型</a>
+                    <a href=''>查看：制冷方式</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <a href=''>添加焦点类型</a>
+                    读出模式：<input type="text" id='readoutMode'>
+                    <input type="button" id='readoutModeBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看焦点类型</a>
+                    <a href=''>查看：读出模式</a>
                 </td>
             </tr>
-        </table>
+            <tr>
+                <td>
+                    读出速度模式：<input type="text" id='readoutSpeed'>
+                    <input type="button" id='readoutSpeedBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href=''>查看：读出速度模式</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    转移速度模式：<input type="text" id='transferSpeed'>
+                    <input type="button" id='transferSpeedBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href=''>查看：转移速度模式</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    增益模式：<input type="text" id='gainmode'>
+                    <input type="button" id='gainmodeBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href=''>查看：增益模式</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    增益档位：<input type="text" id='gainNumber'>
+                    <input type="button" id='gainNumberBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href=''>查看：增益档位</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    快门类型：<input type="text" id='ShutterType'>
+                    <input type="button" id='ShutterTypeBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href=''>查看：快门类型</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    快门模式：<input type="text" id='ShutterMode'>
+                    <input type="button" id='ShutterModeBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href=''>查看：快门模式</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    BIN：<input type="text" id='BinArray'>
+                    <input type="button" id='BinArrayBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href=''>查看：BIN</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    ccd接口类型：<input type="text" id='InterfaceType'>
+                    <input type="button" id='InterfaceTypeBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href=''>查看：接口类型</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    曝光触发模式：<input type="text" id='ExposeTriggerMode'>
+                    <input type="button" id='ExposeTriggerModeBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href=''>查看：曝光触发模式</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    滤光片类型：<input type="text" id='FilterSystem'>
+                    <input type="button" id='FilterSystemBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href=''>查看：滤光片类型</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    滤光片形状：<input type="text" id='FilterShape'>
+                    <input type="button" id='FilterShapeBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href=''>查看：滤光片形状</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    随动圆顶类型：<input type="text" id='slaveDomeType'>
+                    <input type="button" id='slaveDomeTypeBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href=''>查看：随动圆顶类型</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    全开圆顶类型：<input type="text" id='openDomeType'>
+                    <input type="button" id='openDomeTypeBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href=''>查看：全开圆顶类型</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    导星镜焦点类型：<input type="text" id='opticalStructure'>
+                    <input type="button" id='opticalStructureBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href=''>查看：导星镜焦点类型</a>
+                </td>
+            </tr>
+        </table><br><br>
     </div><!-- id='all' 结束 --><br>
 	<footer class='center clear'>
 		<span>中科院国家天文台兴隆观测基地</span>
