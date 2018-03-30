@@ -16,7 +16,10 @@ header div div a {color:#eaf1f9;}
 
 /*******以上为公共头样式 以下为具体页面样式 各配置页基本通用**********/
 footer {position:fixed; bottom: 0px; width:100%;}
-
+table {border-collapse: collapse;}
 #tbl {width:600px;text-align: right;}
-#tbl,td {border:solid 1px;border-collapse: collapse;line-height: 32px;}
+#tbl,td {border:solid 1px;line-height: 32px;}
 #tbl input[type='text'] {width:220px;}
+/*以为为弹窗内表格的样式*/
+#winTable {font-size: 18px;}
+/*为弹窗内表格的样式 结束*/

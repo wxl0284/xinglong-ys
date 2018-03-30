@@ -5,186 +5,205 @@
     <title>固定属性选项</title>
      {load href='/static/css/common-1.css'}
      {load href='/static/css/conf_index.css'}
+     {load href='/static/plugin/easyui-1.3.5/themes/icon.css'}
+     {load href='/static/plugin/easyui-1.3.5/themes/default/easyui.css'}
      {load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
+     {load href='/static/plugin/easyui-1.3.5/jquery.easyui.min.js'}
+     {load href='/static/plugin/easyui-1.3.5/locale/easyui-lang-zh_CN.js'}
 	 {load href='/static/plugin/layer/layer.js'}
      {load href='/static/js/conf_index.js'}
 </head>
 <body>
 	{include file="common/common"/}
-    <div id='all'>
-		<table id='tbl' class="center_mrg pos_r">
+    <div id='all' class='pos_r'>
+		<table id='tbl' class="center_mrg">
             <tr>
                 <td>
-                    焦点类型：<input type="text" id='focustype'>
+                    焦点类型：<input type="text" placeholder="格式:[xx xx1]">
                     <input type="button" id='focustypeBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：焦点类型</a>
+                    <a href="#" id='focustype'>查看：焦点类型</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    焦距：<input type="text" id='focusratio'>
+                    焦距：<input type="text" placeholder="格式:[19.4 97.2]">
                     <input type="button" id='focusratioBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：焦距</a>
+                    <a href="#" id='focusratio'>查看：焦距</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    图像位数：<input type="text" id='imageBits'>
+                    图像位数：<input type="text" placeholder="正整数">
                     <input type="button" id='imageBitsBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：图像位数</a>
+                    <a href="#" id='imageBits'>查看：图像位数</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    制冷方式：<input type="text" id='coolerMode'>
+                    制冷方式：<input type="text" placeholder="格式:液氮制冷">
                     <input type="button" id='coolerModeBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：制冷方式</a>
+                    <a href="#" id='coolerMode'>查看：制冷方式</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    读出模式：<input type="text" id='readoutMode'>
+                    读出模式：<input type="text" placeholder="格式:支持单门读出">
                     <input type="button" id='readoutModeBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：读出模式</a>
+                    <a href="#" id='readoutMode'>查看：读出模式</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    读出速度模式：<input type="text" id='readoutSpeed'>
+                    读出速度模式：<input type="text" placeholder="格式:A">
                     <input type="button" id='readoutSpeedBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：读出速度模式</a>
+                    <a href="#" id='readoutSpeed'>查看：读出速度模式</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    转移速度模式：<input type="text" id='transferSpeed'>
+                    转移速度模式：<input type="text" placeholder="格式:a">
                     <input type="button" id='transferSpeedBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：转移速度模式</a>
+                    <a href="#" id='transferSpeed'>查看：转移速度模式</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    增益模式：<input type="text" id='gainmode'>
+                    增益模式：<input type="text" placeholder="格式:High Capacity">
                     <input type="button" id='gainmodeBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：增益模式</a>
+                    <a href="#" id='gainmode'>查看：增益模式</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    增益档位：<input type="text" id='gainNumber'>
+                    增益档位：<input type="text" placeholder="正整数">
                     <input type="button" id='gainNumberBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：增益档位</a>
+                    <a href="#" id='gainNumber'>查看：增益档位</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    快门类型：<input type="text" id='ShutterType'>
+                    快门类型：<input type="text" placeholder="格式:无快门">
                     <input type="button" id='ShutterTypeBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：快门类型</a>
+                    <a href="#" id='ShutterType'>查看：快门类型</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    快门模式：<input type="text" id='ShutterMode'>
+                    快门模式：<input type="text" placeholder="格式:支持GlobalShutter">
                     <input type="button" id='ShutterModeBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：快门模式</a>
+                    <a href="#" id='ShutterMode'>查看：快门模式</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    BIN：<input type="text" id='BinArray'>
+                    BIN：<input type="text" placeholder='格式:[1 2 3 4 …]'>
                     <input type="button" id='BinArrayBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：BIN</a>
+                    <a href="#" id='BinArray'>查看：BIN</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    ccd接口类型：<input type="text" id='InterfaceType'>
+                    ccd接口类型：<input type="text" placeholder='格式:支持CameraLink'>
                     <input type="button" id='InterfaceTypeBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：接口类型</a>
+                    <a href="#" id='InterfaceType'>查看：ccdd接口类型</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    曝光触发模式：<input type="text" id='ExposeTriggerMode'>
+                    曝光触发模式：<input type="text" placeholder="支持硬件触发">
                     <input type="button" id='ExposeTriggerModeBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：曝光触发模式</a>
+                    <a href="#" id='ExposeTriggerMode'>查看：曝光触发模式</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    滤光片类型：<input type="text" id='FilterSystem'>
+                    滤光片类型：<input type="text" placeholder="格式:Sloan">
                     <input type="button" id='FilterSystemBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：滤光片类型</a>
+                    <a href="#" id='FilterSystem'>查看：滤光片类型</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    滤光片形状：<input type="text" id='FilterShape'>
+                    滤光片形状：<input type="text" placeholder="圆形">
                     <input type="button" id='FilterShapeBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：滤光片形状</a>
+                    <a href="#" id='FilterShape'>查看：滤光片形状</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    随动圆顶类型：<input type="text" id='slaveDomeType'>
+                    随动圆顶类型：<input type="text" placeholder="半球">
                     <input type="button" id='slaveDomeTypeBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：随动圆顶类型</a>
+                    <a href="#" id='slaveDomeType'>查看：随动圆顶类型</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    全开圆顶类型：<input type="text" id='openDomeType'>
+                    全开圆顶类型：<input type="text" placeholder="平移屋顶">
                     <input type="button" id='openDomeTypeBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：全开圆顶类型</a>
+                    <a href="#" id='openDomeType'>查看：全开圆顶类型</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    导星镜焦点类型：<input type="text" id='opticalStructure'>
+                    导星镜焦点类型：<input type="text" placeholder="卡塞格林">
                     <input type="button" id='opticalStructureBtn' value="确认提交">
                 </td>
                 <td>
-                    <a href=''>查看：导星镜焦点类型</a>
+                    <a href="#" id='opticalStructure'>查看：导星镜焦点类型</a>
                 </td>
             </tr>
+            
         </table><br><br>
+
+
+        <div id='confPopup' class="displayNo pos_a"><!--显示各固定属性列表的弹窗-->
+            <div id='confWindow'><br>
+                <table id='winTable' class='center_mrg'>
+                    <caption>焦点类型列表</caption>
+                    <tr>
+                        <td>序号</td>
+                        <td class='widthAuto'>属性值</td>
+                        <td>操作</td>
+                    </tr>
+                </table>
+            </div>
+        </div><!--显示各固定属性列表的弹窗-->
     </div><!-- id='all' 结束 --><br>
 	<footer class='center clear'>
 		<span>中科院国家天文台兴隆观测基地</span>
