@@ -52,13 +52,35 @@ class Conf extends Base
         $postData = input(); //获取表单数据  
         //读取固定属性的值
         $res = Db::table('confoption')->where('conf', $postData['conf'])->select();
-
+        //halt($res);
         if ($res)
         {
             return json ($res);
+        }else{
+            return 0; //必须return回一个数据，否则ajax的success方法接收不到数据
         }
         //return 'ni hao';
     }//获取 配置的各固定属性 结束
+
+    //删除不需要的 配置的各固定属性
+    public function delete_conf ()
+    {
+        //判断ajax 请求时 是否有权限
+        // if ($this->ajaxAuthErr == 1)
+        // {
+        //     return '您无权执行此操作!';
+        // }
+
+        $id = input('id');
+        $res = Db::table('confoption')->delete($id);
+        if ($res)
+        {
+            return '删除成功!'; 
+        }else{
+            return '删除失败';
+        }
+    }
+    //删除不需要的 配置的各固定属性 结束
 
     //根据表单数据 判断是哪个固定属性
     private function which_conf ($postConf)

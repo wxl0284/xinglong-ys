@@ -350,13 +350,18 @@ $(function () {
     var tableTitle = winTable.children('caption');
 
     aElemt.click(function () {
-        var index = layer.load(2); //显示加载提示
+        //var index = layer.load(2); //显示加载提示
 
         //执行Ajax 获取相应的配置数据
         var conf = $(this).attr('id');
         //获取 '查看：全开圆顶类型' 内的查看：'全开圆顶类型'
         var confName = $(this).html().replace('查看：', '');
-      
+        
+        //首先删除可能存在的老数据
+        var appendStr = winTable.find('tr.append');
+        appendStr.each(function (){
+            $(this).remove();
+        });
         //要插入弹窗内表格中的html字串
         var htmlStr = '';
 
@@ -368,35 +373,74 @@ $(function () {
                 conf: conf,
             },
             success: function (info) {
+                //layer.close(index);  //关闭加载提示
                 
-                var num = info.length; //固定属性的选项数目
-                for ( i = 0; i < num ; i++)
-                {
-                    htmlStr += "<tr> <td>" 
-                            + (i+1) 
-                            + "</td> <td class='widthAuto'>"
-                            + (info[i]['conf_val'])
-                            + "</td> <td> <a href='#' class='delete' confId='"
-                            + (info[i]['id'])
-                            + "'>删除</a></td> </tr>";
+                //console.log(typeof info);
+                if (info === 0)
+                {//获取配置数据失败
+                    winTable.html('获取配置数据失败!');
+                }else{
+                    var num = info.length; //固定属性的选项数目
+                    for ( i = 0; i < num ; i++)
+                    {
+                        htmlStr += "<tr class='append'> <td>" 
+                                + (i+1)
+                                + "</td> <td class='widthAuto'>"
+                                + (info[i]['conf_val'])
+                                + "</td> <td> <a href='#' class='delete' confId='"
+                                + (info[i]['id'])
+                                + "'>删除</a></td> </tr>";
+                    }
+
+                    tableTitle.html(confName);
+                    winTable.append(htmlStr); //将html字串插入弹窗内的表格
                 }
-
-                tableTitle.html(confName);
-                winTable.append(htmlStr); //将html字串插入弹窗内的表格
-                layer.close(index);  //关闭加载提示
+                //然后弹出窗口
+                $('#confPopup').removeClass('displayNo');
+                $('#confWindow').window({
+                    title : '配置列表',
+                    width : 460,
+                    height : 330,
+                    collapsible : false,
+                    minimizable : false,
+                    maximizable : false,
+                });//弹出窗口 结束
             },
+            error: function (){
+                layer.alert('网络异常，请重新查看!');
+            }
         })//执行Ajax 获取相应的配置数据 结束
-
-       $('#confPopup').removeClass('displayNo');
-        $('#confWindow').window({
-            title : '配置列表',
-            width : 460,
-            height : 330,
-            collapsible : false,
-            minimizable : false,
-            maximizable : false,
-        });
-        
     });//给table表内所有的查看配置项的a元素 绑定click事件 结束
+
+    //ajax 删除固定属性的可选项值
+    winTable.on('click', 'a.delete', function () {
+     
+        var confId = $(this).attr('confId');
+        //被选中删除的数据元素
+        var td = $(this).parent();
+        var tr = td.parent();
+
+        var r=confirm("确定删除此选项?");
+        if (r)
+        {
+            //执行ajax
+            $.ajax({
+                url: '/del_conf',
+                type: 'post',
+                data: {
+                    id: confId,
+                },
+                success: function (info){
+                    layer.alert(info);
+                    tr.remove();
+                },
+                error: function (){
+                    layer.alert('网络异常，请重新操作!');
+                }
+            });//ajax结束
+        }else{
+            return;
+        }
+    })//ajax 删除固定属性的可选项值 结束
     
 })

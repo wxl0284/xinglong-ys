@@ -329,6 +329,13 @@ class Page extends Base
         {
            $vars['weatherError'] = $weatherError;
         }
+
+        //读取望远镜列表 将已添加的望远镜显示在下拉框中
+        $atList = Db::table('atlist')->order('id', 'asc')->field('id, atname')->select();
+        if ($atList)
+        {
+            $vars['atList'] = $atList;
+        }
       		
         return view('front', $vars);
     }//显示首页 结束

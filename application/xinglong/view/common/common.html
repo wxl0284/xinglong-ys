@@ -4,15 +4,18 @@
        <img class='pos_a' src='/static/images-0/logo1.png'/>
        <div id='atList' class='pos_a'>
              望远镜列表
+             {if condition="isset($atList)"}
              <ul id='atListUl' class='center displayNo'>
-                 <li><a href='{:url("xinglong/page/at_page", ["at"=>60])}' target='_blank'>60CM</a></li>
+                {volist name="atList" id="vo"}
+                 <li><a href='{:url("xinglong/page/at_page", ["at"=>60])}' target='_blank'>{$vo.atname}</a></li>
                  <hr>
-                 <li><a href='{:url("xinglong/page/at_page", ["at"=>80])}' target='_blank'>80CM</a></li>
-                 <hr>
-                 <li><a href='{:url("/xinglong/at85")}' target='_blank'>85CM</a></li>
-                 <hr>
-                 <li><a href='{:url("/xinglong/at100")}' target='_blank'>1米</a></li>
+                {/volist}
              </ul>
+             {else /}
+             <ul id='atListUl' class='center displayNo'>
+                <li>无望远镜</li>
+            </ul>
+             {/if}
         </div>
          <div id='atConfig' class='pos_a'>
              配置望远镜

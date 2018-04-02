@@ -66,3 +66,5 @@ Route::get('conf_option$', 'xinglong/conf/index');
 Route::post('conf_option_add$', 'xinglong/conf/conf_add');
 //获取：动态增减的固定属性列表 路由
 Route::post('get_conf$', 'xinglong/conf/get_conf');
+//删除：动态增减的固定属性列表 路由
+Route::post('del_conf$', 'xinglong/conf/delete_conf');
