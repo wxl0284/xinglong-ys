@@ -347,10 +347,11 @@ $(function () {
     //给table表内所有的查看配置项的a元素 绑定click事件
     var aElemt = $('#tbl td a');
     var winTable = $ ('#winTable'); //弹窗内的数据表格
-    var tableTitle = winTable.children('caption');
+    var tableStr =  "<tr><td>序号</td> <td class='widthAuto'>属性值</td> <td>操作</td></tr>";
+    var tableTitle = $('#tableHead');
 
     aElemt.click(function () {
-        //var index = layer.load(2); //显示加载提示
+        var index = layer.load(2); //显示加载提示
 
         //执行Ajax 获取相应的配置数据
         var conf = $(this).attr('id');
@@ -373,12 +374,11 @@ $(function () {
                 conf: conf,
             },
             success: function (info) {
-                //layer.close(index);  //关闭加载提示
-                
-                //console.log(typeof info);
+                layer.close(index);  //关闭加载提示
+            
                 if (info === 0)
                 {//获取配置数据失败
-                    winTable.html('获取配置数据失败!');
+                    winTable.html('获取配置数据失败或未添加配置!');
                 }else{
                     var num = info.length; //固定属性的选项数目
                     for ( i = 0; i < num ; i++)
@@ -393,6 +393,7 @@ $(function () {
                     }
 
                     tableTitle.html(confName);
+                    winTable.html(tableStr);
                     winTable.append(htmlStr); //将html字串插入弹窗内的表格
                 }
                 //然后弹出窗口

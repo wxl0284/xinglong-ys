@@ -16,7 +16,7 @@
 			<span>
 				请先配置:焦点类型、图像位数、读出模式、读出速度模式、增益挡位、快门类型、快门模式、ccd制冷方式、ccd接口类型等固定属性的可选项！
 			</span><br>
-			<a href='{:url("/conf_option")}' target="_blank">去配置上述固定属性</a>
+			<a href='{:url("/conf_option")}'>去配置上述固定属性</a>
 		</div><br>
 		<h3 class='center'>配置望远镜
 			<select id='atNo'>
@@ -25,8 +25,29 @@
 				<option value="80">80CM望远镜</option>
 			</select>
 		</h3>	
-		<br>
-		
+        <br>
+        <hr>
+        转台配置：
+        焦点类型：<select id='atNo'>
+				<option value="0">请选择</option>
+				<option value="1">[CASSEGRAIN COUDE]</option>
+				<option value="2">[NASMYTH_1 NASMYTH_2]</option>
+        </select>
+        
+        <br>
+        是否支持连接：是&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name='n' value='1'>
+                    否&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name='n' value='2'>
+                    <br><br> <br>  <hr>
+        CCD配置：
+        制冷方式：<select id='atNo'>
+				<option value="0">请选择</option>
+				<option value="1">液氮制冷</option>
+				<option value="2">无制冷</option>
+        </select>
+        
+        <br>
+        是否支持连接：是&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name='m' value='1'>
+                    否&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name='m' value='2'>
     </div><!-- id='all' 结束 --><br>
 	<footer class='center clear'>
 		<span>中科院国家天文台兴隆观测基地</span>
