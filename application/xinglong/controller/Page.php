@@ -48,6 +48,12 @@ class Page extends Base
     //显示望远镜配置页面 /////////
     public function at_config()
     {
+        //首先获取已添加的望远镜列表, 查字段id和atname
+        $atList = Db::table('atlist')->field('id, atname')->select();
+        if (!$atList)
+        {//还未添加望远镜
+            $this->error('未');
+        }
         //之前配置页面的模板文件是page/config-0.html
         return view('config');
     }//望远镜配置页面 结束

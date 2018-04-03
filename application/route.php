@@ -69,6 +69,14 @@ Route::post('get_conf$', 'xinglong/conf/get_conf');
 //删除：动态增减的固定属性列表 路由
 Route::post('del_conf$', 'xinglong/conf/delete_conf');
 
+/*配置各望远镜固定属性 路由*/
+//显示配置页面 路由
+Route::get('config_page$', 'xinglong/atconfig/config_page');
+//显示不同的望远镜
+Route::get('test2/:at$', 'test/test/test2');
+//显示配置页面
+Route::get('test1$', 'test/test/test1');
+/*配置各望远镜固定属性 结束*/
 
 /*如下为望远镜配置的示例 路由*/
 //测试首页 
