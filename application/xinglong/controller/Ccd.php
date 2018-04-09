@@ -11,7 +11,7 @@ class Ccd extends Base
     //定义所需变量
     protected $sequence = 0;    //指令的序号
     protected $at = 0;  //望远镜序号
-    protected $device = 65;  //转台对应序号
+    protected $device = 65;  //ccd对应序号
     protected $msg = 6;  //单指令 msg 
     protected $magic = 439041101;  //转台对应序号
     protected $version = 1;  //版本号
@@ -86,6 +86,26 @@ class Ccd extends Base
             return $this->start_expose(); //执行发送
         }else if( $command == 4 ){//设置增益     
             return $this->set_gain(); //执行发送
+        }else if( $command == 5 ){////设置 读出速度模式值     
+            return $this->set_readSpeedMode(); //执行发送
+        }else if( $command == 6 ){////设置 转移速度模式值     
+            return $this->set_transferSpeed(); //执行发送
+        }else if( $command == 7 ){//设置BIN     
+            return $this->set_bin(); //执行发送
+        }else if( $command == 8 ){//设置ROI 指令    
+            return $this->set_roi(); //执行发送
+        }else if( $command == 9 ){//设置快门指令 指令    
+            return $this->set_shutter(); //执行发送
+        }else if( $command == 10 ){//设置帧转移 指令    
+            return $this->set_isFullFrame(); //执行发送
+        }else if( $command == 11 ){//SetEM 指令    
+            return $this->set_em(); //执行发送
+        }else if( $command == 12 ){//isNoiseFilter 指令    
+            return $this->set_isNoiseFilter(); //执行发送
+        }else if( $command == 13 ){//SetBaseline 指令    
+            return $this->set_baseLine(); //执行发送
+        }else if( $command == 14 ){//set over scan 指令    
+            return $this->set_overScan(); //执行发送
         }
     }//接收参数，根据不同参数，向不同望远镜的CCD指令 结束////////
 
@@ -683,6 +703,298 @@ class Ccd extends Base
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=7);
         //socket发送数据        
         $sendMsg = $headInfo . $sendMsg;
-        echo '设置增益指令：' .udpSend($sendMsg, $this->ip, $this->port);
+        return '设置增益指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }/*设置增益 结束*/
+
+    /*设置 读出速度模式值*/
+    protected function set_readSpeedMode ()
+    {
+        $length = 48 + 2;      //该结构体总长度
+        $ReadSpeedMode = input('ReadSpeedMode');
+        if (!preg_match('/^\d{1,10}$/', $ReadSpeedMode))
+        {
+            return '读出速度模式值只能是数字！';
+        }
+        $sendMsg = pack('S', $ReadSpeedMode);     //unsigned short
+
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+ 
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=8);
+
+        //socket发送数据        
+        $sendMsg = $headInfo . $sendMsg;
+        return '设置读出速度模式指令：' .udpSend($sendMsg, $this->ip, $this->port);	
+    }/*设置 读出速度模式值  结束*/
+
+    /*设置 转移速度模式值*/
+    protected function set_transferSpeed ()
+    {
+        $length = 48 + 2;      //该结构体总长度
+        $SetTransferSpeed = input('SetTransferSpeed');
+        if (!preg_match('/^\d{1,10}$/', $SetTransferSpeed))
+        {
+            return '转移速度模式值只能是数字！';
+        }
+        $sendMsg = pack('S', $SetTransferSpeed);     //unsigned short
+
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+ 
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=9);
+
+        //socket发送数据        
+        $sendMsg = $headInfo . $sendMsg;
+        return  '转移速度模式指令：' .udpSend($sendMsg, $this->ip, $this->port);	
+    }/*设置 转移速度模式值  结束*/
+
+    /*设置Bin*/
+    protected function set_bin ()
+    {
+        $length = 48 + 8;      //该结构体总长度
+
+        if (input('BinX') !== '')      //binx
+        {
+            $BinX = input('BinX');
+            if (!preg_match('/^\d{1,10}$/', $BinX))
+            {
+                return 'BinX值只能是数字！';
+            }
+            $sendMsg = pack('L', $BinX);     //uint32
+        }else{
+            $sendMsg = pack('L', 0);
+        }
+        
+        if (input('BinY') !== '')      //BinY
+        {
+            $BinY = input('BinY');
+            if (!preg_match('/^\d{1,10}$/', $BinY))
+            {
+                return 'BinY值只能是数字！';
+            }
+            $sendMsg .= pack('L', $BinY);     //uint32
+        }else{
+            $sendMsg .= pack('L', 0);
+        }
+
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+ 
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=10);
+
+        //socket发送数据        
+        $sendMsg = $headInfo . $sendMsg;
+        return  '设置BIN指令：' .udpSend($sendMsg, $this->ip, $this->port);	
+    }/*设置Bin 结束*/
+
+    /*设置Roi*/
+    protected function set_roi ()
+    {
+        $length = 48 + 16;      //该结构体总长度
+
+        if ( ( $startX=input('startX') ) !== '' )      //startX
+        {
+            if (!preg_match('/^\d{1,10}$/', $startX))
+            {
+                return 'startX值只能是数字！';
+            }
+            $sendMsg = pack('L', $startX);     //unsigned int
+        }else{
+            $sendMsg = pack('L', 0);
+        }
+        
+        if ( ( $startY=input('startY') ) !== '' )     //unsigned int
+        {
+            if (!preg_match('/^\d{1,10}$/', $startY))
+            {
+                return 'startY值只能是数字！';
+            }
+            $sendMsg .= pack('L', $startY);     //unsigned int
+        }else{
+            $sendMsg .= pack('L', 0);
+        }
+        
+        if ( ( $imageWidth=input('imageWidth') ) !== '' )      //imageWidth
+        {
+            if (!preg_match('/^\d{1,10}$/', $imageWidth))
+            {
+                return 'imageWidth值只能是数字！';
+            }
+            $sendMsg .= pack('L', $imageWidth);     //unsigned int
+        }else{
+            $sendMsg .= pack('L', 0);
+        }
+        
+        if ( ( $imageHeight=input('imageHeight') ) !== '' )  //imageWidth
+        {
+            if (!preg_match('/^\d{1,10}$/', $imageHeight))
+            {
+                return 'imageHeight值只能是数字！';
+            }
+            $sendMsg .= pack('L', $imageHeight);     //unsigned int
+        }else{
+            $sendMsg .= pack('L', 0);
+        }
+
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+ 
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=11);
+
+        //socket发送数据        
+        $sendMsg = $headInfo . $sendMsg;
+        return  '设置Roi指令：' .udpSend($sendMsg, $this->ip, $this->port);	
+    }/*设置Roi 结束*/
+
+    /*设置快门*/
+    protected function set_shutter ()
+    {
+        $length = 48 + 2;      //该结构体总长度
+
+        $shutter = input('shutter');
+        if (!preg_match('/^\d{1,10}$/', $shutter))
+        {
+            return 'shutter值只能是数字！';
+        }
+        $sendMsg = pack('S', $shutter);     //unsigned short
+
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+ 
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=12);
+
+        //socket发送数据        
+        $sendMsg = $headInfo . $sendMsg;
+        return  '设置快门指令：'. udpSend($sendMsg, $this->ip, $this->port);	
+    }/*设置快门 结束*/
+
+    /*设置帧转移*/
+    protected function set_isFullFrame ()
+    {
+        $length = 48 + 2;      //该结构体总长度
+
+        $isFullFrame = input('isFullFrame');
+        if (!preg_match('/^\d{1,10}$/', $isFullFrame))
+        {
+            return 'isFullFrame值只能是数字！';
+        }
+        $sendMsg = pack('S', $isFullFrame);     //unsigned short
+
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+ 
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=13);
+
+        //socket发送数据        
+        $sendMsg = $headInfo . $sendMsg;
+        return  '设置帧转移指令：'. udpSend($sendMsg, $this->ip, $this->port);	
+    }/*设置帧转移 结束*/
+
+    /*SetEM*/
+    protected function set_em ()
+    {
+        $length = 48 + 6;      //该结构体总长度
+
+        if ( ($isEM = input('isEM')) !== '' )      //isEM
+        {
+            if (!preg_match('/^\d{1,5}$/', $isEM))
+            {
+                return 'isEM值只能是数字！';
+            }
+            $sendMsg = pack('S', $isEM);     //unsigned short
+        }else{
+            $sendMsg = pack('S', 0);
+        }
+        
+        if ( ($eMValue = input('eMValue')) !== '' )      //eMValue
+        {
+            if (!preg_match('/^\d{1,10}$/', $eMValue))
+            {
+                return 'eMValue值只能是数字！';
+            }
+            $sendMsg .= pack('L', $eMValue);     //unsigned int
+        }else{
+            $sendMsg .= pack('L', 0);
+        }
+
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+ 
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=14);
+
+        //socket发送数据        
+        $sendMsg = $headInfo . $sendMsg;
+        return  'SetEM指令：' .udpSend($sendMsg, $this->ip, $this->port);	
+    }/*SetEM 结束*/
+
+    /*isNoiseFilter*/
+    protected function set_isNoiseFilter ()
+    {
+        $length = 48 + 2;      //该结构体总长度
+
+        $isNoiseFilter = input('isNoiseFilter');
+        if (!preg_match('/^\d{1,5}$/', $isNoiseFilter))
+        {
+            return 'isNoiseFilter值只能是数字！';
+        }
+        $sendMsg = pack('S', $isNoiseFilter);     //unsigned short
+
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+ 
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=15);
+
+        //socket发送数据        
+        $sendMsg = $headInfo . $sendMsg;
+        return  'CMOS noise filter指令：' .udpSend($sendMsg, $this->ip, $this->port);	
+    }/*isNoiseFilter 结束*/
+
+    /*set_baseLine*/
+    protected function set_baseLine ()
+    {
+         $length = 48 + 6;      //该结构体总长度
+ 
+        if ( ($isBaseline = input('isBaseline')) !== '' )    //isBaseline
+        {
+            if (!preg_match('/^\d{1,5}$/', $isBaseline))
+            {
+                return 'isBaseline值只能是数字！';
+            }
+            $sendMsg = pack('S', $isBaseline);     //unsigned short
+        }else{
+            $sendMsg = pack('S', 0);
+        }
+        
+        if ( ($baselineValue = input('baselineValue')) !== '' )   //baselineValue
+        {
+            if (!preg_match('/^\d{1,10}$/', $baselineValue))
+            {
+                return 'baseline值只能是数字！';
+            }
+            $sendMsg .= pack('L', $baselineValue);     //unsigned int
+        }else{
+            $sendMsg .= pack('L', 0);
+        }
+ 
+         $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+  
+         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=16);
+ 
+         //socket发送数据        
+         $sendMsg = $headInfo . $sendMsg;
+         return  'Baseline指令：' .udpSend($sendMsg, $this->ip, $this->port);	
+    }/*set_baseLine 结束*/
+
+    /*set over scan*/
+    protected function set_overScan ()
+    {
+        $length = 48 + 2;      //该结构体总长度
+
+        $isOverScan = input('isOverScan');  //isOverScan
+        if (!preg_match('/^\d{1,5}$/', $isOverScan))
+        {
+            return 'isOverScan值只能是数字！';
+        }
+        $sendMsg = pack('S', $isOverScan);     //unsigned short
+
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+ 
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=17);
+
+        //socket发送数据        
+        $sendMsg = $headInfo . $sendMsg;
+        return  'Over Scan指令：' .udpSend($sendMsg, $this->ip, $this->port);	
+    }/*set over scan 结束*/
 }

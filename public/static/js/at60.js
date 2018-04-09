@@ -1274,7 +1274,7 @@
 	   $('#btnsFocus input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60FocusSendData',
+            url : '/focus',
             data : {focusConnect:1,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -1295,7 +1295,7 @@
 	   $('#btnsFocus input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60FocusSendData',
+            url : '/focus',
             data : {focusConnect:2,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -1316,7 +1316,7 @@
 	   $('#btnsFocus input').not($(this)).removeClass('btnClick');
 	   $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60FocusSendData',
+            url : '/focus',
             data : {focusStop:1,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -1337,7 +1337,7 @@
 	   $('#btnsFocus input').not($(this)).removeClass('btnClick');
 	   $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60FocusSendData',
+            url : '/focus',
             data : {findHome:1,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -1420,7 +1420,7 @@
 		var formData = new FormData(form[0]);
 		$.ajax ({
              type: 'post',
-             url : '/xinglong/at60/at60FocusSendData',
+             url : '/focus',
              data : formData,
              processData : false,
              contentType : false,  
@@ -1443,7 +1443,7 @@
 	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60sDomeSendData',
+            url : '/slavedome',
             data : {sDomeConnect:1,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -1464,7 +1464,7 @@
 	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60sDomeSendData',
+            url : '/slavedome',
             data : {sDomeConnect:2,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -1485,7 +1485,7 @@
 	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60sDomeSendData',
+            url : '/slavedome',
             data : {sDomeStop:1,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -1506,7 +1506,7 @@
 	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60sDomeSendData',
+            url : '/slavedome',
             data : {OpenScuttle:1,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -1527,7 +1527,7 @@
 	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60sDomeSendData',
+            url : '/slavedome',
             data : {OpenScuttle:2,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -1612,7 +1612,7 @@
         
 		$.ajax ({
               type: 'post',
-              url : '/xinglong/at60/at60sDomeSendData',
+              url : '/slavedome',
               data : formData,
               processData : false,
               contentType : false,  
@@ -1648,7 +1648,7 @@
        if (e.val() == '断开圆顶')   val = '2';
        $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60fDomeSendData',
+            url : '/opendome',
             data : {fDomeConnect:val,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -1674,7 +1674,7 @@
 	   {
 		   $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60fDomeSendData',
+            url : '/opendome',
             data : {openDome:fDomeVal,},             
             success:  function (info) {
 			    layer.alert(info); 
@@ -1693,7 +1693,7 @@
 	   $('#btnsFilter input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60FilterSendData',
+            url : '/filter',
             data : {filterConnect:1,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -1714,7 +1714,7 @@
 	   $('#btnsFilter input').not($(this)).removeClass('btnClick');
        $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60FilterSendData',
+            url : '/filter',
             data : {filterConnect:2,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -1735,7 +1735,7 @@
 	   $('#btnsFilter input').not($(this)).removeClass('btnClick');
 	   $.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60FilterSendData',
+            url : '/filter',
             data : {filterFindHome:1,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -1756,7 +1756,7 @@
 		var filterPosVal = filterPosEle.val();
 		$.ajax({
             type : 'post',
-            url : '/xinglong/at60/at60FilterSendData',
+            url : '/filter',
             data : {filterPos:filterPosVal,},             
             success:  function (info) {
 	              layer.alert(info);
@@ -1842,7 +1842,7 @@ $('#coverOp').on('click', 'input:button', function () {
 		val = 0;
 	}
 	$.ajax({
-		url: '/xinglong/at60/at60GimbalSendData',
+		url: '/gimbal',
 		type: 'post',
 		data: {
 			command: 9,
@@ -1878,7 +1878,7 @@ $('#saveData').on('click', 'input:button', function () {
 		val = 0;
 	}
 	$.ajax({
-		url: '/xinglong/at60/at60GimbalSendData',
+		url: '/gimbal',
 		type: 'post',
 		data: {
 			command: 11,

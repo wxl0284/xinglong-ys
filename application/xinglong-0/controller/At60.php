@@ -2550,6 +2550,5 @@ class At60 extends Controller
 			$sendMsg = $headInfo . $sendMsg;
 			echo '下一条计划:' .udpSend($sendMsg, $this->ip, $this->port);
 		}
-	}
-	//观测计划的 开始 停止 下一个 结束//////////////////////////////
+	}//观测计划的 开始 停止 下一个 结束////////////////////////////
 }

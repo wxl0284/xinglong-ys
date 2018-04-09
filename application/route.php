@@ -54,6 +54,16 @@ Route::post('gimbal$', 'xinglong/gimbal/sendCommand');
 Route::post('ccd$', 'xinglong/ccd/sendCommand');
 //发送调焦器指令 路由
 Route::post('focus$', 'xinglong/focus/sendCommand');
+//发送随动圆顶指令 路由
+Route::post('slavedome$', 'xinglong/slavedome/sendCommand');
+//发送全开圆顶指令 路由
+Route::post('opendome$', 'xinglong/opendome/sendCommand');
+//发送滤光片指令 路由
+Route::post('filter$', 'xinglong/filter/sendCommand');
+//导入观测计划 路由
+Route::post('importplan$', 'xinglong/plan/importPlan');
+//观测计划之发送和开始执行 路由
+Route::post('plan$', 'xinglong/plan/sendData');
 //显示望远镜编辑页面 路由
 Route::get('atedit/:at$', 'xinglong/page/at_edit', [], ['at'=>'\d{5}']);
 //执行望远镜编辑 路由

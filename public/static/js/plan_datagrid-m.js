@@ -136,7 +136,7 @@
 			var formData = new FormData(planForm[0]);
 			$.ajax({
 				type: 'post',
-	            url : '/xinglong/at60/importPlan',
+	            url : '/importplan',
 	            data : formData,
 				processData : false,
 				contentType : false, 
@@ -552,11 +552,12 @@
 		{
 			$.ajax({
 				type : 'post',
-				url : '/xinglong/at60/at60PlanOption',
+				url : '/plan',
 				data : {
 					planOption : option,
 					mode : modeVal,
 					start : index +1,
+					command : 1,	//标识 plan.php控制器中用以区别要执行的函数
 				},             
 	            success:  function (info) {
 		            planErr = 0;
@@ -663,8 +664,11 @@
 		{
 			$.ajax({
 				type: 'post',
-				url: '/xinglong/at60/savePlan',
-				data: {planData: plans},
+				url: '/plan',
+				data: {
+					planData: plans,
+					command : 2,  //标识 plan.php控制器中用以区别要执行的函数
+				},
 				success: function (info){
 					planErr = 0;
 					layer.alert('警告', info);
