@@ -194,7 +194,7 @@ $(function () {
     function coolerMode_valid (v)
     {
         //输入格式为汉字
-        var patn = /^[\u4e00-\u9fa5]{3,}$/;
+        var patn = /^[\u4e00-\u9fa5-]{2,}$/;
         if ( !patn.test(v) )
         {
             return false;
@@ -378,6 +378,7 @@ $(function () {
             
                 if (info === 0)
                 {//获取配置数据失败
+                    tableTitle.html(confName);
                     winTable.html('获取配置数据失败或未添加配置!');
                 }else{
                     var num = info.length; //固定属性的选项数目

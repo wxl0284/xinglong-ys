@@ -52,11 +52,119 @@ class Page extends Base
         $atList = Db::table('atlist')->field('id, atname')->select();
         if (!$atList)
         {//还未添加望远镜
-            $this->error('未');
+            $this->error('请先添加望远镜!');
         }
-        //之前配置页面的模板文件是page/config-0.html
-        return view('config');
+
+        $vars['atList'] = $atList;
+
+        return view('config', $vars);  //之前配置页面的模板文件是page/config-0.html
     }//望远镜配置页面 结束
+
+    //ajax请求 判断19个动态增减的固定是否已添加够/////////
+    public function conf_num()
+    {
+        //首先判断是否有权限执行
+       /* if ($this->ajaxAuthErr == 1)
+        {//无权执行
+            return '您无权限执行此操作!';
+        }*/
+
+        /*如下开始
+        *判断数据表'confoption'内19个动态增减的固定属性是否已全部添加，
+         否则无法进行各望远镜的配置
+        */
+        $confOption = Db::table('confoption')->group('conf')->field('conf')->select();
+        $confNum = count($confOption);  //动态增减的固定属性的数量
+        
+        $errMsg = '';  //错误提示
+        if ( $confNum < 19 )    //不够19个时
+        {//逐一判断缺少了哪个固定属性
+            if ( !in_array(['conf' => 'focustype'], $confOption) )
+            {//缺少了'焦点类型'
+                $errMsg .= '固定属性还须添加：焦点类型!<br>';
+            }
+
+            if ( !in_array(['conf' => 'focusratio'], $confOption) )
+            {//缺少了'焦距'
+                $errMsg .= '固定属性还须添加：焦比!<br>';
+            }
+            if ( !in_array(['conf' => 'imageBits'], $confOption) )
+            {//缺少了'图像位数'
+                $errMsg .= '固定属性还须添加：图像位数!<br>';
+            }
+            if ( !in_array(['conf' => 'coolerMode'], $confOption) )
+            {//缺少了'制冷方式'
+                $errMsg .= '固定属性还须添加：制冷方式!<br>';
+            }
+            if ( !in_array(['conf' => 'readoutMode'], $confOption) )
+            {//缺少了'读出模式'
+                $errMsg .= '固定属性还须添加：读出模式!<br>';
+            }
+            if ( !in_array(['conf' => 'readoutSpeed'], $confOption) )
+            {//缺少了'读出速度模式'
+                $errMsg .= '固定属性还须添加：读出速度模式!<br>';
+            }
+            if ( !in_array(['conf' => 'transferSpeed'], $confOption) )
+            {//缺少了'转移速度模式'
+                $errMsg .= '固定属性还须添加：转移速度模式!<br>';
+            }
+            if ( !in_array(['conf' => 'gainmode'], $confOption) )
+            {//缺少了'增益模式'
+                $errMsg .= '固定属性还须添加：增益模式!<br>';
+            }
+            if ( !in_array(['conf' => 'gainNumber'], $confOption) )
+            {//缺少了'增益档位'
+                $errMsg .= '固定属性还须添加：增益档位!<br>';
+            }
+            if ( !in_array(['conf' => 'ShutterType'], $confOption) )
+            {//缺少了'快门类型'
+                $errMsg .= '固定属性还须添加：快门类型!<br>';
+            }
+            if ( !in_array(['conf' => 'ShutterMode'], $confOption) )
+            {//缺少了'快门模式'
+                $errMsg .= '固定属性还须添加：快门模式!<br>';
+            }
+            if ( !in_array(['conf' => 'BinArray'], $confOption) )
+            {//缺少了'Bin'
+                $errMsg .= '固定属性还须添加：Bin!<br>';
+            }
+            if ( !in_array(['conf' => 'InterfaceType'], $confOption) )
+            {//缺少了'ccd接口类型'
+                $errMsg .= '固定属性还须添加：ccd接口类型!<br>';
+            }
+            if ( !in_array(['conf' => 'ExposeTriggerMode'], $confOption) )
+            {//缺少了'曝光触发模式'
+                $errMsg .= '固定属性还须添加：曝光触发模式!<br>';
+            }
+            if ( !in_array(['conf' => 'FilterSystem'], $confOption) )
+            {//缺少了'滤光片类型'
+                $errMsg .= '固定属性还须添加：滤光片类型!<br>';
+            }
+            if ( !in_array(['conf' => 'FilterShape'], $confOption) )
+            {//缺少了'滤光片形状'
+                $errMsg .= '固定属性还须添加：滤光片形状!<br>';
+            }
+            if ( !in_array(['conf' => 'slaveDomeType'], $confOption) )
+            {//缺少了'随动圆顶类型'
+                $errMsg .= '固定属性还须添加：随动圆顶类型!<br>';
+            }
+            if ( !in_array(['conf' => 'openDomeType'], $confOption) )
+            {//缺少了'全开圆顶类型'
+                $errMsg .= '固定属性还须添加：全开圆顶类型!<br>';
+            }
+            if ( !in_array(['conf' => 'opticalStructure'], $confOption) )
+            {//缺少了'导星镜焦点类型'
+                $errMsg .= '固定属性还须添加：导星镜焦点类型!<br>';
+            }
+        }/*检查判断数据表'confoption'内19个动态增减的固定属性  结束*/
+
+        if ($errMsg != '')
+        {//还须添加固定属性
+            return $errMsg;
+        }else{
+            return 0;
+        }
+    }//ajax请求 判断19个动态增减的固定是否已添加够 结束
 
     //显示望远镜列表 /////////
     public function atlist()

@@ -28,6 +28,12 @@ class Conf extends Base
             return '数据提交失败,请重新提交!';
         }
 
+        //判断提交的固定属性值是否已存在
+        $res = Db::table('confoption')->where('conf', $postData['conf'])->column('conf_val');
+        if( in_array($postData['conf_val'], $res) )
+        {
+            return '已添加此固定属性值!';
+        }
         //判断要入库的是哪个固定属性
         $conf = $this->which_conf ($postData['conf']);
         //halt($postData);
@@ -89,7 +95,7 @@ class Conf extends Base
         {
             $conf = '望远镜焦点类型';
         }else if ($postConf == 'focusratio'){
-            $conf = '焦距';
+            $conf = '焦比';
         }else if ($postConf == 'imageBits'){
             $conf = '图像位数';
         }else if ($postConf == 'coolerMode'){

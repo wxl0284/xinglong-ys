@@ -26,6 +26,8 @@ Route::get('atlist$', 'xinglong/page/atlist');
 Route::post('at_doadd$', 'xinglong/page/at_doadd');
 //显示望远镜配置页面 路由
 Route::get('atconfig$', 'xinglong/page/at_config');
+//望远镜配置页面'望远镜选择下拉选择框'的ajax请求判断19个固定属性是否已添加 路由 
+Route::post('conf_num$', 'xinglong/page/conf_num');
 //首页 路由
 Route::get('front$', 'xinglong/page/front');
 //用户管理 路由
@@ -82,6 +84,10 @@ Route::post('del_conf$', 'xinglong/conf/delete_conf');
 /*配置各望远镜固定属性 路由*/
 //显示配置页面 路由
 Route::get('config_page$', 'xinglong/atconfig/config_page');
+
+
+
+
 //显示不同的望远镜
 Route::get('test2/:at$', 'test/test/test2');
 //显示配置页面

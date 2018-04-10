@@ -17,3 +17,6 @@ header div div a {color:#eaf1f9;}
 /*******以上为公共头样式 以下为具体页面样式 各配置页基本通用**********/
 footer {position:fixed; bottom: 0px; width:100%;}
 
+form.form span {width:296px;display:inline-block;text-align: left;}
+form.form span input select{width:auto;}
+

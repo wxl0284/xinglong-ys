@@ -19,14 +19,28 @@
 			<a href='{:url("/conf_option")}' target="_blank">去配置上述固定属性</a>
 		</div><br>
 		<h3 class='center'>配置望远镜
-			<select id='atNo'>
-				<option value="0">请选择望远镜</option>
-				<option value="60">60CM望远镜</option>
-				<option value="80">80CM望远镜</option>
+			<select id='atNo' style='width:auto;'>
+				<option value="0" selected="selected">请选择望远镜</option>
+				{volist name="atList" id="vo"}
+					<option value="{$vo.id}">{$vo.atname}</option>
+				{/volist}
 			</select>
-		</h3>	
-		<br>
-		
+		</h3>
+		<br><br>
+		<div id='allOptions' class='displayNo1'><!--所有配置项-->
+			<form id='gimbal' class="form"><!--转台配置项-->
+				<span>Id：<input type='text' id='gimbalId' name='id' placeholder='0X0000000X'></span>
+				<span>名称：<input type='text' id='gimbalName' name='name' placeholder='1.26m望远镜'></span>
+				<span>隶属观测站：<input type='text' id='gimbalAddress' name='observatory' placeholder='国家天文台兴隆观测基地'></span>
+				<span>经度：<input type='text' id='gimbalLongitude' name='longitude' placeholder='-180.0~+180.0'></span>
+				<span>纬度：<input type='text' id='gimbalLatitude' name='latitude' placeholder='-90.0~+90.0'></span>
+				<span>纬度：<input type='text' id='gimbalLatitude' name='latitude' placeholder='-90.0~+90.0'></span>
+				<span>纬度：<input type='text' id='gimbalLatitude' name='latitude' placeholder='-90.0~+90.0'></span>
+				<span>纬度：<input type='text' id='gimbalLatitude' name='latitude' placeholder='-90.0~+90.0'></span>
+				<span>纬度：<input type='text' id='gimbalLatitude' name='latitude' placeholder='-90.0~+90.0'></span>
+				<span>纬度：<input type='text' id='gimbalLatitude' name='latitude' placeholder='-90.0~+90.0'></span>
+			</form><!--转台配置项 结束-->
+		</div><!-- 所有配置项 结束 -->
     </div><!-- id='all' 结束 --><br>
 	<footer class='center clear'>
 		<span>中科院国家天文台兴隆观测基地</span>
