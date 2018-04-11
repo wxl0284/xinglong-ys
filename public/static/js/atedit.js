@@ -27,6 +27,7 @@ $(function () {
     //望远镜列表js代码结束/////////////////////////////////
     //提交望远镜的数据
     var atForm = $('#form');
+    var atId = atForm.find('input[name="atid"]'); //望远镜id
     var atName = atForm.find('input[name="atname"]'); //望远镜名称
     var address = atForm.find('input[name="address"]'); //望远镜地址
     var longitude = atForm.find('input[name="longitude"]'); //经度
@@ -35,10 +36,24 @@ $(function () {
     var aperture = atForm.find('input[name="aperture"]'); //口径
 
     //各input框的blur
+    //验证望远镜id 之blur
+    atId.blur(function () {
+        var v = $.trim($(this).val());
+		//var patn = /0\d{4}/;
+		var err = 0;
+		
+		if ( v.length != 5 || !$.isNumeric(v) || v.indexOf('0') !== 0)
+		{
+			err = 1;
+			layer.tips('望远镜id格式错误!', $(this), {tipsMore: true});
+		}		
+		$(this).data('err', err);
+    });//验证望远镜id 之blur 结束
+
     //验证望远镜名 之blur
     atName.blur(function () {
         var v = $.trim($(this).val());
-		var patn = /\d+望远镜/;
+		var patn = /^\d+\.?m望远镜$/;
 		var err = 0;
 		
 		if ( !patn.test(v) )
@@ -65,10 +80,10 @@ $(function () {
     //验证望远镜经度 之blur
     longitude.blur(function () {
         var v = $.trim($(this).val());
-        v1 = v.replace('°', ''); //将字符°替换为空串
+        //v1 = v.replace('°', ''); //将字符°替换为空串
 		var err = 0;
 		
-		if ( !$.isNumeric(v1) || v1 > 180 || v1 < -180 || v.indexOf('°') == -1)
+		if ( !$.isNumeric(v) || v > 180 || v < -180 )
 		{
 			err = 1;
 			layer.tips('经度格式错误!', $(this), {tipsMore: true});
@@ -79,10 +94,10 @@ $(function () {
     //验证望远镜纬度 之blur
     latitude.blur(function () {
         var v = $.trim($(this).val());
-        v1 = v.replace('°', ''); //将字符°替换为空串
+        //v1 = v.replace('°', ''); //将字符°替换为空串
 		var err = 0;
 		
-		if ( !$.isNumeric(v1) || v1 > 90 || v1< -90 || v.indexOf('°') == -1)
+		if ( !$.isNumeric(v) || v > 90 || v < -90 )
 		{
 			err = 1;
 			layer.tips('纬度格式错误!', $(this), {tipsMore: true});
@@ -93,11 +108,10 @@ $(function () {
     //验证望远镜海拔 之blur
     altitude.blur(function () {
         var v = $.trim($(this).val());
-        v = v.toLowerCase(); //转为小写
-        v1 = v.replace('m', ''); //将字符m 替换为空串
+        //v1 = v.replace('m', ''); //将字符m 替换为空串
 		var err = 0;
 		
-		if ( !$.isNumeric(v1) || v1 > 6000 || v1 < -1000 || v.indexOf('m') == -1)
+		if ( !$.isNumeric(v) || v > 6000 || v < -1000 )
 		{
 			err = 1;
 			layer.tips('海拔格式错误!', $(this), {tipsMore: true});
@@ -108,11 +122,10 @@ $(function () {
     //验证望远镜口径 之blur
     aperture.blur(function () {
         var v = $.trim($(this).val());
-        v = v.toLowerCase(); //转为小写
-        v1 = v.replace('cm', ''); //将字符m 替换为空串
+        //v1 = v.replace('cm', ''); //将字符m 替换为空串
 		var err = 0;
 		
-		if ( !$.isNumeric(v1) || v.indexOf('cm') == -1)
+		if ( !$.isNumeric(v) )
 		{
 			err = 1;
 			layer.tips('口径格式错误!', $(this), {tipsMore: true});

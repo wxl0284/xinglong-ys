@@ -16,18 +16,12 @@ Route::get('/$', 'xinglong/login/index');
 Route::post('login$', 'xinglong/login/dologin');
 //退出 路由
 Route::get('logout$', 'xinglong/login/logout');
-//望远镜操控页面 路由
-Route::get('atpage/:at$', 'xinglong/page/at_page', [], ['at'=>'\d{2}']);
-//显示添加望远镜 路由
-Route::get('atadd$', 'xinglong/page/at_add');
-//显示望远镜列表 路由
-Route::get('atlist$', 'xinglong/page/atlist');
-//执行添加望远镜 路由
-Route::post('at_doadd$', 'xinglong/page/at_doadd');
+//显示各望远镜操控页面 路由
+Route::get('atpage/:at$', 'xinglong/page/at_page', [], ['at'=>'\d{1,}']);
 //显示望远镜配置页面 路由
 Route::get('atconfig$', 'xinglong/page/at_config');
-//望远镜配置页面'望远镜选择下拉选择框'的ajax请求判断19个固定属性是否已添加 路由 
-Route::post('conf_num$', 'xinglong/page/conf_num');
+//望远镜配置页面'望远镜选择下拉选择框'的ajax请求判断19个固定属性并获取配置的json数据 路由 
+Route::post('config$', 'xinglong/page/config');
 //首页 路由
 Route::get('front$', 'xinglong/page/front');
 //用户管理 路由
@@ -66,8 +60,14 @@ Route::post('filter$', 'xinglong/filter/sendCommand');
 Route::post('importplan$', 'xinglong/plan/importPlan');
 //观测计划之发送和开始执行 路由
 Route::post('plan$', 'xinglong/plan/sendData');
+//显示添加望远镜页面 路由
+Route::get('atadd$', 'xinglong/page/at_add');
+//显示望远镜列表 路由
+Route::get('atlist$', 'xinglong/page/atlist');
+//执行添加望远镜 路由
+Route::post('at_doadd$', 'xinglong/page/at_doadd');
 //显示望远镜编辑页面 路由
-Route::get('atedit/:at$', 'xinglong/page/at_edit', [], ['at'=>'\d{5}']);
+Route::get('atedit/:at$', 'xinglong/page/at_edit', [], ['at'=>'\d{1,}']);
 //执行望远镜编辑 路由
 Route::post('at_doedit$', 'xinglong/page/at_doedit');
 //删除望远镜 路由
@@ -85,13 +85,6 @@ Route::post('del_conf$', 'xinglong/conf/delete_conf');
 //显示配置页面 路由
 Route::get('config_page$', 'xinglong/atconfig/config_page');
 
-
-
-
-//显示不同的望远镜
-Route::get('test2/:at$', 'test/test/test2');
-//显示配置页面
-Route::get('test1$', 'test/test/test1');
 /*配置各望远镜固定属性 结束*/
 
 /*如下为望远镜配置的示例 路由*/
@@ -101,5 +94,7 @@ Route::get('test$', 'test/test/test');
 Route::get('test2/:at$', 'test/test/test2');
 //显示配置页面
 Route::get('test1$', 'test/test/test1');
-
+Route::get('test2/:at$', 'test/test/test2');
+//显示配置页面
+Route::get('test1$', 'test/test/test1');
 /*如下为望远镜配置的示例 结束*/

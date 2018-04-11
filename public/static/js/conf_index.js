@@ -168,7 +168,7 @@ $(function () {
         }
     }//验证焦点类型 结束
 
-    //验证焦距
+    //验证焦比
     function focusratio_valid (v)
     {
         //输入格式为[12.1 18.1]
@@ -177,7 +177,7 @@ $(function () {
         {
             return false;
         }
-    }//验证焦距 结束
+    }//验证焦比 结束
 
     //验证图像位数
     function imageBits_valid (v)

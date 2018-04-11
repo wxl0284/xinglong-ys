@@ -60,8 +60,8 @@ class Page extends Base
         return view('config', $vars);  //之前配置页面的模板文件是page/config-0.html
     }//望远镜配置页面 结束
 
-    //ajax请求 判断19个动态增减的固定是否已添加够/////////
-    public function conf_num()
+    //ajax请求 判断19个动态增减的固定是否已添加够 并获取相应望远镜的配置数据/////////
+    public function config()
     {
         //首先判断是否有权限执行
        /* if ($this->ajaxAuthErr == 1)
@@ -157,14 +157,16 @@ class Page extends Base
                 $errMsg .= '固定属性还须添加：导星镜焦点类型!<br>';
             }
         }/*检查判断数据表'confoption'内19个动态增减的固定属性  结束*/
-
+        //$errMsg = '固定属性还须添加<br>'.'固定属性还须添加：全开圆顶类型!<br>';
         if ($errMsg != '')
         {//还须添加固定属性
             return $errMsg;
-        }else{
-            return 0;
+        }else{//获取相应望远镜的配置数据，已json格式返回
+            $id = input('id'); //获取相应望远镜的id
+            //据此id去各自设备的固定属性表中获取数据
+            return 'test';
         }
-    }//ajax请求 判断19个动态增减的固定是否已添加够 结束
+    }//ajax请求 判断19个动态增减的固定是否已添加够 并获取相应望远镜的配置数据 结束
 
     //显示望远镜列表 /////////
     public function atlist()
@@ -199,6 +201,56 @@ class Page extends Base
         {
             return '提交数据失败!';
         }
+
+        /*验证望远镜添加表单的数据*/
+        $errMsg = ''; //存储错误提示信息
+        //验证望远镜id
+        if ( !$this->check_atId( $postData['atid']) )
+        {
+            $errMsg .= '望远镜id格式错误!<br>';
+        }
+
+        //验证望远镜名
+        if ( !$this->check_name( $postData['atname']) )
+        {
+            $errMsg .=  '望远镜名格式错误!<br>';
+        }
+
+        //验证望远镜观测站
+        if ( !$this->check_address( $postData['address']) )
+        {
+            $errMsg .=  '望远镜所属观测站格式错误!<br>';
+        }
+
+        //验证望远镜观 经度
+        if ( !$this->check_longitude( $postData['longitude']) )
+        {
+            $errMsg .=  '望远镜经度格式错误!<br>';
+        }
+
+        //验证望远镜观 纬度
+        if ( !$this->check_latitude( $postData['latitude']) )
+        {
+            $errMsg .=  '望远镜纬度格式错误!<br>';
+        }
+
+        //验证望远镜观 海拔
+        if ( !$this->check_altitude( $postData['altitude']) )
+        {
+            $errMsg .=  '望远镜海拔格式错误!<br>';
+        }
+
+        //验证望远镜观 口径
+        if ( !$this->check_aperture( $postData['aperture']) )
+        {
+            $errMsg .= '望远镜口径格式错误!<br>';
+        }
+
+        if ($errMsg != '')
+        {
+            return $errMsg;
+        }/*验证望远镜添加表单的数据 结束*/
+
         //查询新提交的望远镜id或望远镜名 是否在数据表中唯一
         $old = Db::table('atlist')->where('atid', $postData['atid'])->whereOr('atname', $postData['atname'])->find();
         
@@ -221,7 +273,7 @@ class Page extends Base
     public function at_edit($at)
     {   
         //查对应望远镜数据
-        $res = Db::table('atlist')->where('atid', $at)->find();
+        $res = Db::table('atlist')->where('id', $at)->find();
         if (!$res)
         {
            $this->error('读取数据失败!');
@@ -234,7 +286,7 @@ class Page extends Base
 
     //执行编辑望远镜数据  /////////
     public function at_doedit()
-    {   
+    {  
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {
@@ -246,15 +298,66 @@ class Page extends Base
         {
             return '提交数据失败!';
         }
-        //查询新提交的望远镜名 是否在数据表中唯一
-        $old = Db::table('atlist')->where('atname', $postData['atname'])->find();
+
+        /*验证望远镜添加表单的数据*/
+        $errMsg = ''; //存储错误提示信息
+        //验证望远镜id
+        if ( !$this->check_atId( $postData['atid']) )
+        {
+            $errMsg .= '望远镜id格式错误!<br>';
+        }
+
+        //验证望远镜名
+        if ( !$this->check_name( $postData['atname']) )
+        {
+            $errMsg .=  '望远镜名格式错误!<br>';
+        }
+
+        //验证望远镜观测站
+        if ( !$this->check_address( $postData['address']) )
+        {
+            $errMsg .=  '望远镜所属观测站格式错误!<br>';
+        }
+
+        //验证望远镜观 经度
+        if ( !$this->check_longitude( $postData['longitude']) )
+        {
+            $errMsg .=  '望远镜经度格式错误!<br>';
+        }
+
+        //验证望远镜观 纬度
+        if ( !$this->check_latitude( $postData['latitude']) )
+        {
+            $errMsg .=  '望远镜纬度格式错误!<br>';
+        }
+
+        //验证望远镜观 海拔
+        if ( !$this->check_altitude( $postData['altitude']) )
+        {
+            $errMsg .=  '望远镜海拔格式错误!<br>';
+        }
+
+        //验证望远镜观 口径
+        if ( !$this->check_aperture( $postData['aperture']) )
+        {
+            $errMsg .= '望远镜口径格式错误!<br>';
+        }
+
+        if ($errMsg != '')
+        {
+            return $errMsg;
+        }/*验证望远镜添加表单的数据 结束*/
+
+        //查询新提交的望远镜名或望远镜id 是否在数据表中唯一
+        $old = Db::table('atlist')->where('atname', $postData['atname'])
+              ->whereOr('atid', $postData['atid'])->find();
         
         if ($old)
         {
-            return '望远镜名重复,请重新填写!';
+            return '望远镜名或望远镜id重复,请重新填写!';
         }
         //执行更新
-        $res = Db::table('atlist')->where('atid', $postData['atid'])->update($postData);
+        $res = Db::table('atlist')->where('id', $postData['id'])->update($postData);
         if ($res)
         {
             return '编辑望远镜信息ok!';
@@ -503,4 +606,89 @@ class Page extends Base
 
 		return view('weather', $vars);
     }//显示天气详情页 结束///
+
+    /*验证望远镜id格式*/
+    protected function check_atId ($atId)
+    {
+        //合法格式：02000
+        if ( strlen($atId) != 5 || !is_numeric($atId) || strpos($atId, '0') != 0 )
+        {
+            return false;
+        }else{
+            return true;
+        }
+    }/*验证望远镜id格式 结束*/
+
+    /*验证望远镜名格式*/
+    protected function check_name ($name)
+    {
+        //合法格式：0.6m望远镜
+        if ( !preg_match('/^\d+\.?m望远镜$/', $name) )
+        {
+            return false;
+        }else{
+            return true;
+        }
+    }/*验证望远镜名格式 结束*/
+
+    /*验证望远镜名格式*/
+    protected function check_address ($address)
+    {
+        //合法格式：字符长度不低于3
+        if ( strlen($address) < 3 )
+        {
+            return false;
+        }else{
+            return true;
+        }
+    }/*验证望远镜名格式 结束*/
+
+    /*验证望远镜 经度*/
+    protected function check_longitude ($longitude)
+    {
+        //合法格式：-180 ~ 180
+        if ( !is_numeric($longitude) || $longitude > 180 || $longitude < -180)
+        {
+            return false;
+        }else{
+            return true;
+        }
+    }/*验证望远镜名 经度 结束*/
+
+    /*验证望远镜 纬度*/
+    protected function check_latitude ($latitude)
+    {
+        //合法格式：-90 ~ 90
+        if ( !is_numeric($latitude) || $latitude > 90 || $latitude < -90)
+        {
+            return false;
+        }else{
+            return true;
+        }
+    }/*验证望远镜名 纬度 结束*/
+
+    /*验证望远镜 海拔*/
+    protected function check_altitude ($altitude)
+    {
+        //合法格式：-1000 ~ 1000
+        if ( !is_numeric($altitude) || $altitude > 6000 || $altitude < -1000)
+        {
+            return false;
+        }else{
+            return true;
+        }
+    }/*验证望远镜名 海拔 结束*/
+
+    /*验证望远镜 口径*/
+    protected function check_aperture ($aperture)
+    {
+        //合法格式：216.0
+        if ( !is_numeric($aperture) )
+        {
+            return false;
+        }else{
+            return true;
+        }
+    }/*验证望远镜名 口径 结束*/
+
 }

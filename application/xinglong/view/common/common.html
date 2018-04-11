@@ -7,7 +7,7 @@
              {if condition="isset($atList)"}
              <ul id='atListUl' class='center displayNo'>
                 {volist name="atList" id="vo"}
-                 <li><a href='{:url("xinglong/page/at_page", ["at"=>60])}' target='_blank'>{$vo.atname}</a></li>
+                 <li><a href='{:url("xinglong/page/at_page", ["at"=>$vo.id])}' target='_blank'>{$vo.atname}</a></li>
                  <hr>
                 {/volist}
              </ul>
@@ -39,6 +39,6 @@
              <span>欢迎!&nbsp;&nbsp;{$Think.session.login ?? ''}&nbsp;
              </span>
         </p>
-        <div class='pos_a'><a href="{:url('/logout')}">&nbsp;&nbsp;&nbsp;退出&nbsp;&nbsp;&nbsp;</a></div> 
+        <div class='pos_a' style="width:78px;"><a href="{:url('/logout')}">&nbsp;&nbsp;&nbsp;退出&nbsp;&nbsp;&nbsp;</a></div> 
      </div>
  </header>

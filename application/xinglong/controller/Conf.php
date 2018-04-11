@@ -28,6 +28,39 @@ class Conf extends Base
             return '数据提交失败,请重新提交!';
         }
 
+        /*验证表单数据*/
+        if ( $postData['conf'] == 'focustype' ) //验证 焦点类型
+        {
+            if ( !$this->check_focustype($postData['conf_val']) )
+            {
+                return '焦点类型格式错误';
+            }
+        }elseif ( $postData['conf'] == 'focusratio' )    //验证 焦比
+        {
+            if ( !$this->check_focusratio($postData['conf_val']) )
+            {
+                return '焦比格式错误';
+            }
+        }elseif ( $postData['conf'] == 'imageBits' ) //验证 图像位数
+        {
+            if ( !$this->check_imageBits($postData['conf_val']) )
+            {
+                return '图像位数格式错误';
+            }
+        }elseif ( $postData['conf'] == 'coolerMode' )//验证 制冷方式
+        {
+            if ( !$this->check_coolerMode($postData['conf_val']) )
+            {
+                return '制冷方式格式错误';
+            }
+        }elseif ( $postData['conf'] == 'coolerMode' )   //验证 读出模式
+         {
+             if ( !$this->check_coolerMode($postData['conf_val']) )
+             {
+                 return '制冷方式格式错误';
+             }
+         }  //4.11 doing
+        /*验证表单数据 结束*/
         //判断提交的固定属性值是否已存在
         $res = Db::table('confoption')->where('conf', $postData['conf'])->column('conf_val');
         if( in_array($postData['conf_val'], $res) )
@@ -134,4 +167,50 @@ class Conf extends Base
 
         return $conf;
     }//根据表单数据 判断是哪个固定属性 结束
+
+    /*验证 焦点类型*/
+    protected function check_focustype ($val)
+    {
+        if ( !preg_match('/^\[\w+ \w+\]$/', $val) )
+        {
+            return false;
+        }else{
+            return true;
+        }
+    }/*验证 焦点类型 结束*/
+
+    /*验证 焦比*/
+    protected function check_focusratio ($val)
+    {
+        if ( !preg_match('/^\[[0-9.]+ [0-9.]+\]$/', $val) )
+        {
+            return false;
+        }else{
+            return true;
+        }
+    }/*验证 焦比 结束*/
+
+    /*验证 图像位数*/
+    protected function check_imageBits ($val)
+    {
+        if ( !preg_match('/^[1-9]+$/', $val) )
+        {
+            return false;
+        }else{
+            return true;
+        }
+    }/*验证 图像位数 结束*/
+
+    /*验证 制冷方式*/
+    protected function check_coolerMode ($val)
+    {
+        if ( !preg_match('/^[\x{4e00}-\x{9af5}-]+$/u', $val) )
+        {
+            return false;
+        }else{
+            return true;
+        }
+    }/*验证 制冷方式 结束*/
+
+
 }

@@ -30,27 +30,34 @@ $(function () {
     var allOptions = $('#allOptions');  //页面中所有的配置项
     var atNo = $('#atNo');
     atNo.change(function (){
+        var index = layer.load(2); //显示加载提示
         var val = $(this).val();
 
         if(val !== '0') //执行ajax请求 判断
         {
             $.ajax({
-                url: '/conf_num',
+                url: '/config',
                 type: 'post',
+                data: {id: val,},   //将望远镜id发送给后端
                 success:  function (info) {
-                    if( info != 0 )    //返回信息需要提示给用户
+                    layer.close(index);  //关闭加载提示
+                    //var info = $.parseJSON(info);
+                    //console.log(info);return;
+                    //判断返回的info 是否为json
+                    if ( info.indexOf('{') == -1 )  //不是json, 返回信息需要提示给用户
                     {
                         layer.alert(info);
                         atNo.val('0');  //将望远镜选择下拉框置为初始值
-                        allOptions.addClass('displayNo');
+                        //allOptions.addClass('displayNo');  //隐藏所有配置项
                         if (info.indexOf('登录') !== -1)
                         {
                             location.href = '/';
                         }
-                    }else{
+                    }else{//处理返回的json数据
                         atNo.val(val);
-                        //显示页面中的配置选项
-                        allOptions.removeClass('displayNo');
+                        //
+                        
+                        allOptions.removeClass('displayNo');   //显示页面中的配置选项
                     }
                 },
                 error:  function () {
