@@ -25,20 +25,109 @@
 					<option value="{$vo.id}">{$vo.atname}</option>
 				{/volist}
 			</select>
-		</h3>
-		<br><br>
-		<div id='allOptions' class='displayNo1'><!--所有配置项-->
-			<form id='gimbal' class="form"><!--转台配置项-->
-				<span>Id：<input type='text' id='gimbalId' name='id' placeholder='0X0000000X'></span>
-				<span>名称：<input type='text' id='gimbalName' name='name' placeholder='1.26m望远镜'></span>
-				<span>隶属观测站：<input type='text' id='gimbalAddress' name='observatory' placeholder='国家天文台兴隆观测基地'></span>
-				<span>经度：<input type='text' id='gimbalLongitude' name='longitude' placeholder='-180.0~+180.0'></span>
-				<span>纬度：<input type='text' id='gimbalLatitude' name='latitude' placeholder='-90.0~+90.0'></span>
-				<span>纬度：<input type='text' id='gimbalLatitude' name='latitude' placeholder='-90.0~+90.0'></span>
-				<span>纬度：<input type='text' id='gimbalLatitude' name='latitude' placeholder='-90.0~+90.0'></span>
-				<span>纬度：<input type='text' id='gimbalLatitude' name='latitude' placeholder='-90.0~+90.0'></span>
-				<span>纬度：<input type='text' id='gimbalLatitude' name='latitude' placeholder='-90.0~+90.0'></span>
-				<span>纬度：<input type='text' id='gimbalLatitude' name='latitude' placeholder='-90.0~+90.0'></span>
+		</h3><br>
+		<div id='allOptions' class=""><!--所有配置项-->
+			<h4 class='center'>转台固定属性</h4>
+			<hr>
+			<form class="form"><!--转台配置项-->
+				<table class="center_mrg">
+					<tr>
+						<td>转台ip:</td>
+						<td><input type='text' id='gimbalIp' name='ip' placeholder='ip地址'></td>
+						<td>望远镜id:</td>
+						<td><input type='text' id='gimbalId' name='atid' placeholder='0X000'></td>
+						<td>望远镜名称:</td>
+						<td><input type='text' id='gimbalName' name='atname' placeholder='1.26m望远镜'></td>
+					</tr>
+					<tr>
+						<td>隶属观测站:</td>
+						<td><input type='text' id='gimbalAddress' name='address' placeholder='国家天文台兴隆观测基地'></td>
+						<td>经度:</td>
+						<td><input type='text' id='gimbalLongitude' name='longitude' placeholder='-180.0~+180.0'></td>
+						<td>纬度:</td>
+						<td><input type='text' id='gimbalLatitude' name='latitude' placeholder='-90.0~+90.0'></td>
+					</tr>
+					<tr>
+						<td>海拔高度:</td>
+						<td><input type='text' id='gimbalAltitude' name='altitude' placeholder='国家天文台兴隆观测基地'></td>
+						<td>口径:</td>
+						<td><input type='text' id='gimbalAperture' name='aperture' placeholder='216.0'></td>
+						<td>类型:</td>
+						<td>
+							<select id='gimbalType' name='type'>
+								<option value="0">请选择</option>
+								<option value="0x01">赤道式-德国</option>
+								<option value="0x02">赤道式-叉式</option>
+								<option value="0x03">赤道式-英式</option>
+								<option value="0x04">赤道式-轭式</option>
+								<option value="0x05">赤道式-摇篮式</option>
+								<option value="0x06">地平式</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>焦点类型:</td>
+						<td>
+							<select id='gimbalFocustype' name='focustype'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="0x01">sdfs</option>
+							</select>
+						</td>
+						<td>焦比:</td>
+						<td>
+							<select id='gimbalFocusratio' name='focusratio'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="0x01">sdfs</option>
+							</select>
+						</td>
+						<td>焦距:</td>
+						<td>
+							<input type='text' id='gimbalFocuslength' name='focuslength' placeholder='[19.4 97.2]'>
+						</td>
+					</tr>
+					<tr>
+						<td>轴1最大速度（°/s）:</td>
+						<td>
+							<input type='text' id='gimbalMaxAxis1Speed' name='maxAxis1Speed' placeholder='0-30'>
+						</td>
+						<td>轴2最大速度（°/s）:</td>
+						<td>
+							<input type='text' id='gimbalMaxAxis2Speed' name='maxAxis2Speed' placeholder='0-30'>
+						</td>
+						<td>轴3最大速度（°/s）:</td>
+						<td>
+							<input type='text' id='gimbalMaxAxis3Speed' name='maxAxis3Speed' placeholder='0-30'>
+						</td>
+					</tr>
+					<tr>
+						<td>轴1最大加速度（°/s）:</td>
+						<td>
+							<input type='text' id='gimbalMaxAxis1Acceleration' name='maxAxis1Acceleration' placeholder='0-5'>
+						</td>
+						<td>轴2最大加速度（°/s）:</td>
+						<td>
+							<input type='text' id='gimbalMaxAxis2Acceleration' name='maxAxis2Acceleration' placeholder='0-5'>
+						</td>
+						<td>轴3最大加速度（°/s）:</td>
+						<td>
+							<input type='text' id='gimbalMaxAxis3Acceleration' name='maxAxis3Acceleration' placeholder='0-5'>
+						</td>
+					</tr>
+					<tr>
+						<td>轴1复位位置:</td>
+						<td>
+							<input type='text' id='gimbalAxis1ParkPosition' name='axis1ParkPosition' placeholder='0-360'>
+						</td>
+						<td>轴2复位位置:</td>
+						<td>
+							<input type='text' id='gimbalAxis2ParkPosition' name='axis2ParkPosition' placeholder='0-360'>
+						</td>
+						<td>轴3复位位置:</td>
+						<td>
+							<input type='text' id='gimbalAxis3ParkPosition' name='axis3ParkPosition' placeholder='0-360'>
+						</td>
+					</tr>
+				</table>
 			</form><!--转台配置项 结束-->
 		</div><!-- 所有配置项 结束 -->
     </div><!-- id='all' 结束 --><br>

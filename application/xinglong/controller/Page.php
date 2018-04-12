@@ -3,7 +3,6 @@ namespace app\xinglong\controller;
 
 use app\xinglong\controller\Base;
 use think\Cache;
-use think\Session;
 use think\Db;
 
 class Page extends Base
@@ -11,6 +10,9 @@ class Page extends Base
     //根据at参数显示不同望远镜页面
     public function at_page($at)
     {
+        /*
+        *此方法要修改
+        */
         $confFile = $at . 'conf.txt'; //文件位60conf.txt
 
         if (!file_exists($confFile) || !file_get_contents($confFile))
@@ -164,7 +166,11 @@ class Page extends Base
         }else{//获取相应望远镜的配置数据，已json格式返回
             $id = input('id'); //获取相应望远镜的id
             //据此id去各自设备的固定属性表中获取数据
-            return 'test';
+            
+            //根据$id查询去相应目录中查询上传的说明文件
+
+            //return json数据给前端
+            //return json;
         }
     }//ajax请求 判断19个动态增减的固定是否已添加够 并获取相应望远镜的配置数据 结束
 
@@ -348,14 +354,6 @@ class Page extends Base
             return $errMsg;
         }/*验证望远镜添加表单的数据 结束*/
 
-        //查询新提交的望远镜名或望远镜id 是否在数据表中唯一
-        $old = Db::table('atlist')->where('atname', $postData['atname'])
-              ->whereOr('atid', $postData['atid'])->find();
-        
-        if ($old)
-        {
-            return '望远镜名或望远镜id重复,请重新填写!';
-        }
         //执行更新
         $res = Db::table('atlist')->where('id', $postData['id'])->update($postData);
         if ($res)
@@ -623,7 +621,7 @@ class Page extends Base
     protected function check_name ($name)
     {
         //合法格式：0.6m望远镜
-        if ( !preg_match('/^\d+\.?m望远镜$/', $name) )
+        if ( !preg_match('/^\d(\d|\.)*m望远镜+$/', $name) )
         {
             return false;
         }else{

@@ -57,4 +57,23 @@ footer span {color:#fff;line-height:41px;font-size:13px;}
 
 header div.pos_r {top:1.5px;} /*此为公共头部导航栏 样式*/
 
+
+
+
+
+
+header {height:50px;background-color:#64B2E0;top:-6px;}
+
+header div {width:1200px;margin:0 auto;line-height:50px;color:#eaf1f9;font-size:14px;}
+
+header img {top:10px;}
+
+header p {display:inline-block;right:82px;font-size:14px;}
+
+header p a {color:#eaf1f9;}
+
+header div div {border:1px solid #fff; font-size:14px; text-align:center;
+			right:0px;top:12px; width:100px; height:26px;line-height:26px;}
+
+header div div a {color:#eaf1f9;}
 /* #res {left:300px; color:#eaf1f9;} 导航：观测结果样式*/

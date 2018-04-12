@@ -53,7 +53,7 @@ $(function () {
     //验证望远镜名 之blur
     atName.blur(function () {
         var v = $.trim($(this).val());
-		var patn = /^\d+\.?m望远镜$/;
+		var patn = /^\d(\d|\.)*m望远镜+$/;
 		var err = 0;
 		
 		if ( !patn.test(v) )

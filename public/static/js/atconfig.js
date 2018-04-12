@@ -27,7 +27,6 @@ $(function () {
     //望远镜列表js代码结束///////////////////////////////////
     
     /*选择望远镜下拉列表 ajax判断19个固定属性是否添加足够*/
-    var allOptions = $('#allOptions');  //页面中所有的配置项
     var atNo = $('#atNo');
     atNo.change(function (){
         var index = layer.load(2); //显示加载提示
@@ -40,7 +39,6 @@ $(function () {
                 type: 'post',
                 data: {id: val,},   //将望远镜id发送给后端
                 success:  function (info) {
-                    layer.close(index);  //关闭加载提示
                     //var info = $.parseJSON(info);
                     //console.log(info);return;
                     //判断返回的info 是否为json
@@ -48,16 +46,15 @@ $(function () {
                     {
                         layer.alert(info);
                         atNo.val('0');  //将望远镜选择下拉框置为初始值
-                        //allOptions.addClass('displayNo');  //隐藏所有配置项
                         if (info.indexOf('登录') !== -1)
                         {
                             location.href = '/';
                         }
                     }else{//处理返回的json数据
                         atNo.val(val);
-                        //
+                        //根据json数据 显示配置项
                         
-                        allOptions.removeClass('displayNo');   //显示页面中的配置选项
+                        //layer.close(index);  //关闭加载提示
                     }
                 },
                 error:  function () {

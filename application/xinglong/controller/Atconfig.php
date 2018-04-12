@@ -4,8 +4,6 @@ namespace app\xinglong\controller;
 
 use app\xinglong\controller\Base;
 // use think\Cache;
-use think\Session;
-use think\Db;
 
 class Atconfig extends Base
 {
