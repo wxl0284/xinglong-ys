@@ -44,6 +44,7 @@ $(function () {
                     //判断返回的info 是否为json
                     if ( info.indexOf('{') == -1 )  //不是json, 返回信息需要提示给用户
                     {
+                        layer.close(index);  //关闭加载提示
                         layer.alert(info);
                         atNo.val('0');  //将望远镜选择下拉框置为初始值
                         if (info.indexOf('登录') !== -1)
@@ -62,7 +63,9 @@ $(function () {
                 },
             });
         }//执行ajax请求 判断 结束
-    })
-    /*选择望远镜下拉列表 ajax判断19个固定属性是否添加足够 结束*/
+    })/*选择望远镜下拉列表 ajax判断19个固定属性是否添加足够 结束*/
    
+    /*ajax 提交转台配置数据*/
+    
+    /*ajax 提交转台配置数据 结束*/
 })

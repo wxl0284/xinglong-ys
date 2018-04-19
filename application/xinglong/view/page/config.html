@@ -29,7 +29,7 @@
 		<div id='allOptions' class=""><!--所有配置项-->
 			<h4 class='center'>转台固定属性</h4>
 			<hr>
-			<form class="form"><!--转台配置项-->
+			<form id='gimbal' class="form" enctype='multipart/form-data'><!--转台配置项-->
 				<table class="center_mrg">
 					<tr>
 						<td>转台ip:</td>
@@ -127,10 +127,2070 @@
 							<input type='text' id='gimbalAxis3ParkPosition' name='axis3ParkPosition' placeholder='0-360'>
 						</td>
 					</tr>
+					<tr>
+						<td>第3轴:</td>
+						<td>
+							<label for='gimbalHaveAxis3'>有</label>
+							<input type='radio' id='gimbalHaveAxis3' name='haveAxis3' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalHaveAxis3-1'>无</label>
+							<input type='radio' id='gimbalHaveAxis3-1' name='haveAxis3' value="0">
+						</td>
+						<td>镜盖（轴5）:</td>
+						<td>
+							<label for='gimbalHaveAxis5'>有</label>
+							<input type='radio' id='gimbalHaveAxis5' name='haveAxis5' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalHaveAxis5-1'>无</label>
+							<input type='radio' id='gimbalHaveAxis5-1' name='haveAxis5' value="0">
+						</td>
+						<td>俯仰最低值（°）:</td>
+						<td>
+							<input type='text' id='gimbalMinElevation' name='minElevation'>
+						</td>
+					</tr>
+					<tr>
+						<td>温度传感器数目:</td>
+						<td>
+							<input type='text' id='gimbalNumTemperatureSensor' name='numTemperatureSensor'>
+						</td>
+						<td>湿度传感器数目:</td>
+						<td>
+							<input type='text' id='gimbalNumHumiditySensor' name='numHumiditySensor'>
+						</td>
+						<td>支持连接指令:</td>
+						<td>
+							<label for='gimbalCanConnect'>是</label>
+							<input type='radio' id='gimbalCanConnect' name='canConnect' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanConnect-1'>否</label>
+							<input type='radio' id='gimbalCanConnect-1' name='canConnect' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持找零指令:</td>
+						<td>
+							<label for='gimbalCanFindHome'>是</label>
+							<input type='radio' id='gimbalCanFindHome' name='canFindHome' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanFindHome-1'>否</label>
+							<input type='radio' id='gimbalCanFindHome-1' name='canFindHome' value="0">
+						</td>
+						<td>支持跟踪恒星:</td>
+						<td>
+							<label for='gimbalCanTrackStar'>是</label>
+							<input type='radio' id='gimbalCanTrackStar' name='canTrackStar' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanTrackStar-1'>否</label>
+							<input type='radio' id='gimbalCanTrackStar-1' name='canTrackStar' value="0">
+						</td>
+						<td>支持设置目标名称:</td>
+						<td>
+							<label for='gimbalCanSetObjectName'>是</label>
+							<input type='radio' id='gimbalCanSetObjectName' name='canSetObjectName' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanSetObjectName-1'>否</label>
+							<input type='radio' id='gimbalCanSetObjectName-1' name='canSetObjectName' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持指向固定位置:</td>
+						<td>
+							<label for='gimbalCanSlewAzEl'>是</label>
+							<input type='radio' id='gimbalCanSlewAzEl' name='canSlewAzEl' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanSlewAzEl-1'>否</label>
+							<input type='radio' id='gimbalCanSlewAzEl-1' name='canSlewAzEl' value="0">
+						</td>
+						<td>支持轴3指向固定位置:</td>
+						<td>
+							<label for='gimbalCanSlewDerotator'>是</label>
+							<input type='radio' id='gimbalCanSlewDerotator' name='canSlewDerotator' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanSlewDerotator-1'>否</label>
+							<input type='radio' id='gimbalCanSlewDerotator-1' name='canSlewDerotator' value="0">
+						</td>
+						<td>支持设置轴3工作模式:</td>
+						<td>
+							<label for='gimbalCanConfigDerotator'>是</label>
+							<input type='radio' id='gimbalCanConfigDerotator' name='canConfigDerotator' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanConfigDerotator-1'>否</label>
+							<input type='radio' id='gimbalCanConfigDerotator-1' name='canConfigDerotator' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持停止指令:</td>
+						<td>
+							<label for='gimbalCanStop'>是</label>
+							<input type='radio' id='gimbalCanStop' name='canStop' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanStop-1'>否</label>
+							<input type='radio' id='gimbalCanStop-1' name='canStop' value="0">
+						</td>
+						<td>支持设置跟踪速度:</td>
+						<td>
+							<label for='gimbalCanSetTrackSpeed'>是</label>
+							<input type='radio' id='gimbalCanSetTrackSpeed' name='canSetTrackSpeed' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanSetTrackSpeed-1'>否</label>
+							<input type='radio' id='gimbalCanSetTrackSpeed-1' name='canSetTrackSpeed' value="0">
+						</td>
+						<td>支持复位指令:</td>
+						<td>
+							<label for='gimbalCanPark'>是</label>
+							<input type='radio' id='gimbalCanPark' name='canPark' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanPark-1'>否</label>
+							<input type='radio' id='gimbalCanPark-1' name='canPark' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持恒速运动:</td>
+						<td>
+							<label for='gimbalCanFixedMove'>是</label>
+							<input type='radio' id='gimbalCanFixedMove' name='canFixedMove' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanFixedMove-1'>否</label>
+							<input type='radio' id='gimbalCanFixedMove-1' name='canFixedMove' value="0">
+						</td>
+						<td>支持位置修正:</td>
+						<td>
+							<label for='gimbalCanPositionCorrect'>是</label>
+							<input type='radio' id='gimbalCanPositionCorrect' name='canPositionCorrect' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanPositionCorrect-1'>否</label>
+							<input type='radio' id='gimbalCanPositionCorrect-1' name='canPositionCorrect' value="0">
+						</td>
+						<td>支持镜盖操作:</td>
+						<td>
+							<label for='gimbalCanCoverOperation'>是</label>
+							<input type='radio' id='gimbalCanCoverOperation' name='canCoverOperation' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanCoverOperation-1'>否</label>
+							<input type='radio' id='gimbalCanCoverOperation-1' name='canCoverOperation' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持焦点切换镜:</td>
+						<td>
+							<label for='gimbalCanFocusOperation'>是</label>
+							<input type='radio' id='gimbalCanFocusOperation' name='canFocusOperation' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanFocusOperation-1'>否</label>
+							<input type='radio' id='gimbalCanFocusOperation-1' name='canFocusOperation' value="0">
+						</td>
+						<td>支持急停指令:</td>
+						<td>
+							<label for='gimbalCanEmergencyStop'>是</label>
+							<input type='radio' id='gimbalCanEmergencyStop' name='canEmergencyStop' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanEmergencyStop-1'>否</label>
+							<input type='radio' id='gimbalCanEmergencyStop-1' name='canEmergencyStop' value="0">
+						</td>
+						<td>支持保存同步数据:</td>
+						<td>
+							<label for='gimbalCanSaveSyncData'>是</label>
+							<input type='radio' id='gimbalCanSaveSyncData' name='canSaveSyncData' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanSaveSyncData-1'>否</label>
+							<input type='radio' id='gimbalCanSaveSyncData-1' name='canSaveSyncData' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持跟踪卫星:</td>
+						<td>
+							<label for='gimbalCanTrackSatellite'>是</label>
+							<input type='radio' id='gimbalCanTrackSatellite' name='canTrackSatellite' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanTrackSatellite-1'>否</label>
+							<input type='radio' id='gimbalCanTrackSatellite-1' name='canTrackSatellite' value="0">
+						</td>
+						<td>支持属性设置:</td>
+						<td>
+							<label for='gimbalCanconfigProperty'>是</label>
+							<input type='radio' id='gimbalCanconfigProperty' name='canconfigProperty' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='gimbalCanconfigProperty-1'>否</label>
+							<input type='radio' id='gimbalCanconfigProperty-1' name='canconfigProperty' value="0">
+						</td>
+						<td>属性版本号:</td>
+						<td>
+							<input type='text' id='gimbalAttrVersion' name='attrVersion'>
+						</td>
+					</tr>
+					<tr>
+						<td>属性更新时间:</td>
+						<td>
+							<input type='text' id='gimbalCanTrackSatellite' name='attrModifyTime' placeholder="2018-1-30">
+						</td>
+						<td>上传转台相关文件:</td>
+						<td colspan="3" class="border_td">
+							出厂测试报告:<input type='file' name='report'>
+							说明书:<input type='file' name='instruction'>
+						</td>
+					</tr>
+					<tr>
+						<td>转台相关文件:</td>
+						<td id='gimbalFile' colspan="5" class="border_td">
+							<a title="点击下载">lsfdjlks</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="点击下载">lsfdjlks</a>
+						</td>
+					</tr>
 				</table>
-			</form><!--转台配置项 结束-->
+				<input id='gimbalBtn' type='button' value="提交转台配置">
+			</form><!--转台配置项 结束--><br>
+			<!--如下为ccd配置项-->
+			<h4 class='center'>CCD-No1固定属性</h4>
+			<hr>
+			<form id='ccd-1' class="form" enctype='multipart/form-data'><!--ccd-No1配置项-->
+				<table class="center_mrg">
+					<tr>
+						<td>ccd之ip:</td>
+						<td><input type='text' id='ccdIp' name='ip' placeholder='ip地址'></td>
+						<td>ccd之id:</td>
+						<td><input type='text' id='ccdId' name='ccdId'></td>
+						<td>ccd名称:</td>
+						<td><input type='text' id='ccdName' name='name' placeholder='1.26m望远镜'></td>
+					</tr>
+					<tr>
+						<td>隶属望远镜:</td>
+						<td><input type='text' id='ccdTeleId' name='teleId'></td>
+						<td>探测器类型:</td>
+						<td>
+						  <select id='ccdType' name='type'>
+							<option value="0">请选择</option>
+							<option value="0x00">CCD</option>
+							<option value="0x01">FullFrame CCD</option>
+							<option value="0x02">EMCCD</option>
+							<option value="0x03">sCMOS</option>
+						  </select>
+						</td>
+						<td>x像素:</td>
+						<td><input type='text' id='ccdXpixel' name='xPixel' placeholder='整数'></td>
+					</tr>
+					<tr>
+						<td>y像素:</td>
+						<td><input type='text' id='ccdYpixel' name='yPixel' placeholder='整数'></td>
+						<td>x像元大小(um):</td>
+						<td><input type='text' id='ccdXpixelSize' name='xPixelSize' placeholder='小数'></td>
+						<td>y像元大小(um):</td>
+						<td><input type='text' id='ccdYpixelSize' name='yPixelSize' placeholder='小数'></td>
+					</tr>
+					<tr>
+						<td>传感器名称:</td>
+						<td><input type='text' id='ccdSensorName' name='sensorName' placeholder="芯片名称"></td>
+						<td>图像位数:</td>
+						<td>
+							<select id='ccdImageBits' name='imageBits'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="0x01">sdfs</option>
+							</select>
+						</td>
+						<td>制冷方式:</td>
+						<td>
+							<select id='ccdCoolerMode' name='coolerMode'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="0x01">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>最低制冷温度（℃）:</td>
+						<td>
+							<input type='text' id='ccdLowCoolerT' name='lowCoolerT'>
+						</td>
+						<td>最大曝光时间（s）:</td>
+						<td>
+							<input type='text' id='ccdMaxExposureTime' name='maxExposureTime' placeholder='小数'>
+						</td>
+						<td>最小曝光时间（s）:</td>
+						<td>
+							<input type='text' id='ccdMinExposureTime' name='minExposureTime' placeholder='小数'>
+						</td>
+					</tr>
+					<tr>
+						<td>曝光时间分辨率:</td>
+						<td>
+							<input type='text' id='ccdExposureTimeRation' name='exposureTimeRation' placeholder='整数'>
+						</td>
+						<td>满阱电荷:</td>
+						<td>
+							<input type='text' id='ccdFullWellDepth' name='fullWellDepth' placeholder='整数'>
+						</td>
+						<td>读出速度模式:</td>
+						<td>
+							<select id='ccdReadoutSpeed' name='readoutSpeed'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>读出模式(从后台读出):</td>
+						<td colspan="3" class="border_td">
+							支持单门读出<input type='checkbox' id='ccdReadoutMode1' name='readoutMode[]' value=''>
+							|支持双门读出<input type='checkbox' id='ccdReadoutMode2' name='readoutMode[]'>
+							|支持四门读出<input type='checkbox' id='ccdReadoutMode3' name='readoutMode[]'>
+							|支持四门读出<input type='checkbox' id='ccdReadoutMode4' name='readoutMode[]'>
+						</td>
+						<td>转移速度模式:</td>
+						<td>
+							<select id='ccdTransferSpeed' name='transferSpeed'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>增益模式(从后台读出):</td>
+						<td colspan="3" class="border_td">
+							支持High Capacity<input type='checkbox' id='ccdGainmode1' name='gainmode[]' value=''>
+							|支持High Sensitivity<input type='checkbox' id='ccdGainmode2' name='gainmode[]'>
+						</td>
+						<td>增益档位(从后台读出):</td>
+						<td>
+							<select id='ccdGainNumber' name='gainNumber'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>增益值:</td>
+						<td>
+							<input type='text' id='ccdGainValueArray' name='gainValueArray'>
+						</td>
+						<td>读出噪声值:</td>
+						<td>
+							<input type='text' id='ccdReadoutNoiseArray' name='readoutNoiseArray'>
+						</td>
+						<td>快门类型:</td>
+						<td>
+							<select id='ccdShutterType' name='ShutterType'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>快门模式(从后台读出):</td>
+						<td colspan="3" class="border_td">
+							支持High Capacity<input type='checkbox' id='ccdShutterMode1' name='ShutterMode[]' value=''>
+							|支持High Sensitivity<input type='checkbox' id='ccdShutterMode2' name='ShutterMode[]'>
+						</td>
+						<td>支持帧转移:</td>
+						<td>
+							<label for='ccdIsSupportFullFrame'>是</label>
+							<input type='radio' id='ccdIsSupportFullFrame' name='IsSupportFullFrame' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportFullFrame-1'>否</label>
+							<input type='radio' id='ccdIsSupportFullFrame-1' name='IsSupportFullFrame' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持EM:</td>
+						<td>
+							<label for='ccdIsSupportEM'>是</label>
+							<input type='radio' id='ccdIsSupportEM' name='IsSupportEM' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportEM-1'>否</label>
+							<input type='radio' id='ccdIsSupportEM-1' name='IsSupportEM' value="0">
+						</td>
+						<td>支持CMOS noise filter:</td>
+						<td>
+							<label for='ccdIsSupportsCmosNoiseFilter'>是</label>
+							<input type='radio' id='ccdIsSupportsCmosNoiseFilter' name='IsSupportsCmosNoiseFilter' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportsCmosNoiseFilter-1'>否</label>
+							<input type='radio' id='ccdIsSupportsCmosNoiseFilter-1' name='IsSupportsCmosNoiseFilter' value="0">
+						</td>
+						<td>支持base line:</td>
+						<td>
+							<label for='ccdIsSupportBaseLine'>是</label>
+							<input type='radio' id='ccdIsSupportBaseLine' name='IsSupportBaseLine' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportBaseLine-1'>否</label>
+							<input type='radio' id='ccdIsSupportBaseLine-1' name='IsSupportBaseLine' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持Over scan:</td>
+						<td>
+							<label for='ccdIsSupportOverScan'>是</label>
+							<input type='radio' id='ccdIsSupportOverScan' name='IsSupportOverScan' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportOverScan-1'>否</label>
+							<input type='radio' id='ccdIsSupportOverScan-1' name='IsSupportOverScan' value="0">
+						</td>
+						<td>BIN:</td>
+						<td>
+							<select id='ccdBinArray' name='BINARRAY'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+						<td>支持开窗:</td>
+						<td>
+							<label for='ccdIsSupportROI'>是</label>
+							<input type='radio' id='ccdIsSupportROI' name='IsSupportROI' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportROI-1'>否</label>
+							<input type='radio' id='ccdIsSupportROI-1' name='IsSupportROI' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>接口类型(后台获取):</td>
+						<td colspan="3" class="border_td">
+							支持USB2.0<input type='checkbox' id='ccdInterfaceType1' name='InterfaceType[]' value=''>
+							|支持USB3.0<input type='checkbox' id='ccdInterfaceType2' name='InterfaceType[]'>
+						</td>
+						<td>最大EM:</td>
+						<td>
+							<input type='text' id='ccdEmMaxValue' name='EMMaxValue' placeholder="整数">
+						</td>
+					</tr>
+					<tr>
+						<td>曝光触发模式(后台获取):</td>
+						<td colspan="3" class="border_td">
+							支持硬件触发<input type='checkbox' id='ccdExposeTriggerMode1' name='ExposeTriggerMode[]' value=''>
+							|支持软件件触发<input type='checkbox' id='ccdExposeTriggerMode2' name='ExposeTriggerMode[]'>
+						</td>
+						<td>最小EM:</td>
+						<td>
+							<input type='text' id='ccdEmMinValue' name='EMMinValue' placeholder="整数">
+						</td>
+					</tr>
+					<tr>
+						<td>支持连接:</td>
+						<td>
+							<label for='ccdCanConnect'>是</label>
+							<input type='radio' id='ccdCanConnect' name='canConnect' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanConnect-1'>否</label>
+							<input type='radio' id='ccdCanConnect-1' name='canConnect' value="0">
+						</td>
+						<td>设置制冷温度:</td>
+						<td>
+							<label for='ccdCanSetCoolerT'>是</label>
+							<input type='radio' id='ccdCanSetCoolerT' name='canSetCoolerT' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetCoolerT-1'>否</label>
+							<input type='radio' id='ccdCanSetCoolerT-1' name='canSetCoolerT' value="0">
+						</td>
+						<td>设置曝光策略:</td>
+						<td>
+							<label for='ccdCanSetExposureParam'>是</label>
+							<input type='radio' id='ccdCanSetExposureParam' name='canSetExposureParam' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetExposureParam-1'>否</label>
+							<input type='radio' id='ccdCanSetExposureParam-1' name='canSetExposureParam' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持开始曝光:</td>
+						<td>
+							<label for='ccdCanStartExposure'>是</label>
+							<input type='radio' id='ccdCanStartExposure' name='canStartExposure' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanStartExposure-1'>否</label>
+							<input type='radio' id='ccdCanStartExposure-1' name='canStartExposure' value="0">
+						</td>
+						<td>支持停止曝光:</td>
+						<td>
+							<label for='ccdCanStopExposure'>是</label>
+							<input type='radio' id='ccdCanStopExposure' name='canStopExposure' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanStopExposure-1'>否</label>
+							<input type='radio' id='ccdCanStopExposure-1' name='canStopExposure' value="0">
+						</td>
+						<td>支持终止曝光:</td>
+						<td>
+							<label for='ccdCanAbortExposure'>是</label>
+							<input type='radio' id='ccdCanAbortExposure' name='canAbortExposure' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanAbortExposure-1'>否</label>
+							<input type='radio' id='ccdCanAbortExposure-1' name='canAbortExposure' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置增益:</td>
+						<td>
+							<label for='ccdCanSetGain'>是</label>
+							<input type='radio' id='ccdCanSetGain' name='canSetGain' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetGain-1'>否</label>
+							<input type='radio' id='ccdCanSetGain-1' name='canSetGain' value="0">
+						</td>
+						<td>设置读出速度模式值:</td>
+						<td>
+							<label for='ccdCanSetReadoutSpeedMode'>是</label>
+							<input type='radio' id='ccdCanSetReadoutSpeedMode' name='canSetReadoutSpeedMode' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetReadoutSpeedMode-1'>否</label>
+							<input type='radio' id='ccdCanSetReadoutSpeedMode-1' name='canSetReadoutSpeedMode' value="0">
+						</td>
+						<td>设置转移速度模式值:</td>
+						<td>
+							<label for='ccdCanSetTransferSpeedMode'>是</label>
+							<input type='radio' id='ccdCanSetTransferSpeedMode' name='canSetTransferSpeedMode' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetTransferSpeedMode-1'>否</label>
+							<input type='radio' id='ccdCanSetTransferSpeedMode-1' name='canSetTransferSpeedMode' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置BIN:</td>
+						<td>
+							<label for='ccdCanSetGain'>是</label>
+							<input type='radio' id='ccdCanSetGain' name='canSetBin' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetGain-1'>否</label>
+							<input type='radio' id='ccdCanSetGain-1' name='canSetBin' value="0">
+						</td>
+						<td>设置ROI:</td>
+						<td>
+							<label for='ccdCanSetROI'>是</label>
+							<input type='radio' id='ccdCanSetROI' name='canSetROI' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetROI-1'>否</label>
+							<input type='radio' id='ccdCanSetROI-1' name='canSetROI' value="0">
+						</td>
+						<td>设置快门:</td>
+						<td>
+							<label for='ccdCanSetShutter'>是</label>
+							<input type='radio' id='ccdCanSetShutter' name='canSetShutter' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetShutter-1'>否</label>
+							<input type='radio' id='ccdCanSetShutter-1' name='canSetShutter' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置帧转移:</td>
+						<td>
+							<label for='ccdCanSetFullFrame'>是</label>
+							<input type='radio' id='ccdCanSetFullFrame' name='canSetFullFrame' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetFullFrame-1'>否</label>
+							<input type='radio' id='ccdCanSetFullFrame-1' name='canSetFullFrame' value="0">
+						</td>
+						<td>设置EM:</td>
+						<td>
+							<label for='ccdCanSetEM'>是</label>
+							<input type='radio' id='ccdCanSetEM' name='canSetEM' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetEM-1'>否</label>
+							<input type='radio' id='ccdCanSetEM-1' name='canSetEM' value="0">
+						</td>
+						<td>设置CMOS noise filter:</td>
+						<td>
+							<label for='ccdCanNoiseFilter'>是</label>
+							<input type='radio' id='ccdCanNoiseFilter' name='canNoiseFilter' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanNoiseFilter-1'>否</label>
+							<input type='radio' id='ccdCanNoiseFilter-1' name='canNoiseFilter' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置Base line:</td>
+						<td>
+							<label for='ccdCanSetBaseline'>是</label>
+							<input type='radio' id='ccdCanSetBaseline' name='canSetBaseline' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetBaseline-1'>否</label>
+							<input type='radio' id='ccdCanSetBaseline-1' name='canSetBaseline' value="0">
+						</td>
+						<td>设置Over scan:</td>
+						<td>
+							<label for='ccdCanSetOverScan'>是</label>
+							<input type='radio' id='ccdCanSetOverScan' name='canSetOverScan' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetOverScan-1'>否</label>
+							<input type='radio' id='ccdCanSetOverScan-1' name='canSetOverScan' value="0">
+						</td>
+						<td>属性版本号:</td>
+						<td>
+							<input type='radio' id='ccdAttrVersion' name='attrVersion'>
+						</td>
+					</tr>
+					<tr>
+						<td>属性更新时间:</td>
+						<td>
+							<input type='text' id='ccdAttrModifyTime' name='attrModifyTime' placeholder="2018-2-28">
+						</td>
+					</tr>
+					<tr>
+						<td>上传CCD相关文件:</td>
+						<td colspan="5" class="border_td">
+							量子效率曲线:<input type='file' name='QECurve'>
+							出厂测试报告:<input type='file' name='Specification'>
+							说明书:<input type='file' name='ManualBook'>
+						</td>
+					</tr>
+					<tr>
+						<td>CCD相关文件:</td>
+						<td id='gimbalFile' colspan="5" class="border_td">
+							<a title="点击下载">lsfdjlks</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="点击下载">lsfdjlks</a>
+						</td>
+					</tr>
+				</table>
+				<input id='ccdBtn-1' type='button' value="提交CCD-No1配置">
+			</form><!--ccd-No1配置项 结束--><br>
+
+			<h4 class='center'>CCD-No2固定属性</h4>
+			<hr>
+			<form id='ccd-2' class="form" enctype='multipart/form-data'><!--ccd-No2配置项-->
+				<table class="center_mrg">
+					<tr>
+						<td>ccd之ip:</td>
+						<td><input type='text' id='ccdIp' name='ip' placeholder='ip地址'></td>
+						<td>ccd之id:</td>
+						<td><input type='text' id='ccdId' name='ccdId'></td>
+						<td>ccd名称:</td>
+						<td><input type='text' id='ccdName' name='name' placeholder='1.26m望远镜'></td>
+					</tr>
+					<tr>
+						<td>隶属望远镜:</td>
+						<td><input type='text' id='ccdTeleId' name='teleId'></td>
+						<td>探测器类型:</td>
+						<td>
+						  <select id='ccdType' name='type'>
+							<option value="0">请选择</option>
+							<option value="0x00">CCD</option>
+							<option value="0x01">FullFrame CCD</option>
+							<option value="0x02">EMCCD</option>
+							<option value="0x03">sCMOS</option>
+						  </select>
+						</td>
+						<td>x像素:</td>
+						<td><input type='text' id='ccdXpixel' name='xPixel' placeholder='整数'></td>
+					</tr>
+					<tr>
+						<td>y像素:</td>
+						<td><input type='text' id='ccdYpixel' name='yPixel' placeholder='整数'></td>
+						<td>x像元大小(um):</td>
+						<td><input type='text' id='ccdXpixelSize' name='xPixelSize' placeholder='小数'></td>
+						<td>y像元大小(um):</td>
+						<td><input type='text' id='ccdYpixelSize' name='yPixelSize' placeholder='小数'></td>
+					</tr>
+					<tr>
+						<td>传感器名称:</td>
+						<td><input type='text' id='ccdSensorName' name='sensorName' placeholder="芯片名称"></td>
+						<td>图像位数:</td>
+						<td>
+							<select id='ccdImageBits' name='imageBits'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="0x01">sdfs</option>
+							</select>
+						</td>
+						<td>制冷方式:</td>
+						<td>
+							<select id='ccdCoolerMode' name='coolerMode'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="0x01">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>最低制冷温度（℃）:</td>
+						<td>
+							<input type='text' id='ccdLowCoolerT' name='lowCoolerT'>
+						</td>
+						<td>最大曝光时间（s）:</td>
+						<td>
+							<input type='text' id='ccdMaxExposureTime' name='maxExposureTime' placeholder='小数'>
+						</td>
+						<td>最小曝光时间（s）:</td>
+						<td>
+							<input type='text' id='ccdMinExposureTime' name='minExposureTime' placeholder='小数'>
+						</td>
+					</tr>
+					<tr>
+						<td>曝光时间分辨率:</td>
+						<td>
+							<input type='text' id='ccdExposureTimeRation' name='exposureTimeRation' placeholder='整数'>
+						</td>
+						<td>满阱电荷:</td>
+						<td>
+							<input type='text' id='ccdFullWellDepth' name='fullWellDepth' placeholder='整数'>
+						</td>
+						<td>读出速度模式:</td>
+						<td>
+							<select id='ccdReadoutSpeed' name='readoutSpeed'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>读出模式(从后台读出):</td>
+						<td colspan="3" class="border_td">
+							支持单门读出<input type='checkbox' id='ccdReadoutMode1' name='readoutMode[]' value=''>
+							|支持双门读出<input type='checkbox' id='ccdReadoutMode2' name='readoutMode[]'>
+							|支持四门读出<input type='checkbox' id='ccdReadoutMode3' name='readoutMode[]'>
+							|支持四门读出<input type='checkbox' id='ccdReadoutMode4' name='readoutMode[]'>
+						</td>
+						<td>转移速度模式:</td>
+						<td>
+							<select id='ccdTransferSpeed' name='transferSpeed'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>增益模式(从后台读出):</td>
+						<td colspan="3" class="border_td">
+							支持High Capacity<input type='checkbox' id='ccdGainmode1' name='gainmode[]' value=''>
+							|支持High Sensitivity<input type='checkbox' id='ccdGainmode2' name='gainmode[]'>
+						</td>
+						<td>增益档位(从后台读出):</td>
+						<td>
+							<select id='ccdGainNumber' name='gainNumber'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>增益值:</td>
+						<td>
+							<input type='text' id='ccdGainValueArray' name='gainValueArray'>
+						</td>
+						<td>读出噪声值:</td>
+						<td>
+							<input type='text' id='ccdReadoutNoiseArray' name='readoutNoiseArray'>
+						</td>
+						<td>快门类型:</td>
+						<td>
+							<select id='ccdShutterType' name='ShutterType'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>快门模式(从后台读出):</td>
+						<td colspan="3" class="border_td">
+							支持High Capacity<input type='checkbox' id='ccdShutterMode1' name='ShutterMode[]' value=''>
+							|支持High Sensitivity<input type='checkbox' id='ccdShutterMode2' name='ShutterMode[]'>
+						</td>
+						<td>支持帧转移:</td>
+						<td>
+							<label for='ccdIsSupportFullFrame'>是</label>
+							<input type='radio' id='ccdIsSupportFullFrame' name='IsSupportFullFrame' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportFullFrame-1'>否</label>
+							<input type='radio' id='ccdIsSupportFullFrame-1' name='IsSupportFullFrame' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持EM:</td>
+						<td>
+							<label for='ccdIsSupportEM'>是</label>
+							<input type='radio' id='ccdIsSupportEM' name='IsSupportEM' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportEM-1'>否</label>
+							<input type='radio' id='ccdIsSupportEM-1' name='IsSupportEM' value="0">
+						</td>
+						<td>支持CMOS noise filter:</td>
+						<td>
+							<label for='ccdIsSupportsCmosNoiseFilter'>是</label>
+							<input type='radio' id='ccdIsSupportsCmosNoiseFilter' name='IsSupportsCmosNoiseFilter' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportsCmosNoiseFilter-1'>否</label>
+							<input type='radio' id='ccdIsSupportsCmosNoiseFilter-1' name='IsSupportsCmosNoiseFilter' value="0">
+						</td>
+						<td>支持base line:</td>
+						<td>
+							<label for='ccdIsSupportBaseLine'>是</label>
+							<input type='radio' id='ccdIsSupportBaseLine' name='IsSupportBaseLine' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportBaseLine-1'>否</label>
+							<input type='radio' id='ccdIsSupportBaseLine-1' name='IsSupportBaseLine' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持Over scan:</td>
+						<td>
+							<label for='ccdIsSupportOverScan'>是</label>
+							<input type='radio' id='ccdIsSupportOverScan' name='IsSupportOverScan' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportOverScan-1'>否</label>
+							<input type='radio' id='ccdIsSupportOverScan-1' name='IsSupportOverScan' value="0">
+						</td>
+						<td>BIN:</td>
+						<td>
+							<select id='ccdBinArray' name='BINARRAY'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+						<td>支持开窗:</td>
+						<td>
+							<label for='ccdIsSupportROI'>是</label>
+							<input type='radio' id='ccdIsSupportROI' name='IsSupportROI' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportROI-1'>否</label>
+							<input type='radio' id='ccdIsSupportROI-1' name='IsSupportROI' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>接口类型(后台获取):</td>
+						<td colspan="3" class="border_td">
+							支持USB2.0<input type='checkbox' id='ccdInterfaceType1' name='InterfaceType[]' value=''>
+							|支持USB3.0<input type='checkbox' id='ccdInterfaceType2' name='InterfaceType[]'>
+						</td>
+						<td>最大EM:</td>
+						<td>
+							<input type='text' id='ccdEmMaxValue' name='EMMaxValue' placeholder="整数">
+						</td>
+					</tr>
+					<tr>
+						<td>曝光触发模式(后台获取):</td>
+						<td colspan="3" class="border_td">
+							支持硬件触发<input type='checkbox' id='ccdExposeTriggerMode1' name='ExposeTriggerMode[]' value=''>
+							|支持软件件触发<input type='checkbox' id='ccdExposeTriggerMode2' name='ExposeTriggerMode[]'>
+						</td>
+						<td>最小EM:</td>
+						<td>
+							<input type='text' id='ccdEmMinValue' name='EMMinValue' placeholder="整数">
+						</td>
+					</tr>
+					<tr>
+						<td>支持连接:</td>
+						<td>
+							<label for='ccdCanConnect'>是</label>
+							<input type='radio' id='ccdCanConnect' name='canConnect' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanConnect-1'>否</label>
+							<input type='radio' id='ccdCanConnect-1' name='canConnect' value="0">
+						</td>
+						<td>设置制冷温度:</td>
+						<td>
+							<label for='ccdCanSetCoolerT'>是</label>
+							<input type='radio' id='ccdCanSetCoolerT' name='canSetCoolerT' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetCoolerT-1'>否</label>
+							<input type='radio' id='ccdCanSetCoolerT-1' name='canSetCoolerT' value="0">
+						</td>
+						<td>设置曝光策略:</td>
+						<td>
+							<label for='ccdCanSetExposureParam'>是</label>
+							<input type='radio' id='ccdCanSetExposureParam' name='canSetExposureParam' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetExposureParam-1'>否</label>
+							<input type='radio' id='ccdCanSetExposureParam-1' name='canSetExposureParam' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持开始曝光:</td>
+						<td>
+							<label for='ccdCanStartExposure'>是</label>
+							<input type='radio' id='ccdCanStartExposure' name='canStartExposure' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanStartExposure-1'>否</label>
+							<input type='radio' id='ccdCanStartExposure-1' name='canStartExposure' value="0">
+						</td>
+						<td>支持停止曝光:</td>
+						<td>
+							<label for='ccdCanStopExposure'>是</label>
+							<input type='radio' id='ccdCanStopExposure' name='canStopExposure' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanStopExposure-1'>否</label>
+							<input type='radio' id='ccdCanStopExposure-1' name='canStopExposure' value="0">
+						</td>
+						<td>支持终止曝光:</td>
+						<td>
+							<label for='ccdCanAbortExposure'>是</label>
+							<input type='radio' id='ccdCanAbortExposure' name='canAbortExposure' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanAbortExposure-1'>否</label>
+							<input type='radio' id='ccdCanAbortExposure-1' name='canAbortExposure' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置增益:</td>
+						<td>
+							<label for='ccdCanSetGain'>是</label>
+							<input type='radio' id='ccdCanSetGain' name='canSetGain' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetGain-1'>否</label>
+							<input type='radio' id='ccdCanSetGain-1' name='canSetGain' value="0">
+						</td>
+						<td>设置读出速度模式值:</td>
+						<td>
+							<label for='ccdCanSetReadoutSpeedMode'>是</label>
+							<input type='radio' id='ccdCanSetReadoutSpeedMode' name='canSetReadoutSpeedMode' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetReadoutSpeedMode-1'>否</label>
+							<input type='radio' id='ccdCanSetReadoutSpeedMode-1' name='canSetReadoutSpeedMode' value="0">
+						</td>
+						<td>设置转移速度模式值:</td>
+						<td>
+							<label for='ccdCanSetTransferSpeedMode'>是</label>
+							<input type='radio' id='ccdCanSetTransferSpeedMode' name='canSetTransferSpeedMode' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetTransferSpeedMode-1'>否</label>
+							<input type='radio' id='ccdCanSetTransferSpeedMode-1' name='canSetTransferSpeedMode' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置BIN:</td>
+						<td>
+							<label for='ccdCanSetGain'>是</label>
+							<input type='radio' id='ccdCanSetGain' name='canSetBin' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetGain-1'>否</label>
+							<input type='radio' id='ccdCanSetGain-1' name='canSetBin' value="0">
+						</td>
+						<td>设置ROI:</td>
+						<td>
+							<label for='ccdCanSetROI'>是</label>
+							<input type='radio' id='ccdCanSetROI' name='canSetROI' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetROI-1'>否</label>
+							<input type='radio' id='ccdCanSetROI-1' name='canSetROI' value="0">
+						</td>
+						<td>设置快门:</td>
+						<td>
+							<label for='ccdCanSetShutter'>是</label>
+							<input type='radio' id='ccdCanSetShutter' name='canSetShutter' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetShutter-1'>否</label>
+							<input type='radio' id='ccdCanSetShutter-1' name='canSetShutter' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置帧转移:</td>
+						<td>
+							<label for='ccdCanSetFullFrame'>是</label>
+							<input type='radio' id='ccdCanSetFullFrame' name='canSetFullFrame' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetFullFrame-1'>否</label>
+							<input type='radio' id='ccdCanSetFullFrame-1' name='canSetFullFrame' value="0">
+						</td>
+						<td>设置EM:</td>
+						<td>
+							<label for='ccdCanSetEM'>是</label>
+							<input type='radio' id='ccdCanSetEM' name='canSetEM' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetEM-1'>否</label>
+							<input type='radio' id='ccdCanSetEM-1' name='canSetEM' value="0">
+						</td>
+						<td>设置CMOS noise filter:</td>
+						<td>
+							<label for='ccdCanNoiseFilter'>是</label>
+							<input type='radio' id='ccdCanNoiseFilter' name='canNoiseFilter' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanNoiseFilter-1'>否</label>
+							<input type='radio' id='ccdCanNoiseFilter-1' name='canNoiseFilter' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置Base line:</td>
+						<td>
+							<label for='ccdCanSetBaseline'>是</label>
+							<input type='radio' id='ccdCanSetBaseline' name='canSetBaseline' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetBaseline-1'>否</label>
+							<input type='radio' id='ccdCanSetBaseline-1' name='canSetBaseline' value="0">
+						</td>
+						<td>设置Over scan:</td>
+						<td>
+							<label for='ccdCanSetOverScan'>是</label>
+							<input type='radio' id='ccdCanSetOverScan' name='canSetOverScan' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetOverScan-1'>否</label>
+							<input type='radio' id='ccdCanSetOverScan-1' name='canSetOverScan' value="0">
+						</td>
+						<td>属性版本号:</td>
+						<td>
+							<input type='radio' id='ccdAttrVersion' name='attrVersion'>
+						</td>
+					</tr>
+					<tr>
+						<td>属性更新时间:</td>
+						<td>
+							<input type='text' id='ccdAttrModifyTime' name='attrModifyTime' placeholder="2018-2-28">
+						</td>
+					</tr>
+					<tr>
+						<td>上传CCD相关文件:</td>
+						<td colspan="5" class="border_td">
+							量子效率曲线:<input type='file' name='QECurve'>
+							出厂测试报告:<input type='file' name='Specification'>
+							说明书:<input type='file' name='ManualBook'>
+						</td>
+					</tr>
+					<tr>
+						<td>CCD相关文件:</td>
+						<td id='gimbalFile' colspan="5" class="border_td">
+							<a title="点击下载">lsfdjlks</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="点击下载">lsfdjlks</a>
+						</td>
+					</tr>
+				</table>
+				<input id='ccdBtn-2' type='button' value="提交CCD-No2配置">
+			</form><!--ccd-No2配置项 结束--><br>
+
+			<h4 class='center'>CCD-No3固定属性</h4>
+			<hr>
+			<form id='ccd-3' class="form" enctype='multipart/form-data'><!--ccd-No3配置项-->
+				<table class="center_mrg">
+					<tr>
+						<td>ccd之ip:</td>
+						<td><input type='text' id='ccdIp' name='ip' placeholder='ip地址'></td>
+						<td>ccd之id:</td>
+						<td><input type='text' id='ccdId' name='ccdId'></td>
+						<td>ccd名称:</td>
+						<td><input type='text' id='ccdName' name='name' placeholder='1.26m望远镜'></td>
+					</tr>
+					<tr>
+						<td>隶属望远镜:</td>
+						<td><input type='text' id='ccdTeleId' name='teleId'></td>
+						<td>探测器类型:</td>
+						<td>
+						  <select id='ccdType' name='type'>
+							<option value="0">请选择</option>
+							<option value="0x00">CCD</option>
+							<option value="0x01">FullFrame CCD</option>
+							<option value="0x02">EMCCD</option>
+							<option value="0x03">sCMOS</option>
+						  </select>
+						</td>
+						<td>x像素:</td>
+						<td><input type='text' id='ccdXpixel' name='xPixel' placeholder='整数'></td>
+					</tr>
+					<tr>
+						<td>y像素:</td>
+						<td><input type='text' id='ccdYpixel' name='yPixel' placeholder='整数'></td>
+						<td>x像元大小(um):</td>
+						<td><input type='text' id='ccdXpixelSize' name='xPixelSize' placeholder='小数'></td>
+						<td>y像元大小(um):</td>
+						<td><input type='text' id='ccdYpixelSize' name='yPixelSize' placeholder='小数'></td>
+					</tr>
+					<tr>
+						<td>传感器名称:</td>
+						<td><input type='text' id='ccdSensorName' name='sensorName' placeholder="芯片名称"></td>
+						<td>图像位数:</td>
+						<td>
+							<select id='ccdImageBits' name='imageBits'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="0x01">sdfs</option>
+							</select>
+						</td>
+						<td>制冷方式:</td>
+						<td>
+							<select id='ccdCoolerMode' name='coolerMode'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="0x01">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>最低制冷温度（℃）:</td>
+						<td>
+							<input type='text' id='ccdLowCoolerT' name='lowCoolerT'>
+						</td>
+						<td>最大曝光时间（s）:</td>
+						<td>
+							<input type='text' id='ccdMaxExposureTime' name='maxExposureTime' placeholder='小数'>
+						</td>
+						<td>最小曝光时间（s）:</td>
+						<td>
+							<input type='text' id='ccdMinExposureTime' name='minExposureTime' placeholder='小数'>
+						</td>
+					</tr>
+					<tr>
+						<td>曝光时间分辨率:</td>
+						<td>
+							<input type='text' id='ccdExposureTimeRation' name='exposureTimeRation' placeholder='整数'>
+						</td>
+						<td>满阱电荷:</td>
+						<td>
+							<input type='text' id='ccdFullWellDepth' name='fullWellDepth' placeholder='整数'>
+						</td>
+						<td>读出速度模式:</td>
+						<td>
+							<select id='ccdReadoutSpeed' name='readoutSpeed'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>读出模式(从后台读出):</td>
+						<td colspan="3" class="border_td">
+							支持单门读出<input type='checkbox' id='ccdReadoutMode1' name='readoutMode[]' value=''>
+							|支持双门读出<input type='checkbox' id='ccdReadoutMode2' name='readoutMode[]'>
+							|支持四门读出<input type='checkbox' id='ccdReadoutMode3' name='readoutMode[]'>
+							|支持四门读出<input type='checkbox' id='ccdReadoutMode4' name='readoutMode[]'>
+						</td>
+						<td>转移速度模式:</td>
+						<td>
+							<select id='ccdTransferSpeed' name='transferSpeed'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>增益模式(从后台读出):</td>
+						<td colspan="3" class="border_td">
+							支持High Capacity<input type='checkbox' id='ccdGainmode1' name='gainmode[]' value=''>
+							|支持High Sensitivity<input type='checkbox' id='ccdGainmode2' name='gainmode[]'>
+						</td>
+						<td>增益档位(从后台读出):</td>
+						<td>
+							<select id='ccdGainNumber' name='gainNumber'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>增益值:</td>
+						<td>
+							<input type='text' id='ccdGainValueArray' name='gainValueArray'>
+						</td>
+						<td>读出噪声值:</td>
+						<td>
+							<input type='text' id='ccdReadoutNoiseArray' name='readoutNoiseArray'>
+						</td>
+						<td>快门类型:</td>
+						<td>
+							<select id='ccdShutterType' name='ShutterType'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>快门模式(从后台读出):</td>
+						<td colspan="3" class="border_td">
+							支持High Capacity<input type='checkbox' id='ccdShutterMode1' name='ShutterMode[]' value=''>
+							|支持High Sensitivity<input type='checkbox' id='ccdShutterMode2' name='ShutterMode[]'>
+						</td>
+						<td>支持帧转移:</td>
+						<td>
+							<label for='ccdIsSupportFullFrame'>是</label>
+							<input type='radio' id='ccdIsSupportFullFrame' name='IsSupportFullFrame' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportFullFrame-1'>否</label>
+							<input type='radio' id='ccdIsSupportFullFrame-1' name='IsSupportFullFrame' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持EM:</td>
+						<td>
+							<label for='ccdIsSupportEM'>是</label>
+							<input type='radio' id='ccdIsSupportEM' name='IsSupportEM' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportEM-1'>否</label>
+							<input type='radio' id='ccdIsSupportEM-1' name='IsSupportEM' value="0">
+						</td>
+						<td>支持CMOS noise filter:</td>
+						<td>
+							<label for='ccdIsSupportsCmosNoiseFilter'>是</label>
+							<input type='radio' id='ccdIsSupportsCmosNoiseFilter' name='IsSupportsCmosNoiseFilter' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportsCmosNoiseFilter-1'>否</label>
+							<input type='radio' id='ccdIsSupportsCmosNoiseFilter-1' name='IsSupportsCmosNoiseFilter' value="0">
+						</td>
+						<td>支持base line:</td>
+						<td>
+							<label for='ccdIsSupportBaseLine'>是</label>
+							<input type='radio' id='ccdIsSupportBaseLine' name='IsSupportBaseLine' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportBaseLine-1'>否</label>
+							<input type='radio' id='ccdIsSupportBaseLine-1' name='IsSupportBaseLine' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持Over scan:</td>
+						<td>
+							<label for='ccdIsSupportOverScan'>是</label>
+							<input type='radio' id='ccdIsSupportOverScan' name='IsSupportOverScan' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportOverScan-1'>否</label>
+							<input type='radio' id='ccdIsSupportOverScan-1' name='IsSupportOverScan' value="0">
+						</td>
+						<td>BIN:</td>
+						<td>
+							<select id='ccdBinArray' name='BINARRAY'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+						<td>支持开窗:</td>
+						<td>
+							<label for='ccdIsSupportROI'>是</label>
+							<input type='radio' id='ccdIsSupportROI' name='IsSupportROI' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportROI-1'>否</label>
+							<input type='radio' id='ccdIsSupportROI-1' name='IsSupportROI' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>接口类型(后台获取):</td>
+						<td colspan="3" class="border_td">
+							支持USB2.0<input type='checkbox' id='ccdInterfaceType1' name='InterfaceType[]' value=''>
+							|支持USB3.0<input type='checkbox' id='ccdInterfaceType2' name='InterfaceType[]'>
+						</td>
+						<td>最大EM:</td>
+						<td>
+							<input type='text' id='ccdEmMaxValue' name='EMMaxValue' placeholder="整数">
+						</td>
+					</tr>
+					<tr>
+						<td>曝光触发模式(后台获取):</td>
+						<td colspan="3" class="border_td">
+							支持硬件触发<input type='checkbox' id='ccdExposeTriggerMode1' name='ExposeTriggerMode[]' value=''>
+							|支持软件件触发<input type='checkbox' id='ccdExposeTriggerMode2' name='ExposeTriggerMode[]'>
+						</td>
+						<td>最小EM:</td>
+						<td>
+							<input type='text' id='ccdEmMinValue' name='EMMinValue' placeholder="整数">
+						</td>
+					</tr>
+					<tr>
+						<td>支持连接:</td>
+						<td>
+							<label for='ccdCanConnect'>是</label>
+							<input type='radio' id='ccdCanConnect' name='canConnect' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanConnect-1'>否</label>
+							<input type='radio' id='ccdCanConnect-1' name='canConnect' value="0">
+						</td>
+						<td>设置制冷温度:</td>
+						<td>
+							<label for='ccdCanSetCoolerT'>是</label>
+							<input type='radio' id='ccdCanSetCoolerT' name='canSetCoolerT' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetCoolerT-1'>否</label>
+							<input type='radio' id='ccdCanSetCoolerT-1' name='canSetCoolerT' value="0">
+						</td>
+						<td>设置曝光策略:</td>
+						<td>
+							<label for='ccdCanSetExposureParam'>是</label>
+							<input type='radio' id='ccdCanSetExposureParam' name='canSetExposureParam' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetExposureParam-1'>否</label>
+							<input type='radio' id='ccdCanSetExposureParam-1' name='canSetExposureParam' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持开始曝光:</td>
+						<td>
+							<label for='ccdCanStartExposure'>是</label>
+							<input type='radio' id='ccdCanStartExposure' name='canStartExposure' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanStartExposure-1'>否</label>
+							<input type='radio' id='ccdCanStartExposure-1' name='canStartExposure' value="0">
+						</td>
+						<td>支持停止曝光:</td>
+						<td>
+							<label for='ccdCanStopExposure'>是</label>
+							<input type='radio' id='ccdCanStopExposure' name='canStopExposure' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanStopExposure-1'>否</label>
+							<input type='radio' id='ccdCanStopExposure-1' name='canStopExposure' value="0">
+						</td>
+						<td>支持终止曝光:</td>
+						<td>
+							<label for='ccdCanAbortExposure'>是</label>
+							<input type='radio' id='ccdCanAbortExposure' name='canAbortExposure' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanAbortExposure-1'>否</label>
+							<input type='radio' id='ccdCanAbortExposure-1' name='canAbortExposure' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置增益:</td>
+						<td>
+							<label for='ccdCanSetGain'>是</label>
+							<input type='radio' id='ccdCanSetGain' name='canSetGain' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetGain-1'>否</label>
+							<input type='radio' id='ccdCanSetGain-1' name='canSetGain' value="0">
+						</td>
+						<td>设置读出速度模式值:</td>
+						<td>
+							<label for='ccdCanSetReadoutSpeedMode'>是</label>
+							<input type='radio' id='ccdCanSetReadoutSpeedMode' name='canSetReadoutSpeedMode' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetReadoutSpeedMode-1'>否</label>
+							<input type='radio' id='ccdCanSetReadoutSpeedMode-1' name='canSetReadoutSpeedMode' value="0">
+						</td>
+						<td>设置转移速度模式值:</td>
+						<td>
+							<label for='ccdCanSetTransferSpeedMode'>是</label>
+							<input type='radio' id='ccdCanSetTransferSpeedMode' name='canSetTransferSpeedMode' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetTransferSpeedMode-1'>否</label>
+							<input type='radio' id='ccdCanSetTransferSpeedMode-1' name='canSetTransferSpeedMode' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置BIN:</td>
+						<td>
+							<label for='ccdCanSetGain'>是</label>
+							<input type='radio' id='ccdCanSetGain' name='canSetBin' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetGain-1'>否</label>
+							<input type='radio' id='ccdCanSetGain-1' name='canSetBin' value="0">
+						</td>
+						<td>设置ROI:</td>
+						<td>
+							<label for='ccdCanSetROI'>是</label>
+							<input type='radio' id='ccdCanSetROI' name='canSetROI' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetROI-1'>否</label>
+							<input type='radio' id='ccdCanSetROI-1' name='canSetROI' value="0">
+						</td>
+						<td>设置快门:</td>
+						<td>
+							<label for='ccdCanSetShutter'>是</label>
+							<input type='radio' id='ccdCanSetShutter' name='canSetShutter' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetShutter-1'>否</label>
+							<input type='radio' id='ccdCanSetShutter-1' name='canSetShutter' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置帧转移:</td>
+						<td>
+							<label for='ccdCanSetFullFrame'>是</label>
+							<input type='radio' id='ccdCanSetFullFrame' name='canSetFullFrame' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetFullFrame-1'>否</label>
+							<input type='radio' id='ccdCanSetFullFrame-1' name='canSetFullFrame' value="0">
+						</td>
+						<td>设置EM:</td>
+						<td>
+							<label for='ccdCanSetEM'>是</label>
+							<input type='radio' id='ccdCanSetEM' name='canSetEM' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetEM-1'>否</label>
+							<input type='radio' id='ccdCanSetEM-1' name='canSetEM' value="0">
+						</td>
+						<td>设置CMOS noise filter:</td>
+						<td>
+							<label for='ccdCanNoiseFilter'>是</label>
+							<input type='radio' id='ccdCanNoiseFilter' name='canNoiseFilter' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanNoiseFilter-1'>否</label>
+							<input type='radio' id='ccdCanNoiseFilter-1' name='canNoiseFilter' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置Base line:</td>
+						<td>
+							<label for='ccdCanSetBaseline'>是</label>
+							<input type='radio' id='ccdCanSetBaseline' name='canSetBaseline' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetBaseline-1'>否</label>
+							<input type='radio' id='ccdCanSetBaseline-1' name='canSetBaseline' value="0">
+						</td>
+						<td>设置Over scan:</td>
+						<td>
+							<label for='ccdCanSetOverScan'>是</label>
+							<input type='radio' id='ccdCanSetOverScan' name='canSetOverScan' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetOverScan-1'>否</label>
+							<input type='radio' id='ccdCanSetOverScan-1' name='canSetOverScan' value="0">
+						</td>
+						<td>属性版本号:</td>
+						<td>
+							<input type='radio' id='ccdAttrVersion' name='attrVersion'>
+						</td>
+					</tr>
+					<tr>
+						<td>属性更新时间:</td>
+						<td>
+							<input type='text' id='ccdAttrModifyTime' name='attrModifyTime' placeholder="2018-2-28">
+						</td>
+					</tr>
+					<tr>
+						<td>上传CCD相关文件:</td>
+						<td colspan="5" class="border_td">
+							量子效率曲线:<input type='file' name='QECurve'>
+							出厂测试报告:<input type='file' name='Specification'>
+							说明书:<input type='file' name='ManualBook'>
+						</td>
+					</tr>
+					<tr>
+						<td>CCD相关文件:</td>
+						<td id='gimbalFile' colspan="5" class="border_td">
+							<a title="点击下载">lsfdjlks</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="点击下载">lsfdjlks</a>
+						</td>
+					</tr>
+				</table>
+				<input id='ccdBtn-3' type='button' value="提交CCD-No3配置">
+			</form><!--ccd-No3配置项 结束--><br>
+
+			<h4 class='center'>CCD-No4固定属性</h4>
+			<hr>
+			<form id='ccd-4' class="form" enctype='multipart/form-data'><!--ccd-No4配置项-->
+				<table class="center_mrg">
+					<tr>
+						<td>ccd之ip:</td>
+						<td><input type='text' id='ccdIp' name='ip' placeholder='ip地址'></td>
+						<td>ccd之id:</td>
+						<td><input type='text' id='ccdId' name='ccdId'></td>
+						<td>ccd名称:</td>
+						<td><input type='text' id='ccdName' name='name' placeholder='1.26m望远镜'></td>
+					</tr>
+					<tr>
+						<td>隶属望远镜:</td>
+						<td><input type='text' id='ccdTeleId' name='teleId'></td>
+						<td>探测器类型:</td>
+						<td>
+						  <select id='ccdType' name='type'>
+							<option value="0">请选择</option>
+							<option value="0x00">CCD</option>
+							<option value="0x01">FullFrame CCD</option>
+							<option value="0x02">EMCCD</option>
+							<option value="0x03">sCMOS</option>
+						  </select>
+						</td>
+						<td>x像素:</td>
+						<td><input type='text' id='ccdXpixel' name='xPixel' placeholder='整数'></td>
+					</tr>
+					<tr>
+						<td>y像素:</td>
+						<td><input type='text' id='ccdYpixel' name='yPixel' placeholder='整数'></td>
+						<td>x像元大小(um):</td>
+						<td><input type='text' id='ccdXpixelSize' name='xPixelSize' placeholder='小数'></td>
+						<td>y像元大小(um):</td>
+						<td><input type='text' id='ccdYpixelSize' name='yPixelSize' placeholder='小数'></td>
+					</tr>
+					<tr>
+						<td>传感器名称:</td>
+						<td><input type='text' id='ccdSensorName' name='sensorName' placeholder="芯片名称"></td>
+						<td>图像位数:</td>
+						<td>
+							<select id='ccdImageBits' name='imageBits'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="0x01">sdfs</option>
+							</select>
+						</td>
+						<td>制冷方式:</td>
+						<td>
+							<select id='ccdCoolerMode' name='coolerMode'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="0x01">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>最低制冷温度（℃）:</td>
+						<td>
+							<input type='text' id='ccdLowCoolerT' name='lowCoolerT'>
+						</td>
+						<td>最大曝光时间（s）:</td>
+						<td>
+							<input type='text' id='ccdMaxExposureTime' name='maxExposureTime' placeholder='小数'>
+						</td>
+						<td>最小曝光时间（s）:</td>
+						<td>
+							<input type='text' id='ccdMinExposureTime' name='minExposureTime' placeholder='小数'>
+						</td>
+					</tr>
+					<tr>
+						<td>曝光时间分辨率:</td>
+						<td>
+							<input type='text' id='ccdExposureTimeRation' name='exposureTimeRation' placeholder='整数'>
+						</td>
+						<td>满阱电荷:</td>
+						<td>
+							<input type='text' id='ccdFullWellDepth' name='fullWellDepth' placeholder='整数'>
+						</td>
+						<td>读出速度模式:</td>
+						<td>
+							<select id='ccdReadoutSpeed' name='readoutSpeed'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>读出模式(从后台读出):</td>
+						<td colspan="3" class="border_td">
+							支持单门读出<input type='checkbox' id='ccdReadoutMode1' name='readoutMode[]' value=''>
+							|支持双门读出<input type='checkbox' id='ccdReadoutMode2' name='readoutMode[]'>
+							|支持四门读出<input type='checkbox' id='ccdReadoutMode3' name='readoutMode[]'>
+							|支持四门读出<input type='checkbox' id='ccdReadoutMode4' name='readoutMode[]'>
+						</td>
+						<td>转移速度模式:</td>
+						<td>
+							<select id='ccdTransferSpeed' name='transferSpeed'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>增益模式(从后台读出):</td>
+						<td colspan="3" class="border_td">
+							支持High Capacity<input type='checkbox' id='ccdGainmode1' name='gainmode[]' value=''>
+							|支持High Sensitivity<input type='checkbox' id='ccdGainmode2' name='gainmode[]'>
+						</td>
+						<td>增益档位(从后台读出):</td>
+						<td>
+							<select id='ccdGainNumber' name='gainNumber'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>增益值:</td>
+						<td>
+							<input type='text' id='ccdGainValueArray' name='gainValueArray'>
+						</td>
+						<td>读出噪声值:</td>
+						<td>
+							<input type='text' id='ccdReadoutNoiseArray' name='readoutNoiseArray'>
+						</td>
+						<td>快门类型:</td>
+						<td>
+							<select id='ccdShutterType' name='ShutterType'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>快门模式(从后台读出):</td>
+						<td colspan="3" class="border_td">
+							支持High Capacity<input type='checkbox' id='ccdShutterMode1' name='ShutterMode[]' value=''>
+							|支持High Sensitivity<input type='checkbox' id='ccdShutterMode2' name='ShutterMode[]'>
+						</td>
+						<td>支持帧转移:</td>
+						<td>
+							<label for='ccdIsSupportFullFrame'>是</label>
+							<input type='radio' id='ccdIsSupportFullFrame' name='IsSupportFullFrame' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportFullFrame-1'>否</label>
+							<input type='radio' id='ccdIsSupportFullFrame-1' name='IsSupportFullFrame' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持EM:</td>
+						<td>
+							<label for='ccdIsSupportEM'>是</label>
+							<input type='radio' id='ccdIsSupportEM' name='IsSupportEM' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportEM-1'>否</label>
+							<input type='radio' id='ccdIsSupportEM-1' name='IsSupportEM' value="0">
+						</td>
+						<td>支持CMOS noise filter:</td>
+						<td>
+							<label for='ccdIsSupportsCmosNoiseFilter'>是</label>
+							<input type='radio' id='ccdIsSupportsCmosNoiseFilter' name='IsSupportsCmosNoiseFilter' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportsCmosNoiseFilter-1'>否</label>
+							<input type='radio' id='ccdIsSupportsCmosNoiseFilter-1' name='IsSupportsCmosNoiseFilter' value="0">
+						</td>
+						<td>支持base line:</td>
+						<td>
+							<label for='ccdIsSupportBaseLine'>是</label>
+							<input type='radio' id='ccdIsSupportBaseLine' name='IsSupportBaseLine' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportBaseLine-1'>否</label>
+							<input type='radio' id='ccdIsSupportBaseLine-1' name='IsSupportBaseLine' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持Over scan:</td>
+						<td>
+							<label for='ccdIsSupportOverScan'>是</label>
+							<input type='radio' id='ccdIsSupportOverScan' name='IsSupportOverScan' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportOverScan-1'>否</label>
+							<input type='radio' id='ccdIsSupportOverScan-1' name='IsSupportOverScan' value="0">
+						</td>
+						<td>BIN:</td>
+						<td>
+							<select id='ccdBinArray' name='BINARRAY'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+						<td>支持开窗:</td>
+						<td>
+							<label for='ccdIsSupportROI'>是</label>
+							<input type='radio' id='ccdIsSupportROI' name='IsSupportROI' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportROI-1'>否</label>
+							<input type='radio' id='ccdIsSupportROI-1' name='IsSupportROI' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>接口类型(后台获取):</td>
+						<td colspan="3" class="border_td">
+							支持USB2.0<input type='checkbox' id='ccdInterfaceType1' name='InterfaceType[]' value=''>
+							|支持USB3.0<input type='checkbox' id='ccdInterfaceType2' name='InterfaceType[]'>
+						</td>
+						<td>最大EM:</td>
+						<td>
+							<input type='text' id='ccdEmMaxValue' name='EMMaxValue' placeholder="整数">
+						</td>
+					</tr>
+					<tr>
+						<td>曝光触发模式(后台获取):</td>
+						<td colspan="3" class="border_td">
+							支持硬件触发<input type='checkbox' id='ccdExposeTriggerMode1' name='ExposeTriggerMode[]' value=''>
+							|支持软件件触发<input type='checkbox' id='ccdExposeTriggerMode2' name='ExposeTriggerMode[]'>
+						</td>
+						<td>最小EM:</td>
+						<td>
+							<input type='text' id='ccdEmMinValue' name='EMMinValue' placeholder="整数">
+						</td>
+					</tr>
+					<tr>
+						<td>支持连接:</td>
+						<td>
+							<label for='ccdCanConnect'>是</label>
+							<input type='radio' id='ccdCanConnect' name='canConnect' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanConnect-1'>否</label>
+							<input type='radio' id='ccdCanConnect-1' name='canConnect' value="0">
+						</td>
+						<td>设置制冷温度:</td>
+						<td>
+							<label for='ccdCanSetCoolerT'>是</label>
+							<input type='radio' id='ccdCanSetCoolerT' name='canSetCoolerT' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetCoolerT-1'>否</label>
+							<input type='radio' id='ccdCanSetCoolerT-1' name='canSetCoolerT' value="0">
+						</td>
+						<td>设置曝光策略:</td>
+						<td>
+							<label for='ccdCanSetExposureParam'>是</label>
+							<input type='radio' id='ccdCanSetExposureParam' name='canSetExposureParam' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetExposureParam-1'>否</label>
+							<input type='radio' id='ccdCanSetExposureParam-1' name='canSetExposureParam' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持开始曝光:</td>
+						<td>
+							<label for='ccdCanStartExposure'>是</label>
+							<input type='radio' id='ccdCanStartExposure' name='canStartExposure' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanStartExposure-1'>否</label>
+							<input type='radio' id='ccdCanStartExposure-1' name='canStartExposure' value="0">
+						</td>
+						<td>支持停止曝光:</td>
+						<td>
+							<label for='ccdCanStopExposure'>是</label>
+							<input type='radio' id='ccdCanStopExposure' name='canStopExposure' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanStopExposure-1'>否</label>
+							<input type='radio' id='ccdCanStopExposure-1' name='canStopExposure' value="0">
+						</td>
+						<td>支持终止曝光:</td>
+						<td>
+							<label for='ccdCanAbortExposure'>是</label>
+							<input type='radio' id='ccdCanAbortExposure' name='canAbortExposure' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanAbortExposure-1'>否</label>
+							<input type='radio' id='ccdCanAbortExposure-1' name='canAbortExposure' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置增益:</td>
+						<td>
+							<label for='ccdCanSetGain'>是</label>
+							<input type='radio' id='ccdCanSetGain' name='canSetGain' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetGain-1'>否</label>
+							<input type='radio' id='ccdCanSetGain-1' name='canSetGain' value="0">
+						</td>
+						<td>设置读出速度模式值:</td>
+						<td>
+							<label for='ccdCanSetReadoutSpeedMode'>是</label>
+							<input type='radio' id='ccdCanSetReadoutSpeedMode' name='canSetReadoutSpeedMode' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetReadoutSpeedMode-1'>否</label>
+							<input type='radio' id='ccdCanSetReadoutSpeedMode-1' name='canSetReadoutSpeedMode' value="0">
+						</td>
+						<td>设置转移速度模式值:</td>
+						<td>
+							<label for='ccdCanSetTransferSpeedMode'>是</label>
+							<input type='radio' id='ccdCanSetTransferSpeedMode' name='canSetTransferSpeedMode' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetTransferSpeedMode-1'>否</label>
+							<input type='radio' id='ccdCanSetTransferSpeedMode-1' name='canSetTransferSpeedMode' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置BIN:</td>
+						<td>
+							<label for='ccdCanSetGain'>是</label>
+							<input type='radio' id='ccdCanSetGain' name='canSetBin' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetGain-1'>否</label>
+							<input type='radio' id='ccdCanSetGain-1' name='canSetBin' value="0">
+						</td>
+						<td>设置ROI:</td>
+						<td>
+							<label for='ccdCanSetROI'>是</label>
+							<input type='radio' id='ccdCanSetROI' name='canSetROI' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetROI-1'>否</label>
+							<input type='radio' id='ccdCanSetROI-1' name='canSetROI' value="0">
+						</td>
+						<td>设置快门:</td>
+						<td>
+							<label for='ccdCanSetShutter'>是</label>
+							<input type='radio' id='ccdCanSetShutter' name='canSetShutter' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetShutter-1'>否</label>
+							<input type='radio' id='ccdCanSetShutter-1' name='canSetShutter' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置帧转移:</td>
+						<td>
+							<label for='ccdCanSetFullFrame'>是</label>
+							<input type='radio' id='ccdCanSetFullFrame' name='canSetFullFrame' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetFullFrame-1'>否</label>
+							<input type='radio' id='ccdCanSetFullFrame-1' name='canSetFullFrame' value="0">
+						</td>
+						<td>设置EM:</td>
+						<td>
+							<label for='ccdCanSetEM'>是</label>
+							<input type='radio' id='ccdCanSetEM' name='canSetEM' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetEM-1'>否</label>
+							<input type='radio' id='ccdCanSetEM-1' name='canSetEM' value="0">
+						</td>
+						<td>设置CMOS noise filter:</td>
+						<td>
+							<label for='ccdCanNoiseFilter'>是</label>
+							<input type='radio' id='ccdCanNoiseFilter' name='canNoiseFilter' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanNoiseFilter-1'>否</label>
+							<input type='radio' id='ccdCanNoiseFilter-1' name='canNoiseFilter' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置Base line:</td>
+						<td>
+							<label for='ccdCanSetBaseline'>是</label>
+							<input type='radio' id='ccdCanSetBaseline' name='canSetBaseline' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetBaseline-1'>否</label>
+							<input type='radio' id='ccdCanSetBaseline-1' name='canSetBaseline' value="0">
+						</td>
+						<td>设置Over scan:</td>
+						<td>
+							<label for='ccdCanSetOverScan'>是</label>
+							<input type='radio' id='ccdCanSetOverScan' name='canSetOverScan' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetOverScan-1'>否</label>
+							<input type='radio' id='ccdCanSetOverScan-1' name='canSetOverScan' value="0">
+						</td>
+						<td>属性版本号:</td>
+						<td>
+							<input type='radio' id='ccdAttrVersion' name='attrVersion'>
+						</td>
+					</tr>
+					<tr>
+						<td>属性更新时间:</td>
+						<td>
+							<input type='text' id='ccdAttrModifyTime' name='attrModifyTime' placeholder="2018-2-28">
+						</td>
+					</tr>
+					<tr>
+						<td>上传CCD相关文件:</td>
+						<td colspan="5" class="border_td">
+							量子效率曲线:<input type='file' name='QECurve'>
+							出厂测试报告:<input type='file' name='Specification'>
+							说明书:<input type='file' name='ManualBook'>
+						</td>
+					</tr>
+					<tr>
+						<td>CCD相关文件:</td>
+						<td id='gimbalFile' colspan="5" class="border_td">
+							<a title="点击下载">lsfdjlks</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="点击下载">lsfdjlks</a>
+						</td>
+					</tr>
+				</table>
+				<input id='ccdBtn-4' type='button' value="提交CCD-No4配置">
+			</form><!--ccd-No4配置项 结束--><br>
+
+			<h4 class='center'>滤光片固定属性</h4>
+			<hr>
+			<form id='filter' class="form" enctype='multipart/form-data'><!--滤光片配置项-->
+				<table class="center_mrg">
+					<tr>
+						<td>滤光片ip:</td>
+						<td><input type='text' id='ccdIp' name='ip' placeholder='ip地址'></td>
+						<td>ccd之id:</td>
+						<td><input type='text' id='ccdId' name='ccdId'></td>
+						<td>ccd名称:</td>
+						<td><input type='text' id='ccdName' name='name' placeholder='1.26m望远镜'></td>
+					</tr>
+					<!-- <tr>
+						<td>隶属望远镜:</td>
+						<td><input type='text' id='ccdTeleId' name='teleId'></td>
+						<td>探测器类型:</td>
+						<td>
+						  <select id='ccdType' name='type'>
+							<option value="0">请选择</option>
+							<option value="0x00">CCD</option>
+							<option value="0x01">FullFrame CCD</option>
+							<option value="0x02">EMCCD</option>
+							<option value="0x03">sCMOS</option>
+						  </select>
+						</td>
+						<td>x像素:</td>
+						<td><input type='text' id='ccdXpixel' name='xPixel' placeholder='整数'></td>
+					</tr>
+					<tr>
+						<td>y像素:</td>
+						<td><input type='text' id='ccdYpixel' name='yPixel' placeholder='整数'></td>
+						<td>x像元大小(um):</td>
+						<td><input type='text' id='ccdXpixelSize' name='xPixelSize' placeholder='小数'></td>
+						<td>y像元大小(um):</td>
+						<td><input type='text' id='ccdYpixelSize' name='yPixelSize' placeholder='小数'></td>
+					</tr>
+					<tr>
+						<td>传感器名称:</td>
+						<td><input type='text' id='ccdSensorName' name='sensorName' placeholder="芯片名称"></td>
+						<td>图像位数:</td>
+						<td>
+							<select id='ccdImageBits' name='imageBits'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="0x01">sdfs</option>
+							</select>
+						</td>
+						<td>制冷方式:</td>
+						<td>
+							<select id='ccdCoolerMode' name='coolerMode'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="0x01">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>最低制冷温度（℃）:</td>
+						<td>
+							<input type='text' id='ccdLowCoolerT' name='lowCoolerT'>
+						</td>
+						<td>最大曝光时间（s）:</td>
+						<td>
+							<input type='text' id='ccdMaxExposureTime' name='maxExposureTime' placeholder='小数'>
+						</td>
+						<td>最小曝光时间（s）:</td>
+						<td>
+							<input type='text' id='ccdMinExposureTime' name='minExposureTime' placeholder='小数'>
+						</td>
+					</tr>
+					<tr>
+						<td>曝光时间分辨率:</td>
+						<td>
+							<input type='text' id='ccdExposureTimeRation' name='exposureTimeRation' placeholder='整数'>
+						</td>
+						<td>满阱电荷:</td>
+						<td>
+							<input type='text' id='ccdFullWellDepth' name='fullWellDepth' placeholder='整数'>
+						</td>
+						<td>读出速度模式:</td>
+						<td>
+							<select id='ccdReadoutSpeed' name='readoutSpeed'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>读出模式(从后台读出):</td>
+						<td colspan="3" class="border_td">
+							支持单门读出<input type='checkbox' id='ccdReadoutMode1' name='readoutMode[]' value=''>
+							|支持双门读出<input type='checkbox' id='ccdReadoutMode2' name='readoutMode[]'>
+							|支持四门读出<input type='checkbox' id='ccdReadoutMode3' name='readoutMode[]'>
+							|支持四门读出<input type='checkbox' id='ccdReadoutMode4' name='readoutMode[]'>
+						</td>
+						<td>转移速度模式:</td>
+						<td>
+							<select id='ccdTransferSpeed' name='transferSpeed'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>增益模式(从后台读出):</td>
+						<td colspan="3" class="border_td">
+							支持High Capacity<input type='checkbox' id='ccdGainmode1' name='gainmode[]' value=''>
+							|支持High Sensitivity<input type='checkbox' id='ccdGainmode2' name='gainmode[]'>
+						</td>
+						<td>增益档位(从后台读出):</td>
+						<td>
+							<select id='ccdGainNumber' name='gainNumber'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>增益值:</td>
+						<td>
+							<input type='text' id='ccdGainValueArray' name='gainValueArray'>
+						</td>
+						<td>读出噪声值:</td>
+						<td>
+							<input type='text' id='ccdReadoutNoiseArray' name='readoutNoiseArray'>
+						</td>
+						<td>快门类型:</td>
+						<td>
+							<select id='ccdShutterType' name='ShutterType'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>快门模式(从后台读出):</td>
+						<td colspan="3" class="border_td">
+							支持High Capacity<input type='checkbox' id='ccdShutterMode1' name='ShutterMode[]' value=''>
+							|支持High Sensitivity<input type='checkbox' id='ccdShutterMode2' name='ShutterMode[]'>
+						</td>
+						<td>支持帧转移:</td>
+						<td>
+							<label for='ccdIsSupportFullFrame'>是</label>
+							<input type='radio' id='ccdIsSupportFullFrame' name='IsSupportFullFrame' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportFullFrame-1'>否</label>
+							<input type='radio' id='ccdIsSupportFullFrame-1' name='IsSupportFullFrame' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持EM:</td>
+						<td>
+							<label for='ccdIsSupportEM'>是</label>
+							<input type='radio' id='ccdIsSupportEM' name='IsSupportEM' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportEM-1'>否</label>
+							<input type='radio' id='ccdIsSupportEM-1' name='IsSupportEM' value="0">
+						</td>
+						<td>支持CMOS noise filter:</td>
+						<td>
+							<label for='ccdIsSupportsCmosNoiseFilter'>是</label>
+							<input type='radio' id='ccdIsSupportsCmosNoiseFilter' name='IsSupportsCmosNoiseFilter' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportsCmosNoiseFilter-1'>否</label>
+							<input type='radio' id='ccdIsSupportsCmosNoiseFilter-1' name='IsSupportsCmosNoiseFilter' value="0">
+						</td>
+						<td>支持base line:</td>
+						<td>
+							<label for='ccdIsSupportBaseLine'>是</label>
+							<input type='radio' id='ccdIsSupportBaseLine' name='IsSupportBaseLine' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportBaseLine-1'>否</label>
+							<input type='radio' id='ccdIsSupportBaseLine-1' name='IsSupportBaseLine' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持Over scan:</td>
+						<td>
+							<label for='ccdIsSupportOverScan'>是</label>
+							<input type='radio' id='ccdIsSupportOverScan' name='IsSupportOverScan' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportOverScan-1'>否</label>
+							<input type='radio' id='ccdIsSupportOverScan-1' name='IsSupportOverScan' value="0">
+						</td>
+						<td>BIN:</td>
+						<td>
+							<select id='ccdBinArray' name='BINARRAY'>
+								<option value="0">请选择-从后台获取</option>
+								<option value="1">sdfs</option>
+							</select>
+						</td>
+						<td>支持开窗:</td>
+						<td>
+							<label for='ccdIsSupportROI'>是</label>
+							<input type='radio' id='ccdIsSupportROI' name='IsSupportROI' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdIsSupportROI-1'>否</label>
+							<input type='radio' id='ccdIsSupportROI-1' name='IsSupportROI' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>接口类型(后台获取):</td>
+						<td colspan="3" class="border_td">
+							支持USB2.0<input type='checkbox' id='ccdInterfaceType1' name='InterfaceType[]' value=''>
+							|支持USB3.0<input type='checkbox' id='ccdInterfaceType2' name='InterfaceType[]'>
+						</td>
+						<td>最大EM:</td>
+						<td>
+							<input type='text' id='ccdEmMaxValue' name='EMMaxValue' placeholder="整数">
+						</td>
+					</tr>
+					<tr>
+						<td>曝光触发模式(后台获取):</td>
+						<td colspan="3" class="border_td">
+							支持硬件触发<input type='checkbox' id='ccdExposeTriggerMode1' name='ExposeTriggerMode[]' value=''>
+							|支持软件件触发<input type='checkbox' id='ccdExposeTriggerMode2' name='ExposeTriggerMode[]'>
+						</td>
+						<td>最小EM:</td>
+						<td>
+							<input type='text' id='ccdEmMinValue' name='EMMinValue' placeholder="整数">
+						</td>
+					</tr>
+					<tr>
+						<td>支持连接:</td>
+						<td>
+							<label for='ccdCanConnect'>是</label>
+							<input type='radio' id='ccdCanConnect' name='canConnect' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanConnect-1'>否</label>
+							<input type='radio' id='ccdCanConnect-1' name='canConnect' value="0">
+						</td>
+						<td>设置制冷温度:</td>
+						<td>
+							<label for='ccdCanSetCoolerT'>是</label>
+							<input type='radio' id='ccdCanSetCoolerT' name='canSetCoolerT' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetCoolerT-1'>否</label>
+							<input type='radio' id='ccdCanSetCoolerT-1' name='canSetCoolerT' value="0">
+						</td>
+						<td>设置曝光策略:</td>
+						<td>
+							<label for='ccdCanSetExposureParam'>是</label>
+							<input type='radio' id='ccdCanSetExposureParam' name='canSetExposureParam' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetExposureParam-1'>否</label>
+							<input type='radio' id='ccdCanSetExposureParam-1' name='canSetExposureParam' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>支持开始曝光:</td>
+						<td>
+							<label for='ccdCanStartExposure'>是</label>
+							<input type='radio' id='ccdCanStartExposure' name='canStartExposure' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanStartExposure-1'>否</label>
+							<input type='radio' id='ccdCanStartExposure-1' name='canStartExposure' value="0">
+						</td>
+						<td>支持停止曝光:</td>
+						<td>
+							<label for='ccdCanStopExposure'>是</label>
+							<input type='radio' id='ccdCanStopExposure' name='canStopExposure' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanStopExposure-1'>否</label>
+							<input type='radio' id='ccdCanStopExposure-1' name='canStopExposure' value="0">
+						</td>
+						<td>支持终止曝光:</td>
+						<td>
+							<label for='ccdCanAbortExposure'>是</label>
+							<input type='radio' id='ccdCanAbortExposure' name='canAbortExposure' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanAbortExposure-1'>否</label>
+							<input type='radio' id='ccdCanAbortExposure-1' name='canAbortExposure' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置增益:</td>
+						<td>
+							<label for='ccdCanSetGain'>是</label>
+							<input type='radio' id='ccdCanSetGain' name='canSetGain' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetGain-1'>否</label>
+							<input type='radio' id='ccdCanSetGain-1' name='canSetGain' value="0">
+						</td>
+						<td>设置读出速度模式值:</td>
+						<td>
+							<label for='ccdCanSetReadoutSpeedMode'>是</label>
+							<input type='radio' id='ccdCanSetReadoutSpeedMode' name='canSetReadoutSpeedMode' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetReadoutSpeedMode-1'>否</label>
+							<input type='radio' id='ccdCanSetReadoutSpeedMode-1' name='canSetReadoutSpeedMode' value="0">
+						</td>
+						<td>设置转移速度模式值:</td>
+						<td>
+							<label for='ccdCanSetTransferSpeedMode'>是</label>
+							<input type='radio' id='ccdCanSetTransferSpeedMode' name='canSetTransferSpeedMode' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetTransferSpeedMode-1'>否</label>
+							<input type='radio' id='ccdCanSetTransferSpeedMode-1' name='canSetTransferSpeedMode' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置BIN:</td>
+						<td>
+							<label for='ccdCanSetGain'>是</label>
+							<input type='radio' id='ccdCanSetGain' name='canSetBin' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetGain-1'>否</label>
+							<input type='radio' id='ccdCanSetGain-1' name='canSetBin' value="0">
+						</td>
+						<td>设置ROI:</td>
+						<td>
+							<label for='ccdCanSetROI'>是</label>
+							<input type='radio' id='ccdCanSetROI' name='canSetROI' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetROI-1'>否</label>
+							<input type='radio' id='ccdCanSetROI-1' name='canSetROI' value="0">
+						</td>
+						<td>设置快门:</td>
+						<td>
+							<label for='ccdCanSetShutter'>是</label>
+							<input type='radio' id='ccdCanSetShutter' name='canSetShutter' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetShutter-1'>否</label>
+							<input type='radio' id='ccdCanSetShutter-1' name='canSetShutter' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置帧转移:</td>
+						<td>
+							<label for='ccdCanSetFullFrame'>是</label>
+							<input type='radio' id='ccdCanSetFullFrame' name='canSetFullFrame' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetFullFrame-1'>否</label>
+							<input type='radio' id='ccdCanSetFullFrame-1' name='canSetFullFrame' value="0">
+						</td>
+						<td>设置EM:</td>
+						<td>
+							<label for='ccdCanSetEM'>是</label>
+							<input type='radio' id='ccdCanSetEM' name='canSetEM' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetEM-1'>否</label>
+							<input type='radio' id='ccdCanSetEM-1' name='canSetEM' value="0">
+						</td>
+						<td>设置CMOS noise filter:</td>
+						<td>
+							<label for='ccdCanNoiseFilter'>是</label>
+							<input type='radio' id='ccdCanNoiseFilter' name='canNoiseFilter' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanNoiseFilter-1'>否</label>
+							<input type='radio' id='ccdCanNoiseFilter-1' name='canNoiseFilter' value="0">
+						</td>
+					</tr>
+					<tr>
+						<td>设置Base line:</td>
+						<td>
+							<label for='ccdCanSetBaseline'>是</label>
+							<input type='radio' id='ccdCanSetBaseline' name='canSetBaseline' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetBaseline-1'>否</label>
+							<input type='radio' id='ccdCanSetBaseline-1' name='canSetBaseline' value="0">
+						</td>
+						<td>设置Over scan:</td>
+						<td>
+							<label for='ccdCanSetOverScan'>是</label>
+							<input type='radio' id='ccdCanSetOverScan' name='canSetOverScan' value="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label for='ccdCanSetOverScan-1'>否</label>
+							<input type='radio' id='ccdCanSetOverScan-1' name='canSetOverScan' value="0">
+						</td>
+						<td>属性版本号:</td>
+						<td>
+							<input type='radio' id='ccdAttrVersion' name='attrVersion'>
+						</td>
+					</tr>
+					<tr>
+						<td>属性更新时间:</td>
+						<td>
+							<input type='text' id='ccdAttrModifyTime' name='attrModifyTime' placeholder="2018-2-28">
+						</td>
+					</tr>
+					<tr>
+						<td>上传滤光片相关文件:</td>
+						<td colspan="5" class="border_td">
+							说明书：<input type='file' name='ManualBook'>
+						</td>
+					</tr>
+					<tr>
+						<td>滤光片相关文件:</td>
+						<td id='gimbalFile' colspan="5" class="border_td">
+							<a title="点击下载">lsfdjlks</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="点击下载">lsfdjlks</a>
+						</td>
+					</tr> -->
+				</table>
+				<input id='filterBtn' type='button' value="提交滤光片配置">
+			</form><!-- 滤光片固定属性配置项 结束--><br>			
 		</div><!-- 所有配置项 结束 -->
-    </div><!-- id='all' 结束 --><br>
+	</div><!-- id='all' 结束 --><br>
+	<!-- <div class='clear'></div> -->
 	<footer class='center clear'>
 		<span>中科院国家天文台兴隆观测基地</span>
 	</footer>

@@ -41,6 +41,8 @@ li {list-style-type:none;}
 
 .border1 {border: 1px solid #64B2E0;border-radius:4px;}
 
+.border_td {border: 1px solid #7a7a7a;} /*望远镜配置页的个别td边框样式*/
+
 .widthAuto {width: auto;}
 
 #all {width:1200px; margin: 0 auto;}

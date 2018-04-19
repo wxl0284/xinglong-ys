@@ -3,13 +3,13 @@
 namespace app\xinglong\controller;
 
 use app\xinglong\controller\Base;
-// use think\Cache;
+use think\Db;
 
 class Atconfig extends Base
 {
-    //显示进行配置的页面
-    public function config_page()
+    /*获取转台配置项表单 存入表atlist中*/
+    public function gimbal_config()
     {
-        return 'aa';
-    }
+        
+    }/*获取转台配置项表单 存入表atlist中 结束*/
 }
