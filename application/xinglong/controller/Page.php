@@ -163,7 +163,12 @@ class Page extends Base
         if ($errMsg != '')
         {//还须添加固定属性
             return $errMsg;
-        }else{//获取相应望远镜的配置数据，已json格式返回
+        }else{//获取相应望远镜的配置数据，以json格式返回
+            /*1、获取19个动态增减的固定属性数据*/
+            $result['confOption'] = $this->get_19confOption ();
+            //halt ($result['confOption']);
+            return json_encode ($result);
+            /*1、获取19个动态增减的固定属性数据 结束*/
             $id = input('id'); //获取相应望远镜的id
             //据此id去各自设备的固定属性表中获取数据
             
@@ -171,7 +176,7 @@ class Page extends Base
 
             //return json数据给前端
             //return json;
-        }
+        }//获取相应望远镜的配置数据，以json格式返回 结束
     }//ajax请求 判断19个动态增减的固定是否已添加够 并获取相应望远镜的配置数据 结束
 
     //显示望远镜列表 /////////
@@ -689,4 +694,16 @@ class Page extends Base
         }
     }/*验证望远镜名 口径 结束*/
 
+    /*获取19个动态增减的固定属性 数据*/
+    protected function get_19confOption ()
+    {
+        /*获取所有配置选项 */
+        $confOption = Db::table('confoption')->field('conf, conf_val')->select();
+        /*遍历配置选项数据 组装为：配置项=>[配置数据]*/
+        foreach ($confOption as $v)
+        {
+            $res[$v['conf']][]= $v['conf_val'];
+        }
+        return $res;
+    }/*获取19个动态增减的固定属性 数据 结束*/
 }
