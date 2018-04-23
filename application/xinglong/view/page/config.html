@@ -85,9 +85,9 @@
 						</td>
 					</tr>
 					<tr>
-						<td>轴1最大速度（°/s）:</td>
+						<td>轴1最大速度（°/s）:</td><!--maxAxis1Speed-->
 						<td>
-							<input type='text' id='gimbalMaxAxis1Speed' name='maxAxis1Speed' placeholder='0-30'>
+							<input type='text' id='gimbalMaxAxis1Speed' name='maxaxis1speed' placeholder='0-30'>
 						</td>
 						<td>轴2最大速度（°/s）:</td>
 						<td>
@@ -446,30 +446,21 @@
 					<tr>
 						<td>读出模式(从后台读出):</td>
 						<td colspan="3" class="border_td" id='ccd_1readoutMode'>
-							支持单门读出<input type='checkbox' id='ccd_1ReadoutMode1' name='readoutMode[]' value=''>
-							|支持双门读出<input type='checkbox' id='ccd_1ReadoutMode2' name='readoutMode[]'>
-							|支持四门读出<input type='checkbox' id='ccd_1ReadoutMode3' name='readoutMode[]'>
-							|支持四门读出<input type='checkbox' id='ccd_1ReadoutMode4' name='readoutMode[]'>
 						</td>
 						<td>转移速度模式:</td>
 						<td>
 							<select id='ccdTransferSpeed' name='transferSpeed'>
 								<option value="0">请选择-从后台获取</option>
-								<option value="1">sdfs</option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>增益模式(从后台读出):</td>
 						<td colspan="3" class="border_td" id='ccd_1gainmode'>
-							支持High Capacity<input type='checkbox' id='ccdGainmode1' name='gainmode[]' value=''>
-							|支持High Sensitivity<input type='checkbox' id='ccdGainmode2' name='gainmode[]'>
 						</td>
 						<td>增益档位(从后台读出):</td>
 						<td>
 							<select id='ccd_1GainNumber' name='gainNumber'>
-								<option value="0">请选择-从后台获取</option>
-								<option value="1">sdfs</option>
 							</select>
 						</td>
 					</tr>
@@ -486,15 +477,12 @@
 						<td>
 							<select id='ccdShutterType' name='ShutterType'>
 								<option value="0">请选择-从后台获取</option>
-								<option value="1">sdfs</option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>快门模式(从后台读出):</td>
 						<td colspan="3" class="border_td" id='ccd_1ShutterMode'>
-							支持High Capacity<input type='checkbox' id='ccdShutterMode1' name='ShutterMode[]' value=''>
-							|支持High Sensitivity<input type='checkbox' id='ccdShutterMode2' name='ShutterMode[]'>
 						</td>
 						<td>支持帧转移:</td>
 						<td>
@@ -534,7 +522,6 @@
 						<td>
 							<select id='ccd_1BinArray' name='BINARRAY'>
 								<option value="0">请选择-从后台获取</option>
-								<option value="1">sdfs</option>
 							</select>
 						</td>
 						<td>支持开窗:</td>
@@ -547,8 +534,6 @@
 					<tr>
 						<td>接口类型(后台获取):</td>
 						<td colspan="3" class="border_td" id='ccd_1InterfaceType'>
-							支持USB2.0<input type='checkbox' id='ccdInterfaceType1' name='InterfaceType[]' value=''>
-							|支持USB3.0<input type='checkbox' id='ccdInterfaceType2' name='InterfaceType[]'>
 						</td>
 						<td>最大EM:</td>
 						<td>
@@ -559,7 +544,7 @@
 						<td>曝光触发模式(后台获取):</td>
 						<td colspan="3" class="border_td" id='ccd_1ExposeTriggerMode'>
 							支持硬件触发<input type='checkbox' id='ccdExposeTriggerMode1' name='ExposeTriggerMode[]' value=''>
-							|支持软件件触发<input type='checkbox' id='ccdExposeTriggerMode2' name='ExposeTriggerMode[]'>
+							支持软件件触发<input type='checkbox' id='ccdExposeTriggerMode2' name='ExposeTriggerMode[]'>
 						</td>
 						<td>最小EM:</td>
 						<td>
@@ -735,8 +720,6 @@
 						<td colspan="3" class="border_td">
 							插槽序号:<!--此元素的值无须入库-->
 							<select id='filterSlot' name='slot'>
-								<option value="0">选择插槽-动态改变的</option>
-								<option value="0x01">sdfs</option>
 							</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							滤光片类型:<!--此元素的值也无须入库 此2元素的点击事件中生成一个数组，然后入库-->
 							<select id='filterSystem' name='FilterSystem'>
@@ -823,7 +806,6 @@
 						<td>
 							<select id='sDomeType' name='DomeType'>
 								<option value="0">选择-后台获取</option>
-								<option value="0x01">sdfs</option>
 							</select>
 						</td>
 						<td>最大转动速度（度/秒）:</td>
@@ -930,7 +912,6 @@
 						<td>
 							<select id='oDomeType' name='type'>
 								<option value="0">选择-后台获取</option>
-								<option value="1">sdfs</option>
 							</select>
 						</td>
 						<td>尺寸大小（m）:</td>
@@ -1105,7 +1086,6 @@
 						<td>
 							<select id='guideScopeOpticalStructure' name='opticalStructure'>
 								<option value="0">选择-后台获取</option>
-								<option value="1">sdfs</option>
 							</select>
 						</td>
 					</tr>
