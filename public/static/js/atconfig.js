@@ -58,8 +58,15 @@ $(function () {
                         //console.log(info.confOption.BinArray);return;
                         //console.log(info);
                         /*将19个动态增减的固定显示与配置页面*/
-                        show_19confOption (info.confOption);
+                        show_19confOption (info.confOption);                      
                         /*将19个动态增减的固定显示与配置页面 结束*/
+
+                        /*在页面显示转台的配置数据*/
+                        if (info.gimbal_data) //若接收到转台配置数据
+                        {
+                            show_gimbal_data (info.gimbal_data);
+                        }
+                        /*在页面显示转台的配置数据 结束*/
                         layer.close(index);  //关闭加载提示
                     }
                 },
@@ -390,6 +397,7 @@ $(function () {
     var axis3_maxSpeed = $('#gimbalMaxAxis3Speed'); //轴3最大速度框
     var axis3_maxAccel = $('#gimbalMaxAxis3Acceleration'); //轴3最大加速度框
     var axis3_ParkPos = $('#gimbalAxis3ParkPosition'); //轴3复位位置框
+    var gimbalFile = $('#gimbalFile'); //转台相关文件 显示
     
     //无第3轴时 禁用：轴3最大速度、轴3最大加速度、轴3复位位置gimbalHaveAxis3
     axis3_No.click(function () {
@@ -414,8 +422,15 @@ $(function () {
         {
             layer.alert('您遗漏了单选项固定属性!'); return;
         }
-
+        //检查望远镜下拉选择框 是否选择了某望远镜
+        var atId = atNo.val();
+        if ( atId == 0)
+        {//未选择某个望远镜
+            layer.alert('请选择您要配置的望远镜!');return;
+        }
         var gimbalData = new FormData(gimbalForm[0]);
+        gimbalData.append('id', atId); //将某望远镜的id 加入表单数据中
+
         $.ajax({
             type: 'post',
             url: 'gimbal_config',
@@ -423,18 +438,52 @@ $(function () {
             processData : false,
             contentType : false,
             success:  function (info) {
-				layer.alert(info);
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+                if ( info.indexOf('{') == -1 ) //info 不是json数据
+                {
+                    layer.alert(info);
+                    if (info.indexOf('登录') !== -1)
+                    {
+                    	location.href = '/';
+                    }
+                }else{//解析 处理 json
+                    var info = $.parseJSON(info);
+                    layer.alert(info.msg);
+                    //在页面显示已上传的文件名
+                    //console.log(info.file);
+                    if ( info.file ) //有已上传的文件信息
+                    {
+                        var file_html= '';
+                        var file_num = info.file.length;
+                        for (var file_i = 0; file_i < file_num; file_i ++)
+                        {
+                            file_html += '<a title="点击下载">' + info.file[file_i] + '</a>' + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                        }
+                        gimbalFile.html(file_html);
+                    }
+                }//解析 处理 json 结束
+
              },
              error:  function () {
 	              layer.alert('网络异常,请重新提交');
              },
         })
-    })
+    });//转台 提交按钮 js事件 结束
     //提交转台配置 之js事件 结束////////////////////////////
+
+    /*显示转台的配置数据*/
+    function show_gimbal_data (data)
+    {
+        //显示转台之焦点类型
+        var showData = data.focustype;
+        var resHtml = '<option value="0">请选择</option>';
+        var n = showData.length;
+       
+        for (var i=0; i < n; i++)
+        {
+            resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
+        }
+        gimbalFocustype.html(resHtml);
+    }/*显示转台的配置数据 结束*/
 
 })/*jquery 初始化函数 末尾*/
 

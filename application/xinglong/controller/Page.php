@@ -166,16 +166,24 @@ class Page extends Base
         }else{//获取相应望远镜的配置数据，以json格式返回
             /*1、获取19个动态增减的固定属性数据*/
             $result['confOption'] = $this->get_19confOption ();
-            //halt ($result['confOption']);
-            return json_encode ($result);
+            
+            
             /*1、获取19个动态增减的固定属性数据 结束*/
-            $id = input('id'); //获取相应望远镜的id
+            $id = input('id'); //获取相应望远镜的id 在atlist表中此$id对应id字段,其他表中对应teleid字段
+            /*查转台的配置数据*/
+            $gimbal_data = Db::table('atlist')->where('id', $id)->find();
+
+            if ( $gimbal_data )
+            {
+                $result['gimbal_data'] = $gimbal_data;
+            }
+            /*查转台的配置数据 结束*/
             //据此id去各自设备的固定属性表中获取数据
             
             //根据$id查询去相应目录中查询上传的说明文件
 
             //return json数据给前端
-            //return json;
+            return json_encode ($result);
         }//获取相应望远镜的配置数据，以json格式返回 结束
     }//ajax请求 判断19个动态增减的固定是否已添加够 并获取相应望远镜的配置数据 结束
 
