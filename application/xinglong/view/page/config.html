@@ -338,9 +338,7 @@
 					</tr>
 					<tr>
 						<td>属性更新时间:</td>
-						<td>
-							<input type='text' id='gimbalAttrModifyTime' name='attrmodifytime' placeholder="2018-1-30">
-						</td>
+						<td id='gimbalAttrModifyTime'></td>
 						<td>上传转台相关文件:</td>
 						<td colspan="3" class="border_td">
 							出厂测试报告:<input type='file' name='report'>
@@ -369,7 +367,7 @@
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
-						<td><input type='text' id='ccdTeleId' name='teleid'></td>
+						<td id='ccdTeleId'></td> 
 						<td>探测器类型:</td>
 						<td>
 						  <select id='ccdType' name='type'>
@@ -386,9 +384,9 @@
 					<tr>
 						<td>y像素:</td>
 						<td><input type='text' id='ccdYpixel' name='ypixel' placeholder='整数'></td>
-						<td>x像元大小(um):</td>
+						<td>x像元大小(μm):</td>
 						<td><input type='text' id='ccdXpixelSize' name='xpixelsize' placeholder='小数'></td>
-						<td>y像元大小(um):</td>
+						<td>y像元大小(μm):</td>
 						<td><input type='text' id='ccdYpixelSize' name='ypixelsize' placeholder='小数'></td>
 					</tr>
 					<tr>
@@ -397,15 +395,13 @@
 						<td>图像位数:</td>
 						<td>
 							<select id='ccdImageBits' name='imagebits'>
-								<option value="0">请选择-从后台获取</option>
-								<option value="0x01">sdfs</option>
+								<option value="0">请选择</option>
 							</select>
 						</td>
 						<td>制冷方式:</td>
 						<td>
 							<select id='ccdCoolerMode' name='coolermode'>
-								<option value="0">请选择-从后台获取</option>
-								<option value="0x01">sdfs</option>
+								<option value="0">请选择</option>
 							</select>
 						</td>
 					</tr>
@@ -669,9 +665,7 @@
 					</tr>
 					<tr>
 						<td>属性更新时间:</td>
-						<td>
-							<input type='text' id='ccdAttrModifyTime' name='attrmodifytime' placeholder="2018-2-28">
-						</td>
+						<td id='ccdAttrModifyTime'></td>
 					</tr>
 					<tr>
 						<td>上传CCD-No1相关文件:</td>
@@ -706,7 +700,7 @@
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
-						<td><input type='text' id='filterTeleId' name='teleid'></td>
+						<td id='filterTeleId'></td>
 						<td>插槽数目:</td>
 						<td><input type='text' id='filterNum' name='numberoffilter'></td>
 						<td>插槽大小:</td>
@@ -761,13 +755,11 @@
 						</td>
 					</tr>
 					<tr>
-						<td>属性修改时间:</td>
-						<td>
-							<input type='text' id='filterAttrModifyTime' name='attrmodifytime' placeholder="2018-2-28">
-						</td>
+						<td>属性更新时间:</td>
+						<td id='filterAttrModifyTime'></td>
 						<td>属性版本号:</td>
-						<td>
-							<input type='text' id='filterAttrVersion' name='attrversion'>
+						<td id='filterAttrVersion'>
+							<input type='text' name='attrversion'>
 						</td>
 					</tr>
 					<tr>
@@ -798,7 +790,7 @@
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
-						<td><input type='text' id='sDomeTeleId' name='teleid'></td>
+						<td id='sDomeTeleId'></td>
 						<td>类型:</td>
 						<td>
 							<select id='sDomeType' name='dometype'>
@@ -867,10 +859,8 @@
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>否<input type='radio' id='sDomeCanConnect-1' name='canconnect' value="0"></label>
 						</td>
-						<td>属性修改时间:</td>
-						<td>
-							<input type='text' id='sDomeAttrModifyTime' name='attrmodifytime' placeholder="2018-2-28">
-						</td>
+						<td>属性更新时间:</td>
+						<td id='sDomeAttrModifyTime'></td>
 						<td>属性版本号:</td>
 						<td>
 							<input type='text' id='sDomeAttrVersion' name='attrversion'>
@@ -904,7 +894,7 @@
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
-						<td><input type='text' id='oDomeTeleId' name='teleid'></td>
+						<td id='oDomeTeleId'></td>
 						<td>类型:</td>
 						<td>
 							<select id='oDomeType' name='type'>
@@ -933,10 +923,8 @@
 						</td>
 					</tr>
 					<tr>
-						<td>属性修改时间:</td>
-						<td>
-							<input type='text' id='sDomeAttrModifyTime' name='attrmodifytime' placeholder="2018-2-28">
-						</td>
+						<td>属性更新时间:</td>
+						<td id='sDomeAttrModifyTime'></td>
 						<td>上传全开圆顶相关文件:</td>
 						<td colspan="2" class="border_td">
 							说明文件:<input type='file' name='specification'>
@@ -966,7 +954,7 @@
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
-						<td><input type='text' id='focusTeleId' name='teleid'></td>
+						<td id='focusTeleId'></td>
 						<td>最大值（μm）:</td>
 						<td>
 							<input type='text' id='focusMaxValue' name='maxvalue' placeholder='小数'>
@@ -1041,10 +1029,8 @@
 						<td>
 							<input type='text' id='focusAttrVersion' name='attrversion'>
 						</td>
-						<td>属性修改时间:</td>
-						<td>
-							<input type='text' id='focusAttrModifyTime' name='attrmodifytime' placeholder="2018-2-28">
-						</td>
+						<td>属性更新时间:</td>
+						<td id='focusAttrModifyTime'></td>
 					</tr>
 					<tr>
 						<td>上传调焦器相关文件:</td>
@@ -1074,7 +1060,7 @@
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
-						<td><input type='text' id='guideScopeTeleId' name='teleid'></td>
+						<td id='guideScopeTeleId'></td>
 						<td>口径:</td>
 						<td>
 							<input type='text' id='guideScopeAperture' name='aperture' placeholder='小数'>
@@ -1129,10 +1115,8 @@
 						<td>
 							<input type='text' id='guideScopeAttrVersion' name='attrversion'>
 						</td>
-						<td>属性修改时间:</td>
-						<td>
-							<input type='text' id='guideScopeAttrModifyTime' name='attrmodifytime' placeholder="2018-2-28">
-						</td>
+						<td>属性更新时间:</td>
+						<td id='guideScopeAttrModifyTime'></td>
 					</tr>
 					<tr>
 						<td>上传导星望远镜相关文件:</td>

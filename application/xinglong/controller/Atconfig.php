@@ -47,17 +47,79 @@ class Atconfig extends Base
             $postData['axis3parkposition'] = '';    //轴3复位位置
         }
 
+        //属性更新时间
+        $postData['attrmodifytime'] = date ('Y-m-d');
+
         //定义错误提示
         $errMsg = '';
 
-        $res = Db::table('atlist')->where('id', $postData['id'])->update($postData);
+        $data = Db::table('gimbalconf')->where('teleid', $postData['teleid'])->find();
+
+        if ( $data )
+        {   //已有配置数据 进行update，使用事务，同时对atlist表的数据进行操作
+            //获取$postData中望远镜属性数据 存入新数组
+            $at_data['atid'] = $postData['atid'];
+            $at_data['atname'] = $postData['atname'];
+            $at_data['address'] = $postData['address'];
+            $at_data['longitude'] = $postData['longitude'];
+            $at_data['latitude'] = $postData['latitude'];
+            $at_data['altitude'] = $postData['altitude'];
+            $at_data['aperture'] = $postData['aperture'];
+            //删除$postData的上述数据
+            unset($postData['atid'],$postData['atname'],$postData['address'],$postData['longitude']
+                  ,$postData['latitude'],$postData['altitude'],$postData['aperture']);
+            //开启事务 同时操作atlist表 和 gimbalconf表
+            Db::startTrans();
+
+            $atlist_res = Db::table('atlist')->where('id', $postData['teleid'])->update($at_data);
+            $gimbal_res = Db::table('gimbalconf')->where('teleid', $postData['teleid'])->update($postData);
+
+            //若同时更新ok 
+            if ( $atlist_res && $gimbal_res )
+            {
+                Db::commit(); //执行提交
+                $res = true;
+            }else{
+                Db::rollback();
+                $res = false;
+            }
+        }else{//还无配置数据 进行insert
+            //$res = Db::table('gimbalconf')->insert($postData);
+            //获取$postData中望远镜属性数据 存入新数组
+            $at_data['atid'] = $postData['atid'];
+            $at_data['atname'] = $postData['atname'];
+            $at_data['address'] = $postData['address'];
+            $at_data['longitude'] = $postData['longitude'];
+            $at_data['latitude'] = $postData['latitude'];
+            $at_data['altitude'] = $postData['altitude'];
+            $at_data['aperture'] = $postData['aperture'];
+            //删除$postData的上述数据
+            unset($postData['atid'],$postData['atname'],$postData['address'],$postData['longitude']
+                  ,$postData['latitude'],$postData['altitude'],$postData['aperture']);
+            //开启事务 同时操作atlist表 和 gimbalconf表
+            Db::startTrans();
+
+            $atlist_res = Db::table('atlist')->where('id', $postData['teleid'])->update($at_data);
+            $gimbal_res = Db::table('gimbalconf')->insert($postData);
+
+            //若同时执行ok 
+            if ( $atlist_res && $gimbal_res )
+            {
+                Db::commit(); //执行提交
+                $res = true;
+            }else{
+                Db::rollback();
+                $res = false;
+            }
+        }
+
 
         if ( !$res )
         {
             $errMsg += '转台配置存数据库失败!<br>';
         }
         //处理上传文件
-        $dir = 'gimbal' . $postData['id']; //每个望远镜的每个设备建1个目录，如gimbal1, gimbal2.....
+        $dir = 'gimbal' . $postData['teleid']; //每个望远镜的每个设备建1个目录，如gimbal1, gimbal2.....
         /*处理测试报告*/
         $reportFile = $this->request->file('report'); //获取测试报告的上传数据
         if ( $reportFile !== null ) //有文件被上传
@@ -142,9 +204,10 @@ class Atconfig extends Base
             }
 
             $result['msg'] = '转台配置ok!';
+            $result['attr_modify'] = $postData['attrmodifytime'];
             return json_encode ($result);
         }
-    }/*获取转台配置项表单 存入表ccdconf中 结束*/
+    }/*获取转台配置项表单 存入atlist表和gimbalconf中 结束*/
 
     public function ccd_config()
     {
@@ -166,11 +229,6 @@ class Atconfig extends Base
         // }
         // dump($postData['maxAxis3Speed']);
 
-        //处理表单数据，如果表单中：无某项数据或某项数据为空字符串，则将$postData中某项数据置为NULL
-        // if ( $postData['ip'] === '')
-        // {
-        //     $postData['ip'] = null;
-        // }
         $postData = input();
         //halt($postData['readoutmode']);
        //处理表单数据中若干个 复选框
@@ -203,6 +261,9 @@ class Atconfig extends Base
        {
             $postData['exposetriggermode'] = implode ('#', $postData['exposetriggermode']);
        }/*处理 曝光触发模式 结束*/
+
+       //属性更新时间
+       $postData['attrmodifytime'] = date ('Y-m-d');
 
         //定义错误提示
         $errMsg = '';
@@ -319,6 +380,7 @@ class Atconfig extends Base
             }
 
             $result['msg'] = 'ccd配置ok!';
+            $result['attr_modify'] = $postData['attrmodifytime'];
             return json_encode ($result);
         }
     }/*获取ccd配置项表单 存入表ccdconf中 结束*/

@@ -56,7 +56,7 @@ $(function () {
                         atNo.val(val);
                         //根据json数据 显示配置项
                         var info = $.parseJSON(info);
-                       // console.log(typeof info.gimbal_data.maxaxis1speed);return;
+                        //console.log(info.gimbal_data.attrmodifytime);return;
                         /*将19个动态增减的固定显示与配置页面*/
                         show_19confOption (info.confOption);                      
                         /*将19个动态增减的固定显示与配置页面 结束*/
@@ -65,9 +65,23 @@ $(function () {
                         if (info.gimbal_data) //若接收到转台配置数据
                         {
                             show_gimbal_data (info.gimbal_data);
-                        }
-                        /*在页面显示转台的配置数据 结束*/
-                        layer.close(index);  //关闭加载提示
+                            if (info.gimbal_file)
+                            {
+                                show_file (gimbalFile, info.gimbal_file);
+                            }
+                        }/*在页面显示转台的配置数据 结束*/
+
+                        /*在页面显示ccd-No1的配置数据*/
+                        if (info.ccd_data) //若接收到转台配置数据
+                        {
+                            show_ccd_data (info.ccd_data);
+                            if (info.ccd_file)
+                            {
+                                show_file (ccdFile, info.ccd_file);
+                            }
+                        }/*在页面显示ccd-No1的配置数据 结束*/
+
+                        layer.close(index);  //关闭加载提示 
                     }
                 },
                 error:  function () {
@@ -411,8 +425,6 @@ $(function () {
     var gimbalAltitude = $('#gimbalAltitude'); //转台 海拔
     var gimbalAperture = $('#gimbalAperture'); //转台 口径
     var gimbalType = $('#gimbalType'); //转台 类型
-    var focusType = $('#gimbalFocustype'); //转台 焦点类型
-    var focusRatio = $('#gimbalFocusratio'); //转台 焦比
     var focusLength = $('#gimbalFocuslength'); //转台 焦距
     var maxAxis1Speed = $('#gimbalMaxAxis1Speed'); //转台 轴1最大速度
     var maxAxis2Speed = $('#gimbalMaxAxis2Speed'); //转台 轴2最大速度
@@ -500,7 +512,7 @@ $(function () {
             layer.alert('请选择您要配置的望远镜!');return;
         }
         var gimbalData = new FormData(gimbalForm[0]);
-        gimbalData.append('id', atId); //将某望远镜的id 加入表单数据中
+        gimbalData.append('teleid', atId); //将某望远镜的id 加入表单数据中
 
         $.ajax({
             type: 'post',
@@ -519,17 +531,11 @@ $(function () {
                 }else{//解析 处理 json
                     var info = $.parseJSON(info);
                     layer.alert(info.msg);
+                    gimbalFile.html(info.attr_modify);
                     //在页面显示已上传的文件名
-                    //console.log(info.file);
                     if ( info.file ) //有已上传的文件信息
                     {
-                        var file_html= '';
-                        var file_num = info.file.length;
-                        for (var file_i = 0; file_i < file_num; file_i ++)
-                        {
-                            file_html += '<a title="点击下载">' + info.file[file_i] + '</a>' + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                        }
-                        gimbalFile.html(file_html);
+                        show_file ('gimbalFile', info.file);
                     }
                 }//解析 处理 json 结束
 
@@ -562,9 +568,9 @@ $(function () {
         gimbalLatitude.val(data.latitude);
         gimbalAltitude.val(data.altitude);
         gimbalAperture.val(data.aperture);
-        gimbalType.val(data.type);
-        focusType.val(data.focustype);
-        focusRatio.val(data.focusratio);
+        data.type === undefined ? gimbalType.val('0') : gimbalType.val(data.type);
+        data.focustype === undefined ? gimbalFocustype.val('0') : gimbalFocustype.val(data.focustype);
+        data.focusratio === undefined ? gimbalFocusratio.val('0') : gimbalFocusratio.val(data.focusratio);
         focusLength.val(data.focuslength);
         data.maxaxis1speed !== '' && maxAxis1Speed.val(data.maxaxis1speed);
         data.maxaxis2speed !== '' && maxAxis2Speed.val(data.maxaxis2speed);
@@ -597,14 +603,24 @@ $(function () {
         data.cantracksatellite == '1' ? canTrackSatellite.click() : canTrackSatellite_1.click();
         data.canconfigproperty == '1' ? gimbalCanconfigProperty.click() : gimbalCanconfigProperty_1.click();
         data.attrversion !== '' && gimbalAttrVersion.val(data.attrversion);
-        data.attrmodifytime !== '' && gimbalAttrModifyTime.val(data.attrmodifytime);
+        data.attrmodifytime === undefined && gimbalAttrModifyTime.html(data.attrmodifytime);
     }/*显示转台的配置数据 结束*/
 
-    /*ccd 表单元素获取*/
-    ccdBtn_1 = $('#ccdBtn-1'); //ccd-No1 提交按钮
-    ccd_1Form = $('#ccd-1'); //ccd-No1 表单
-    ccdFile = $('#ccdFile'); //ccd-No1 ccd相关文件区
-    /*ccd 表单元素获取 结束*/
+    /*ccd-No1 表单元素获取*/
+    var ccdBtn_1 = $('#ccdBtn-1'); //提交按钮
+    var ccd_1Form = $('#ccd-1'); //表单
+    var ccdFile = $('#ccdFile'); //ccd相关文件区
+    var ccdIp = $('#ccdIp'); // ccd ip
+    var ccdId = $('#ccdId'); // ccd id
+    var ccdTeleId = $('#ccdTeleId'); // ccd 隶属望远镜
+    var ccdName = $('#ccdName'); // ccd name
+    var ccdXpixel = $('#ccdXpixel'); // ccd x像素
+    var ccdYpixel = $('#ccdYpixel'); // ccd y像素
+    var ccdXpixelSize = $('#ccdXpixelSize'); // ccd x像元
+    var ccdYpixelSize = $('#ccdYpixelSize'); // ccd Y像元
+    var ccdSensorName = $('#ccdSensorName'); // ccd 传感器名称
+    var ccdLowCoolerT = $('#ccdLowCoolerT'); // ccd 最低制冷温度
+    /*ccd-No1 表单元素获取 结束*/
     
     /*ccd 提交按钮 点击事件*/
     ccdBtn_1.click(function () {
@@ -642,20 +658,13 @@ $(function () {
                 }else{//解析 处理 json
                     var info = $.parseJSON(info);
                     layer.alert(info.msg);
+                    ccdTeleId.html(info.atname);
                     //在页面显示已上传的文件名
-                    //console.log(info.file);
                     if ( info.file ) //有已上传的文件信息
                     {
-                        var file_html= '';
-                        var file_num = info.file.length;
-                        for (var file_i = 0; file_i < file_num; file_i ++)
-                        {
-                            file_html += '<a title="点击下载">' + info.file[file_i] + '</a>' + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                        }
-                        ccdFile.html(file_html);
+                        show_file ('ccdFile', info.file);
                     }
                 }//解析 处理 json 结束
-
              },
              error:  function () {
 	              layer.alert('网络异常,请重新提交');
@@ -663,6 +672,35 @@ $(function () {
         })
     });/*ccd 提交按钮 点击事件 结束*/
 
+    /*显示ccd-No1配置数据*/
+    function show_ccd_data (data)
+    {
+        ccdIp.val(data.ip);
+        ccdId.val(data.ccdid);
+        ccdName.val(data.name);
+        ccdTeleId.html(data.atname);
+        data.xpixel !== '' && ccdXpixel.val(data.xpixel);
+        data.ypixel !== '' && ccdYpixel.val(data.ypixel);
+        data.xpixelsize !== '' && ccdXpixelSize.val(data.xpixelsize);
+        data.ypixelsize !== '' && ccdYpixelSize.val(data.ypixelsize);
+        data.sensorname !== '' && ccdSensorName.val(data.sensorname);
+        data.imagebits === undefined ? ccdImageBits.val('0') : ccdImageBits.val(data.imagebits);
+        data.coolermode === undefined ? ccdCoolerMode.val('0') : ccdCoolerMode.val(data.coolermode);
+        data.lowcoolert !== '' && ccdLowCoolerT.val(data.lowcoolert);
+    }
+    /*显示ccd-No1配置数据 结束*/
+
+    /*显示各设备相关文件*/
+    function show_file (selector, file_data)
+    {
+        var file_html= '';
+        var file_num = file_data.length;
+        for (var file_i = 0; file_i < file_num; file_i ++)
+        {
+            file_html += '<a title="点击下载">' + file_data[file_i] + '</a>' + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+        }
+        selector.html(file_html);
+    }/*显示各设备相关文件 结束*/
 })/*jquery 初始化函数 末尾*/
 
    

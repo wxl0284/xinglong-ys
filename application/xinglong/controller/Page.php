@@ -170,18 +170,53 @@ class Page extends Base
             
             /*1、获取19个动态增减的固定属性数据 结束*/
             $id = input('id'); //获取相应望远镜的id 在atlist表中此$id对应id字段,其他表中对应teleid字段
-            /*查转台的配置数据*/
-            $gimbal_data = Db::table('atlist')->where('id', $id)->find();
-
-            if ( $gimbal_data )
+            /*查转台的配置数据 需要查atlist表、gimbalconf表*/
+            $at_data = Db::table('atlist')->where('id', $id)->find();
+            $gimbal_conf = Db::table('gimbalconf')->where('teleid', $id)->find();
+            //合并以上2个数组
+            if (!$at_data)
             {
-                $result['gimbal_data'] = $gimbal_data;
+                $at_data = [];
             }
-            /*查转台的配置数据 结束*/
-            //据此id去各自设备的固定属性表中获取数据
-            
-            //根据$id查询去相应目录中查询上传的说明文件
+            if (!$gimbal_conf)
+            {
+                $gimbal_conf = [];
+            }
+            //合并以上2个数据
+            $gimbal_data = array_merge ($at_data, $gimbal_conf);
+            $result['gimbal_data'] = $gimbal_data;
 
+            /*查gimbal相关文件*/
+            //根据$id查询去相应目录中查询上传的说明文件
+            $file_path = ROOT_PATH . 'public' . DS . 'uploads'; //存储路径
+            //gimbal目录
+            $dir = 'gimbal' . $id;
+            if ( file_exists($file_path . "/$dir") )
+            {
+                $res = scandir ($file_path . "/$dir");
+
+                if ( $res !== false && count($res) > 2 )
+                {
+                    unset ($res[0], $res[1]); //删除前2个数据
+                    foreach ( $res as $k)
+                    {
+                        $result['gimbal_file'][] = iconv('GBK', 'UTF-8', $k);  //将文件名转为utf-8
+                    }
+                }
+            }/*查gimbal相关文件 结束*/
+            /*查转台的配置数据 结束*/
+
+            //据此$id去各自设备的固定属性表中获取数据
+            /*查ccd配置数据*/
+            $ccd_data = Db::table('ccdconf')->where('teleid', $id)->find();
+            //隶属望远镜的值 是at_data['atname'] $ccd_data['atname'] = $at_data['atname'];
+            if ( isset ( $at_data['atname'] ) ) $ccd_data['atname'] = $at_data['atname'];
+         
+            $result['ccd_data'] = $ccd_data;
+
+            /*查ccd配置数据 结束*/
+            //据此$id去各自设备的固定属性表中获取数据 结束
+            
             //return json数据给前端
             return json_encode ($result);
         }//获取相应望远镜的配置数据，以json格式返回 结束
