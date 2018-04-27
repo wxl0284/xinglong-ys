@@ -56,7 +56,7 @@ $(function () {
                         atNo.val(val);
                         //根据json数据 显示配置项
                         var info = $.parseJSON(info);
-                        //console.log(info.gimbal_data.attrmodifytime);return;
+                        //console.log(info.ccd_data.binarray);return;
                         /*将19个动态增减的固定显示与配置页面*/
                         show_19confOption (info.confOption);                      
                         /*将19个动态增减的固定显示与配置页面 结束*/
@@ -68,6 +68,8 @@ $(function () {
                             if (info.gimbal_file)
                             {
                                 show_file (gimbalFile, info.gimbal_file);
+                            }else{
+                                gimbalFile.html('');
                             }
                         }/*在页面显示转台的配置数据 结束*/
 
@@ -78,6 +80,8 @@ $(function () {
                             if (info.ccd_file)
                             {
                                 show_file (ccdFile, info.ccd_file);
+                            }else{
+                                ccdFile.html('');
                             }
                         }/*在页面显示ccd-No1的配置数据 结束*/
 
@@ -535,7 +539,9 @@ $(function () {
                     //在页面显示已上传的文件名
                     if ( info.file ) //有已上传的文件信息
                     {
-                        show_file ('gimbalFile', info.file);
+                        show_file (gimbalFile, info.file);
+                    }else{
+                        gimbalFile.html('');
                     }
                 }//解析 处理 json 结束
 
@@ -603,7 +609,7 @@ $(function () {
         data.cantracksatellite == '1' ? canTrackSatellite.click() : canTrackSatellite_1.click();
         data.canconfigproperty == '1' ? gimbalCanconfigProperty.click() : gimbalCanconfigProperty_1.click();
         data.attrversion !== '' && gimbalAttrVersion.val(data.attrversion);
-        data.attrmodifytime === undefined && gimbalAttrModifyTime.html(data.attrmodifytime);
+        data.attrmodifytime !== undefined && gimbalAttrModifyTime.html(data.attrmodifytime);
     }/*显示转台的配置数据 结束*/
 
     /*ccd-No1 表单元素获取*/
@@ -620,6 +626,60 @@ $(function () {
     var ccdYpixelSize = $('#ccdYpixelSize'); // ccd Y像元
     var ccdSensorName = $('#ccdSensorName'); // ccd 传感器名称
     var ccdLowCoolerT = $('#ccdLowCoolerT'); // ccd 最低制冷温度
+    var ccdMaxExposureTime = $('#ccdMaxExposureTime'); // ccd 最大曝光时间
+    var ccdMinExposureTime = $('#ccdMinExposureTime'); // ccd 最小曝光时间
+    var ccdExposureTimeRation = $('#ccdExposureTimeRation'); // ccd 曝光时间分辨率
+    var ccdFullWellDepth = $('#ccdFullWellDepth'); // ccd 满阱电荷
+    var ccdIsSupportFullFrame = $('#ccdIsSupportFullFrame'); // ccd 支持帧转移
+    var ccdIsSupportFullFrame_1 = $('#ccdIsSupportFullFrame-1'); // ccd 不支持帧转移
+    var ccdIsSupportEM = $('#ccdIsSupportEM'); // ccd 支持EM
+    var ccdIsSupportEM_1 = $('#ccdIsSupportEM-1'); // ccd 不支持EM
+    var isSupportsCmosNoiseFilter = $('#ccdIsSupportsCmosNoiseFilter'); // ccd 支持CMOS noise filter
+    var isSupportsCmosNoiseFilter_1 = $('#ccdIsSupportsCmosNoiseFilter-1'); // ccd 不支持CMOS noise filter
+    var isSupportBaseLine = $('#ccdIsSupportBaseLine'); // ccd 支持base line
+    var isSupportBaseLine_1 = $('#ccdIsSupportBaseLine-1'); // ccd 不支持base line
+    var isSupportOverScan = $('#ccdIsSupportOverScan'); // ccd 支持Over scan
+    var isSupportOverScan_1 = $('#ccdIsSupportOverScan-1'); // ccd 不支持Over scan
+    var ccdIsSupportROI = $('#ccdIsSupportROI'); // ccd 支持开窗
+    var ccdIsSupportROI_1 = $('#ccdIsSupportROI-1'); // ccd 不支持开窗
+    var ccdEmMaxValue = $('#ccdEmMaxValue'); // ccd 最大EM
+    var ccdEmMinValue = $('#ccdEmMinValue'); // ccd 最小EM
+    var ccdCanConnect = $('#ccdCanConnect'); // ccd 支持连接
+    var ccdCanConnect_1 = $('#ccdCanConnect-1'); // ccd 不支持连接
+    var canSetCoolerT = $('#ccdCanSetCoolerT'); // ccd 制冷温度
+    var canSetCoolerT_1 = $('#ccdCanSetCoolerT-1'); // ccd 不制冷温度
+    var setExposureParam = $('#ccdCanSetExposureParam'); // ccd 设置曝光策略
+    var setExposureParam_1 = $('#ccdCanSetExposureParam-1'); // ccd 不设置曝光策略
+    var canStartExposure = $('#ccdCanStartExposure'); // ccd 支持开始曝光
+    var canStartExposure_1 = $('#ccdCanStartExposure-1'); // ccd 不支持开始曝光
+    var ccdCanStopExposure = $('#ccdCanStopExposure'); // ccd 支持停止曝光
+    var ccdCanStopExposure_1 = $('#ccdCanStopExposure-1'); // ccd 不支持停止曝光
+    var ccdCanAbortExposure = $('#ccdCanAbortExposure'); // ccd 支持终止曝光
+    var ccdCanAbortExposure_1 = $('#ccdCanAbortExposure-1'); // ccd 不支持终止曝光
+    var ccdCanSetGain = $('#ccdCanSetGain'); // ccd 支持设置增益
+    var ccdCanSetGain_1 = $('#ccdCanSetGain-1'); // ccd 不支持设置增益
+    var setReadoutSpeedMode = $('#ccdCanSetReadoutSpeedMode'); // ccd 支持设置读出速度模式
+    var setReadoutSpeedMode_1 = $('#ccdCanSetReadoutSpeedMode-1'); // ccd 不支持设置读出速度模式
+    var setTransferSpeedMode = $('#ccdCanSetTransferSpeedMode'); // 支持设置转移速度模式
+    var setTransferSpeedMode_1 = $('#ccdCanSetTransferSpeedMode-1'); // 不支持设置转移速度模式
+    var ccdCanSetBin = $('#ccdCanSetBin'); // 支持设置bin
+    var ccdCanSetBin_1 = $('#ccdCanSetBin-1'); // 不支持设置bin
+    var ccdCanSetROI = $('#ccdCanSetROI'); // 支持设置roi
+    var ccdCanSetROI_1 = $('#ccdCanSetROI-1'); // 不支持设置roi
+    var ccdCanSetShutter = $('#ccdCanSetShutter'); // 支持设置快门
+    var ccdCanSetShutter_1 = $('#ccdCanSetShutter-1'); // 不支持设置快门
+    var canSetFullFrame = $('#ccdCanSetFullFrame'); // 支持设置帧转移
+    var canSetFullFrame_1 = $('#ccdCanSetFullFrame-1'); // 不支持设置帧转移
+    var ccdCanSetEM = $('#ccdCanSetEM'); // 支持设置EM
+    var ccdCanSetEM_1 = $('#ccdCanSetEM-1'); // 不支持设置EM
+    var canNoiseFilter = $('#ccdCanNoiseFilter'); // 支持CMOS noise filter
+    var canNoiseFilter_1 = $('#ccdCanNoiseFilter-1'); // 不支持CMOS noise filter
+    var setBaseline = $('#ccdCanSetBaseline'); // 支持Base line
+    var setBaseline_1 = $('#ccdCanSetBaseline-1'); // 不支持Base line
+    var ccdSetOverScan = $('#ccdCanSetOverScan'); // 支持Over scan
+    var ccdSetOverScan_1 = $('#ccdCanSetOverScan-1'); // 不支持Over scan
+    var ccdAttrVersion = $('#ccdAttrVersion'); // 属性版本号
+    var ccdAttrModifyTime = $('#ccdAttrModifyTime'); // 属性更新时间
     /*ccd-No1 表单元素获取 结束*/
     
     /*ccd 提交按钮 点击事件*/
@@ -662,7 +722,9 @@ $(function () {
                     //在页面显示已上传的文件名
                     if ( info.file ) //有已上传的文件信息
                     {
-                        show_file ('ccdFile', info.file);
+                        show_file (ccdFile, info.file);
+                    }else{
+                        ccdFile.html('');
                     }
                 }//解析 处理 json 结束
              },
@@ -687,8 +749,95 @@ $(function () {
         data.imagebits === undefined ? ccdImageBits.val('0') : ccdImageBits.val(data.imagebits);
         data.coolermode === undefined ? ccdCoolerMode.val('0') : ccdCoolerMode.val(data.coolermode);
         data.lowcoolert !== '' && ccdLowCoolerT.val(data.lowcoolert);
-    }
-    /*显示ccd-No1配置数据 结束*/
+        data.maxexposuretime !== '' && ccdMaxExposureTime.val(data.maxexposuretime);
+        data.minexposuretime !== '' && ccdMinExposureTime.val(data.minexposuretime);
+        data.exposuretimeration !== '' && ccdExposureTimeRation.val(data.exposuretimeration);
+        data.fullwelldepth !== '' && ccdFullWellDepth.val(data.fullwelldepth);
+        data.readoutspeed === undefined ? ccdReadoutSpeed.val('0') : ccdReadoutSpeed.val(data.readoutspeed);
+        /*读出模式*/
+        if ( data.readoutmode )
+        {
+            data.readoutmode = data.readoutmode.split('#');
+            var readout_mode_n = data.readoutmode.length;
+            for (var read_out_i = 0; read_out_i < readout_mode_n; read_out_i++)
+            {//将对应的选项设为checked
+                ccdreadoutMode.find('input[value="' + data.readoutmode[read_out_i] + '"]').prop('checked', true);
+            }
+        }/*读出模式 结束*/
+        data.transferspeed === undefined ? ccdTransferSpeed.val('0') : ccdTransferSpeed.val(data.transferspeed);
+        /*增益模式*/
+        if ( data.gainmode )
+        {
+            data.gainmode = data.gainmode.split('#');
+            var gainmode_n = data.gainmode.length;
+            for (var gainmode_i = 0; gainmode_i < gainmode_n; gainmode_i++)
+            {//将对应的选项设为checked
+                ccd_1gainmode.find('input[value="' + data.gainmode[gainmode_i] + '"]').prop('checked', true);
+            }
+        }/*增益模式 结束*/
+        data.gainnumber === undefined ? ccd_1GainNumber.val('0') : ccd_1GainNumber.val(data.gainnumber);
+        /*
+         *增益值和读出噪声值 暂时未做
+        */
+       data.shuttertype === undefined ? ccdShutterType.val('0') : ccdShutterType.val(data.shuttertype);
+       /*快门模式*/
+       if ( data.shuttermode )
+       {
+           data.shuttermode = data.shuttermode.split('#');
+           var shuttermode_n = data.shuttermode.length;
+           for (var shuttermode_i = 0; shuttermode_i < shuttermode_n; shuttermode_i++)
+           {//将对应的选项设为checked
+            ccd_1ShutterMode.find('input[value="' + data.shuttermode[shuttermode_i] + '"]').prop('checked', true);
+           }
+       }/*快门模式 结束*/
+       data.issupportfullframe == '1' ? ccdIsSupportFullFrame.click() : ccdIsSupportFullFrame_1.click();
+       data.issupportem == '1' ? ccdIsSupportEM.click() : ccdIsSupportEM_1.click();
+       data.issupportscmosnoisefilter == '1' ? isSupportsCmosNoiseFilter.click() : isSupportsCmosNoiseFilter_1.click();
+       data.issupportbaseline == '1' ? isSupportBaseLine.click() : isSupportBaseLine_1.click();
+       data.issupportoverscan == '1' ? isSupportOverScan.click() : isSupportOverScan_1.click();
+       data.binarray === undefined ? ccd_1BinArray.val('0') : ccd_1BinArray.val(data.binarray);
+       data.issupportroi == '1' ? ccdIsSupportROI.click() : ccdIsSupportROI_1.click();
+       /*接口类型*/
+       if ( data.interfacetype )
+       {
+           data.interfacetype = data.interfacetype.split('#');
+           var interfacetype_n = data.interfacetype.length;
+           for (var interfacetype_i = 0; interfacetype_i < interfacetype_n; interfacetype_i++)
+           {//将对应的选项设为checked
+            ccd_1InterfaceType.find('input[value="' + data.interfacetype[interfacetype_i] + '"]').prop('checked', true);
+           }
+       }/*接口类型 结束*/
+       /*曝光触发模式*/
+       if ( data.exposetriggermode )
+       {
+           data.exposetriggermode = data.exposetriggermode.split('#');
+           var exposetrigger_n = data.exposetriggermode.length;
+           for (var exposetrigger_i = 0; exposetrigger_i < exposetrigger_n; exposetrigger_i++)
+           {//将对应的选项设为checked
+            ccd_1ExposeTriggerMode.find('input[value="' + data.exposetriggermode[exposetrigger_i] + '"]').prop('checked', true);
+           }
+       }/*曝光触发模式 结束*/
+       data.emmaxvalue !== '' && ccdEmMaxValue.val(data.emmaxvalue);
+       data.canconnect == '1' ? ccdCanConnect.click() : ccdCanConnect_1.click();
+       data.cansetcoolert == '1' ? canSetCoolerT.click() : canSetCoolerT_1.click();
+       data.cansetexposureparam == '1' ? setExposureParam.click() : setExposureParam_1.click();
+       data.canstartexposure == '1' ? canStartExposure.click() : canStartExposure_1.click();
+       data.canstopexposure == '1' ? ccdCanStopExposure.click() : ccdCanStopExposure_1.click();
+       data.canabortexposure == '1' ? ccdCanAbortExposure.click() : ccdCanAbortExposure_1.click();
+       data.cansetgain == '1' ? ccdCanSetGain.click() : ccdCanSetGain_1.click();
+       data.cansetreadoutspeedmode == '1' ? setReadoutSpeedMode.click() : setReadoutSpeedMode_1.click();
+       data.cansettransferspeedmode == '1' ? setTransferSpeedMode.click() : setTransferSpeedMode_1.click();
+       data.cansetbin == '1' ? ccdCanSetBin.click() : ccdCanSetBin_1.click();
+       data.cansetroi == '1' ? ccdCanSetROI.click() : ccdCanSetROI_1.click();
+       data.cansetshutter == '1' ? ccdCanSetShutter.click() : ccdCanSetShutter_1.click();
+       data.cansetfullframe == '1' ? canSetFullFrame.click() : canSetFullFrame_1.click();
+       data.cansetem == '1' ? ccdCanSetEM.click() : ccdCanSetEM_1.click();
+       data.cannoisefilter == '1' ? canNoiseFilter.click() : canNoiseFilter_1.click();
+       data.cansetbaseline == '1' ? setBaseline.click() : setBaseline_1.click();
+       data.cansetoverscan == '1' ? ccdSetOverScan.click() : ccdSetOverScan_1.click();
+       data.attrversion !== '' && ccdAttrVersion.val(data.attrversion);
+       data.attrmodifytime !== undefined && ccdAttrModifyTime.html(data.attrmodifytime);
+    }/*显示ccd-No1配置数据 结束*/       
 
     /*显示各设备相关文件*/
     function show_file (selector, file_data)

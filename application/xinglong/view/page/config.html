@@ -68,16 +68,11 @@
 					<tr>
 						<td>焦点类型:</td>
 						<td>
-							<select id='gimbalFocustype' name='focustype'>
-								<option value="0">请选择</option>
-							</select>
+							<select id='gimbalFocustype' name='focustype'></select>
 						</td>
 						<td>焦比:</td>
 						<td>
-							<select id='gimbalFocusratio' name='focusratio'>
-								<option value="0">请选择-从后台获取</option>
-								<option value="0x01">sdfs</option>
-							</select>
+							<select id='gimbalFocusratio' name='focusratio'></select>
 						</td>
 						<td>焦距:</td>
 						<td>
@@ -400,9 +395,7 @@
 						</td>
 						<td>制冷方式:</td>
 						<td>
-							<select id='ccdCoolerMode' name='coolermode'>
-								<option value="0">请选择</option>
-							</select>
+							<select id='ccdCoolerMode' name='coolermode'> </select>
 						</td>
 					</tr>
 					<tr>
@@ -430,31 +423,23 @@
 						</td>
 						<td>读出速度模式:</td>
 						<td>
-							<select id='ccdReadoutSpeed' name='readoutspeed'>
-								<option value="0">请选择-从后台获取</option>
-								<option value="1">sdfs</option>
-							</select>
+							<select id='ccdReadoutSpeed' name='readoutspeed'></select>
 						</td>
 					</tr>
 					<tr>
-						<td>读出模式(从后台读出):</td>
-						<td colspan="3" class="border_td" id='ccd_1readoutMode'>
-						</td>
+						<td>读出模式:</td>
+						<td colspan="3" class="border_td" id='ccd_1readoutMode'> </td>
 						<td>转移速度模式:</td>
 						<td>
-							<select id='ccdTransferSpeed' name='transferspeed'>
-								<option value="0">请选择-从后台获取</option>
-							</select>
+							<select id='ccdTransferSpeed' name='transferspeed'></select>
 						</td>
 					</tr>
 					<tr>
-						<td>增益模式(从后台读出):</td>
-						<td colspan="3" class="border_td" id='ccd_1gainmode'>
-						</td>
-						<td>增益档位(从后台读出):</td>
+						<td>增益模式:</td>
+						<td colspan="3" class="border_td" id='ccd_1gainmode'></td>
+						<td>增益档位:</td>
 						<td>
-							<select id='ccd_1GainNumber' name='gainnumber'>
-							</select>
+							<select id='ccd_1GainNumber' name='gainnumber'></select>
 						</td>
 					</tr>
 					<tr>
@@ -468,15 +453,12 @@
 						</td>
 						<td>快门类型:</td>
 						<td>
-							<select id='ccdShutterType' name='shuttertype'>
-								<option value="0">请选择-从后台获取</option>
-							</select>
+							<select id='ccdShutterType' name='shuttertype'></select>
 						</td>
 					</tr>
 					<tr>
-						<td>快门模式(从后台读出):</td>
-						<td colspan="3" class="border_td" id='ccd_1ShutterMode'>
-						</td>
+						<td>快门模式:</td>
+						<td colspan="3" class="border_td" id='ccd_1ShutterMode'> </td>
 						<td>支持帧转移:</td>
 						<td>
 							<label>是<input type='radio' id='ccdIsSupportFullFrame' name='issupportfullframe' value="1"></label>
@@ -513,9 +495,7 @@
 						</td>
 						<td>BIN:</td>
 						<td>
-							<select id='ccd_1BinArray' name='binarray'>
-								<option value="0">请选择-从后台获取</option>
-							</select>
+							<select id='ccd_1BinArray' name='binarray'> </select>
 						</td>
 						<td>支持开窗:</td>
 						<td>
@@ -525,20 +505,16 @@
 						</td>
 					</tr>
 					<tr>
-						<td>接口类型(后台获取):</td>
-						<td colspan="3" class="border_td" id='ccd_1InterfaceType'>
-						</td>
+						<td>接口类型:</td>
+						<td colspan="3" class="border_td" id='ccd_1InterfaceType'> </td>
 						<td>最大EM:</td>
 						<td>
 							<input type='text' id='ccdEmMaxValue' name='emmaxvalue' placeholder="整数">
 						</td>
 					</tr>
 					<tr>
-						<td>曝光触发模式(后台获取):</td>
-						<td colspan="3" class="border_td" id='ccd_1ExposeTriggerMode'>
-							支持硬件触发<input type='checkbox' id='ccdExposeTriggerMode1' name='exposetriggermode[]' value=''>
-							支持软件件触发<input type='checkbox' id='ccdExposeTriggerMode2' name='exposetriggermode[]'>
-						</td>
+						<td>曝光触发模式:</td>
+						<td colspan="3" class="border_td" id='ccd_1ExposeTriggerMode'></td>
 						<td>最小EM:</td>
 						<td>
 							<input type='text' id='ccdEmMinValue' name='emminvalue' placeholder="整数">
@@ -677,10 +653,7 @@
 					</tr>
 					<tr>
 						<td>CCD-No1相关文件:</td>
-						<td id='ccdFile' colspan="5" class="border_td">
-							<a title="点击下载">lsfdjlks</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<a title="点击下载">lsfdjlks</a>
-						</td>
+						<td id='ccdFile' colspan="5" class="border_td">	</td>
 					</tr>
 				</table>
 				<input id='ccdBtn-1' type='button' value="提交CCD-No1配置">

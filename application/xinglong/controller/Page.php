@@ -214,6 +214,22 @@ class Page extends Base
          
             $result['ccd_data'] = $ccd_data;
 
+            /*查ccd-No1相关文件*/
+            //ccd目录
+            $dir = 'ccd' . $id;
+            if ( file_exists($file_path . "/$dir") )
+            {
+                $res = scandir ($file_path . "/$dir");
+
+                if ( $res !== false && count($res) > 2 )
+                {
+                    unset ($res[0], $res[1]); //删除前2个数据
+                    foreach ( $res as $k)
+                    {
+                        $result['ccd_file'][] = iconv('GBK', 'UTF-8', $k);  //将文件名转为utf-8
+                    }
+                }
+            }/*查ccd-No1相关文件 结束*/
             /*查ccd配置数据 结束*/
             //据此$id去各自设备的固定属性表中获取数据 结束
             
