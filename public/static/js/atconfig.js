@@ -85,6 +85,18 @@ $(function () {
                             }
                         }/*在页面显示ccd-No1的配置数据 结束*/
 
+                        /*在页面显示滤光片的配置数据*/
+                        if (info.filter_data) //若接收到滤光片配置数据
+                        {
+                            show_filter_data (info.filter_data);
+                            if (info.filter_file)
+                            {
+                                show_file (filterFile, info.filter_file);
+                            }else{
+                                filterFile.html('');
+                            }
+                        }/*在页面显示滤光片的配置数据 结束*/
+
                         layer.close(index);  //关闭加载提示 
                     }
                 },
@@ -373,39 +385,6 @@ $(function () {
         //显示全开圆顶类型 结束
 
      }//显示19个固定属性选项 结束 
-
-     //根据插槽数目的值，在插槽序号的下拉框中显示相应数目的插槽 并显示各槽的滤光片类型
-     /*1、首先获取插槽数目的值*/
-     var filterNum = $('#filterNum'); //插槽数目这个input框
-     /*2、插槽序号下拉框 点击事件*/
-     var filterSlot = $('#filterSlot'); //插槽序号 下拉框
-     filterSlot.click(function () {
-        //判断是否输入了插槽数目
-        var slotNum = $.trim( filterNum.val() );
-        if ( !$.isNumeric(slotNum) || slotNum < 1)
-        {
-            layer.alert('请先输入插槽数目的值');return;
-        }
-
-        /*根据插槽数目，显示相应数目的槽*/
-        var slotHtml = '<option value="0">选择插槽</option>';
-        for (var slot = 1; slot <= slotNum; slot++)
-        {
-            slotHtml += '<option value="' + slot + '">插槽' + slot + '</option>';
-        }
-        $(this).html(slotHtml);
-     })/*2、插槽序号下拉框 点击事件 结束*/
-     
-     /*3、插槽序号下拉框 change事件*/
-     filterSlot.change(function () {
-        if ( $(this).val() != 0)
-        {
-            layer.alert('change');
-            //此方法 未完 待续
-        }
-     })
-     /*插槽序号下拉框 change事件 结束*/
-     //根据插槽数目的值，在插槽序号的下拉框中显示相应数目的插槽 并显示各槽的滤光片类型 结束
 
     //提交转台配置 之js事件/////////////////////////////////
     var gimbalForm = $('#gimbal'); //找到转台表单
@@ -837,7 +816,162 @@ $(function () {
        data.cansetoverscan == '1' ? ccdSetOverScan.click() : ccdSetOverScan_1.click();
        data.attrversion !== '' && ccdAttrVersion.val(data.attrversion);
        data.attrmodifytime !== undefined && ccdAttrModifyTime.html(data.attrmodifytime);
-    }/*显示ccd-No1配置数据 结束*/       
+    }/*显示ccd-No1配置数据 结束*/
+    
+    /*滤光片表单 按钮 js事件*/
+    var filterBtn = $('#filterBtn');
+    var filterForm = $('#filter'); //滤光片表单
+    var filterFile = $('#filterFile'); //滤光片相关文件
+
+ //根据插槽数目的值，在插槽序号的下拉框中显示相应数目的插槽 并显示各槽的滤光片类型
+    /*1、首先获取插槽数目的值*/
+    var filterNum = $('#filterNum'); //插槽数目这个input框
+    /*2、插槽数目input框 blur事件*/
+    var filterSlot = $('#filterSlot'); //插槽序号 下拉框
+    filterNum.blur(function () {
+        var err = 0;
+        //判断是否输入了插槽数目
+        var slotNum = $.trim( filterNum.val() );
+        if ( !$.isNumeric(slotNum) || slotNum < 1)
+        {
+            err = 1;
+            layer.tips('插槽数目的值有误!', $(this), {tipsMore: true});
+            return;
+        }
+        $(this).data('err', err);
+        //
+        /*根据插槽数目，显示相应数目的槽*/
+        var slotHtml = '<option value="0">选择插槽</option>';
+        for (var slot = 1; slot <= slotNum; slot++)
+        {
+            slotHtml += '<option value="' + slot + '">插槽' + slot + '</option>';
+        }
+        filterSlot.html(slotHtml);
+    })/*插槽数目input框 blur事件结束*/
+     
+    /*3、插槽序号下拉框 点击事件*/
+    var filter_type = {};  //定义一个对象存放各插槽的滤光片类型
+
+    filterSlot.click(function (){
+        //获取子元素<option>的数目
+        var option_num = $(this).children('option').length;
+        if ( option_num < 2 )
+        {
+            layer.tips('请先输入插槽数目!', $(this), {tipsMore: true});return;
+        }
+        //获取相应的插槽序号的滤光片类型，并显示之
+        var slot_num = $(this).val();
+        if ( filter_type[slot_num] )
+        {
+            filterSystem.val( filter_type[slot_num] );
+        }
+     
+    })
+    /*插槽序号下拉框 点击事件 结束*/
+
+    /*4、滤光片类型下拉框 点击事件*/
+    var filterSystem = $('#filterSystem');
+
+    filterSystem.click(function () {
+        var filterSlot_val = filterSlot.val(); //获取插槽序号的值
+        if ( filterSlot_val == 0)
+        {
+            layer.alert('请先选择插槽序号!');return;
+        }
+        var filter_val = $(this).val();
+        if ( filter_val != 0 )
+        {//将滤光片类型的值存入 filter_type
+            filter_type[filterSlot_val] = filter_val;
+        }
+        //console.log(filter_type[1]);
+    })/*滤光片类型下拉框 点击事件 结束*/
+
+    //根据插槽数目的值，在插槽序号的下拉框中显示相应数目的插槽 并显示各槽的滤光片类型 结束
+
+    /* handle_filtersystem_data ()
+    *  参数：filter_type 
+    *  将filter_type的对象形式数据转为字符串形式
+    *  parameter：{1:'a', 2:'b'}
+    *   return: 1:a#2:b
+    */
+    function handle_filtersystem_data (filter_type)
+    {
+        var filter_system_str = '';
+        var filter_system_i = 1;
+         for (var p in filter_type)
+         {
+            filter_system_str += filter_system_i + ':' + filter_type[p] + '#';
+            filter_system_i ++;
+         }
+         filter_system_str = filter_system_str.substring(0, filter_system_str.length-1);
+        return filter_system_str;
+    }/*将filter_type的对象形式数据转为字符串形式 结束*/
+
+    /*滤光片 提交按钮 点击事件*/
+    filterBtn.click(function () {
+        var gimbalRadio = filterForm.find('input[type="radio"]:checked'); //获取被点击的单选框
+        //console.log(gimbalRadio.length);return;
+        //若漏过某个选项，则提示用户，不提交表单
+        if ( gimbalRadio.length < 3)
+        {
+            layer.alert('您遗漏了单选项固定属性!'); return;
+        }
+        //检查望远镜下拉选择框 是否选择了某望远镜
+        var atId = atNo.val();
+        if ( atId == 0)
+        {//未选择某个望远镜
+            layer.alert('请选择您要配置的望远镜!');return;
+        }
+        var filterData = new FormData(filterForm[0]);
+        filterData.append('teleid', atId); //将某望远镜的id 加入表单数据中
+        //将各插槽之滤光片类型数据加入表单 
+        //加入之前先验证 filter_type的元素个数不能少于插槽数目值
+        var tempStr = handle_filtersystem_data (filter_type);
+        filterData.append('filtersystem', tempStr);
+
+        //将各插槽之滤光片类型数据加入表单 结束
+        $.ajax({
+            type: 'post',
+            url: 'filter_config',
+            data : filterData,
+            processData : false,
+            contentType : false,
+            success:  function (info) {
+                if ( info.indexOf('{') == -1 ) //info 不是json数据
+                {
+                    layer.alert(info);
+                    if (info.indexOf('登录') !== -1)
+                    {
+                    	location.href = '/';
+                    }
+                }else{//解析 处理 json
+                    var info = $.parseJSON(info);
+                    layer.alert(info.msg);
+                    filterFile.html(info.attr_modify); //显示属性更新时间
+                    //在页面显示已上传的文件名
+                    if ( info.file ) //有已上传的文件信息
+                    {
+                        show_file (gimbalFile, info.file);
+                    }else{
+                        gimbalFile.html('');
+                    }
+                }//解析 处理 json 结束
+             },
+             error:  function () {
+	              layer.alert('网络异常,请重新提交');
+             },
+        })
+    }); /*滤光片 提交按钮 点击事件 结束*/
+    /*滤光片表单 按钮 js事件 结束*/
+
+    /*显示滤光片配置数据 */
+    function show_filter_data (data)
+    {
+        ccdIp.val(data.ip);
+        ccdId.val(data.ccdid);
+        ccdName.val(data.name);
+        ccdTeleId.html(data.atname);
+    }/*显示滤光片配置数据 结束*/
 
     /*显示各设备相关文件*/
     function show_file (selector, file_data)
@@ -851,6 +985,3 @@ $(function () {
         selector.html(file_html);
     }/*显示各设备相关文件 结束*/
 })/*jquery 初始化函数 末尾*/
-
-   
-

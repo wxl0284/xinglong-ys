@@ -667,7 +667,7 @@
 						<td>滤光片ip:</td>
 						<td><input type='text' id='filterIp' name='ip' placeholder='ip地址'></td>
 						<td>滤光片id:</td>
-						<td><input type='text' id='filterId' name='filterId'></td>
+						<td><input type='text' id='filterId' name='filterid'></td>
 						<td>滤光片名称:</td>
 						<td><input type='text' id='filterName' name='name'></td>
 					</tr>
@@ -682,14 +682,12 @@
 					<tr>
 						<td>滤光片类型:</td>
 						<td colspan="3" class="border_td">
-							插槽序号:<!--此元素的值无须入库-->
-							<select id='filterSlot' name='slot'>
+							插槽序号:
+							<select id='filterSlot' name='slot'><!--此元素的值无须入库-->
+								<option value="0">选择插槽</option>
 							</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							滤光片类型:<!--此元素的值也无须入库 此2元素的点击事件中生成一个数组，然后入库-->
-							<select id='filterSystem' name='filtersystem'>
-								<option value="0">选择类型-从后台获取</option>
-								<option value="0x01">sdfs</option>
-							</select>
+							<select id='filterSystem' name='filtersystem'> <option value="0">选择类型</option> </select>
 						</td>
 						<td>滤光片名称:</td>
 						<td><input type='text' id='filterName' name='filtername' placeholder='u/v/r/i...'></td>
@@ -741,9 +739,7 @@
 							说明文件:<input type='file' name='specification'>
 						</td>
 						<td>滤光片相关文件:</td>
-						<td colspan="2" class="border_td">
-							<a title="点击下载" id='filterFile'>lsfdjlks</a>
-						</td>
+						<td id='filterFile' colspan="2" class="border_td"></td>
 					</tr>
 				</table>
 				<input id='filterBtn' type='button' value="提交滤光片配置">

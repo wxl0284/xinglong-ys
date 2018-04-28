@@ -77,6 +77,8 @@ Route::post('config$', 'xinglong/page/config');
 Route::post('gimbal_config$', 'xinglong/atconfig/gimbal_config');
 //ajax提交ccd配置数据 路由
 Route::post('ccd_config$', 'xinglong/atconfig/ccd_config');
+//ajax提交滤光片配置数据 路由
+Route::post('filter_config$', 'xinglong/atconfig/filter_config');
 /*配置各望远镜固定属性 结束*/
 
 /*如下为望远镜配置的示例 路由*/

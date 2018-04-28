@@ -209,6 +209,7 @@ class Atconfig extends Base
         }
     }/*获取转台配置项表单 存入atlist表和gimbalconf中 结束*/
 
+    /*获取ccd配置项表单 存入表ccdconf中*/
     public function ccd_config()
     {
         //判断ajax 请求时 是否有权限
@@ -384,4 +385,102 @@ class Atconfig extends Base
             return json_encode ($result);
         }
     }/*获取ccd配置项表单 存入表ccdconf中 结束*/
+
+    /*获取滤光片配置项表单 存入表filterconf中*/
+    public function filter_config()
+    {
+        //判断ajax 请求时 是否有权限
+        // if ($this->ajaxAuthErr == 1)
+        // {
+        //     return '您无权执行此操作!';
+        // }
+
+        //$postData = input('maxAxis3Speed');
+        //$file = request()->file('instruction');
+        //dump($postData);
+        //dump($file);
+        // $postData = input();
+
+        // if ( !isset($postData['maxAxis3Speed']) )
+        // {
+        //     $postData['maxAxis3Speed'] = null;
+        // }
+        // dump($postData['maxAxis3Speed']);
+
+        $postData = input();
+
+       //属性更新时间
+       $postData['attrmodifytime'] = date ('Y-m-d');
+       //去除 表单中的多余字段 slot
+       unset ($postData['slot']);
+
+        //定义错误提示
+        $errMsg = '';
+
+        $data = Db::table('filterconf')->where('teleid', $postData['teleid'])->find();
+
+        if ( $data )
+        {//已有配置数据 进行update
+            $res = Db::table('filterconf')->where('teleid', $postData['teleid'])->update($postData);
+        }else{//还无配置数据 进行insert
+            $res = Db::table('filterconf')->insert($postData);
+        }
+
+        if ( !$res )
+        {
+            $errMsg += '滤光片配置存数据库失败!<br>';
+        }
+        //处理上传文件
+        $dir = 'filter' . $postData['teleid']; //每个望远镜的每个设备建1个目录，如ccd1, focus2.....
+        /*处理 说明文件*/
+        $qecurveFile = $this->request->file('specification'); //获取说明文件的上传数据
+        if ( $qecurveFile !== null ) //有文件被上传
+        {
+            //将上传文件命名为: 说明文件
+            $fileName = '说明文件';
+            $fileName = iconv ('UTF-8', 'GBK', $fileName);
+            //如果已有此名字的文件，则先删除
+            if ( file_exists($this->file_path . "/$dir/$fileName") )
+            {
+                $delReport = unlink($this->file_path ."/$dir/$fileName");
+                if ($delRport === false)
+                {
+                    return "删除原{$fileName}文件失败!";
+                }
+            }
+        
+            //将新上传的说明文件移至指定目录
+            $info = $qecurveFile->move($this->file_path . "/$dir", $fileName);
+            if (!$info) //移动文件失败
+            {
+                $errMsg += "上传{$fileName}失败!<br>";
+            }
+        }/*处理说明文件 结束*/
+
+        if ($errMsg !== '')
+        {
+            return $errMsg;
+        }else{//数据入库 和 文件上传都ok 获取已上传的文件名以json格式返回页面
+            //若存放文件的目录还未创建 则先创建之
+            if ( !file_exists($this->file_path."/$dir") )
+            {
+                mkdir ($this->file_path."/$dir");
+            }
+
+            $res = scandir ($this->file_path."/$dir");
+
+            if ( $res !== false && count($res) > 2 )
+            {
+                unset ($res[0], $res[1]); //删除前2个数据
+                foreach ( $res as $k)
+                {
+                    $result['file'][] = iconv('GBK', 'UTF-8', $k);  //将文件名转为utf-8
+                }
+            }
+
+            $result['msg'] = '滤光片配置ok!';
+            $result['attr_modify'] = $postData['attrmodifytime'];
+            return json_encode ($result);
+        }
+    }/*获取滤光片配置项表单 存入表filterconf中 结束*/
 }

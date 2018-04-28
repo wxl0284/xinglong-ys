@@ -231,6 +231,31 @@ class Page extends Base
                 }
             }/*查ccd-No1相关文件 结束*/
             /*查ccd配置数据 结束*/
+            /*查滤光片配置数据*/
+            $fiter_data = Db::table('filterconf')->where('teleid', $id)->find();
+            //隶属望远镜的值 是at_data['atname'] $ccd_data['atname'] = $at_data['atname'];
+            if ( isset ( $at_data['atname'] ) ) $fiter_data['atname'] = $at_data['atname'];
+         
+            $result['filter_data'] = $fiter_data;
+
+            /*查滤光片相关文件*/
+            //滤光片之 目录
+            $dir = 'filter' . $id;
+            if ( file_exists($file_path . "/$dir") )
+            {
+                $res = scandir ($file_path . "/$dir");
+
+                if ( $res !== false && count($res) > 2 )
+                {
+                    unset ($res[0], $res[1]); //删除前2个数据
+                    foreach ( $res as $k)
+                    {
+                        $result['filter_file'][] = iconv('GBK', 'UTF-8', $k);  //将文件名转为utf-8
+                        //$result['filter_file'][] = 'haha';
+                    }
+                }
+            }/*查滤光片相关文件 结束*/
+            /*查滤光片配置数据 结束*/
             //据此$id去各自设备的固定属性表中获取数据 结束
             
             //return json数据给前端
