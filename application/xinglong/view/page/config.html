@@ -668,7 +668,7 @@
 						<td><input type='text' id='filterIp' name='ip' placeholder='ip地址'></td>
 						<td>滤光片id:</td>
 						<td><input type='text' id='filterId' name='filterid'></td>
-						<td>滤光片名称:</td>
+						<td>名称:</td>
 						<td><input type='text' id='filterName' name='name'></td>
 					</tr>
 					<tr>
@@ -676,7 +676,7 @@
 						<td id='filterTeleId'></td>
 						<td>插槽数目:</td>
 						<td><input type='text' id='filterNum' name='numberoffilter'></td>
-						<td>插槽大小:</td>
+						<td>插槽大小（mm）:</td>
 						<td><input type='text' id='filterSize' name='filtersize' placeholder='[x,y,z]'></td>
 					</tr>
 					<tr>
@@ -690,19 +690,16 @@
 							<select id='filterSystem' name='filtersystem'> <option value="0">选择类型</option> </select>
 						</td>
 						<td>滤光片名称:</td>
-						<td><input type='text' id='filterName' name='filtername' placeholder='u/v/r/i...'></td>
+						<td><input type='text' id='filter_Name' name='filtername' placeholder='u/v/r/i...'></td>
 					</tr>
 					<tr>
-						<td>滤光片焦距偏差值（um）:</td>
+						<td>滤光片焦距偏差值（μm）:</td>
 						<td colspan="3">
 							<input type='text' id='filterFocusLengthCompensate' name='filterfocuslengthcompensate' placeholder="[2 3 4]" style="width:580px;">
 						</td>
 						<td>滤光片形状:</td>
 						<td>
-							<select id='filterShape' name='filtershape'>
-								<option value="0">请选择-从后台获取</option>
-								<option value="0x01">sdfs</option>
-							</select>
+							<select id='filterShape' name='filtershape'> </select>
 						</td>
 					</tr>
 					<tr>
@@ -729,8 +726,8 @@
 						<td>属性更新时间:</td>
 						<td id='filterAttrModifyTime'></td>
 						<td>属性版本号:</td>
-						<td id='filterAttrVersion'>
-							<input type='text' name='attrversion'>
+						<td>
+							<input id='filterAttrVersion' type='text' name='attrversion'>
 						</td>
 					</tr>
 					<tr>
@@ -762,9 +759,7 @@
 						<td id='sDomeTeleId'></td>
 						<td>类型:</td>
 						<td>
-							<select id='sDomeType' name='dometype'>
-								<option value="0">选择-后台获取</option>
-							</select>
+							<select id='sDomeType' name='dometype'> </select>
 						</td>
 						<td>最大转动速度（度/秒）:</td>
 						<td><input type='text' id='sDomeMaxSpeed' name='maxspeed' placeholder='小数'></td>
@@ -841,9 +836,7 @@
 							说明文件:<input type='file' name='specification'>
 						</td>
 						<td>随动圆顶相关文件:</td>
-						<td colspan="2" class="border_td">
-							<a title="点击下载" id='sDomeFile'>lsfdjlks</a>
-						</td>
+						<td colspan="2" class="border_td" id='sDomeFile'></td>
 					</tr>
 				</table>
 				<input id='sDomeBtn' type='button' value="提交随动圆顶配置">
@@ -866,12 +859,10 @@
 						<td id='oDomeTeleId'></td>
 						<td>类型:</td>
 						<td>
-							<select id='oDomeType' name='type'>
-								<option value="0">选择-后台获取</option>
-							</select>
+							<select id='oDomeType' name='type'> </select>
 						</td>
 						<td>尺寸大小（m）:</td>
-						<td><input type='text' id='oDomeMinValue' name='diameter' placeholder='直径'></td>
+						<td><input type='text' id='oDomeDiameter' name='diameter' placeholder='直径'></td>
 					</tr>
 					<tr>
 						<td>支持打开圆顶:</td>
@@ -888,12 +879,12 @@
 						</td>
 						<td>属性版本号:</td>
 						<td>
-							<input type='text' id='odomeattrversion' name='attrversion'>
+							<input type='text' id='odomeAttrversion' name='attrversion'>
 						</td>
 					</tr>
 					<tr>
 						<td>属性更新时间:</td>
-						<td id='sDomeAttrModifyTime'></td>
+						<td id='oDomeAttrModifyTime'></td>
 						<td>上传全开圆顶相关文件:</td>
 						<td colspan="2" class="border_td">
 							说明文件:<input type='file' name='specification'>
@@ -901,9 +892,7 @@
 					</tr>
 					<tr>
 						<td>全开圆顶相关文件:</td>
-						<td class="border_td">
-							<a title="点击下载" id='oDomeFile'>lsfdjlks</a>
-						</td>
+						<td class="border_td" id='oDomeFile'> </td>
 					</tr>
 				</table>
 				<input id='oDomeBtn' type='button' value="提交全开圆顶配置">
@@ -956,9 +945,9 @@
 						</td>
 						<td>进行温度补偿:</td>
 						<td>
-							<label>是<input type='radio' id='focusTempertureCompensate' name='cantemperturecompensate' value="1"></label>
+							<label>是<input type='radio' id='focusTempeCompensate' name='cantemperturecompensate' value="1"></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='focusTempertureCompensate-1' name='cantemperturecompensate' value="0"></label>
+							<label>否<input type='radio' id='focusTempeCompensate-1' name='cantemperturecompensate' value="0"></label>
 						</td>
 						<td>设置目标位置:</td>
 						<td>
@@ -982,17 +971,17 @@
 						</td>
 						<td>使能温度补偿:</td>
 						<td>
-							<label>是<input type='radio' id='focusEnableTempertureCompensate' name='canenabletemperturecompensate' value="1"></label>
+							<label>是<input type='radio' id='enableTemperCompensate' name='canenabletemperturecompensate' value="1"></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='focusEnableTempertureCompensate-1' name='canenabletemperturecompensate' value="0"></label>
+							<label>否<input type='radio' id='enableTemperCompensate-1' name='canenabletemperturecompensate' value="0"></label>
 						</td>
 					</tr>
 					<tr>
 						<td>设置温度补偿系数:</td>
 						<td>
-							<label>是<input type='radio' id='focusSetTempertureCompensatecoefficient' name='cansettemperturecompensatecoefficient' value="1"></label>
+							<label>是<input type='radio' id='focusTemperCompensateCoef' name='cansettemperturecompensatecoefficient' value="1"></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='focusSetTempertureCompensatecoefficient-1' name='cansettemperturecompensatecoefficient' value="0"></label>
+							<label>否<input type='radio' id='focusTemperCompensateCoef-1' name='cansettemperturecompensatecoefficient' value="0"></label>
 						</td>
 						<td>属性版本号:</td>
 						<td>
@@ -1007,9 +996,7 @@
 							说明文件:<input type='file' name='specification'>
 						</td>
 						<td>调焦器相关文件:</td>
-						<td colspan="2" class="border_td">
-							<a title="点击下载" id='focusFile'>lsfdjlks</a>
-						</td>
+						<td colspan="2" class="border_td" id='focusFile'> </td>
 					</tr>
 				</table>
 				<input id='focusBtn' type='button' value="提交调焦器配置">
@@ -1017,11 +1004,11 @@
 
 			<h4 class='center'>导星望远镜固定属性</h4>
 			<hr>
-			<form id='focus' class="form" enctype='multipart/form-data'><!--导星望远镜配置项-->
+			<form id='guideScope' class="form" enctype='multipart/form-data'><!--导星望远镜配置项-->
 				<table class="center_mrg">
 					<tr>
 						<td>导星望远镜ip:</td>
-						<td><input type='text' id='focusIp' name='ip' placeholder='ip地址'></td>
+						<td><input type='text' id='guideScopeIp' name='ip' placeholder='ip地址'></td>
 						<td>导星望远镜id:</td>
 						<td><input type='text' id='guideScopeId' name='guidescopeid'></td>
 						<td>导星望远镜名称:</td>
@@ -1036,9 +1023,7 @@
 						</td>
 						<td>焦点类型:</td>
 						<td>
-							<select id='guideScopeOpticalStructure' name='opticalstructure'>
-								<option value="0">选择-后台获取</option>
-							</select>
+							<select id='guideScopeOpticalStructure' name='opticalstructure'> </select>
 						</td>
 					</tr>
 					<tr>
@@ -1054,9 +1039,9 @@
 						</td>
 						<td>支持自动调焦:</td>
 						<td>
-							<label>是<input type='radio' id='guideScopeSupportAutoFocus' name='issupportautofocus' value="1"></label>
+							<label>是<input type='radio' id='SupportAutoFocus' name='issupportautofocus' value="1"></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='guideScopeSupportAutoFocus-1' name='issupportautofocus' value="0"></label>
+							<label>否<input type='radio' id='SupportAutoFocus-1' name='issupportautofocus' value="0"></label>
 						</td>
 					</tr>
 					<tr>
@@ -1074,9 +1059,9 @@
 						</td>
 						<td>使能自动调焦:</td>
 						<td>
-							<label>是<input type='radio' id='guideScopeEnableAutoFocus' name='canenableautofocus' value="1"></label>
+							<label>是<input type='radio' id='guideEnableAutoFocus' name='canenableautofocus' value="1"></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='guideScopeEnableAutoFocus-1' name='canenableautofocus' value="0"></label>
+							<label>否<input type='radio' id='guideEnableAutoFocus-1' name='canenableautofocus' value="0"></label>
 						</td>
 					</tr>
 					<tr>
@@ -1093,9 +1078,7 @@
 							说明文件:<input type='file' name='specification'>
 						</td>
 						<td>导星望远镜相关文件:</td>
-						<td colspan="2" class="border_td">
-							<a title="点击下载" id='guideScopeFile'>lsfdjlks</a>
-						</td>
+						<td colspan="2" class="border_td" id='guideScopeFile'> </td>
 					</tr>
 				</table>
 				<input id='guideScopeBtn' type='button' value="提交导星望远镜配置">

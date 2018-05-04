@@ -79,6 +79,14 @@ Route::post('gimbal_config$', 'xinglong/atconfig/gimbal_config');
 Route::post('ccd_config$', 'xinglong/atconfig/ccd_config');
 //ajax提交滤光片配置数据 路由
 Route::post('filter_config$', 'xinglong/atconfig/filter_config');
+//ajax提交随动圆顶配置数据 路由
+Route::post('slaveDome_config$', 'xinglong/atconfig/slaveDome_config');
+//ajax提交全开圆顶配置数据 路由
+Route::post('oDome_config$', 'xinglong/atconfig/oDome_config');
+//ajax提交调焦器配置数据 路由
+Route::post('focus_config$', 'xinglong/atconfig/focus_config');
+//ajax提交导星望远镜配置数据 路由
+Route::post('guideScope_config$', 'xinglong/atconfig/guideScope_config');
 /*配置各望远镜固定属性 结束*/
 
 /*如下为望远镜配置的示例 路由*/

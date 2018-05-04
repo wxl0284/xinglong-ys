@@ -39,8 +39,6 @@ $(function () {
                 type: 'post',
                 data: {id: val,},   //将望远镜id发送给后端
                 success:  function (info) {
-                    //var info = $.parseJSON(info);
-                    //console.log(info);return;
                     //判断返回的info 是否为json
                     if ( info.indexOf('{') == -1 )  //不是json, 返回信息需要提示给用户
                     {
@@ -56,7 +54,7 @@ $(function () {
                         atNo.val(val);
                         //根据json数据 显示配置项
                         var info = $.parseJSON(info);
-                        //console.log(info.ccd_data.binarray);return;
+                        //console.log(info.ccd_data.attrmodifytime);return;
                         /*将19个动态增减的固定显示与配置页面*/
                         show_19confOption (info.confOption);                      
                         /*将19个动态增减的固定显示与配置页面 结束*/
@@ -97,7 +95,55 @@ $(function () {
                             }
                         }/*在页面显示滤光片的配置数据 结束*/
 
-                        layer.close(index);  //关闭加载提示 
+                        /*在页面显示随动圆顶的配置数据*/
+                        if (info.sDome_data) //若接收到滤光片配置数据
+                        {
+                            show_sDome_data (info.sDome_data);
+                            if (info.sDome_file)
+                            {
+                                show_file (sDomeFile, info.sDome_file);
+                            }else{
+                                sDomeFile.html('');
+                            }
+                        }/*在页面显示随动圆顶的配置数据 结束*/
+
+                        /*在页面显示全开圆顶的配置数据*/
+                        if (info.oDome_data) //若接收到滤光片配置数据
+                        {
+                            show_oDome_data (info.oDome_data);
+                            if (info.oDome_file)
+                            {
+                                show_file (oDomeFile, info.oDome_file);
+                            }else{
+                                oDomeFile.html('');
+                            }
+                        }/*在页面显示全开圆顶的配置数据 结束*/
+
+                        /*在页面显示调焦器的配置数据*/
+                        if (info.focus_data) //若接收到滤光片配置数据
+                        {
+                            show_focus_data (info.focus_data);
+                            if (info.focus_file)
+                            {
+                                show_file (focusFile, info.focus_file);
+                            }else{
+                                focusFile.html('');
+                            }
+                        }/*在页面显示调焦器的配置数据 结束*/
+
+                        /*在页面显示导星望远镜的配置数据*/
+                        if (info.guide_data) //若接收到滤光片配置数据
+                        {
+                            show_guide_data (info.guide_data);
+                            if (info.guide_file)
+                            {
+                                show_file (guideScopeFile, info.guide_file);
+                            }else{
+                                guideScopeFile.html('');
+                            }
+                        }/*在页面显示导星望远镜的配置数据 结束*/
+
+                        layer.close(index);  //关闭加载提示
                     }
                 },
                 error:  function () {
@@ -514,7 +560,7 @@ $(function () {
                 }else{//解析 处理 json
                     var info = $.parseJSON(info);
                     layer.alert(info.msg);
-                    gimbalFile.html(info.attr_modify);
+                    gimbalAttrModifyTime.html(info.attrmodifytime); //显示属性更新时间
                     //在页面显示已上传的文件名
                     if ( info.file ) //有已上传的文件信息
                     {
@@ -557,20 +603,20 @@ $(function () {
         data.focustype === undefined ? gimbalFocustype.val('0') : gimbalFocustype.val(data.focustype);
         data.focusratio === undefined ? gimbalFocusratio.val('0') : gimbalFocusratio.val(data.focusratio);
         focusLength.val(data.focuslength);
-        data.maxaxis1speed !== '' && maxAxis1Speed.val(data.maxaxis1speed);
-        data.maxaxis2speed !== '' && maxAxis2Speed.val(data.maxaxis2speed);
-        data.maxaxis3speed !== '' && maxAxis3Speed.val(data.maxaxis3speed);
-        data.maxaxis1acceleration !== '' && axis1Acceleration.val(data.maxaxis1acceleration);
-        data.maxaxis2acceleration !== '' && axis2Acceleration.val(data.maxaxis2acceleration);
-        data.maxaxis3acceleration !== '' && axis3Acceleration.val(data.maxaxis3acceleration);
-        data.axis1parkposition !== '' && axis1ParkPosition.val(data.axis1parkposition);
-        data.axis2parkposition !== '' && axis2ParkPosition.val(data.axis2parkposition);
-        data.axis3parkposition !== '' && axis3ParkPosition.val(data.axis3parkposition);
+        maxAxis1Speed.val(data.maxaxis1speed);
+        maxAxis2Speed.val(data.maxaxis2speed);
+        maxAxis3Speed.val(data.maxaxis3speed);
+        axis1Acceleration.val(data.maxaxis1acceleration);
+        axis2Acceleration.val(data.maxaxis2acceleration);
+        axis3Acceleration.val(data.maxaxis3acceleration);
+        axis1ParkPosition.val(data.axis1parkposition);
+        axis2ParkPosition.val(data.axis2parkposition);
+        axis3ParkPosition.val(data.axis3parkposition);
         data.haveaxis3 == '1' ? axis3_have.click() : axis3_No.click();
         data.haveaxis5 == '1' ? haveAxis5.click() : haveAxis5_1.click();
-        data.minelevation !== '' && gimbalMinElevation.val(data.minelevation);
-        data.numtemperaturesensor !== '' && numTemperatureSensor.val(data.numtemperaturesensor);
-        data.numhumiditysensor !== '' && numHumiditySensor.val(data.numhumiditysensor);
+        gimbalMinElevation.val(data.minelevation);
+        numTemperatureSensor.val(data.numtemperaturesensor);
+        numHumiditySensor.val(data.numhumiditysensor);
         data.canconnect == '1' ? gimbalCanConnect.click() : gimbalCanConnect_1.click();
         data.canfindhome == '1' ? gimbalCanFindHome.click() : gimbalCanFindHome_1.click();
         data.cantrackstar == '1' ? gimbalCanTrackStar.click() : gimbalCanTrackStar_1.click();
@@ -587,8 +633,8 @@ $(function () {
         data.cansavesyncdata == '1' ? canSaveSyncData.click() : canSaveSyncData_1.click();
         data.cantracksatellite == '1' ? canTrackSatellite.click() : canTrackSatellite_1.click();
         data.canconfigproperty == '1' ? gimbalCanconfigProperty.click() : gimbalCanconfigProperty_1.click();
-        data.attrversion !== '' && gimbalAttrVersion.val(data.attrversion);
-        data.attrmodifytime !== undefined && gimbalAttrModifyTime.html(data.attrmodifytime);
+        gimbalAttrVersion.val(data.attrversion);
+        data.attrmodifytime ? gimbalAttrModifyTime.html(data.attrmodifytime) : gimbalAttrModifyTime.html('');
     }/*显示转台的配置数据 结束*/
 
     /*ccd-No1 表单元素获取*/
@@ -697,7 +743,7 @@ $(function () {
                 }else{//解析 处理 json
                     var info = $.parseJSON(info);
                     layer.alert(info.msg);
-                    ccdTeleId.html(info.atname);
+                    ccdAttrModifyTime.html(info.attrmodifytime); //显示属性更新时间
                     //在页面显示已上传的文件名
                     if ( info.file ) //有已上传的文件信息
                     {
@@ -720,18 +766,18 @@ $(function () {
         ccdId.val(data.ccdid);
         ccdName.val(data.name);
         ccdTeleId.html(data.atname);
-        data.xpixel !== '' && ccdXpixel.val(data.xpixel);
-        data.ypixel !== '' && ccdYpixel.val(data.ypixel);
-        data.xpixelsize !== '' && ccdXpixelSize.val(data.xpixelsize);
-        data.ypixelsize !== '' && ccdYpixelSize.val(data.ypixelsize);
-        data.sensorname !== '' && ccdSensorName.val(data.sensorname);
+        ccdXpixel.val(data.xpixel);
+        ccdYpixel.val(data.ypixel);
+        ccdXpixelSize.val(data.xpixelsize);
+        ccdYpixelSize.val(data.ypixelsize);
+         ccdSensorName.val(data.sensorname);
         data.imagebits === undefined ? ccdImageBits.val('0') : ccdImageBits.val(data.imagebits);
         data.coolermode === undefined ? ccdCoolerMode.val('0') : ccdCoolerMode.val(data.coolermode);
-        data.lowcoolert !== '' && ccdLowCoolerT.val(data.lowcoolert);
-        data.maxexposuretime !== '' && ccdMaxExposureTime.val(data.maxexposuretime);
-        data.minexposuretime !== '' && ccdMinExposureTime.val(data.minexposuretime);
-        data.exposuretimeration !== '' && ccdExposureTimeRation.val(data.exposuretimeration);
-        data.fullwelldepth !== '' && ccdFullWellDepth.val(data.fullwelldepth);
+        ccdLowCoolerT.val(data.lowcoolert);
+        ccdMaxExposureTime.val(data.maxexposuretime);
+        ccdMinExposureTime.val(data.minexposuretime);
+        ccdExposureTimeRation.val(data.exposuretimeration);
+        ccdFullWellDepth.val(data.fullwelldepth);
         data.readoutspeed === undefined ? ccdReadoutSpeed.val('0') : ccdReadoutSpeed.val(data.readoutspeed);
         /*读出模式*/
         if ( data.readoutmode )
@@ -796,7 +842,7 @@ $(function () {
             ccd_1ExposeTriggerMode.find('input[value="' + data.exposetriggermode[exposetrigger_i] + '"]').prop('checked', true);
            }
        }/*曝光触发模式 结束*/
-       data.emmaxvalue !== '' && ccdEmMaxValue.val(data.emmaxvalue);
+       ccdEmMaxValue.val(data.emmaxvalue);
        data.canconnect == '1' ? ccdCanConnect.click() : ccdCanConnect_1.click();
        data.cansetcoolert == '1' ? canSetCoolerT.click() : canSetCoolerT_1.click();
        data.cansetexposureparam == '1' ? setExposureParam.click() : setExposureParam_1.click();
@@ -814,15 +860,29 @@ $(function () {
        data.cannoisefilter == '1' ? canNoiseFilter.click() : canNoiseFilter_1.click();
        data.cansetbaseline == '1' ? setBaseline.click() : setBaseline_1.click();
        data.cansetoverscan == '1' ? ccdSetOverScan.click() : ccdSetOverScan_1.click();
-       data.attrversion !== '' && ccdAttrVersion.val(data.attrversion);
-       data.attrmodifytime !== undefined && ccdAttrModifyTime.html(data.attrmodifytime);
+       data.attrmodifytime ? ccdAttrModifyTime.html(data.attrmodifytime) : ccdAttrModifyTime.html('');
+       ccdAttrVersion.val(data.attrversion);
     }/*显示ccd-No1配置数据 结束*/
     
     /*滤光片表单 按钮 js事件*/
     var filterBtn = $('#filterBtn');
     var filterForm = $('#filter'); //滤光片表单
     var filterFile = $('#filterFile'); //滤光片相关文件
-
+    var filterIp = $('#filterIp'); //滤光片ip
+    var filterId = $('#filterId'); //滤光片id
+    var filterName = $('#filterName'); //名称
+    var filterTeleId = $('#filterTeleId'); //隶属望远镜
+    var filterSize = $('#filterSize'); //插槽大小
+    var filter_Name = $('#filter_Name'); //滤光片名称
+    var focusLengthCompensate = $('#filterFocusLengthCompensate'); //滤光片焦距偏差值
+    var canSetFilterPosition = $('#canSetFilterPosition'); //支持 设置滤光片位置
+    var canSetFilterPosition_1 = $('#canSetFilterPosition-1'); //不支持 设置滤光片位置
+    var filterCanConnect = $('#filterCanConnect'); //支持 连接
+    var filterCanConnect_1 = $('#filterCanConnect-1'); //不支持 连接
+    var filterCanFindHome = $('#filterCanFindHome'); //支持 找零
+    var filterCanFindHome_1 = $('#filterCanFindHome-1'); //不支持 找零
+    var filterAttrModifyTime = $('#filterAttrModifyTime'); //属性更新时间
+    var filterAttrVersion = $('#filterAttrVersion'); //属性 版本号
  //根据插槽数目的值，在插槽序号的下拉框中显示相应数目的插槽 并显示各槽的滤光片类型
     /*1、首先获取插槽数目的值*/
     var filterNum = $('#filterNum'); //插槽数目这个input框
@@ -927,9 +987,8 @@ $(function () {
         //将各插槽之滤光片类型数据加入表单 
         //加入之前先验证 filter_type的元素个数不能少于插槽数目值
         var tempStr = handle_filtersystem_data (filter_type);
-        filterData.append('filtersystem', tempStr);
+        filterData.append('filtersystem', tempStr); //将各插槽之滤光片类型数据加入表单 结束
 
-        //将各插槽之滤光片类型数据加入表单 结束
         $.ajax({
             type: 'post',
             url: 'filter_config',
@@ -947,13 +1006,13 @@ $(function () {
                 }else{//解析 处理 json
                     var info = $.parseJSON(info);
                     layer.alert(info.msg);
-                    filterFile.html(info.attr_modify); //显示属性更新时间
+                    filterAttrModifyTime.html(info.attrmodifytime); //显示属性更新时间
                     //在页面显示已上传的文件名
                     if ( info.file ) //有已上传的文件信息
                     {
-                        show_file (gimbalFile, info.file);
+                        show_file (filterFile, info.file);
                     }else{
-                        gimbalFile.html('');
+                        filterFile.html('');
                     }
                 }//解析 处理 json 结束
              },
@@ -967,11 +1026,414 @@ $(function () {
     /*显示滤光片配置数据 */
     function show_filter_data (data)
     {
-        ccdIp.val(data.ip);
-        ccdId.val(data.ccdid);
-        ccdName.val(data.name);
-        ccdTeleId.html(data.atname);
+        filterIp.val(data.ip);
+        filterId.val(data.filterid);
+        filterName.val(data.name);
+        filterTeleId.html(data.atname);
+        filterNum.val(data.numberoffilter);
+        data.numberoffilter !== '' && filterNum.blur(); //如果插槽数目有值，执行插槽数目input框的blur事件
+        /*将滤光片类型的值赋予：filter_type*/
+        if (data.filtersystem)
+        {
+            filter_type = {}; //将此对象重置为空
+            data.filtersystem = data.filtersystem.split('#'); //得到['1:aa', '2:cc']
+            var filtersystem_num = data.filtersystem.length;
+            for (var filtersystem_i = 0; filtersystem_i < filtersystem_num; filtersystem_i++)
+            {
+                var temp_data = data.filtersystem[filtersystem_i].split(':');
+                filter_type[ temp_data[0] ] = temp_data[1];
+            }
+        }/*将滤光片类型的值赋予：filter_type 结束*/
+        filterSize.val(data.filtersize);
+        filter_Name.val(data.filtername);
+        focusLengthCompensate.html(data.filterfocuslengthcompensate);
+        filterShape.val(data.filtershape);
+        data.cansetfilterposition == '1' ? canSetFilterPosition.click() : canSetFilterPosition_1.click();
+        data.canconnect == '1' ? filterCanConnect.click() : filterCanConnect_1.click();
+        data.canfindhome == '1' ? filterCanFindHome.click() : filterCanFindHome_1.click();
+        data.attrmodifytime ? filterAttrModifyTime.html(data.attrmodifytime) : filterAttrModifyTime.html('');
+        filterAttrVersion.val(data.attrversion);
     }/*显示滤光片配置数据 结束*/
+
+    /*随动圆顶  js事件*/
+    var sDomeBtn = $('#sDomeBtn'); //随动圆顶 提交按钮
+    var sDomeForm = $('#sDome'); //随动圆顶 表单
+    var sDomeTeleId = $('#sDomeTeleId'); //随动圆顶 隶属望远镜
+    var sDomeFile = $('#sDomeFile'); //随动圆顶 相关文件
+    var sDomeIp = $('#sDomeIp'); //随动圆顶 ip
+    var sDomeId = $('#sDomeId'); //随动圆顶 id
+    var sDomeName = $('#sDomeName'); //随动圆顶 名称
+    var sDomeMaxSpeed = $('#sDomeMaxSpeed'); //随动圆顶 最大转动速度
+    var sDomeDiameter = $('#sDomeDiameter'); //随动圆顶 尺寸大小
+    var sDomeHasShade = $('#sDomeHasShade'); //随动圆顶 风帘
+    var sDomeHasShade_1 = $('#sDomeHasShade-1'); //随动圆顶 无风帘
+    var sDomeCanSetDomePositin = $('#sDomeCanSetDomePositin'); //随动圆顶 设置目标方位
+    var sDomeCanSetDomePositin_1 = $('#sDomeCanSetDomePositin-1'); //随动圆顶 不支持设置目标方位
+    var sDomeCanSetShadePosition = $('#sDomeCanSetShadePosition'); //随动圆顶 支持设置风帘位置
+    var sDomeCanSetShadePosition_1 = $('#sDomeCanSetShadePosition-1'); //随动圆顶 不支持设置风帘位置
+    var sDomeCanSetRotateSpeed = $('#sDomeCanSetRotateSpeed'); //随动圆顶 支持设置转动速度
+    var sDomeCanSetRotateSpeed_1 = $('#sDomeCanSetRotateSpeed-1'); //随动圆顶 不支持设置转动速度
+    var sDomeCanStop = $('#sDomeCanStop'); //随动圆顶 支持停止运动
+    var sDomeCanStop_1 = $('#sDomeCanStop-1'); //随动圆顶 不支持停止运动
+    var sDomeCanOpenShutter = $('#sDomeCanOpenShutter'); //随动圆顶 支持打开天窗
+    var sDomeCanOpenShutter_1 = $('#sDomeCanOpenShutter-1'); //随动圆顶 不支持打开天窗
+    var sDomeCanSetShadeSpeed = $('#sDomeCanSetShadeSpeed'); //随动圆顶 控制风帘运动
+    var sDomeCanSetShadeSpeed_1 = $('#sDomeCanSetShadeSpeed-1'); //随动圆顶 控制风帘运动 否
+    var sDomeCanConnect = $('#sDomeCanConnect'); //随动圆顶 支持连接
+    var sDomeCanConnect_1 = $('#sDomeCanConnect-1'); //随动圆顶 支持连接 否
+    var sDomeAttrModifyTime = $('#sDomeAttrModifyTime'); //属性更新时间
+    var sDomeAttrVersion = $('#sDomeAttrVersion'); //属性 版本号
+
+    sDomeBtn.click(function () {
+        var sDome_Radio = sDomeForm.find('input[type="radio"]:checked'); //获取被点击的单选框
+
+        //若漏过某个选项，则提示用户，不提交表单
+        if ( sDome_Radio.length < 8 )
+        {
+            layer.alert('您遗漏了单选项固定属性!'); return;
+        }
+        //检查望远镜下拉选择框 是否选择了某望远镜
+        var atId = atNo.val();
+        if ( atId == 0)
+        {//未选择某个望远镜
+            layer.alert('请选择您要配置的望远镜!');return;
+        }
+        var sDome_Data = new FormData(sDomeForm[0]);
+        sDome_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
+
+        $.ajax({
+            type: 'post',
+            url: 'slaveDome_config',
+            data : sDome_Data,
+            processData : false,
+            contentType : false,
+            success:  function (info) {
+                if ( info.indexOf('{') == -1 ) //info 不是json数据
+                {
+                    layer.alert(info);
+                    if (info.indexOf('登录') !== -1)
+                    {
+                    	location.href = '/';
+                    }
+                }else{//解析 处理 json
+                    var info = $.parseJSON(info);
+                    layer.alert(info.msg);
+                    sDomeAttrModifyTime.html(info.attrmodifytime);
+                    //在页面显示已上传的文件名
+                    if ( info.file ) //有已上传的文件信息
+                    {
+                        show_file (sDomeFile, info.file);
+                    }else{
+                        sDomeFile.html('');
+                    }
+                }//解析 处理 json 结束
+             },
+             error:  function () {
+	              layer.alert('网络异常,请重新提交');
+             },
+        })
+    });/*随动圆顶 ajax 结束*/
+
+    /*显示随动圆顶配置数据*/
+    function show_sDome_data (data)
+    {
+        sDomeIp.val(data.ip);
+        sDomeId.val(data.sdomeid);
+        sDomeName.val(data.name);
+        sDomeTeleId.html(data.atname);
+        data.dometype === undefined ? sDomeType.val('0') : sDomeType.val(data.dometype);
+        sDomeMaxSpeed.val(data.maxspeed);
+        sDomeDiameter.val(data.diameter);
+        data.hasshade == '1' ? sDomeHasShade.click() : sDomeHasShade_1.click();
+        data.cansetdomepositin == '1' ? sDomeCanSetDomePositin.click() : sDomeCanSetDomePositin_1.click();
+        data.cansetshadeposition == '1' ? sDomeCanSetShadePosition.click() : sDomeCanSetShadePosition_1.click();
+        data.cansetrotatespeed == '1' ? sDomeCanSetRotateSpeed.click() : sDomeCanSetRotateSpeed_1.click();
+        data.canstop == '1' ? sDomeCanStop.click() : sDomeCanStop_1.click();
+        data.canopenshutter == '1' ? sDomeCanOpenShutter.click() : sDomeCanOpenShutter_1.click();
+        data.cansetshadespeed == '1' ? sDomeCanSetShadeSpeed.click() : sDomeCanSetShadeSpeed_1.click();
+        data.canconnect == '1' ? sDomeCanConnect.click() : sDomeCanConnect_1.click();
+        data.attrmodifytime ? sDomeAttrModifyTime.html(data.attrmodifytime) : sDomeAttrModifyTime.html('');
+        sDomeAttrVersion.val(data.attrversion);
+    }/*显示随动圆顶配置数据 结束*/
+    /*随动圆顶  js事件 结束*/
+
+    /*全开圆顶 js事件*/
+    var oDomeForm = $('#oDome');  //获取表单
+    var oDomeBtn = $('#oDomeBtn');  //获取 提交按钮
+    var oDomeTeleId = $('#oDomeTeleId');  //全开圆顶 隶属望远镜
+    var oDomeFile = $('#oDomeFile');  //全开圆顶 相关文件
+    var oDomeIp = $('#oDomeIp');  //全开圆顶 ip
+    var oDomeId = $('#oDomeId');  //全开圆顶 id
+    var oDomeName = $('#oDomeName');  //名称
+    var oDomeDiameter = $('#oDomeDiameter');  //尺寸
+    var oDomeCanOpenDome = $('#oDomeCanOpenDome');  //打开圆顶 是
+    var oDomeCanOpenDome_1 = $('#oDomeCanOpenDome-1');  //打开圆顶 否
+    var oDomeCanConnect = $('#oDomeCanConnect');  //支持连接 是
+    var oDomeCanConnect_1 = $('#oDomeCanConnect-1');  //支持连接 否
+    var odomeAttrversion = $('#odomeAttrversion');  //属性版本号
+    var oDomeAttrModifyTime = $('#oDomeAttrModifyTime');  //属性 更新时间
+
+    oDomeBtn.click(function () {
+        var oDome_Radio = oDomeForm.find('input[type="radio"]:checked'); //获取被点击的单选框
+      
+        //若漏过某个选项，则提示用户，不提交表单
+        if ( oDome_Radio.length < 2 )
+        {
+            layer.alert('您遗漏了单选项固定属性!'); return;
+        }
+        //检查望远镜下拉选择框 是否选择了某望远镜
+        var atId = atNo.val();
+        if ( atId == 0)
+        {//未选择某个望远镜
+            layer.alert('请选择您要配置的望远镜!');return;
+        }
+        var oDome_Data = new FormData(oDomeForm[0]);
+        oDome_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
+
+        $.ajax({
+            type: 'post',
+            url: 'oDome_config',
+            data : oDome_Data,
+            processData : false,
+            contentType : false,
+            success:  function (info) {
+                if ( info.indexOf('{') == -1 ) //info 不是json数据
+                {
+                    layer.alert(info);
+                    if (info.indexOf('登录') !== -1)
+                    {
+                    	location.href = '/';
+                    }
+                }else{//解析 处理 json
+                    var info = $.parseJSON(info);
+                    layer.alert(info.msg);
+                    oDomeAttrModifyTime.html(info.attrmodifytime);
+                    //在页面显示已上传的文件名
+                    if ( info.file ) //有已上传的文件信息
+                    {
+                        show_file (oDomeFile, info.file);
+                    }else{
+                        oDomeFile.html('');
+                    }
+                }//解析 处理 json 结束
+             },
+             error:  function () {
+	              layer.alert('网络异常,请重新提交');
+             },
+        })
+    });/*全开圆顶 ajax 结束*/
+
+    function show_oDome_data (data)
+    {
+        oDomeIp.val(data.ip);
+        oDomeId.val(data.odomeid);
+        oDomeName.val(data.name);
+        oDomeTeleId.html(data.atname);
+        data.type === undefined ? oDomeType.val('0') : oDomeType.val(data.type);
+        oDomeDiameter.val(data.diameter);
+        oDomeName.val(data.name);
+        data.canopendome == '1' ? oDomeCanOpenDome.click() : oDomeCanOpenDome_1.click();
+        data.canconnect == '1' ? oDomeCanConnect.click() : oDomeCanConnect_1.click();
+        odomeAttrversion.val(data.attrversion);
+        data.attrmodifytime ? oDomeAttrModifyTime.html(data.attrmodifytime) : oDomeAttrModifyTime.html('');
+    }
+    /*全开圆顶 js事件 结束*/
+
+    /*调焦器 js事件*/
+    var focusBtn = $('#focusBtn'); //获取调焦器 提交按钮
+    var focusForm = $('#focus'); //调焦器 表单
+    var focusAttrModifyTime = $('#focusAttrModifyTime'); //属性更新时间
+    var focusFile = $('#focusFile'); //相关文件
+    var focusIp = $('#focusIp'); //ip
+    var focusId = $('#focusId'); //id
+    var focusName = $('#focusName'); //名称
+    var focusTeleId = $('#focusTeleId'); //隶属望远镜
+    var focusMaxValue = $('#focusMaxValue'); //最大值
+    var focusMinValue = $('#focusMinValue'); //最小值
+    var focusIncrement = $('#focusIncrement'); //分辨率
+    var focusMaxSpeed = $('#focusMaxSpeed'); //最大速度
+    var focusCanConnect = $('#focusCanConnect'); //连接 是
+    var focusCanConnect_1 = $('#focusCanConnect-1'); //连接 否
+    var focusCanFindHome = $('#focusCanFindHome'); //找零 是
+    var focusCanFindHome_1 = $('#focusCanFindHome-1'); //找零 否
+    var focusTempeCompensate = $('#focusTempeCompensate'); //进行温度补偿 是
+    var focusTempeCompensate_1 = $('#focusTempeCompensate-1'); //进行温度补偿 否
+    var focusCanSetPosition = $('#focusCanSetPosition'); //进行温度补偿 是
+    var focusCanSetPosition_1 = $('#focusCanSetPosition-1'); //进行温度补偿 否
+    var focusCanSetSpeed = $('#focusCanSetSpeed'); //设置恒速运动 是
+    var focusCanSetSpeed_1 = $('#focusCanSetSpeed-1'); //设置恒速运动 否
+    var focusCanStop = $('#focusCanStop'); //支持停止运动 是
+    var focusCanStop_1 = $('#focusCanStop-1'); //支持停止运动 否
+    var enableTemperCompensate = $('#enableTemperCompensate'); //使能温度补偿 是
+    var enableTemperCompensate_1 = $('#enableTemperCompensate-1'); //使能温度补偿 否
+    var focusTemperCompensateCoef_1 = $('#focusTemperCompensateCoef-1'); //设置温度补偿系数 否
+    var focusAttrVersion = $('#focusAttrVersion'); //属性版本号
+
+    focusBtn.click(function () {
+        var focus_Radio = focusForm.find('input[type="radio"]:checked'); //获取被点击的单选框
+      
+        //若漏过某个选项，则提示用户，不提交表单
+        if ( focus_Radio.length < 5 )
+        {
+            layer.alert('您遗漏了单选项固定属性!'); return;
+        }
+        //检查望远镜下拉选择框 是否选择了某望远镜
+        var atId = atNo.val();
+        if ( atId == 0)
+        {//未选择某个望远镜
+            layer.alert('请选择您要配置的望远镜!');return;
+        }
+        var focus_Data = new FormData(focusForm[0]);
+        focus_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
+
+        $.ajax({
+            type: 'post',
+            url: 'focus_config',
+            data : focus_Data,
+            processData : false,
+            contentType : false,
+            success:  function (info) {
+                if ( info.indexOf('{') == -1 ) //info 不是json数据
+                {
+                    layer.alert(info);
+                    if (info.indexOf('登录') !== -1)
+                    {
+                    	location.href = '/';
+                    }
+                }else{//解析 处理 json
+                    var info = $.parseJSON(info);
+                    layer.alert(info.msg);
+                    focusAttrModifyTime.html(info.attrmodifytime);
+                    //在页面显示已上传的文件名
+                    if ( info.file ) //有已上传的文件信息
+                    {
+                        show_file (focusFile, info.file);
+                    }else{
+                        focusFile.html('');
+                    }
+                }//解析 处理 json 结束
+             },
+             error:  function () {
+	              layer.alert('网络异常,请重新提交');
+             },
+        })
+    });/*调焦器 ajax 结束*/
+
+    function show_focus_data (data)
+    {
+        focusIp.val(data.ip);
+        focusId.val(data.focusid);
+        focusName.val(data.name);
+        focusTeleId.html(data.atname);
+        focusMaxValue.val(data.maxvalue);
+        focusMinValue.val(data.minvalue);
+        focusIncrement.val(data.increment);
+        focusMaxSpeed.val(data.maxspeed);
+        data.canconnect == '1' ? focusCanConnect.click() : focusCanConnect_1.click();
+        data.canfindhome == '1' ? focusCanFindHome.click() : focusCanFindHome_1.click();
+        data.cantemperturecompensate == '1' ? focusTempeCompensate.click() : focusTempeCompensate_1.click();
+        data.cansetposition == '1' ? focusCanSetPosition.click() : focusCanSetPosition_1.click();
+        data.cansetspeed == '1' ? focusCanSetSpeed.click() : focusCanSetSpeed_1.click();
+        data.canstop == '1' ? focusCanStop.click() : focusCanStop_1.click();
+        data.canenabletemperturecompensate == '1' ? enableTemperCompensate.click() : enableTemperCompensate_1.click();
+        data.cansettemperturecompensatecoefficient == '1' ? focusTemperCompensateCoef.click() : focusTemperCompensateCoef_1.click();
+        focusAttrVersion.val(data.attrversion);
+        data.attrmodifytime ? focusAttrModifyTime.html(data.attrmodifytime) : focusAttrModifyTime.html('');
+    }
+    /*调焦器 js事件 结束*/
+
+    /*导星望远镜 js事件*/
+    var guideScopeBtn = $('#guideScopeBtn'); //提交按钮
+    var guideScope = $('#guideScope'); //表单
+    var guideScopeAttrModifyTime = $('#guideScopeAttrModifyTime'); //属性更新时间
+    var guideScopeFile = $('#guideScopeFile'); //相关文件
+    var guideScopeIp = $('#guideScopeIp'); //ip
+    var guideScopeId = $('#guideScopeId'); //id
+    var guideScopeName = $('#guideScopeName'); //名称
+    var guideScopeTeleId = $('#guideScopeTeleId'); //隶属望远镜
+    var guideScopeAperture = $('#guideScopeAperture'); //口径
+    var guideScopeFocusLength = $('#guideScopeFocusLength'); //焦距
+    var guideScopeMirrorCover = $('#guideScopeMirrorCover'); //镜盖（轴5） 有
+    var guideScopeMirrorCover_1 = $('#guideScopeMirrorCover-1'); //镜盖（轴5） 无
+    var SupportAutoFocus = $('#SupportAutoFocus'); //自动调焦 是
+    var SupportAutoFocus_1 = $('#SupportAutoFocus-1'); //自动调焦 否
+    var guideScopeCanConnect = $('#guideScopeCanConnect'); //连接 是
+    var guideScopeCanConnect_1 = $('#guideScopeCanConnect-1'); //连接 否
+    var guideScopeOpenCover = $('#guideScopeOpenCover'); //镜盖操作 是
+    var guideScopeOpenCover_1 = $('#guideScopeOpenCover-1'); //镜盖操作 否
+    var guideEnableAutoFocus = $('#guideEnableAutoFocus'); //使能自动调焦 是
+    var guideEnableAutoFocus_1 = $('#guideEnableAutoFocus-1'); //使能自动调焦 否
+    var guideScopeAttrVersion = $('#guideScopeAttrVersion'); //版本号
+    
+
+    guideScopeBtn.click(function () {
+        var guide_Radio = guideScope.find('input[type="radio"]:checked'); //获取被点击的单选框
+      
+        //若漏过某个选项，则提示用户，不提交表单
+        if ( guide_Radio.length < 5 )
+        {
+            layer.alert('您遗漏了单选项固定属性!'); return;
+        }
+        //检查望远镜下拉选择框 是否选择了某望远镜
+        var atId = atNo.val();
+        if ( atId == 0)
+        {//未选择某个望远镜
+            layer.alert('请选择您要配置的望远镜!');return;
+        }
+        var guide_Data = new FormData(guideScope[0]);
+        guide_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
+
+        $.ajax({
+            type: 'post',
+            url: 'guideScope_config',
+            data : guide_Data,
+            processData : false,
+            contentType : false,
+            success:  function (info) {
+                if ( info.indexOf('{') == -1 ) //info 不是json数据
+                {
+                    layer.alert(info);
+                    if (info.indexOf('登录') !== -1)
+                    {
+                    	location.href = '/';
+                    }
+                }else{//解析 处理 json
+                    var info = $.parseJSON(info);
+                    layer.alert(info.msg);
+                    guideScopeAttrModifyTime.html(info.attrmodifytime);
+                    //在页面显示已上传的文件名
+                    if ( info.file ) //有已上传的文件信息
+                    {
+                        show_file (guideScopeFile, info.file);
+                    }else{
+                        guideScopeFile.html('');
+                    }
+                }//解析 处理 json 结束
+             },
+             error:  function () {
+	              layer.alert('网络异常,请重新提交');
+             },
+        })
+    });/*导星望远镜 ajax 结束*/
+
+    function show_guide_data (data)
+    {
+        guideScopeIp.val(data.ip);
+        guideScopeId.val(data.guidescopeid);
+        guideScopeName.val(data.name);
+        guideScopeTeleId.html(data.atname);
+        guideScopeAperture.val(data.aperture);
+        guideScopeFocusLength.val(data.focuslength);
+        data.opticalstructure === undefined ? guideScopeOpticalStructure.val('0') : guideScopeOpticalStructure.val(data.opticalstructure);
+        data.hasmirrorcover == '1' ? guideScopeMirrorCover.click() : guideScopeMirrorCover_1.click();
+        data.issupportautofocus == '1' ? SupportAutoFocus.click() : SupportAutoFocus_1.click();
+        data.canconnect == '1' ? guideScopeCanConnect.click() : guideScopeCanConnect_1.click();
+        data.canopencover == '1' ? guideScopeOpenCover.click() : guideScopeOpenCover_1.click();
+        data.canenableautofocus == '1' ? guideEnableAutoFocus.click() : guideEnableAutoFocus_1.click();
+        guideScopeAttrVersion.val(data.attrversion);
+        data.attrmodifytime ? guideScopeAttrModifyTime.html(data.attrmodifytime) : guideScopeAttrModifyTime.html('');
+    }
+    /*导星望远镜 js事件 结束*/
 
     /*显示各设备相关文件*/
     function show_file (selector, file_data)

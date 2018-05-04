@@ -51,7 +51,7 @@ class Page extends Base
     public function at_config()
     {
         //首先获取已添加的望远镜列表, 查字段id和atname
-        $atList = Db::table('atlist')->field('id, atname')->select();
+        $atList = Db::table('atlist')->field('id, atname')->order('id asc')->select();
         if (!$atList)
         {//还未添加望远镜
             $this->error('请先添加望远镜!');
@@ -165,10 +165,9 @@ class Page extends Base
             return $errMsg;
         }else{//获取相应望远镜的配置数据，以json格式返回
             /*1、获取19个动态增减的固定属性数据*/
-            $result['confOption'] = $this->get_19confOption ();
-            
-            
-            /*1、获取19个动态增减的固定属性数据 结束*/
+            $result['confOption'] = $this->get_19confOption ();            
+            /*获取19个动态增减的固定属性数据 结束*/
+
             $id = input('id'); //获取相应望远镜的id 在atlist表中此$id对应id字段,其他表中对应teleid字段
             /*查转台的配置数据 需要查atlist表、gimbalconf表*/
             $at_data = Db::table('atlist')->where('id', $id)->find();
@@ -231,6 +230,7 @@ class Page extends Base
                 }
             }/*查ccd-No1相关文件 结束*/
             /*查ccd配置数据 结束*/
+
             /*查滤光片配置数据*/
             $fiter_data = Db::table('filterconf')->where('teleid', $id)->find();
             //隶属望远镜的值 是at_data['atname'] $ccd_data['atname'] = $at_data['atname'];
@@ -251,11 +251,106 @@ class Page extends Base
                     foreach ( $res as $k)
                     {
                         $result['filter_file'][] = iconv('GBK', 'UTF-8', $k);  //将文件名转为utf-8
-                        //$result['filter_file'][] = 'haha';
                     }
                 }
             }/*查滤光片相关文件 结束*/
             /*查滤光片配置数据 结束*/
+
+             /*查随动圆顶配置数据*/
+             $sDome_data = Db::table('sdomeconf')->where('teleid', $id)->find();
+             if ( isset ( $at_data['atname'] ) ) $sDome_data['atname'] = $at_data['atname'];
+          
+             $result['sDome_data'] = $sDome_data;
+ 
+             /*查随动圆顶相关文件*/
+             //随动圆顶目录
+             $dir = 'sDome' . $id;
+             if ( file_exists($file_path . "/$dir") )
+             {
+                 $res = scandir ($file_path . "/$dir");
+ 
+                 if ( $res !== false && count($res) > 2 )
+                 {
+                     unset ($res[0], $res[1]); //删除前2个数据
+                     foreach ( $res as $k)
+                     {
+                        $result['sDome_file'][] = iconv('GBK', 'UTF-8', $k);  //将文件名转为utf-8
+                     }
+                 }
+             }/*查随动圆顶相关文件 结束*/
+             /*查随动圆顶配置数据 结束*/
+
+             /*查全开圆顶配置数据*/
+             $oDome_data = Db::table('odomeconf')->where('teleid', $id)->find();
+             if ( isset ( $at_data['atname'] ) ) $oDome_data['atname'] = $at_data['atname'];
+          
+             $result['oDome_data'] = $oDome_data;
+ 
+             /*查全开圆顶相关文件*/
+             //全开圆顶目录
+             $dir = 'oDome' . $id;
+             if ( file_exists($file_path . "/$dir") )
+             {
+                 $res = scandir ($file_path . "/$dir");
+ 
+                 if ( $res !== false && count($res) > 2 )
+                 {
+                     unset ($res[0], $res[1]); //删除前2个数据
+                     foreach ( $res as $k)
+                     {
+                        $result['oDome_file'][] = iconv('GBK', 'UTF-8', $k);  //将文件名转为utf-8
+                     }
+                 }
+             }/*查全开圆顶相关文件 结束*/
+             /*查全开圆顶配置数据 结束*/
+
+             /*查调焦器配置数据*/
+             $focus_data = Db::table('focusconf')->where('teleid', $id)->find();
+             if ( isset ( $at_data['atname'] ) ) $focus_data['atname'] = $at_data['atname'];
+          
+             $result['focus_data'] = $focus_data;
+ 
+             /*查调焦器相关文件*/
+             //调焦器目录
+             $dir = 'focus' . $id;
+             if ( file_exists($file_path . "/$dir") )
+             {
+                 $res = scandir ($file_path . "/$dir");
+ 
+                 if ( $res !== false && count($res) > 2 )
+                 {
+                     unset ($res[0], $res[1]); //删除前2个数据
+                     foreach ( $res as $k)
+                     {
+                        $result['focus_file'][] = iconv('GBK', 'UTF-8', $k);  //将文件名转为utf-8
+                     }
+                 }
+             }/*查调焦器相关文件 结束*/
+             /*查调焦器配置数据 结束*/
+
+             /*查导星望远镜配置数据*/
+             $guide_data = Db::table('guideconf')->where('teleid', $id)->find();
+             if ( isset ( $at_data['atname'] ) ) $guide_data['atname'] = $at_data['atname'];
+          
+             $result['guide_data'] = $guide_data;
+ 
+             /*查导星望远镜相关文件*/
+             //调焦器目录
+             $dir = 'guideScope' . $id;
+             if ( file_exists($file_path . "/$dir") )
+             {
+                 $res = scandir ($file_path . "/$dir");
+ 
+                 if ( $res !== false && count($res) > 2 )
+                 {
+                     unset ($res[0], $res[1]); //删除前2个数据
+                     foreach ( $res as $k)
+                     {
+                        $result['guide_file'][] = iconv('GBK', 'UTF-8', $k);  //将文件名转为utf-8
+                     }
+                 }
+             }/*查调焦器相关文件 结束*/
+             /*查调焦器配置数据 结束*/
             //据此$id去各自设备的固定属性表中获取数据 结束
             
             //return json数据给前端
