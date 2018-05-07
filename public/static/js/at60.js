@@ -1639,55 +1639,101 @@
         }
    );
    
-   //全开圆顶 连接按钮 js 事件/////////////////////////////////////
-    var fDomeConnectFlag = 0; //此处代码 需要修改
-   $('#fDomeConnect').click(function (){
-       var e = $(this);
-       fDomeConnectFlag ++;
-       if (e.val() == '连接圆顶')   val = '1';
-       if (e.val() == '断开圆顶')   val = '2';
-       $.ajax({
-            type : 'post',
-            url : '/opendome',
-            data : {fDomeConnect:val,},             
+   //全开圆顶 按钮 js 事件/////////////////////////////////////
+   var oDome_command = $('#oDome_command');
+   //var oDome_btn = oDome_command.children('input');
+   var oDome_btn = oDome_command.children('input'); //所有的按钮
+   var oDome_btn_3 = oDome_command.children('input:gt(1)'); //后面3个按钮
+   /****************全开圆顶 连接/断开****************/
+   oDome_command.on('click', 'input', function () {
+	    var that = $(this);
+	    that.addClass('btnClick');
+		oDome_btn.not(that).removeClass('btnClick');
+		var v = that.val();
+		var fDomeConnect = ''; //连接/断开 指令的参数
+		var openDome = ''; //打开/关闭/停止 指令的参数
+
+		if ( v == '连接圆顶')
+		{
+			fDomeConnect = 1; 
+		}else if ( v == '断开圆顶' ){
+			fDomeConnect = 2;
+		}else if ( v == '打开' ){
+			openDome = 1;
+		}else if ( v == '关闭' ){
+			fDomeConnect = 0;
+		}else if ( v == '停止运动' ){
+			fDomeConnect = 2;
+		}
+
+		$.ajax ({
+            type: 'post',
+            url : '/opendome',
+            data : {
+				at : at,
+				fDomeConnect : fDomeConnect,
+				openDome : openDome
+			},
             success:  function (info) {
-	              layer.alert(info);
-                if (fDomeConnectFlag % 2 == 1 && info.indexOf('成功') != -1)
-                {//连接圆顶指令 发送成功
-                    e.val('断开圆顶');
-                }else if(fDomeConnectFlag % 2 == 0 && info.indexOf('成功') != -1){//断开圆顶指令 发送成功
-                    e.val('连接圆顶');
-                }
+				layer.alert(info);
+				if (info.indexOf('登录') !== -1)
+				{
+					location.href = '/';
+				}
             },
             error:  function () {
-	              layer.alert('网络异常,请再次点击该按钮!');
-            },
-        });
-   });
+                layer.alert('网络异常,请重新提交');
+           },
+       });
+   })/****************全开圆顶 连接/断开   结束****************/
+//     var fDomeConnectFlag = 0; //此处代码 需要修改
+//    $('#fDomeConnect').click(function (){
+//        var e = $(this);
+//        fDomeConnectFlag ++;
+//        if (e.val() == '连接圆顶')   val = '1';
+//        if (e.val() == '断开圆顶')   val = '2';
+//        $.ajax({
+//             type : 'post',
+//             url : '/opendome',
+//             data : {fDomeConnect:val,},             
+//             success:  function (info) {
+// 	              layer.alert(info);
+//                 if (fDomeConnectFlag % 2 == 1 && info.indexOf('成功') != -1)
+//                 {//连接圆顶指令 发送成功
+//                     e.val('断开圆顶');
+//                 }else if(fDomeConnectFlag % 2 == 0 && info.indexOf('成功') != -1){//断开圆顶指令 发送成功
+//                     e.val('连接圆顶');
+//                 }
+//             },
+//             error:  function () {
+// 	              layer.alert('网络异常,请再次点击该按钮!');
+//             },
+//         });
+//    });
    
    //全开圆顶 打开 onchange事件/////////////////////////////////
-    var fDome = $('#fDomeConnect').next('select');
+//     var fDome = $('#fDomeConnect').next('select');
 	
-   fDome.change(function (){
-	   var fDomeVal = fDome.val();
-	   if (fDomeVal !== '')
-	   {
-		   $.ajax({
-            type : 'post',
-            url : '/opendome',
-            data : {openDome:fDomeVal,},             
-            success:  function (info) {
-			    layer.alert(info); 
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次选择该指令!');
-            },
-        });
-	   }
+//    fDome.change(function (){
+// 	   var fDomeVal = fDome.val();
+// 	   if (fDomeVal !== '')
+// 	   {
+// 		   $.ajax({
+//             type : 'post',
+//             url : '/opendome',
+//             data : {openDome:fDomeVal,},             
+//             success:  function (info) {
+// 			    layer.alert(info); 
+//             },
+//             error:  function () {
+// 	              layer.alert('网络异常,请再次选择该指令!');
+//             },
+//         });
+// 	   }
 		
-   });
+//    });
    
-   //滤光片  连接按钮 js 事件/////////////////////////////////
+   //滤光片  按钮 js 事件 结束/////////////////////////////////
    $('#filterConnect').click(function (){
 	   $(this).addClass('btnClick');
 	   $('#btnsFilter input').not($(this)).removeClass('btnClick');

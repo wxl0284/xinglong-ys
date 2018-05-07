@@ -506,6 +506,7 @@ $(function () {
     var gimbalCanconfigProperty_1 = $('#gimbalCanconfigProperty-1'); //转台 不支持属性设置
     var gimbalAttrVersion = $('#gimbalAttrVersion'); //转台 属性版本号
     var gimbalAttrModifyTime = $('#gimbalAttrModifyTime'); //转台 属性更新时间
+    var gimbal_h = $('#gimbal_h'); //标题
     
     //无第3轴时 禁用：轴3最大速度、轴3最大加速度、轴3复位位置gimbalHaveAxis3
     axis3_No.click(function () {
@@ -634,7 +635,7 @@ $(function () {
         data.cantracksatellite == '1' ? canTrackSatellite.click() : canTrackSatellite_1.click();
         data.canconfigproperty == '1' ? gimbalCanconfigProperty.click() : gimbalCanconfigProperty_1.click();
         gimbalAttrVersion.val(data.attrversion);
-        data.attrmodifytime ? gimbalAttrModifyTime.html(data.attrmodifytime) : gimbalAttrModifyTime.html('');
+        data.attrmodifytime ? (gimbalAttrModifyTime.html(data.attrmodifytime), gimbal_h.html('转台固定属性')) : (gimbalAttrModifyTime.html(''), gimbal_h.html('转台固定属性:未进行配置'));
     }/*显示转台的配置数据 结束*/
 
     /*ccd-No1 表单元素获取*/
@@ -705,6 +706,7 @@ $(function () {
     var ccdSetOverScan_1 = $('#ccdCanSetOverScan-1'); // 不支持Over scan
     var ccdAttrVersion = $('#ccdAttrVersion'); // 属性版本号
     var ccdAttrModifyTime = $('#ccdAttrModifyTime'); // 属性更新时间
+    var ccd_h = $('#ccd_h'); //标题
     /*ccd-No1 表单元素获取 结束*/
     
     /*ccd 提交按钮 点击事件*/
@@ -860,7 +862,7 @@ $(function () {
        data.cannoisefilter == '1' ? canNoiseFilter.click() : canNoiseFilter_1.click();
        data.cansetbaseline == '1' ? setBaseline.click() : setBaseline_1.click();
        data.cansetoverscan == '1' ? ccdSetOverScan.click() : ccdSetOverScan_1.click();
-       data.attrmodifytime ? ccdAttrModifyTime.html(data.attrmodifytime) : ccdAttrModifyTime.html('');
+       data.attrmodifytime ? ( ccdAttrModifyTime.html(data.attrmodifytime), ccd_h.html('CCD-No1固定属性') ) : ( ccdAttrModifyTime.html(''),  ccd_h.html('CCD-No1固定属性:未进行配置'));
        ccdAttrVersion.val(data.attrversion);
     }/*显示ccd-No1配置数据 结束*/
     
@@ -883,6 +885,7 @@ $(function () {
     var filterCanFindHome_1 = $('#filterCanFindHome-1'); //不支持 找零
     var filterAttrModifyTime = $('#filterAttrModifyTime'); //属性更新时间
     var filterAttrVersion = $('#filterAttrVersion'); //属性 版本号
+    var filter_h = $('#filter_h'); //标题
  //根据插槽数目的值，在插槽序号的下拉框中显示相应数目的插槽 并显示各槽的滤光片类型
     /*1、首先获取插槽数目的值*/
     var filterNum = $('#filterNum'); //插槽数目这个input框
@@ -1051,7 +1054,7 @@ $(function () {
         data.cansetfilterposition == '1' ? canSetFilterPosition.click() : canSetFilterPosition_1.click();
         data.canconnect == '1' ? filterCanConnect.click() : filterCanConnect_1.click();
         data.canfindhome == '1' ? filterCanFindHome.click() : filterCanFindHome_1.click();
-        data.attrmodifytime ? filterAttrModifyTime.html(data.attrmodifytime) : filterAttrModifyTime.html('');
+        data.attrmodifytime ? ( filterAttrModifyTime.html(data.attrmodifytime), filter_h.html('滤光片固定属性') ) : ( filterAttrModifyTime.html(''), filter_h.html('滤光片固定属性:未进行配置') );
         filterAttrVersion.val(data.attrversion);
     }/*显示滤光片配置数据 结束*/
 
@@ -1083,6 +1086,7 @@ $(function () {
     var sDomeCanConnect_1 = $('#sDomeCanConnect-1'); //随动圆顶 支持连接 否
     var sDomeAttrModifyTime = $('#sDomeAttrModifyTime'); //属性更新时间
     var sDomeAttrVersion = $('#sDomeAttrVersion'); //属性 版本号
+    var sDome_h = $('#sDome_h'); //标题
 
     sDomeBtn.click(function () {
         var sDome_Radio = sDomeForm.find('input[type="radio"]:checked'); //获取被点击的单选框
@@ -1152,7 +1156,7 @@ $(function () {
         data.canopenshutter == '1' ? sDomeCanOpenShutter.click() : sDomeCanOpenShutter_1.click();
         data.cansetshadespeed == '1' ? sDomeCanSetShadeSpeed.click() : sDomeCanSetShadeSpeed_1.click();
         data.canconnect == '1' ? sDomeCanConnect.click() : sDomeCanConnect_1.click();
-        data.attrmodifytime ? sDomeAttrModifyTime.html(data.attrmodifytime) : sDomeAttrModifyTime.html('');
+        data.attrmodifytime ? (sDomeAttrModifyTime.html(data.attrmodifytime), sDome_h.html('随动圆顶固定属性') ) : (sDomeAttrModifyTime.html(''), sDome_h.html('随动圆顶固定属性:未进行配置') );
         sDomeAttrVersion.val(data.attrversion);
     }/*显示随动圆顶配置数据 结束*/
     /*随动圆顶  js事件 结束*/
@@ -1172,6 +1176,7 @@ $(function () {
     var oDomeCanConnect_1 = $('#oDomeCanConnect-1');  //支持连接 否
     var odomeAttrversion = $('#odomeAttrversion');  //属性版本号
     var oDomeAttrModifyTime = $('#oDomeAttrModifyTime');  //属性 更新时间
+    var oDome_h = $('#oDome_h');  //标题
 
     oDomeBtn.click(function () {
         var oDome_Radio = oDomeForm.find('input[type="radio"]:checked'); //获取被点击的单选框
@@ -1235,7 +1240,7 @@ $(function () {
         data.canopendome == '1' ? oDomeCanOpenDome.click() : oDomeCanOpenDome_1.click();
         data.canconnect == '1' ? oDomeCanConnect.click() : oDomeCanConnect_1.click();
         odomeAttrversion.val(data.attrversion);
-        data.attrmodifytime ? oDomeAttrModifyTime.html(data.attrmodifytime) : oDomeAttrModifyTime.html('');
+        data.attrmodifytime ? ( oDomeAttrModifyTime.html(data.attrmodifytime), oDome_h.html('全开圆顶固定属性') ) : ( oDomeAttrModifyTime.html(''), oDome_h.html('全开圆顶固定属性:未进行配置') ) ;
     }
     /*全开圆顶 js事件 结束*/
 
@@ -1268,6 +1273,7 @@ $(function () {
     var enableTemperCompensate_1 = $('#enableTemperCompensate-1'); //使能温度补偿 否
     var focusTemperCompensateCoef_1 = $('#focusTemperCompensateCoef-1'); //设置温度补偿系数 否
     var focusAttrVersion = $('#focusAttrVersion'); //属性版本号
+    var focus_h = $('#focus_h'); //标题
 
     focusBtn.click(function () {
         var focus_Radio = focusForm.find('input[type="radio"]:checked'); //获取被点击的单选框
@@ -1338,7 +1344,7 @@ $(function () {
         data.canenabletemperturecompensate == '1' ? enableTemperCompensate.click() : enableTemperCompensate_1.click();
         data.cansettemperturecompensatecoefficient == '1' ? focusTemperCompensateCoef.click() : focusTemperCompensateCoef_1.click();
         focusAttrVersion.val(data.attrversion);
-        data.attrmodifytime ? focusAttrModifyTime.html(data.attrmodifytime) : focusAttrModifyTime.html('');
+        data.attrmodifytime ? (focusAttrModifyTime.html(data.attrmodifytime), focus_h.html('调焦器固定属性') ) : (focusAttrModifyTime.html(''), focus_h.html('调焦器固定属性:未进行配置') );
     }
     /*调焦器 js事件 结束*/
 
@@ -1364,6 +1370,7 @@ $(function () {
     var guideEnableAutoFocus = $('#guideEnableAutoFocus'); //使能自动调焦 是
     var guideEnableAutoFocus_1 = $('#guideEnableAutoFocus-1'); //使能自动调焦 否
     var guideScopeAttrVersion = $('#guideScopeAttrVersion'); //版本号
+    var guideScope_h = $('#guideScope_h'); //标题
     
 
     guideScopeBtn.click(function () {
@@ -1431,7 +1438,7 @@ $(function () {
         data.canopencover == '1' ? guideScopeOpenCover.click() : guideScopeOpenCover_1.click();
         data.canenableautofocus == '1' ? guideEnableAutoFocus.click() : guideEnableAutoFocus_1.click();
         guideScopeAttrVersion.val(data.attrversion);
-        data.attrmodifytime ? guideScopeAttrModifyTime.html(data.attrmodifytime) : guideScopeAttrModifyTime.html('');
+        data.attrmodifytime ? (guideScopeAttrModifyTime.html(data.attrmodifytime), guideScope_h.html('导星望远镜固定属性') ) : (guideScopeAttrModifyTime.html(''), guideScope_h.html('导星望远镜固定属性:未进行配置') );
     }
     /*导星望远镜 js事件 结束*/
 

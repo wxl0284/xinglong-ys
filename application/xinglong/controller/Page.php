@@ -4,47 +4,41 @@ namespace app\xinglong\controller;
 use app\xinglong\controller\Base;
 use think\Cache;
 use think\Db;
+use think\Session;
 
 class Page extends Base
 {
     //根据at参数显示不同望远镜页面
     public function at_page($at)
     {
-        /*
-        *此方法要修改
-        */
-        $confFile = $at . 'conf.txt'; //文件位60conf.txt
-
-        if (!file_exists($confFile) || !file_get_contents($confFile))
+        //根据$at获取相应望远镜的固定属性配置数据
+        $result = $this->get_conf ($at);
+        //halt(isset($result['gimbal']));
+        //halt($result);
+        //如果$result中无数据，即未进行任何配置
+        if ( !$result )
         {
-            $this->error('请先配置相应望远镜!', '/atconfig');
-        }else{
-            //计算晨光始、昏影终
-            $mjd = GetJD();  //修正儒略日
-            
-            $sunRise = 0; //晨光始
-            $sunSet = 0; //昏影终
-            
-            sunTwilight ($sunRise, $sunSet, $mjd, 8);
-            //halt(data2Time ($sunRise));
-            $sunRise = substr(data2Time ($sunRise), 1, 8);
-            $sunSet = substr(data2Time ($sunSet), 1, 8);
-
-            //将晨光始 昏影终 存入session
-            Session::set('sunRise', $sunRise);
-            Session::set('sunSet', $sunSet);
-            //读取60cm望远镜配置
-            $res = file_get_contents($confFile);
-            if (!$res)
-            {
-                $this->error("读取{$at}页面配置数据失败!");
-            }
-            //获取配置数据成功
-            $confData = json_decode($res, true);
-            //halt($confData['focuscanfindhome']);
-            $vars['configData'] = $confData;
-            return view('atpage', $vars); 	
+            $this->error('此望远镜还未进行属性配置!', '/atconfig'); //跳转至配置页面
         }
+
+        $result['at_id'] = $at;
+        //计算晨光始、昏影终
+        $mjd = GetJD();  //修正儒略日
+        
+        $sunRise = 0; //晨光始
+        $sunSet = 0; //昏影终
+        
+        sunTwilight ($sunRise, $sunSet, $mjd, 8);
+        //halt(data2Time ($sunRise));
+        $sunRise = substr(data2Time ($sunRise), 1, 8);
+        $sunSet = substr(data2Time ($sunSet), 1, 8);
+
+        //将晨光始 昏影终 存入session
+        Session::set('sunRise', $sunRise);
+        Session::set('sunSet', $sunSet);
+        
+        $vars['configData'] = $result;
+        return view('atpage', $vars);
     }//根据at参数显示不同望远镜页面 结束
 
     //显示望远镜配置页面 /////////
@@ -885,4 +879,89 @@ class Page extends Base
         }
         return $res;
     }/*获取19个动态增减的固定属性 数据 结束*/
+
+    /*获取相应望远镜固定属性数据*/
+    protected function get_conf ($at)
+    {
+        $result = []; //定义存储数据的数组
+
+        //查转台配置数据
+        $gimbal = Db::table('gimbalconf')->where('teleid', $at)->find();
+        if ( $gimbal )
+        {
+            $result['gimbal'] = $gimbal;
+        }
+
+        //查ccd-No1配置数据
+        $ccd = Db::table('ccdconf')->where('teleid', $at)->find();
+        if ( $ccd )
+        {
+            if ( $ccd['gainmode'] )  //处理增益模式，处理后直接在页面显示
+            {
+                $ccd['gainmode'] = str_replace ('#', ', ', $ccd['gainmode']);
+            }
+
+            if ( $ccd['readoutmode'] )  //处理读出模式，处理后直接在页面显示
+            {
+                $ccd['readoutmode'] = str_replace ('#', ', ', $ccd['readoutmode']);
+            }
+
+            //处理快门模式
+            if ( $ccd['shuttermode'] )  //处理快门模式，处理后直接在页面显示
+            {
+                $ccd['shuttermode'] = str_replace ('#', ', ', $ccd['shuttermode']);
+            }
+
+            //处理接口类型
+            if ( $ccd['interfacetype'] )  //处理接口类型，处理后直接在页面显示
+            {
+                $ccd['interfacetype'] = str_replace ('#', ', ', $ccd['interfacetype']);
+            }
+
+            //处理曝光触发模式
+            if ( $ccd['exposetriggermode'] )  //处理曝光触发模式，处理后直接在页面显示
+            {
+                $ccd['exposetriggermode'] = str_replace ('#', ', ', $ccd['exposetriggermode']);
+            }
+
+            $result['ccd'] = $ccd;
+        }
+        
+        //查滤光片配置数据
+        $filter = Db::table('filterconf')->where('teleid', $at)->find();
+        if ( $filter )
+        {
+            $result['filter'] = $filter;
+        }
+
+        //查随动圆顶配置数据
+        $sDome = Db::table('sdomeconf')->where('teleid', $at)->find();
+        if ( $sDome )
+        {
+            $result['sDome'] = $sDome;
+        }
+
+        //查全开圆顶配置数据
+        $oDome = Db::table('odomeconf')->where('teleid', $at)->find();
+        if ( $oDome )
+        {
+            $result['oDome'] = $oDome;
+        }
+
+        //查调焦器配置数据
+        $focus = Db::table('focusconf')->where('teleid', $at)->find();
+        if ( $focus )
+        {
+            $result['focus'] = $focus;
+        }
+
+        //查导星镜配置数据
+        $guide = Db::table('guideconf')->where('teleid', $at)->find();
+        if ( $guide )
+        {
+            $result['guide'] = $guide;
+        }
+
+        return $result;
+    }/*获取相应望远镜固定属性数据 结束*/
 }

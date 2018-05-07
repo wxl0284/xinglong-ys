@@ -62,6 +62,10 @@ class Focus extends Base
             $this->at = 35;
         }else if ($postData['at']== 100){
             $this->at = 34;
+        }else if ($postData['at']== 126){
+            $this->at = 33;
+        }else if ($postData['at']== 216){
+            $this->at = 32;
         }
 
         $command = input('command'); //获取提交的指令

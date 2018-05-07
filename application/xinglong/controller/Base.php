@@ -31,10 +31,25 @@ class Base extends Controller
     protected function get_atList()
     {
         //查询望远镜数据
-        $res = Db::table('atlist')->field('id, atname')->select();
+        $res = Db::table('atlist')->order('id asc')->select();
         if ( $res )
         {
-            $this->assign('atList', $res);
+            //将id 和 口径 aperture对应起来
+            foreach ( $res as $v)
+            {
+                $at_aperture[$v['id']] = $v['aperture']; //将id 和 口径 aperture对应起来
+                $at_name[$v['id']] = $v['atname']; //将id 和 望远镜名称 对应起来
+                $at_longitude[$v['id']] = $v['longitude']; //将id 和 经度 对应起来
+                $at_latitude[$v['id']] = $v['latitude']; //将id 和 纬度 对应起来
+            }
+
+            $this->assign([
+                'atList' => $res,
+                'at_aperture' => $at_aperture,
+                'at_name' => $at_name,
+                'at_longitude' => $at_longitude,
+                'at_latitude' => $at_latitude
+            ]);
         }
     }
     /*查询望远镜列表，并进行模板赋值 结束*/

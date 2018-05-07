@@ -44,7 +44,7 @@ header div div a {color:#eaf1f9;}*/
 
 #devsNav table tr{line-height:40px;}
 
-#devsNav table td{width:110px;text-align:center;}
+#devsNav table td{width:98px;text-align:center;}
 
 #devsNav table td a{color:#000;padding-bottom:11px;cursor:pointer;}
 
@@ -56,7 +56,7 @@ div.notCheck {color:#d0d0d0;}
 
 .properUl {margin-left:22px;}
 
-ul.properUl li {margin-right:8px;width:226px;margin-bottom:13px;}
+ul.properUl li {margin-right:8px;width:285px;margin-bottom:13px;}
 ul.properUl li span {color:#00B5EE;}
 
 .submitBtn {width:135px;height:32px;font-size:18px;}

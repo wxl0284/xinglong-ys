@@ -27,7 +27,7 @@
 			</select>
 		</h3><br>
 		<div id='allOptions' class=""><!--所有配置项-->
-			<h4 class='center'>转台固定属性</h4>
+			<h4 class='center' id='gimbal_h'>转台固定属性</h4>
 			<hr>
 			<form id='gimbal' class="form" enctype='multipart/form-data'><!--转台配置项-->
 				<table class="center_mrg">
@@ -56,12 +56,12 @@
 						<td>
 							<select id='gimbalType' name='type'>
 								<option value="0">请选择</option>
-								<option value="0x01">赤道式-德国</option>
-								<option value="0x02">赤道式-叉式</option>
-								<option value="0x03">赤道式-英式</option>
-								<option value="0x04">赤道式-轭式</option>
-								<option value="0x05">赤道式-摇篮式</option>
-								<option value="0x06">地平式</option>
+								<option value="赤道式-德国">赤道式-德国</option>
+								<option value="赤道式-叉式">赤道式-叉式</option>
+								<option value="赤道式-英式">赤道式-英式</option>
+								<option value="赤道式-轭式">赤道式-轭式</option>
+								<option value="赤道式-摇篮式">赤道式-摇篮式</option>
+								<option value="地平式">地平式</option>
 							</select>
 						</td>
 					</tr>
@@ -348,7 +348,7 @@
 				<input id='gimbalBtn' type='button' value="提交转台配置">
 			</form><!--转台配置项 结束--><br>
 			<!--如下为ccd配置项-->
-			<h4 class='center'>CCD-No1固定属性</h4>
+			<h4 class='center' id='ccd_h'>CCD-No1固定属性</h4>
 			<hr>
 			<form id='ccd-1' class="form" enctype='multipart/form-data'><!--ccd-No1配置项-->
 				<table class="center_mrg">
@@ -367,10 +367,10 @@
 						<td>
 						  <select id='ccdType' name='type'>
 							<option value="0">请选择</option>
-							<option value="0x00">CCD</option>
-							<option value="0x01">FullFrame CCD</option>
-							<option value="0x02">EMCCD</option>
-							<option value="0x03">sCMOS</option>
+							<option value="CCD">CCD</option>
+							<option value="FullFrame CCD">FullFrame CCD</option>
+							<option value="EMCCD">EMCCD</option>
+							<option value="sCMOS">sCMOS</option>
 						  </select>
 						</td>
 						<td>x像素:</td>
@@ -389,9 +389,7 @@
 						<td><input type='text' id='ccdSensorName' name='sensorname' placeholder="芯片名称"></td>
 						<td>图像位数:</td>
 						<td>
-							<select id='ccdImageBits' name='imagebits'>
-								<option value="0">请选择</option>
-							</select>
+							<select id='ccdImageBits' name='imagebits'></select>
 						</td>
 						<td>制冷方式:</td>
 						<td>
@@ -568,13 +566,13 @@
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>否<input type='radio' id='ccdCanSetGain-1' name='cansetgain' value="0"></label>
 						</td>
-						<td>设置读出速度模式值:</td>
+						<td>设置读出速度模式:</td>
 						<td>
 							<label>是<input type='radio' id='ccdCanSetReadoutSpeedMode' name='cansetreadoutspeedmode' value="1"></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>否<input type='radio' id='ccdCanSetReadoutSpeedMode-1' name='cansetreadoutspeedmode' value="0"></label>
 						</td>
-						<td>设置转移速度模式值:</td>
+						<td>设置转移速度模式:</td>
 						<td>
 							<label>是<input type='radio' id='ccdCanSetTransferSpeedMode' name='cansettransferspeedmode' value="1"></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -659,7 +657,7 @@
 				<input id='ccdBtn-1' type='button' value="提交CCD-No1配置">
 			</form><!--ccd-No1配置项 结束--><br>
 
-			<h4 class='center'>滤光片固定属性</h4>
+			<h4 class='center' id='filter_h'>滤光片固定属性</h4>
 			<hr>
 			<form id='filter' class="form" enctype='multipart/form-data'><!--滤光片配置项-->
 				<table class="center_mrg">
@@ -742,7 +740,7 @@
 				<input id='filterBtn' type='button' value="提交滤光片配置">
 			</form><!-- 滤光片固定属性配置项 结束--><br>
 			
-			<h4 class='center'>随动圆顶固定属性</h4>
+			<h4 class='center' id='sDome_h'>随动圆顶固定属性</h4>
 			<hr>
 			<form id='sDome' class="form" enctype='multipart/form-data'><!--随动圆顶配置项-->
 				<table class="center_mrg">
@@ -842,7 +840,7 @@
 				<input id='sDomeBtn' type='button' value="提交随动圆顶配置">
 			</form><!-- 随动圆顶固定属性配置项 结束--><br>
 
-			<h4 class='center'>全开圆顶固定属性</h4>
+			<h4 class='center' id='oDome_h'>全开圆顶固定属性</h4>
 			<hr>
 			<form id='oDome' class="form" enctype='multipart/form-data'><!--全开圆顶配置项-->
 				<table class="center_mrg">
@@ -898,7 +896,7 @@
 				<input id='oDomeBtn' type='button' value="提交全开圆顶配置">
 			</form><!-- 全开圆顶固定属性配置项 结束--><br>
 
-			<h4 class='center'>调焦器固定属性</h4>
+			<h4 class='center' id='focus_h'>调焦器固定属性</h4>
 			<hr>
 			<form id='focus' class="form" enctype='multipart/form-data'><!--调焦器配置项-->
 				<table class="center_mrg">
@@ -1002,7 +1000,7 @@
 				<input id='focusBtn' type='button' value="提交调焦器配置">
 			</form><!--调焦器固定属性配置项 结束--><br>
 
-			<h4 class='center'>导星望远镜固定属性</h4>
+			<h4 class='center' id='guideScope_h'>导星望远镜固定属性</h4>
 			<hr>
 			<form id='guideScope' class="form" enctype='multipart/form-data'><!--导星望远镜配置项-->
 				<table class="center_mrg">
