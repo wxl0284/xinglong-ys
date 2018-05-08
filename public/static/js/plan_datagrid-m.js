@@ -123,17 +123,19 @@
 //观测计划的赤经和赤纬 js事件//////////////////////////////
 	var table = $('#dg'); //定义全局table 变量
 	var editRow = undefined;  //全局开关, 编辑
+	var planForm = $('#imptPlan');
 	
 //导入计划文件 上传////////////////////////////////////////////
 	function importPlan ()
 	{
-		var planForm = $('#imptPlan');
+		//var planForm = $('#imptPlan');
 		var plan = planForm.find('input');
 		planForm[0].reset();//重置表单数据
 		plan.click(); //打开上传文件的选择窗口
 		
 		plan.one('change', function () {
 			var formData = new FormData(planForm[0]);
+
 			$.ajax({
 				type: 'post',
 	            url : '/importplan',
@@ -557,7 +559,8 @@
 					planOption : option,
 					mode : modeVal,
 					start : index +1,
-					command : 1,	//标识 plan.php控制器中用以区别要执行的函数
+					command : 1, //标识 plan.php控制器中用以区别要执行的函数
+					at : at,	
 				},             
 	            success:  function (info) {
 		            planErr = 0;
@@ -668,6 +671,7 @@
 				data: {
 					planData: plans,
 					command : 2,  //标识 plan.php控制器中用以区别要执行的函数
+					at : at,
 				},
 				success: function (info){
 					planErr = 0;

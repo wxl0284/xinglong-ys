@@ -733,12 +733,11 @@
 		$(this).data('err', err);
 	});////验证 位置修正-速度 结束//////////////////////////
 //验证转台 表单指令数据 结束/////////////////////////////////////
-
+var gimbal_form = $('#at60Gimbal');    //获取转台表单元素
 //转台 带参数指令 表单提交//////////////////////////////////
     $('#gimbalSbmt').click(function () {
 		var err = 0; //错误标识
-        var form = $('#at60Gimbal');    //获取转台表单元素
-		var textE = form.children('div:not(.notCheck)').find('input.blur');
+		var textE = gimbal_form.children('div:not(.notCheck)').find('input.blur');
 		textE.each(function () {
 			$(this).blur();
 			err += $(this).data('err');
@@ -748,8 +747,8 @@
 			return;  //指令输入有误 不提交
 		}
 		
-        var formData = new FormData(form[0]);  //将jquery对象转为js-dom对象
-		formData.append('at', at);
+        var gimbal_formData = new FormData(gimbal_form[0]);  //将jquery对象转为js-dom对象
+		gimbal_formData.append('at', at);
 		//执行ajax
 			$.ajax ({
               type: 'post',
@@ -788,7 +787,10 @@
        $.ajax({
             type : 'post',
             url : '/ccd',
-            data : {ccdConnect:1,},             
+            data : {
+				ccdConnect:1,
+				at: at,
+			},             
             success:  function (info) {
 	              layer.alert(info);
 			   if (info.indexOf('登录') !== -1)
@@ -809,7 +811,10 @@
        $.ajax({
             type : 'post',
             url : '/ccd',
-            data : {ccdConnect:2,},             
+            data : {
+				ccdConnect:2,
+				at: at,
+			},             
             success:  function (info) {
 	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
@@ -830,7 +835,10 @@
        $.ajax({
             type : 'post',
             url : '/ccd',
-            data : {StopExpose:1,},             
+			data : {
+				StopExpose:1,
+				at: at,
+			},             
             success:  function (info) {
 	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
@@ -851,7 +859,10 @@
        $.ajax({
             type : 'post',
             url : '/ccd',
-            data : {AbortExpose:1,},             
+            data : {
+				AbortExpose:1,
+				at: at,
+			},             
             success:  function (info) {
 	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
@@ -1212,12 +1223,11 @@
 		$(this).data('err', err);
 	});
 //ccd 表单数据验证 结束/////////////////////////////////////////
-
+	var ccd_form = $('#at60Ccd');    //获取ccd表单元素
 //CCD 带参数指令 表单提交 JS事件///////////////////////////////
     $('#ccdSbmt').click(function () {
 		var err = 0; //错误标识
-        var form = $('#at60Ccd');    //获取ccd表单元素
-		var textE = form.children('div:not(.notCheck)').find('input.blur');
+		var textE = ccd_form.children('div:not(.notCheck)').find('input.blur');
 		textE.each(function () {
 			$(this).blur();
 			err += $(this).data('err');
@@ -1226,7 +1236,8 @@
 			return;  //指令输入有误 不提交
 		}
 		
-        var formData = new FormData(form[0]);
+		var ccd_formData = new FormData(ccd_form[0]);
+		ccd_formData.append('at', at);
         //执行ajax
 			$.ajax ({
               type: 'post',
@@ -1275,7 +1286,10 @@
        $.ajax({
             type : 'post',
             url : '/focus',
-            data : {focusConnect:1,},             
+            data : {
+				focusConnect:1,
+				at: at,
+			},             
             success:  function (info) {
 	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
@@ -1296,7 +1310,10 @@
        $.ajax({
             type : 'post',
             url : '/focus',
-            data : {focusConnect:2,},             
+            data : {
+				focusConnect:2,
+				at: at,
+			},             
             success:  function (info) {
 	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
@@ -1317,7 +1334,10 @@
 	   $.ajax({
             type : 'post',
             url : '/focus',
-            data : {focusStop:1,},             
+            data : {
+				focusStop:1,
+				at: at,
+			},             
             success:  function (info) {
 	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
@@ -1338,7 +1358,10 @@
 	   $.ajax({
             type : 'post',
             url : '/focus',
-            data : {findHome:1,},             
+            data : {
+				findHome:1,
+				at: at,
+			},             
             success:  function (info) {
 	              layer.alert(info);
 				if (info.indexOf('登录') !== -1)
@@ -1402,12 +1425,12 @@
 		$(this).data('err', err);
 	});
 //调焦器 表单数据验证 结束/////////////////////////////////////////
-	  
+var focus_form = $('#at60Focus');    //获取focus表单元素  
 //调焦器 带参数指令 表单提交 JS事件///////////////////////////////
     $('#focusSbmt').click(function () {
 		var err = 0;
-        var form = $('#at60Focus');    //获取ccd表单元素
-        var textE = form.children('div:not(.notCheck)').find('input.blur');
+        //var form = $('#at60Focus');    //获取focus表单元素
+        var textE = focus_form.children('div:not(.notCheck)').find('input.blur');
 		textE.each(function () {
 			$(this).blur();
 			err += $(this).data('err');
@@ -1417,11 +1440,12 @@
 			return;  //指令输入有误 不提交
 		}
 		
-		var formData = new FormData(form[0]);
+		var focus_formData = new FormData(focus_form[0]);
+		focus_formData.append('at',at);
 		$.ajax ({
              type: 'post',
              url : '/focus',
-             data : formData,
+             data : focus_formData,
              processData : false,
              contentType : false,  
              success:  function (info) {
@@ -1444,7 +1468,10 @@
        $.ajax({
             type : 'post',
             url : '/slavedome',
-            data : {sDomeConnect:1,},             
+            data : {
+				sDomeConnect:1,
+				at : at,
+			},             
             success:  function (info) {
 	              layer.alert(info);
 			   if (info.indexOf('登录') !== -1)
@@ -1465,7 +1492,10 @@
        $.ajax({
             type : 'post',
             url : '/slavedome',
-            data : {sDomeConnect:2,},             
+            data : {
+				sDomeConnect:2,
+				at: at,
+			},             
             success:  function (info) {
 	              layer.alert(info);
 			   if (info.indexOf('登录') !== -1)
@@ -1486,7 +1516,10 @@
        $.ajax({
             type : 'post',
             url : '/slavedome',
-            data : {sDomeStop:1,},             
+			data : {
+				sDomeStop:1,
+				at: at,
+			},             
             success:  function (info) {
 	              layer.alert(info);
 			   if (info.indexOf('登录') !== -1)
@@ -1507,7 +1540,10 @@
        $.ajax({
             type : 'post',
             url : '/slavedome',
-            data : {OpenScuttle:1,},             
+            data : {
+				OpenScuttle:1,
+				at: at,
+			},             
             success:  function (info) {
 	              layer.alert(info);
                if (info.indexOf('登录') !== -1)
@@ -1528,7 +1564,10 @@
        $.ajax({
             type : 'post',
             url : '/slavedome',
-            data : {OpenScuttle:2,},             
+            data : {
+				OpenScuttle:2,
+				at: at,
+			},             
             success:  function (info) {
 	              layer.alert(info);
                if (info.indexOf('登录') !== -1)
@@ -1593,12 +1632,12 @@
 		$(this).data('err', err);
 	});
 //随动圆顶 表单数据验证 结束//////////////////////////////////////////
-
+var sDome_form = $('#at60Dome');    //获取圆顶表单元素
 //随动圆顶 带参数指令 表单提交 JS事件///////////////////////////////
     $('#domeSbmt').click(function () {
 		var err = 0;
-        var form = $('#at60Dome');    //获取ccd表单元素
-		var textE = form.children('div:not(.notCheck)').find('input.blur');
+        //var form = $('#at60Dome');    //获取ccd表单元素
+		var textE = sDome_form.children('div:not(.notCheck)').find('input.blur');
 		textE.each(function () {
 			$(this).blur();
 			err += $(this).data('err');
@@ -1608,12 +1647,13 @@
 			return;  //指令输入有误 不提交
 		}
 		
-        var formData = new FormData(form[0]);
+		var sDome_formData = new FormData(sDome_form[0]);
+		sDome_formData.append('at', at);
         
 		$.ajax ({
               type: 'post',
               url : '/slavedome',
-              data : formData,
+              data : ccd_formData,
               processData : false,
               contentType : false,  
               success:  function (info) {
