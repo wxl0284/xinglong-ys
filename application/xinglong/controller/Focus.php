@@ -95,7 +95,7 @@ class Focus extends Base
     } /*接收参数，根据不同参数，向不同望远镜的调焦器-focus 发指令  结束*/
 
     /*调焦器连接-断开*/
-    protected fucntion conncet ($connect)
+    protected function connect ($connect)
     {
         $length = 48 + 2;     //该结构体总长度
 
@@ -117,7 +117,7 @@ class Focus extends Base
     }/*调焦器连接-断开 结束*/
 
     /*调焦器 停止运动*/
-    protected fucntion stop ()
+    protected function stop ()
     {
         $length = 48;     //该结构体总长度
 
@@ -131,7 +131,7 @@ class Focus extends Base
     }/*调焦器 停止运动 结束*/
 
     /*调焦器 找零*/
-    protected fucntion find_home ()
+    protected function find_home ()
     {
         $length = 48;     //该结构体总长度
 
@@ -145,7 +145,7 @@ class Focus extends Base
     }/*调焦器 找零 结束*/
 
     /*调焦器 设置目标位置*/
-    protected fucntion set_position ()
+    protected function set_position ()
     {
         $length = 48 + 8;     //该结构体总长度
 
@@ -166,7 +166,7 @@ class Focus extends Base
     }/*调焦器 设置目标位置 结束*/
 
     /*调焦器 设置恒速转动*/
-    protected fucntion set_speed ()
+    protected function set_speed ()
     {
         $length = 48 + 8;     //该结构体总长度
 
@@ -187,7 +187,7 @@ class Focus extends Base
     }/*调焦器 设置恒速转动 结束*/
 
     /*调焦器 使能温度补偿*/
-    protected fucntion enable ()
+    protected function enable ()
     {
         $length = 48 + 2;     //该结构体总长度
 
@@ -208,7 +208,7 @@ class Focus extends Base
     }/*调焦器 使能温度补偿 结束*/
 
     /*调焦器 使能温度补偿系数*/
-    protected fucntion set_coefficient ()
+    protected function set_coefficient ()
     {
         $length = 48 + 8;     //该结构体总长度
 

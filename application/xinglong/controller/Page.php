@@ -14,7 +14,7 @@ class Page extends Base
         //根据$at获取相应望远镜的固定属性配置数据
         $result = $this->get_conf ($at);
         //halt(isset($result['gimbal']));
-        //halt($result);
+        //halt($result['filter']);
         //如果$result中无数据，即未进行任何配置
         if ( !$result )
         {
@@ -925,12 +925,18 @@ class Page extends Base
             }
 
             $result['ccd'] = $ccd;
-        }
+        }//查ccd-No1配置数据 结束
         
         //查滤光片配置数据
         $filter = Db::table('filterconf')->where('teleid', $at)->find();
         if ( $filter )
         {
+            //将filtername字段处理为json数据，给atpage页面的js进行赋值
+            if ( $filter['filtername'] )
+            {
+                $temp_filtername = explode ('/', $filter['filtername']);
+                $filter['filter_name_json'] = json_encode ($temp_filtername);
+            }
             $result['filter'] = $filter;
         }
 

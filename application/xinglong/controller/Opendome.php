@@ -31,7 +31,7 @@ class Opendome extends Base
 
         //接受表单数据
         $postData = input ();
-        halt($postData);
+        //halt($postData);
         //验证数据
         if (!$postData['at'])
         {//未接收到望远镜编号
@@ -72,18 +72,18 @@ class Opendome extends Base
         //根据不同参数 调用相应方法发送指令
         if ( $postData['fDomeConnect'] !== '' ) //连接或断开指令
         {
-            if ( !( $fDomeConnect == 1 || $fDomeConnect == 2) )
+            if ( !( $postData['fDomeConnect']  == 1 || $postData['fDomeConnect'] == 2) )
 			{
                 return '全开圆顶连接指令无效!';
 			}
          
-            return $this->connect($fDomeConnect);   //执行发送
-        }else if( $postData['fDomeConnect'] !== '' ){//打开/关闭圆顶  
-            if ( !($openDome == 0 || $openDome == 1 || $openDome == 2) )
+            return $this->connect($postData['fDomeConnect'] );   //执行发送
+        }else if( $postData['openDome'] !== '' ){//打开/关闭圆顶  
+            if ( !($postData['openDome'] == 0 || $postData['openDome'] == 1 || $postData['openDome'] == 2) )
 			{
                 return '全开圆顶打开/关闭指令无效!';
 			}    
-            return $this->openDome($openDome); //执行发送
+            return $this->openDome($postData['openDome']); //执行发送
         }
     }//接收参数，根据不同参数，向不同望远镜的全开圆顶发指令 结束
 

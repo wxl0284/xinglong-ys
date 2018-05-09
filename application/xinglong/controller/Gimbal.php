@@ -571,7 +571,7 @@ class Gimbal extends Base
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=16);
         //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+        $sendMsg = $headInfo;
         return '保存同步数据指令：' .udpSend($sendMsg, $this->ip, $this->port);		
     }/*保存同步数据 结束**********/
 

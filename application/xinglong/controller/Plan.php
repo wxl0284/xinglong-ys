@@ -175,24 +175,19 @@ class Plan extends Base
 
         //$command = input('command'); //获取提交的指令
         //根据不同参数 调用相应方法
-        if ( $postData['command'] == 1 ) //验证计划的数据，并发送技划数据
+        if ( $postData['command'] == 1 ) //验证计划的数据，并发送计划数据
         {      
-            return $this->sendPlan();   //执行发送
+            return $this->sendPlan($postData);   //执行发送
         }else if( $postData['command'] == 2 ){//根据计划执行方式，开始执行计划       
-            return $this->planOption(); //执行发送
+            return $this->planOption($postData); //执行发送
         }
 
-    }//观测计划 根据提交的参数 调用函数 结束
+    }//观测计划 根据提交的参数 调用函数 结束 
     
     //获取计划数据 验证并发送计划数据/////////////////////////////
-	protected function sendPlan ()  //即原来的savePlan函数
-	{		
-		//获取计划数据
-		if (!($planData = input()))
-		{
-			return '网络异常,请重新提交计划!';
-		}
-		
+	protected function sendPlan ($planData)  //即原来的savePlan函数
+	{	
+		//halt($planData['plan_filter_option']);
 		//定义全局$sequence 此变量在packHead()函数中要使用
 		if (Cookie::has('sequence'))
 		{
@@ -207,7 +202,7 @@ class Plan extends Base
 		//验证计划数据
 		$planNum = count($planData['planData']);
 		$errMsg = '';	//错误提示
-
+		$filter_option = $planData['plan_filter_option'];  //['u','v','b'] 每台望远镜配置的滤光片名称
 		//循环验证每条计划数据
 		for ($i = 0; $i < $planNum; $i ++)
 		{
@@ -220,7 +215,6 @@ class Plan extends Base
 
 			//验证目标类型
 			$type = $planData['planData'][$i]['type'];
-			
 			
 			if( $type === '' || !(preg_match('/^[0-9]{1}$/', $type) || in_array($type, ['恒星','太阳','月亮','彗星','行星','卫星','固定位置','本底','暗流','平场'])) )
 			{
@@ -319,13 +313,13 @@ class Plan extends Base
 				}
 			}
 
-			//验证 滤光片 
-			$filter = $planData['planData'][$i]['filter'];
+			//验证 滤光片
+			$filter = strtolower ($planData['planData'][$i]['filter']);
 			if($filter === '')//滤光片 未填写
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:滤光片参数超限!<br>';
 			}else{ //filter有值
-				if ( !in_array($filter, ['U','V','B','R','I', 'u','b', 'v', 'r', 'i']) )
+				if ( !in_array($filter, $filter_option) )
 				{
 					$errMsg .= '第'. ($i+1) .'条计划:滤光片参数超限!<br>';
 				}
@@ -383,8 +377,8 @@ class Plan extends Base
 		{
 			$sendMsg = pack('L', $i+1);  //每条计划的tag unsigned int 
 			
-			$sendMsg .= pack('S', $at);
-            $sendMsg .= pack('a48', $user); //user
+			$sendMsg .= pack('S', $this->at);
+            $sendMsg .= pack('a48', $this->user); //user
 			$sendMsg .= pack('a48', '02'); //project
 			
 			$target = $planData['planData'][$i]['target']; //目标名		
@@ -460,7 +454,7 @@ class Plan extends Base
 			 $sendMsg .= pack('L', $exposureCount);
 
 			 //滤光片
-			 $filter = trim($planData['planData'][$i]['filter']);
+			 $filter = $planData['planData'][$i]['filter'];
 			 $filter = strtoupper ($filter);
 			 $sendMsg .= pack('a8', $filter); 
 
@@ -488,8 +482,14 @@ class Plan extends Base
     } //获取计划数据 验证并发送计划数据 结束////////////////////////////////////////
     
     //观测计划的 开始 停止 下一个 ////////////////////////////////
-	protected function planOption ()
+	protected function planOption ($postData)
 	{	
+		//首先判断是否有权限执行
+       /* if ($this->ajaxAuthErr == 1)
+        {//无权执行
+            return '您无权限执行此操作!';
+		}*/
+		
 		//定义全局$sequence 此变量在packHead()函数中要使用
 		if (Cookie::has('sequence'))
 		{
@@ -504,8 +504,7 @@ class Plan extends Base
         $length =28 + 16; //数据长度
 	   
 		$headInfo = planPackHead($this->magic, $this->version, $this->msg, $length, $this->sequence, $this->at, $this->device);
-        
-        $postData = input();    //获取 表单数据        
+               
 		if($postData['planOption'] == 'planStart')
 		{
 			$sendMsg = pack('L', 1);
@@ -530,7 +529,7 @@ class Plan extends Base
 			$sendMsg .= pack('L', 0);
 			
 			$sendMsg = $headInfo . $sendMsg;
-			echo '下一条计划:' .udpSend($sendMsg, $this->ip, $this->port);
+			return '下一条计划:' .udpSend($sendMsg, $this->ip, $this->port);
 		}
 	}//观测计划的 开始 停止 下一个 结束////////////////////////////
 }

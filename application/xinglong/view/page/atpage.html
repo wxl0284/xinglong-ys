@@ -172,7 +172,10 @@
         </div><!--重要信息区域 结束-->
 		<br ><br>
 <script><!--子设备之固定属性值 -->
-	var at = "{$at_aperture[$configData['at_id']]}"; //该页面望远镜口径
+	var at = "{$at_aperture[$configData['at_id']]}"; //该页面望远镜口径,用一个唯一不变的值来确定一个望远镜
+	{if condition="isset($configData['filter']['filter_name_json'])"}
+	var plan_filter_option = {$configData['filter']['filter_name_json']};  //将滤光片名称的json数据赋于plan_filter_option
+	{/if}
 </script><!--子设备之固定属性值 结束-->
         <div id='devsNav'><!--望远镜子设备导航:js用code/public/static/js/dev1.js-->
             <table>
@@ -1014,6 +1017,7 @@
 							{php}
 								$filter_name = explode ('/', $configData['filter']['filtername']);
 								$filter_num = count ($filter_name);
+								echo '<option value="">请选择</option>';
 								for ($filter_i = 1; $filter_i <= $filter_num;  $filter_i++)
 								{
 									$filter_index = $filter_i -1;

@@ -78,8 +78,8 @@ class Filter extends Base
 			}
          
             return $this->connect($filterConnect);   //执行发送
-        }else if( input('filterFindHome') == 1 ){//找零 指令      
-            return $this->findHome(); //执行发送
+        }else if( $filterFindHome = input('filterFindHome') == 1 ){//找零 指令      
+            return $this->findHome($filterFindHome); //执行发送
         }else if( ($filterPos=input('filterPos')) !== null ){//滤光片位置 指令      
             return $this->set_filterPos($filterPos); //执行发送
         }
@@ -109,10 +109,10 @@ class Filter extends Base
     }/*滤光片连接/断开 结束*/
 
     /*滤光片找零*/
-    protected function findHome ()
+    protected function findHome ($find_home)
     {
         $length = 48;      //结构体长度
-        $sendMsg = pack('S', $connect ); //unsigned short
+        $sendMsg = pack('S', $find_home ); //unsigned short
 
         $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
 

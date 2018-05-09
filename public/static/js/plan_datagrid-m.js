@@ -311,12 +311,23 @@
 	{epochId:'2',name:'B1950'},
 	{epochId:'3',name:'J2050'},];
 	
-	var filterData = [
+	//将固定属性中的滤光片名称:u/v/b，对变量filterData进行赋值
+	var filterData = [];
+	var filterData_num = plan_filter_option.length;
+	for (var filterData_i = 0; filterData_i < filterData_num; filterData_i++)
+	{
+		filterData[filterData_i] = {filterId:'', name:''};
+		filterData[filterData_i].filterId = plan_filter_option[filterData_i];
+		filterData[filterData_i].name = plan_filter_option[filterData_i];
+	}
+
+	/*var filterData = [
 	{filterId:'U',name:'U'},
 	{filterId:'B',name:'B'},
 	{filterId:'V',name:'V'},
 	{filterId:'R',name:'R'},
-	{filterId:'I',name:'I'},];
+	{filterId:'I',name:'I'},
+	];*/
 	
 	$(function(){
 		table.datagrid({
@@ -559,7 +570,7 @@
 					planOption : option,
 					mode : modeVal,
 					start : index +1,
-					command : 1, //标识 plan.php控制器中用以区别要执行的函数
+					command : 2, //标识 plan.php控制器中用以区别要执行的函数
 					at : at,	
 				},             
 	            success:  function (info) {
@@ -599,14 +610,14 @@
 		if ( n< 1) 
 		{
 			planErr = 1;
-			layer.alert('警告','请先导入计划或添加计划!','warning');
+			layer.alert('请先导入计划或添加计划!');
 		}
 		
 		//执行验证
 		if (!valid())
 		{
 			planErr = 1;
-			layer.alert('警告', '请检查第' + (editRow+1) + '行必填数据!', 'warning');
+			layer.alert('请先保存计划或检查第' + (editRow+1) + '行必填数据!');
 		}
 
 		/*//js验证数据
@@ -670,12 +681,13 @@
 				url: '/plan',
 				data: {
 					planData: plans,
-					command : 2,  //标识 plan.php控制器中用以区别要执行的函数
+					command : 1,  //标识 plan.php控制器中用以区别要执行的函数
 					at : at,
+					plan_filter_option : plan_filter_option, //将该望远镜filter的['u','v','b']提交
 				},
 				success: function (info){
 					planErr = 0;
-					layer.alert('警告', info);
+					layer.alert(info);
 					if (info.indexOf('登录') !== -1)
 					{
 						location.href = '/';
