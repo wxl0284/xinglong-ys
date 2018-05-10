@@ -11,7 +11,7 @@ class Focus extends Base
     //定义所需变量
     protected $sequence = 0;    //指令的序号
     protected $at = 0;  //望远镜序号
-    protected $device = 69;  //转台对应序号
+    protected $device = 69;  //调焦器对应序号
     protected $msg = 6;  //单指令 msg 
     protected $magic = 439041101;  //转台对应序号
     protected $version = 1;  //版本号
@@ -76,8 +76,8 @@ class Focus extends Base
             if ( !($focusConnect == 1 || $focusConnect == 2) )
 			{
                 return '调焦器连接/断开指令无效!';
-			}
-         
+            }
+           
             return $this->connect($focusConnect);   //执行发送
         }else if( input('focusStop') == 1 ){//调焦器:停止运动 指令   
             return $this->stop(); //执行发送
@@ -102,17 +102,19 @@ class Focus extends Base
         $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=1);
-
-        $sendMsg = pack('S', $connect);  //unsigned short
-        //socket发送数据
+        
+        $sendMsg = pack('S', $connect); //unsigned short
+        //halt ($sendMsg);
         $sendMsg = $headInfo . $sendMsg;
-
+        //$sendMsg = $headInfo;
+       // halt($sendMsg);
+        
         if ($connect == 1)
         {
-            return '调焦器连接指令：' .udpSend($sendMsg, $this->ip, $this->port);
+           return '调焦器连接指令：' . udpSend($sendMsg, $this->ip, $this->port);
         }elseif ($connect == 2)
         {
-            return '调焦器断开指令：' .udpSend($sendMsg, $this->ip, $this->port);
+            return '调焦器断开指令：' . udpSend($sendMsg, $this->ip, $this->port);
         } 
     }/*调焦器连接-断开 结束*/
 

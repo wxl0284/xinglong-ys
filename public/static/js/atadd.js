@@ -1,11 +1,11 @@
 /*添加望远镜页面 js*/
 $(function () {
-    //页面加载完成后，默认所有选项为 未选中状态
-        $('input').prop('checked', false);
-        
+       
     //显示导航栏望远镜列表///////////////////////////////////// 
        var ul = $('#atListUl');
-       $('#atList').hover(
+       var atList = $('#atList');
+
+       atList.hover(
             function (){
                 ul.show();
             }, 
@@ -155,10 +155,14 @@ $(function () {
             processData : false,
             contentType : false,  
             success:  function (info) {
-                layer.alert(info);
+                alert(info);
                 if (info.indexOf('登录') !== -1)
                 {
                     location.href = '/';
+                }
+                if (info.indexOf('添加望远镜ok') !== -1)
+                {
+                    location.href='/atadd';
                 }
            },
            error: function () {

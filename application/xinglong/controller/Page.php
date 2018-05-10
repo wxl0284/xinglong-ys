@@ -18,7 +18,8 @@ class Page extends Base
         //如果$result中无数据，即未进行任何配置
         if ( !$result )
         {
-            $this->error('此望远镜还未进行属性配置!', '/atconfig'); //跳转至配置页面
+            //$this->error('此望远镜还未进行属性配置!', '/atconfig'); //跳转至配置页面
+            return view('atpage_notice');
         }
 
         $result['at_id'] = $at;

@@ -3,6 +3,7 @@ namespace app\xinglong\controller;
 
 use app\xinglong\controller\Base;
 use think\Db;
+use think\Session;
 //用户管理的控制器
 class User extends Base
 {

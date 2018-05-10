@@ -145,7 +145,7 @@ class Gimbal extends Base
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=1);
         
         $sendMsg = pack('S', $connect);  //unsigned short
-        
+      
         //socket发送数据
         $sendMsg = $headInfo . $sendMsg;
         if ($connect == 1)
