@@ -460,10 +460,8 @@ $(function () {
     var maxAxis3Speed = $('#gimbalMaxAxis3Speed'); //转台 轴3最大速度
     var axis1Acceleration = $('#gimbalMaxAxis1Acceleration'); //转台 轴1最加速度
     var axis2Acceleration = $('#gimbalMaxAxis2Acceleration'); //转台 轴2最加速度
-    var axis3Acceleration = $('#gimbalMaxAxis3Acceleration'); //转台 轴3最加速度
     var axis1ParkPosition = $('#gimbalAxis1ParkPosition'); //转台 轴1复位位置
     var axis2ParkPosition = $('#gimbalAxis2ParkPosition'); //转台 轴2复位位置
-    var axis3ParkPosition = $('#gimbalAxis3ParkPosition'); //转台 轴2复位位置
     var gimbalHaveAxis3 = $('#gimbalHaveAxis3'); //转台 有轴3
     var gimbalHaveAxis3_1 = $('#gimbalHaveAxis3-1'); //转台 无轴3
     var haveAxis5 = $('#gimbalHaveAxis5'); //转台 有轴5
@@ -510,9 +508,9 @@ $(function () {
     
     //无第3轴时 禁用：轴3最大速度、轴3最大加速度、轴3复位位置gimbalHaveAxis3
     axis3_No.click(function () {
-        axis3_maxSpeed.prop('disabled', true);
-        axis3_maxAccel.prop('disabled', true);
-        axis3_ParkPos.prop('disabled', true);
+        axis3_maxSpeed.prop('disabled', true);axis3_maxSpeed.data('err',0);
+        axis3_maxAccel.prop('disabled', true);axis3_maxAccel.data('err',0);
+        axis3_ParkPos.prop('disabled', true);axis3_ParkPos.data('err',0);
         gimbalCanSlewDerotator_1.click();
         gimbalCanConfigDerotator_1.click();
     })
@@ -530,19 +528,20 @@ $(function () {
     gimbalBtn.click(function () {
         var gimbalRadio = gimbalForm.find('input[type="radio"]:checked'); //获取被点击的单选框
         //console.log(gimbalRadio.length);return;
-        //若漏过某个选项，则提示用户，不提交表单
-        if ( gimbalRadio.length < 20)
-        {
-            layer.alert('您遗漏了单选项固定属性!'); return;
-        }
         //检查望远镜下拉选择框 是否选择了某望远镜
         var atId = atNo.val();
         if ( atId == 0)
         {//未选择某个望远镜
             layer.alert('请选择您要配置的望远镜!');return;
         }
+
         var gimbalData = new FormData(gimbalForm[0]);
         gimbalData.append('teleid', atId); //将某望远镜的id 加入表单数据中
+        //验证文本框类型、下拉框、复选框、 单选框配置项是否都已选择 
+        if ( !gimbal_select_valid (gimbalData) )
+        {
+            return;
+        }//验证文本框类型、下拉框、复选框、 单选框配置项是否都已选择        
 
         $.ajax({
             type: 'post',
@@ -577,7 +576,448 @@ $(function () {
              },
         })
     });//转台 提交按钮 js事件 结束
-    //提交转台配置 之js事件 结束////////////////////////////
+    //提交转台配置 之js事件 结束////////////////////////////$("input:disabled")
+    var gimbal_text = gimbalForm.find('input[type="text"]');
+    /*
+    *gimbal_select_valid() 验证转台的所有须验证的text框、下拉框、下拉框有错误集中收集，一次提示，
+      return bool值
+    */
+    function gimbal_select_valid (gimbal_form)
+    {
+        var gimbal_errMsg = ''; //转台表单的错误提示
+
+        gimbal_text.each(//逐一验证文本输入框
+            function () {
+                $(this).blur();
+                if ( $(this).data('err') == 1 )
+                {
+                    gimbal_errMsg += $(this).data('info') + '格式错误!<br>';
+                }
+            }
+        );
+
+        //逐一验证下拉选择框
+        if ( gimbalType.val() == 0 ) //验证类型
+        {
+            gimbal_errMsg += '转台类型未选择!<br>';
+        }
+
+        if ( gimbalFocustype.val() == 0 ) //验证焦点类型
+        {
+            gimbal_errMsg += '焦点类型未选择!<br>';
+        }
+
+        if ( gimbalFocusratio.val() == 0 ) //验证焦比
+        {
+            gimbal_errMsg += '焦比未选择!<br>';
+        }
+
+        if ( gimbalData.get('haveaxis3') === null ) //验证 是否有第3轴
+        {
+            gimbal_errMsg += '是否有第3轴未选择!<br>';
+        }
+
+        if ( gimbalData.get('haveaxis5') === null ) //验证 镜盖（轴5）
+        {
+            gimbal_errMsg += '是否有镜盖（轴5）未选择!<br>';
+        }
+
+        if ( gimbalData.get('canconnect') === null ) //验证 支持连接指令
+        {
+            gimbal_errMsg += '是否支持连接未选择!<br>';
+        }
+
+        if ( gimbalData.get('canfindhome') === null ) //验证 支持找零指令
+        {
+            gimbal_errMsg += '是否支持找零未选择!<br>';
+        }
+
+        if ( gimbalData.get('cantrackstar') === null ) //验证 支持跟踪恒星
+        {
+            gimbal_errMsg += '是否支持跟踪恒星未选择!<br>';
+        }
+
+        if ( gimbalData.get('cansetobjectname') === null ) //验证 设置目标名称
+        {
+            gimbal_errMsg += '是否支持设置目标名称未选择!<br>';
+        }
+
+        if ( gimbalData.get('canslewazel') === null ) //验证 指向固定位置
+        {
+            gimbal_errMsg += '是否支持指向固定位置未选择!<br>';
+        }
+
+        if ( gimbalData.get('canslewderotator') === null ) //验证 轴3指向固定位置
+        {
+            gimbal_errMsg += '是否支持轴3指向固定位置未选择!<br>';
+        }
+
+        if ( gimbalData.get('canconfigderotator') === null ) //验证 设置轴3工作模式
+        {
+            gimbal_errMsg += '是否支持设置轴3工作模式未选择!<br>';
+        }
+
+        if ( gimbalData.get('canstop') === null ) //验证 停止指令
+        {
+            gimbal_errMsg += '是否支持停止指令未选择!<br>';
+        }
+
+        if ( gimbalData.get('cansettrackspeed') === null ) //验证 设置跟踪速度
+        {
+            gimbal_errMsg += '是否支持设置跟踪速度未选择!<br>';
+        }
+
+        if ( gimbalData.get('canpark') === null ) //验证 复位指令
+        {
+            gimbal_errMsg += '是否支持复位指令未选择!<br>';
+        }
+
+        if ( gimbalData.get('canfixedmove') === null ) //验证 恒速运动
+        {
+            gimbal_errMsg += '是否支持恒速运动未选择!<br>';
+        }
+
+        if ( gimbalData.get('canpositioncorrect') === null ) //验证 位置修正
+        {
+            gimbal_errMsg += '是否支持位置修正未选择!<br>';
+        }
+
+        if ( gimbalData.get('cancoveroperation') === null ) //验证 镜盖操作
+        {
+            gimbal_errMsg += '是否支持镜盖操作未选择!<br>';
+        }
+
+        if ( gimbalData.get('canfocusoperation') === null ) //验证 焦点切换镜
+        {
+            gimbal_errMsg += '是否支持焦点切换镜未选择!<br>';
+        }
+
+        if ( gimbalData.get('canemergencystop') === null ) //验证 急停指令
+        {
+            gimbal_errMsg += '是否支持急停指令未选择!<br>';
+        }
+
+        if ( gimbalData.get('cansavesyncdata') === null ) //验证 保存同步数据
+        {
+            gimbal_errMsg += '是否支持保存同步数据未选择!<br>';
+        }
+
+        if ( gimbalData.get('cantracksatellite') === null ) //验证 跟踪卫星
+        {
+            gimbal_errMsg += '是否支持跟踪卫星未选择!<br>';
+        }
+
+
+        if ( gimbal_errMsg !== '' )
+        {
+            layer.alert(gimbal_errMsg, {shade:false});
+            return false;
+        }else{
+            return true;
+        }
+    }/*gimbal_select_valid() 结束*/
+
+    /*各text输入框的blur事件*/
+    gimbalId.blur(function () {//转台id
+        var that = $(this);
+        var v = $.trim( that.val() );
+        var err = 0;
+		
+		if ( v.length != 5 || !$.isNumeric(v) || v.indexOf('0') !== 0)
+		{
+            err = 1;  
+            that.data('info', '转台id');
+			layer.tips('id格式错误, 正确格式:03000!', that, {tipsMore: true});
+        }
+        that.data('err', err);
+    })//转台id blur结束
+
+    gimbalName.blur(function () {//望远镜名
+        var that = $(this);
+        var v = $.trim(that.val());
+		var patn = /^\d(\d|\.)*m望远镜+$/;
+		var err = 0;
+		
+		if ( !patn.test(v) )
+		{
+            err = 1;
+            that.data('info', '望远镜名');
+			layer.tips('望远镜名格式错误!', that, {tipsMore: true});
+		}		
+		that.data('err', err);
+    });//望远镜名 blur结束
+
+    gimbalAddress.blur(function () {//验证观测站
+        var that = $(this);
+        var v = $.trim(that.val());
+		var err = 0;
+		
+		if ( v.length < 2 )
+		{
+            err = 1;
+            that.data('info', '隶属观测站');
+			layer.tips('隶属观测站格式错误!', that, {tipsMore: true});
+		}		
+		that.data('err', err);
+    });//验证观测站 结束
+
+    gimbalLongitude.blur(function () {//验证经度
+        var that = $(this);
+        var v = $.trim(that.val());
+		var err = 0;
+		
+		if ( !$.isNumeric(v) || v > 180 || v < -180 )
+		{
+            err = 1;
+            that.data('info', '经度');
+			layer.tips('经度格式错误!', that, {tipsMore: true});
+		}		
+		that.data('err', err);
+    });//验证经度 结束
+
+    gimbalLatitude.blur(function () {//验证纬度
+        var that = $(this);
+        var v = $.trim(that.val());
+		var err = 0;
+		
+		if ( !$.isNumeric(v) || v > 90 || v < -90 )
+		{
+            err = 1;
+            that.data('info', '纬度');
+			layer.tips('纬度格式错误!', that, {tipsMore: true});
+		}		
+		that.data('err', err);
+    });//验证纬度 结束
+
+    gimbalAltitude.blur(function () {//验证海拔
+        var that = $(this);
+        var v = $.trim(that.val());
+		var err = 0;
+		
+		if ( !$.isNumeric(v) || v > 6000 || v < -1000 )
+		{
+            err = 1;
+            that.data('info', '海拔');
+			layer.tips('海拔格式错误!', that, {tipsMore: true});
+		}		
+		that.data('err', err);
+    });//验证海拔 结束
+
+    gimbalAperture.blur(function () {//验证口径
+        var that = $(this);
+        var v = $.trim(that.val());
+		var err = 0;
+		
+		if ( !$.isNumeric(v) )
+		{
+            err = 1;
+            that.data('info', '口径');
+			layer.tips('口径格式错误!', that, {tipsMore: true});
+		}		
+		that.data('err', err);
+    });//验证口径 结束
+
+    focusLength.blur(function () {//焦距验证
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+        var patn = /^\[[0-9.]+ [0-9.]+\]$/;
+		
+		if ( !patn.test(v) )
+		{
+            err = 1;
+            that.data('info', '焦距');
+			layer.tips('焦距格式错误!', that, {tipsMore: true});
+		}		
+        that.data('err', err);
+
+    }); //焦距验证 结束
+
+    maxAxis1Speed.blur(function () {//验证 轴1最大速度
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+		
+        if ( !$.isNumeric(v) || v > 30 || v < 0 )
+		{
+            err = 1;
+            that.data('info', '轴1最大速度');
+			layer.tips('轴1最大速度错误!', that, {tipsMore: true});
+		}		
+        that.data('err', err);
+    }); //验证 轴1最大速度 结束
+
+    maxAxis2Speed.blur(function () {//验证 轴2最大速度
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+		
+        if ( !$.isNumeric(v) || v > 30 || v < 0 )
+		{
+            err = 1;
+            that.data('info', '轴2最大速度');
+			layer.tips('轴2最大速度错误!', that, {tipsMore: true});
+		}		
+        that.data('err', err);
+    }); //验证 轴2最大速度 结束
+
+    axis3_maxSpeed.blur(function () {//验证 轴3最大速度
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v > 30 || v < 0 )
+        {
+            err = 1;
+            that.data('info', '轴3最大速度');
+            layer.tips('轴3最大速度错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 轴3最大速度 结束
+
+    axis1Acceleration.blur(function () {//验证 轴1最大加速度
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v > 5 || v < 0 )
+        {
+            err = 1;
+            that.data('info', '轴1最大加速度');
+            layer.tips('轴1最大加速度错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 轴1最大加速度 结束
+
+    axis2Acceleration.blur(function () {//验证 轴2最大加速度
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v > 5 || v < 0 )
+        {
+            err = 1;
+            that.data('info', '轴2最大加速度');
+            layer.tips('轴2最大加速度错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 轴2最大加速度 结束
+
+    axis3_maxAccel.blur(function () {//验证 轴3最大加速度
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v > 5 || v < 0 )
+        {
+            err = 1;
+            that.data('info', '轴3最大加速度');
+            layer.tips('轴3最大加速度错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 轴3最大加速度 结束
+
+    axis1ParkPosition.blur(function () {//验证 轴1复位位置
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v > 360 || v < 0 )
+        {
+            err = 1;
+            that.data('info', '轴1复位位置');
+            layer.tips('轴1复位位置错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 轴1复位位置 结束
+
+    axis2ParkPosition.blur(function () {//验证 轴2复位位置
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v > 360 || v < 0 )
+        {
+            err = 1;
+            that.data('info', '轴2复位位置');
+            layer.tips('轴2复位位置错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 轴2复位位置 结束
+
+    axis3_ParkPos.blur(function () {//验证 轴3复位位置
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v > 360 || v < 0 )
+        {
+            err = 1;
+            that.data('info', '轴3复位位置');
+            layer.tips('轴3复位位置错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 轴3复位位置 结束
+
+    gimbalMinElevation.blur(function () {//验证 俯仰最低值
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v < 10 || v > 360)
+        {
+            err = 1;
+            that.data('info', '俯仰最低值');
+            layer.tips('俯仰最低值错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 俯仰最低值 结束
+
+    numTemperatureSensor.blur(function () {//验证 温度传感器数目
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^[0-9]+$/;
+        var err = 0;
+
+        if ( !patn.test(v) || v <= 0 )
+        {
+            err = 1;
+            that.data('info', '温度传感器数目');
+            layer.tips('温度传感器数目错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 温度传感器数目 结束
+
+    numHumiditySensor.blur(function () {//验证 湿度传感器数目
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^[0-9]+$/;
+        var err = 0;
+
+        if ( !patn.test(v) || v <= 0 )
+        {
+            err = 1;
+            that.data('info', '湿度传感器数目');
+            layer.tips('湿度传感器数目错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 湿度传感器数目 结束
+
+    gimbalAttrVersion.blur(function () {//验证 属性版本号
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^[0-9]+$/;
+        var err = 0;
+
+        if ( !patn.test(v) || v <= 0 )
+        {
+            err = 1;
+            that.data('info', '属性版本号');
+            layer.tips('属性版本号错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 属性版本号 结束
+    /*转台 各text输入框的blur事件 结束*/
 
     /*显示转台的配置数据*/
     function show_gimbal_data (data)
@@ -609,10 +1049,10 @@ $(function () {
         maxAxis3Speed.val(data.maxaxis3speed);
         axis1Acceleration.val(data.maxaxis1acceleration);
         axis2Acceleration.val(data.maxaxis2acceleration);
-        axis3Acceleration.val(data.maxaxis3acceleration);
+        axis3_maxAccel.val(data.maxaxis3acceleration);
         axis1ParkPosition.val(data.axis1parkposition);
         axis2ParkPosition.val(data.axis2parkposition);
-        axis3ParkPosition.val(data.axis3parkposition);
+        axis3_ParkPos.val(data.axis3parkposition);
         data.haveaxis3 == '1' ? axis3_have.click() : axis3_No.click();
         data.haveaxis5 == '1' ? haveAxis5.click() : haveAxis5_1.click();
         gimbalMinElevation.val(data.minelevation);
@@ -712,21 +1152,23 @@ $(function () {
     /*ccd 提交按钮 点击事件*/
     ccdBtn_1.click(function () {
         var ccd_1_Radio = ccd_1Form.find('input[type="radio"]:checked'); //获取被点击的单选框
-        //console.log(gimbalRadio.length);return;
-        //若漏过某个选项，则提示用户，不提交表单
-        if ( ccd_1_Radio.length < 23)
-        {
-            layer.alert('您遗漏了单选项固定属性!'); return;
-        }
+        
         //检查望远镜下拉选择框 是否选择了某望远镜
         var atId = atNo.val();
         if ( atId == 0)
         {//未选择某个望远镜
             layer.alert('请选择您要配置的望远镜!');return;
         }
+
         var ccd_1_Data = new FormData(ccd_1Form[0]);
         ccd_1_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
         ccd_1_Data.append('ccdno', '1'); //将此望远镜的序号 加入表单数据中
+        
+        //验证文本框类型、下拉框、复选框、单选框配置项 是否都已选择 
+         if ( !ccd_select_valid (ccd_1_Data) )
+         {
+             return;
+         }//验证文本框类型、下拉框、复选框、单选框配置项  是否都已选择 结束
 
         $.ajax({
             type: 'post',
@@ -845,6 +1287,7 @@ $(function () {
            }
        }/*曝光触发模式 结束*/
        ccdEmMaxValue.val(data.emmaxvalue);
+       ccdEmMinValue.val(data.emminvalue);
        data.canconnect == '1' ? ccdCanConnect.click() : ccdCanConnect_1.click();
        data.cansetcoolert == '1' ? canSetCoolerT.click() : canSetCoolerT_1.click();
        data.cansetexposureparam == '1' ? setExposureParam.click() : setExposureParam_1.click();
@@ -866,7 +1309,450 @@ $(function () {
        ccdAttrVersion.val(data.attrversion);
     }/*显示ccd-No1配置数据 结束*/
     
-    /*滤光片表单 按钮 js事件*/
+    /*验证ccd-No1 表单数据*/
+    /*
+    * ccd_select_valid () ：验证ccd 表单数据
+    * return bool值
+    */
+    var ccd_text = ccd_1Form.find('input[type="text"]');
+    var ccdType = $('#ccdType'); //探测器类型
+
+    function ccd_select_valid (ccd_1_Data)
+    {
+        var ccd_errMsg = ''; //ccd表单的错误提示
+
+        ccd_text.each(//逐一验证文本输入框
+            function () {
+                $(this).blur();
+                if ( $(this).data('err') == 1 )
+                {
+                    ccd_errMsg += $(this).data('info') + '格式错误!<br>';
+                }
+            }
+        );
+        //逐一验证下拉选择框
+        if ( ccdType.val() == 0 ) //验证类型
+        {
+            ccd_errMsg += '探测器类型未选择!<br>';
+        }
+
+        if ( ccdImageBits.val() == 0 ) //验证 图像位数
+        {
+            ccd_errMsg += '图像位数未选择!<br>';
+        }
+
+        if ( ccdCoolerMode.val() == 0 ) //验证 制冷方式
+        {
+            ccd_errMsg += '制冷方式未选择!<br>';
+        }
+
+        if ( ccdReadoutSpeed.val() == 0 ) //验证 读出速度模式
+        {
+            ccd_errMsg += '读出速度模式未选择!<br>';
+        }
+
+        if ( ccdTransferSpeed.val() == 0 ) //验证 转移速度模式
+        {
+            ccd_errMsg += '转移速度模式未选择!<br>';
+        }
+
+        if ( ccd_1GainNumber.val() == 0 ) //验证 增益档位
+        {
+            ccd_errMsg += '增益档位未选择!<br>';
+        }
+
+        if ( ccdShutterType.val() == 0 ) //验证 快门类型
+        {
+            ccd_errMsg += '快门类型未选择!<br>';
+        }
+
+        if ( ccd_1BinArray.val() == 0 ) //验证 Bin值
+        {
+            ccd_errMsg += 'Bin值未选择!<br>';
+        }
+
+        var ccdreadoutMode_check_num = ccdreadoutMode.children('input:checkbox:checked').length; //读出模式复选框 被选中的数量
+        if ( ccdreadoutMode_check_num < 1)
+        {
+            ccd_errMsg += '读出模式未选择!<br>';
+        }
+
+        var ccd_1gainmode_check_num = ccd_1gainmode.children('input:checkbox:checked').length; //增益模式复选框 被选中的数量
+        if ( ccd_1gainmode_check_num < 1)
+        {
+            ccd_errMsg += '增益模式未选择!<br>';
+        }
+
+        var ccd_1ShutterMode_check_num = ccd_1ShutterMode.children('input:checkbox:checked').length; //快门模式复选框 被选中的数量
+        if ( ccd_1ShutterMode_check_num < 1)
+        {
+            ccd_errMsg += '快门模式未选择!<br>';
+        }
+
+        var ccd_1InterfaceType_check_num = ccd_1InterfaceType.children('input:checkbox:checked').length; //接口类型复选框 被选中的数量
+        if ( ccd_1InterfaceType_check_num < 1)
+        {
+            ccd_errMsg += '接口类型未选择!<br>';
+        }
+
+        var ccd_1ExposeTriggerMode_check_num = ccd_1ExposeTriggerMode.children('input:checkbox:checked').length; //曝光触发模式复选框 被选中的数量
+        if ( ccd_1ExposeTriggerMode_check_num < 1)
+        {
+            ccd_errMsg += '曝光触发模式未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('issupportfullframe') === null ) //验证 支持帧转移
+        {
+            ccd_errMsg += '是否支持帧转移未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('issupportem') === null ) //验证 支持EM
+        {
+            ccd_errMsg += '是否支持EM未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('issupportscmosnoisefilter') === null ) //验证 CMOS noise filter
+        {
+            ccd_errMsg += 'CMOS noise filter未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('issupportbaseline') === null ) //验证 支持base line
+        {
+            ccd_errMsg += '是否支持base line未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('issupportoverscan') === null ) //验证 支持Over scan
+        {
+            ccd_errMsg += '是否支持Over scan未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('issupportroi') === null ) //验证 支持开窗
+        {
+            ccd_errMsg += '是否支持开窗未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('issupportroi') === null ) //验证 支持开窗
+        {
+            ccd_errMsg += '是否支持开窗未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('canconnect') === null ) //验证 支持连接
+        {
+            ccd_errMsg += '是否支持连接未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('cansetcoolert') === null ) //验证 设置制冷温度
+        {
+            ccd_errMsg += '是否支持设置制冷温度未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('cansetexposureparam') === null ) //验证 设置曝光策略
+        {
+            ccd_errMsg += '是否支持设置曝光策略未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('canstartexposure') === null ) //验证 支持开始曝光
+        {
+            ccd_errMsg += '是否支持开始曝光未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('canstopexposure') === null ) //验证 支持停止曝光
+        {
+            ccd_errMsg += '是否支持停止曝光未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('canabortexposure') === null ) //验证 支持终止曝光
+        {
+            ccd_errMsg += '是否支持终止曝光未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('cansetgain') === null ) //验证 设置增益
+        {
+            ccd_errMsg += '是否支持设置增益未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('cansetreadoutspeedmode') === null ) //验证 读出速度模式
+        {
+            ccd_errMsg += '是否支持设置读出速度模式未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('cansettransferspeedmode') === null ) //验证 转移速度模式
+        {
+            ccd_errMsg += '是否支持设置转移速度模式未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('cansetbin') === null ) //验证 设置BIN
+        {
+            ccd_errMsg += '是否支持设置BIN未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('cansetroi') === null ) //验证 设置ROI
+        {
+            ccd_errMsg += '是否支持设置ROI未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('cansetshutter') === null ) //验证 设置快门
+        {
+            ccd_errMsg += '是否支持设置快门未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('cansetfullframe') === null ) //验证 设置帧转移
+        {
+            ccd_errMsg += '是否支持设置帧转移未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('cansetem') === null ) //验证 设置EM
+        {
+            ccd_errMsg += '是否支持设置EM未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('cannoisefilter') === null ) //验证 设置CMOS noise filter
+        {
+            ccd_errMsg += '是否支持设置CMOS noise filter未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('cansetbaseline') === null ) //验证 设置Base line
+        {
+            ccd_errMsg += '是否支持设置Base line未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('cansetoverscan') === null ) //验证 设置Over scan
+        {
+            ccd_errMsg += '是否支持设置Over scan未选择!<br>';
+        }
+
+        if ( ccd_errMsg !== '' )
+        {
+            layer.alert(ccd_errMsg, {shade:false});
+            return false;
+        }else{
+            return true;
+        }
+    }/*验证ccd-No1 表单数据 结束*/
+
+    ccdId.blur(function () {//验证 ccdId
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v.length != 8 )
+        {
+            err = 1;
+            that.data('info', 'ccd Id');
+            layer.tips('ccd Id格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 ccdId 结束
+
+    ccdName.blur(function () {//验证 ccd名称
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( v.length < 2 )
+        {
+            err = 1;
+            that.data('info', 'ccd 名称');
+            layer.tips('ccd 名称格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 ccd名称 结束
+
+    ccdXpixel.blur(function () {//验证 x像素
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^[0-9]{4,}$/;
+        var err = 0;
+
+        if ( !patn.test(v) || v < 1024)
+        {
+            err = 1;
+            that.data('info', 'x像素');
+            layer.tips('x像素格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 x像素 结束
+
+    ccdYpixel.blur(function () {//验证 y像素
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^[0-9]{4,}$/;
+        var err = 0;
+
+        if ( !patn.test(v) || v < 1024)
+        {
+            err = 1;
+            that.data('info', 'y像素');
+            layer.tips('y像素格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 y像素 结束
+
+    ccdXpixelSize.blur(function () {//验证 x像元
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v <= 0)
+        {
+            err = 1;
+            that.data('info', 'x像元');
+            layer.tips('x像元格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 x像元 结束
+
+    ccdYpixelSize.blur(function () {//验证 y像元
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v <= 0)
+        {
+            err = 1;
+            that.data('info', 'y像元');
+            layer.tips('y像元格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 y像元 结束
+
+    ccdSensorName.blur(function () {//验证 传感器名称
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( v.length < 3)
+        {
+            err = 1;
+            that.data('info', '传感器名称');
+            layer.tips('传感器名称格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 传感器名称 结束
+
+    ccdLowCoolerT.blur(function () {//验证 最低制冷温度
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) )
+        {
+            err = 1;
+            that.data('info', '最低制冷温度');
+            layer.tips('最低制冷温度格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 最低制冷温度 结束
+
+    ccdMaxExposureTime.blur(function () {//验证 最大曝光时间
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v <= 0)
+        {
+            err = 1;
+            that.data('info', '最大曝光时间');
+            layer.tips('最大曝光时间格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 最大曝光时间 结束
+
+    ccdMinExposureTime.blur(function () {//验证 最小曝光时间
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v <= 0)
+        {
+            err = 1;
+            that.data('info', '最小曝光时间');
+            layer.tips('最小曝光时间格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 最小曝光时间 结束
+
+    ccdExposureTimeRation.blur(function () {//验证 曝光时间分辨率
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^[0-9]+$/;
+        var err = 0;
+
+        if ( !patn.test(v) || v < 1)
+        {
+            err = 1;
+            that.data('info', '曝光时间分辨率');
+            layer.tips('曝光时间分辨率格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 曝光时间分辨率 结束
+
+    ccdFullWellDepth.blur(function () {//验证 满阱电荷
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^[0-9]+$/;
+        var err = 0;
+
+        if ( !patn.test(v) || v < 1)
+        {
+            err = 1;
+            that.data('info', '满阱电荷');
+            layer.tips('满阱电荷格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 满阱电荷 结束
+
+    /*验证 增益值*/
+
+    /*验证 读出噪声值*/
+
+    ccdEmMaxValue.blur(function () {//验证 最大EM
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^[0-9]+$/;
+        var err = 0;
+
+        if ( !patn.test(v) )
+        {
+            err = 1;
+            that.data('info', '最大EM');
+            layer.tips('最大EM格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 最大EM 结束
+    
+    ccdEmMinValue.blur(function () {//验证 最小EM
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^[0-9]+$/;
+        var err = 0;
+        var ccd_EmMaxVal = $.trim(ccdEmMaxValue.val());
+ 
+        if ( !patn.test(v) || v >= parseInt(ccd_EmMaxVal) )
+        {
+            err = 1;
+            that.data('info', '最小EM');
+            layer.tips('最小EM格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 最小EM 结束
+
+    ccdAttrVersion.blur(function () {//验证 属性版本号
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( v.length < 1 )
+        {
+            err = 1;
+            that.data('info', '属性版本号');
+            layer.tips('属性版本号格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 属性版本号 结束
+    /****************ccd-No1 js结束 ****************/
+
+    /*****************滤光片表单 按钮 js事件*************/
     var filterBtn = $('#filterBtn');
     var filterForm = $('#filter'); //滤光片表单
     var filterFile = $('#filterFile'); //滤光片相关文件
@@ -892,17 +1778,28 @@ $(function () {
     /*2、插槽数目input框 blur事件*/
     var filterSlot = $('#filterSlot'); //插槽序号 下拉框
     filterNum.blur(function () {
+        var that = $(this);
         var err = 0;
+
         //判断是否输入了插槽数目
-        var slotNum = $.trim( filterNum.val() );
+        var slotNum = $.trim( that.val() );
         if ( !$.isNumeric(slotNum) || slotNum < 1)
         {
             err = 1;
-            layer.tips('插槽数目的值有误!', $(this), {tipsMore: true});
+            layer.tips('插槽数目的值有误!', that, {tipsMore: true});
             return;
         }
-        $(this).data('err', err);
-        //
+        that.data('err', err);
+        
+        //跟据新输入的插槽数目，删除filter_type中多余的数据
+        for (p in filter_type)
+        {
+            if ( p > slotNum )
+            {
+                delete filter_type[p]
+            }
+        }
+
         /*根据插槽数目，显示相应数目的槽*/
         var slotHtml = '<option value="0">选择插槽</option>';
         for (var slot = 1; slot <= slotNum; slot++)
@@ -933,7 +1830,6 @@ $(function () {
     /*插槽序号下拉框 点击事件 结束*/
 
     /*4、滤光片类型下拉框 点击事件*/
-    var filterSystem = $('#filterSystem');
 
     filterSystem.click(function () {
         var filterSlot_val = filterSlot.val(); //获取插槽序号的值
@@ -973,24 +1869,26 @@ $(function () {
     /*滤光片 提交按钮 点击事件*/
     filterBtn.click(function () {
         var gimbalRadio = filterForm.find('input[type="radio"]:checked'); //获取被点击的单选框
-        //console.log(gimbalRadio.length);return;
-        //若漏过某个选项，则提示用户，不提交表单
-        if ( gimbalRadio.length < 3)
-        {
-            layer.alert('您遗漏了单选项固定属性!'); return;
-        }
+        
         //检查望远镜下拉选择框 是否选择了某望远镜
         var atId = atNo.val();
         if ( atId == 0)
         {//未选择某个望远镜
             layer.alert('请选择您要配置的望远镜!');return;
         }
+
         var filterData = new FormData(filterForm[0]);
         filterData.append('teleid', atId); //将某望远镜的id 加入表单数据中
         //将各插槽之滤光片类型数据加入表单 
         //加入之前先验证 filter_type的元素个数不能少于插槽数目值
         var tempStr = handle_filtersystem_data (filter_type);
         filterData.append('filtersystem', tempStr); //将各插槽之滤光片类型数据加入表单 结束
+
+        //验证滤光片的各配置项
+        if ( !filter_select_valid (filterData) )
+        {
+            return;
+        }//验证滤光片的各配置项 结束
 
         $.ajax({
             type: 'post',
@@ -1057,6 +1955,143 @@ $(function () {
         data.attrmodifytime ? ( filterAttrModifyTime.html(data.attrmodifytime), filter_h.html('滤光片固定属性') ) : ( filterAttrModifyTime.html(''), filter_h.html('滤光片固定属性:未进行配置') );
         filterAttrVersion.val(data.attrversion);
     }/*显示滤光片配置数据 结束*/
+
+    /*验证滤光片表单数据*/
+    var filter_text = filterForm.find('input[type="text"]');
+    /*
+    *filter_select_valid () 验证滤光片表单的数据
+    return：bool值
+    */
+    function filter_select_valid (filter_data)
+    {
+        var filter_errMsg = ''; //滤光片表单的错误提示
+
+        filter_text.each(//逐一验证文本输入框
+            function () {
+                $(this).blur();
+                if ( $(this).data('err') == 1 )
+                {
+                    filter_errMsg += $(this).data('info') + '格式错误!<br>';
+                }
+            }
+        );
+
+        //验证各插槽的滤光片类型是否都已进行配置选择
+        var filter_type_p = 0;
+        for ( p in filter_type )
+        {
+            filter_type_p ++;
+        }
+        if ( filter_type_p != parseInt( filterNum.val() ) )
+        {
+            filter_errMsg += '未对全部滤光片配置滤光片类型!<br>';
+            layer.tips('未对全部滤光片配置滤光片类型!', filterSystem, {tipsMore: true});
+        }
+        /*//逐一验证下拉选择框
+        if ( ccdType.val() == 0 ) //验证类型
+        {
+            ccd_errMsg += '探测器类型未选择!<br>';
+        }
+
+        var ccdreadoutMode_check_num = ccdreadoutMode.children('input:checkbox:checked').length; //读出模式复选框 被选中的数量
+        if ( ccdreadoutMode_check_num < 1)
+        {
+            ccd_errMsg += '读出模式未选择!<br>';
+        }
+
+        if ( ccd_1_Data.get('cansetoverscan') === null ) //验证 设置Over scan
+        {
+            ccd_errMsg += '是否支持设置Over scan未选择!<br>';
+        }*/
+
+        if ( filter_errMsg !== '' )
+        {
+            layer.alert(filter_errMsg, {shade:false});
+            return false;
+        }else{
+            return true;
+        }
+    }/*filter_select_valid () 结束*/
+    
+    //滤光片text框 blur事件
+    filterId.blur(function () {//验证 滤光片id
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v.length != 8 )
+        {
+            err = 1;
+            that.data('info', '滤光片id');
+            layer.tips('滤光片id格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 滤光片id 结束
+
+    filterName.blur(function () {//验证 名称
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( v.length < 3 )
+        {
+            err = 1;
+            that.data('info', '滤光片名称');
+            layer.tips('滤光片名称格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 滤光片id 结束
+
+    filterSize.blur(function () {//验证 插槽大小
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^\[[0-9]+,[0-9]+,[0-9]+\]$/;
+        var err = 0;
+
+        if ( !patn.test(v) )
+        {
+            err = 1;
+            that.data('info', '插槽大小');
+            layer.tips('插槽大小格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 插槽大小 结束
+
+    filter_Name.blur(function () {//验证 滤光片名称
+        var that = $(this);
+        var filterNum_v = parseInt( $.trim( filterNum.val() ) )
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !v )//v值为空
+        {
+            err = 1;
+            that.data('info', '滤光片名称');
+            layer.tips('滤光片名称格式错误!', that, {tipsMore: true});
+        }else{//v值不为空
+
+            if ( v.indexOf('/') === -1 ) //字符串中无'/', 则表明应该有一个插槽
+            {
+                if ( filterNum_v  != 1 )
+                {
+                    err = 1;
+                    that.data('info', '滤光片名称');
+                    layer.tips('滤光片名称设置与插槽数目不匹配!', that, {tipsMore: true});
+                }
+            }else{//字符串中有'/', 则表明应该有大于一个插槽
+                v_num = v.split ('/').length;
+                if ( v_num != filterNum_v )
+                {
+                    err = 1;
+                    that.data('info', '滤光片名称');
+                    layer.tips('滤光片名称设置与插槽数目不匹配!', that, {tipsMore: true});
+                }
+            } 
+        }	
+        that.data('err', err);
+    });//验证 滤光片名称 结束
+    /**********************滤光片text框 blur事件 结束*****/
+    /*************验证滤光片表单数据 结束*************/
 
     /*随动圆顶  js事件*/
     var sDomeBtn = $('#sDomeBtn'); //随动圆顶 提交按钮

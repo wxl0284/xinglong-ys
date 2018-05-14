@@ -158,7 +158,7 @@ class Atconfig extends Base
         }/*处理测试报告 结束*/
 
         /*接下来 处理说明书*/
-        $instruFile = $this->request->file('instruction'); //获取测试报告的上传数据
+        $instruFile = $this->request->file('instruction'); //获取说明书的上传数据
         if ( $instruFile !== null ) //有文件被上传
         {
             //将上传文件命名为: 说明书

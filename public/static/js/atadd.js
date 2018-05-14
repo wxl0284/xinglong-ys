@@ -155,7 +155,13 @@ $(function () {
             processData : false,
             contentType : false,  
             success:  function (info) {
-                alert(info);
+                if (info.indexOf('添加望远镜ok') !== -1)
+                {
+                    alert(info);
+                }else{
+                    layer.alert(info);
+                }
+                
                 if (info.indexOf('登录') !== -1)
                 {
                     location.href = '/';
