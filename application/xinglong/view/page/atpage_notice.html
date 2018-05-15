@@ -36,7 +36,12 @@
 	{include file="common/common"/}
     <div id='all'>
 		<div class="center">
+        {if condition="isset($not_config)"}
            <h3>此望远镜还未配置任何固定属性，<a href='{:url("/atconfig")}'>去配置此望远镜</a></h3>
+        {/if}
+        {if condition="isset($err_notice)"}
+           <h3>{$err_notice}<a href='{:url("/atconfig")}'>去查看此望远镜配置</a></h3>
+        {/if}
         </div>
     </div><!-- id='all' 结束 --><br>
 	<footer class='center clear' style='position: absolute;bottom: 0px;width:100%;'>

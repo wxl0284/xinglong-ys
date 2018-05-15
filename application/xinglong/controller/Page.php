@@ -15,11 +15,36 @@ class Page extends Base
         $result = $this->get_conf ($at);
         //halt(isset($result['gimbal']));
         //halt($result['filter']);
+        
+        //判断$result中转台 ccd 调焦器 是否有未配置的
+        $d = ''; //错误提示
+
+        if ( !isset($result['gimbal']) )
+        {
+            $d .= '此望远镜转台的固定属性未配置或读取失败!<br>';
+        }
+
+        if ( !isset($result['ccd']) )
+        {
+            $d .= '此望远镜CCD的固定属性未配置或读取失败!<br>';
+        }
+
+        if ( !isset($result['focus']) )
+        {
+            $d .= '此望远镜调焦器的固定属性未配置或读取失败!<br>';
+        }
+
+        if ( $d !== '')
+        {
+            $vars['err_notice'] = $d;
+            return view('atpage_notice', $vars);
+        }
+
         //如果$result中无数据，即未进行任何配置
         if ( !$result )
         {
-            //$this->error('此望远镜还未进行属性配置!', '/atconfig'); //跳转至配置页面
-            return view('atpage_notice');
+            $vars['not_config'] = 1;
+            return view('atpage_notice', $vars);
         }
 
         $result['at_id'] = $at;
