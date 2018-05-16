@@ -526,8 +526,6 @@ $(function () {
 
     //转台提交按钮 点击事件
     gimbalBtn.click(function () {
-        var gimbalRadio = gimbalForm.find('input[type="radio"]:checked'); //获取被点击的单选框
-        //console.log(gimbalRadio.length);return;
         //检查望远镜下拉选择框 是否选择了某望远镜
         var atId = atNo.val();
         if ( atId == 0)
@@ -1151,8 +1149,6 @@ $(function () {
     
     /*ccd 提交按钮 点击事件*/
     ccdBtn_1.click(function () {
-        var ccd_1_Radio = ccd_1Form.find('input[type="radio"]:checked'); //获取被点击的单选框
-        
         //检查望远镜下拉选择框 是否选择了某望远镜
         var atId = atNo.val();
         if ( atId == 0)
@@ -1868,8 +1864,6 @@ $(function () {
 
     /*滤光片 提交按钮 点击事件*/
     filterBtn.click(function () {
-        var gimbalRadio = filterForm.find('input[type="radio"]:checked'); //获取被点击的单选框
-        
         //检查望远镜下拉选择框 是否选择了某望远镜
         var atId = atNo.val();
         if ( atId == 0)
@@ -2170,8 +2164,6 @@ $(function () {
     var sDome_h = $('#sDome_h'); //标题
 
     sDomeBtn.click(function () {
-        var sDome_Radio = sDomeForm.find('input[type="radio"]:checked'); //获取被点击的单选框
-
         var atId = atNo.val();
         if ( atId == 0)
         {//未选择某个望远镜
@@ -2417,8 +2409,6 @@ $(function () {
     var oDome_h = $('#oDome_h');  //标题
 
     oDomeBtn.click(function () {
-        var oDome_Radio = oDomeForm.find('input[type="radio"]:checked'); //获取被点击的单选框
-      
         //检查望远镜下拉选择框 是否选择了某望远镜
         var atId = atNo.val();
         if ( atId == 0)
@@ -2613,8 +2603,6 @@ $(function () {
     var focus_h = $('#focus_h'); //标题
 
     focusBtn.click(function () {
-        var focus_Radio = focusForm.find('input[type="radio"]:checked'); //获取被点击的单选框
-      
         //检查望远镜下拉选择框 是否选择了某望远镜
         var atId = atNo.val();
         if ( atId == 0)
@@ -2704,17 +2692,45 @@ $(function () {
             }
         );
 
-        /*if ( oDomeType.val() == 0 ) //验证 类型
+        if ( focus_form.get('canconnect') === null ) //验证 支持连接
         {
-            focus_errMsg += '全开圆顶类型未选择!<br>';
+            focus_errMsg += '是否支持连接未选择!<br>';
         }
 
-        if ( focus_errMsg.get('canopendome') === null ) //验证 支持打开圆顶
+        if ( focus_form.get('canfindhome') === null ) //验证 支持找零
         {
-            oDome_errMsg += '是否支持打开圆顶未选择!<br>';
-        }*/
+            focus_errMsg += '是否支持找零未选择!<br>';
+        }
 
-      
+        if ( focus_form.get('cantemperturecompensate') === null ) //验证 进行温度补偿
+        {
+            focus_errMsg += '是否支持进行温度补偿未选择!<br>';
+        }
+
+        if ( focus_form.get('cansetposition') === null ) //验证 设置目标位置
+        {
+            focus_errMsg += '是否支持设置目标位置未选择!<br>';
+        }
+
+        if ( focus_form.get('cansetspeed') === null ) //验证 设置恒速运动
+        {
+            focus_errMsg += '是否支持设置恒速运动未选择!<br>';
+        }
+        
+        if ( focus_form.get('canstop') === null ) //验证 支持停止运动
+        {
+            focus_errMsg += '是否支持停止运动未选择!<br>';
+        }
+
+        if ( focus_form.get('canenabletemperturecompensate') === null ) //验证 使能温度补偿
+        {
+            focus_errMsg += '是否使能温度补偿未选择!<br>';
+        }
+
+        if ( focus_form.get('cansettemperturecompensatecoefficient') === null ) //验证 设置温度补偿系数
+        {
+            focus_errMsg += '是否设置温度补偿系数未选择!<br>';
+        }
 
         if ( focus_errMsg !== '' )
         {
@@ -2850,13 +2866,6 @@ $(function () {
     
 
     guideScopeBtn.click(function () {
-        var guide_Radio = guideScope.find('input[type="radio"]:checked'); //获取被点击的单选框
-      
-        //若漏过某个选项，则提示用户，不提交表单
-        if ( guide_Radio.length < 5 )
-        {
-            layer.alert('您遗漏了单选项固定属性!'); return;
-        }
         //检查望远镜下拉选择框 是否选择了某望远镜
         var atId = atNo.val();
         if ( atId == 0)
@@ -2865,6 +2874,12 @@ $(function () {
         }
         var guide_Data = new FormData(guideScope[0]);
         guide_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
+
+        //验证文本框类型、下拉框、复选框、单选框配置项 是否都已选择 
+        if ( !guide_select_valid (guide_Data) )
+        {
+            return;
+        }//验证文本框类型、下拉框、复选框、单选框配置项  是否都已选择 结束        
 
         $.ajax({
             type: 'post',
@@ -2916,7 +2931,135 @@ $(function () {
         guideScopeAttrVersion.val(data.attrversion);
         data.attrmodifytime ? (guideScopeAttrModifyTime.html(data.attrmodifytime), guideScope_h.html('导星望远镜固定属性') ) : (guideScopeAttrModifyTime.html(''), guideScope_h.html('导星望远镜固定属性:未进行配置') );
     }
-    /*导星望远镜 js事件 结束*/
+
+    var guide_text = guideScope.find('input[type="text"]'); //导星镜 text框
+    /*
+    * guide_select_valid () 验证导星镜 表单各项
+    * return: bool
+    */
+    function guide_select_valid (guide_form)
+    {
+        var guide_errMsg = ''; //全开圆顶表单的错误提示
+
+        guide_text.each(//逐一验证文本输入框
+            function () {
+                $(this).blur();
+                if ( $(this).data('err') == 1 )
+                {
+                    guide_errMsg += $(this).data('info') + '格式错误!<br>';
+                }
+            }
+        );
+
+        if ( guideScopeOpticalStructure.val() == 0 )
+        {
+            guide_errMsg += '导星镜焦点类型未选择!<br>';
+        }
+
+        if ( guide_form.get('hasmirrorcover') === null ) //验证 镜盖（轴5）
+        {
+            guide_errMsg += '是否有镜盖（轴5）未选择!<br>';
+        }
+
+        if ( guide_form.get('issupportautofocus') === null ) //验证 支持自动调焦
+        {
+            guide_errMsg += '是否支持自动调焦未选择!<br>';
+        }
+
+        if ( guide_form.get('canconnect') === null ) //验证 支持连接
+        {
+            guide_errMsg += '是否支持连接未选择!<br>';
+        }
+
+        if ( guide_form.get('canopencover') === null ) //验证 支持镜盖操作
+        {
+            guide_errMsg += '是否支持镜盖操作未选择!<br>';
+        }
+
+        if ( guide_form.get('canenableautofocus') === null ) //验证 使能自动调焦
+        {
+            guide_errMsg += '是否使能自动调焦未选择!<br>';
+        }
+
+        if ( guide_errMsg !== '' )
+        {
+            layer.alert(guide_errMsg, {shade:false});
+            return false;
+        }else{
+            return true;
+        }
+    }/*******guide_select_valid () 结束***************/
+
+    guideScopeId.blur(function () {//验证 导星镜id
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v.length != 5 )
+        {
+            err = 1;
+            that.data('info', '导星镜id');
+            layer.tips('导星镜id格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 导星镜id 结束
+
+    guideScopeName.blur(function () {//验证 导星镜名称
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( v.length < 3 )
+        {
+            err = 1;
+            that.data('info', '导星镜名称');
+            layer.tips('导星镜名称格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 导星镜id 结束
+
+    guideScopeFocusLength.blur(function () {//验证 焦距
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v <= 0 )
+        {
+            err = 1;
+            that.data('info', '导星镜焦距');
+            layer.tips('导星镜焦距格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 导星镜焦距 结束
+
+    guideScopeAperture.blur(function () {//验证 口径
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v <= 0 )
+        {
+            err = 1;
+            that.data('info', '导星镜口径');
+            layer.tips('导星镜口径格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 导星镜口径 结束
+
+    guideScopeAttrVersion.blur(function () {//验证 版本号
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( v.length < 1 )
+        {
+            err = 1;
+            that.data('info', '版本号');
+            layer.tips('版本号格式错误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 版本号 结束
+    /*************导星望远镜 js事件 结束*****************/
 
     /*显示各设备相关文件*/
     function show_file (selector, file_data)

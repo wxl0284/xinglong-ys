@@ -17,26 +17,26 @@ class Page extends Base
         //halt($result['filter']);
         
         //判断$result中转台 ccd 调焦器 是否有未配置的
-        $d = ''; //错误提示
+        $err_notice = ''; //错误提示
 
         if ( !isset($result['gimbal']) )
         {
-            $d .= '此望远镜转台的固定属性未配置或读取失败!<br>';
+            $err_notice .= '此望远镜转台的固定属性未配置或读取失败!<br>';
         }
 
         if ( !isset($result['ccd']) )
         {
-            $d .= '此望远镜CCD的固定属性未配置或读取失败!<br>';
+            $err_notice .= '此望远镜CCD的固定属性未配置或读取失败!<br>';
         }
 
         if ( !isset($result['focus']) )
         {
-            $d .= '此望远镜调焦器的固定属性未配置或读取失败!<br>';
+            $err_notice .= '此望远镜调焦器的固定属性未配置或读取失败!<br>';
         }
 
-        if ( $d !== '')
+        if ( $err_notice !== '')
         {
-            $vars['err_notice'] = $d;
+            $vars['err_notice'] = $err_notice;
             return view('atpage_notice', $vars);
         }
 
