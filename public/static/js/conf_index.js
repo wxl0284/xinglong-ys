@@ -41,97 +41,97 @@ $(function () {
         {
             if ( focustype_valid(confVal) === false)  //验证 焦点类型
             {
-                layer.alert('焦点类型输入不合法'); return;
+                layer.alert('焦点类型输入不合法', {shade:false});return;
             }
         }else if( conf == 'focusratio' ){
-            if ( focusratio_valid(confVal) === false)  //验证 焦距
+            if ( focusratio_valid(confVal) === false)  //验证 焦比
             {
-                layer.alert('焦距输入不合法'); return;
+                layer.alert('焦比输入不合法', {shade:false}); return;
             }
         }else if( conf == 'imageBits' ){
             if ( imageBits_valid(confVal) === false)  //验证 图像位数
             {
-                layer.alert('图像位数输入不合法'); return;
+                layer.alert('图像位数输入不合法', {shade:false}); return;
             }
         }else if( conf == 'coolerMode' ){
             if ( coolerMode_valid(confVal) === false)  //验证 制冷方式
             {
-                layer.alert('制冷方式输入不合法'); return;
+                layer.alert('制冷方式输入不合法', {shade:false});return;
             }
         }else if( conf == 'readoutMode' ){
             if ( readoutMode_valid(confVal) === false)  //验证 读出模式
             {
-                layer.alert('读出模式输入不合法'); return;
+                layer.alert('读出模式输入不合法', {shade:false});  return;
             }
         }else if( conf == 'readoutSpeed' ){
             if ( readoutSpeed_valid(confVal) === false)  //验证 读出速度模式
             {
-                layer.alert('读出速度模式输入不合法'); return;
+                layer.alert('读出速度模式输入不合法', {shade:false}); return;
             }
         }else if( conf == 'transferSpeed' ){
             if ( transferSpeed_valid(confVal) === false)  //验证 转移速度模式
             {
-                layer.alert('转移速度模式输入不合法'); return;
+                layer.alert('转移速度模式输入不合法', {shade:false}); return;
             }
         }else if( conf == 'gainmode' ){
             if ( gainmode_valid(confVal) === false)  //验证 增益模式
             {
-                layer.alert('增益模式输入不合法'); return;
+                layer.alert('增益模式输入不合法', {shade:false}); return;
             }
         }else if( conf == 'gainNumber' ){
             if ( gainNumber_valid(confVal) === false)  //验证 增益档位
             {
-                layer.alert('增益档位输入不合法'); return;
+                layer.alert('增益档位输入不合法', {shade:false});return;
             }
         }else if( conf == 'ShutterType' ){
             if ( ShutterType_valid(confVal) === false)  //验证 快门类型
             {
-                layer.alert('快门类型输入不合法'); return;
+                layer.alert('快门类型输入不合法', {shade:false}); return;
             }
         }else if( conf == 'ShutterMode' ){
             if ( ShutterMode_valid(confVal) === false)  //验证 快门模式
             {
-                layer.alert('快门模式输入不合法'); return;
+                layer.alert('快门模式输入不合法', {shade:false}); return;
             }
         }else if( conf == 'BinArray' ){
             if ( BinArray_valid(confVal) === false)  //验证 bin
             {
-                layer.alert('bin值输入不合法'); return;
+                layer.alert('bin值输入不合法', {shade:false}); return;
             }
         }else if( conf == 'InterfaceType' ){
             if ( InterfaceType_valid(confVal) === false)  //验证 ccd接口类型
             {
-                layer.alert('ccd接口类型输入不合法'); return;
+                layer.alert('ccd接口类型输入不合法', {shade:false}); return;
             }
         }else if( conf == 'ExposeTriggerMode' ){
             if ( ExposeTriggerMode_valid(confVal) === false)  //验证 曝光触发模式
             {
-                layer.alert('曝光触发模式输入不合法'); return;
+                layer.alert('曝光触发模式输入不合法', {shade:false}); return;
             }
         }else if( conf == 'FilterSystem' ){
             if ( FilterSystem_valid(confVal) === false)  //验证 滤光片类型
             {
-                layer.alert('滤光片类型输入不合法'); return;
+                layer.alert('滤光片类型输入不合法', {shade:false}); return;
             }
         }else if( conf == 'FilterShape' ){
             if ( FilterShape_valid(confVal) === false)  //验证 滤光片形状
             {
-                layer.alert('滤光片形状输入不合法'); return;
+                layer.alert('滤光片形状输入不合法', {shade:false}); return;
             }
         }else if( conf == 'slaveDomeType' ){
             if ( slaveDomeType_valid(confVal) === false)  //验证 随动圆顶类型
             {
-                layer.alert('随动圆顶类型输入不合法'); return;
+                layer.alert('随动圆顶类型输入不合法', {shade:false}); return;
             }
         }else if( conf == 'openDomeType' ){
             if ( slaveDomeType_valid(confVal) === false)  //验证 全开圆顶类型
             {
-                layer.alert('全开圆顶类型输入不合法'); return;
+                layer.alert('全开圆顶类型输入不合法', {shade:false}); return;
             }
         }else if( conf == 'opticalStructure' ){
             if ( slaveDomeType_valid(confVal) === false)  //验证 导星镜焦点类型
             {
-                layer.alert('导星镜焦点类型输入不合法'); return;
+                layer.alert('导星镜焦点类型输入不合法', {shade:false}); return;
             }
         }
         //执行验证 结束//////////////
@@ -351,7 +351,7 @@ $(function () {
     var tableTitle = $('#tableHead');
 
     aElemt.click(function () {
-        var index = layer.load(2); //显示加载提示
+        var index = layer.load(1); //显示加载提示
 
         //执行Ajax 获取相应的配置数据
         var conf = $(this).attr('id');
@@ -375,7 +375,6 @@ $(function () {
             },
             success: function (info) {
                 layer.close(index);  //关闭加载提示
-            
                 if (info === 0)
                 {//获取配置数据失败
                     tableTitle.html(confName);
@@ -399,17 +398,33 @@ $(function () {
                 }
                 //然后弹出窗口
                 $('#confPopup').removeClass('displayNo');
-                $('#confWindow').window({
+                /*$('#confWindow').window({
                     title : '配置列表',
-                    width : 460,
-                    height : 330,
+                    //width : 460,
+                    //height : 330,
+                    width : 'auto',
+                    height : 'auto',
                     collapsible : false,
                     minimizable : false,
                     maximizable : false,
-                });//弹出窗口 结束
+                });//弹出窗口 结束*/
+                layer.open({
+                    type: 1,
+                    title: '属性值列表',
+                    area: '26%;',
+                    shade: 0,
+                    id: 'LAY_layuipro', //设定一个id，防止重复弹出
+                    resize: false,
+                    btnAlign: 'c',
+                    moveType: 1, //拖拽模式，0或者1
+                    content: $('#confWindow'),
+                    cancel: function (){
+                        $('#confPopup').addClass('displayNo');
+                    },
+                });
             },
             error: function (){
-                layer.alert('网络异常，请重新查看!');
+                layer.alert('网络异常，请重新查看!', {shade:false});
             }
         })//执行Ajax 获取相应的配置数据 结束
     });//给table表内所有的查看配置项的a元素 绑定click事件 结束
@@ -422,9 +437,7 @@ $(function () {
         var td = $(this).parent();
         var tr = td.parent();
 
-        var r=confirm("确定删除此选项?");
-        if (r)
-        {
+        layer.confirm('确定删除？', {icon: 3, title:'提示'}, function(index){
             //执行ajax
             $.ajax({
                 url: '/del_conf',
@@ -433,16 +446,15 @@ $(function () {
                     id: confId,
                 },
                 success: function (info){
-                    layer.alert(info);
+                    layer.alert(info, {shade:false});
                     tr.remove();
                 },
                 error: function (){
-                    layer.alert('网络异常，请重新操作!');
+                    layer.alert('网络异常，请重新操作!', {shade:false});
                 }
             });//ajax结束
-        }else{
-            return;
-        }
+            layer.close(index);
+        });       
     })//ajax 删除固定属性的可选项值 结束
     
 })

@@ -59,6 +59,7 @@ footer span {color:#fff;line-height:41px;font-size:13px;}
 
 header div.pos_r {top:1.5px;} /*此为公共头部导航栏 样式*/
 
+.layui-layer-title {background-color: #64B2E0;} /*修改 layer弹窗 标题 样式*/
 
 
 

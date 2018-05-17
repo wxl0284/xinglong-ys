@@ -1,4 +1,4 @@
-/****at60页面之datagrid插件 js***/
+/****atpage页面之datagrid插件 js***/
 //观测计划的赤经和赤纬 js事件//////////////////////////////
 	//赤经 的js事件//////////////////////////////////
 	//赤经之小时 js事件
@@ -145,7 +145,7 @@
 	            success: function (info) {
 					if (!info.match("^\{(.+:.+,*){1,}\}$"))
 					{//非json数据
-						layer.alert(info);
+						layer.alert(info, {shade:false});
 						if (info.indexOf('登录') !== -1)
 						{
 							location.href = '/';
@@ -256,7 +256,7 @@
 				table.datagrid('beginEdit', n);
 				editRow = n;
 			}else if (num > 1){//选中的多于1行
-				layer.alert('添加时:只能选择一条数据!');return;
+				layer.alert('添加时:只能选择一条数据!', {shade:false});return;
 			}else if (num == 1){
 				var num = table.datagrid('getRowIndex', selectRows[0]);
 				table.datagrid('insertRow', {
@@ -271,7 +271,7 @@
 			//滚动至新插入的行那里
 			table.datagrid('scrollTo', editRow);
 		}else{
-			layer.alert('请先保存编辑的第'+ (editRow+1) +'条数据!');return;
+			layer.alert('请先保存编辑的第'+ (editRow+1) +'条数据!', {shade:false});return;
 		}
 		
 	}//添加计划  结束/////////////////////////////////////
@@ -284,7 +284,7 @@
 		var res = table.datagrid('validateRow', editRow); //验证编辑的行
 		if (!res)
 		{
-			layer.alert('请检查第' + (editRow+1) + '行必填数据!'); return;
+			layer.alert('请检查第' + (editRow+1) + '行必填数据!', {shade:false}); return;
 			
 		}
 		
@@ -349,7 +349,7 @@
 			},*/
 
 			columns:[[
-			{field:'id', title:'id', checkbox:true,rowspan:2},
+			{field:'id', title:'id', checkbox:true, rowspan:2},
 			{field:'target',  title:'目标名称', width:200,rowspan:2,
 				editor:{
 					type:'validatebox',
@@ -374,8 +374,8 @@
 					},
 				},
 			},
-			{title:'赤经', colspan:5,},
-			{title:'赤纬', colspan:5,},
+			{title:'赤经', colspan:5},
+			{title:'赤纬', colspan:5},
 			{field:'epoch', title:'历元',  width:66, rowspan:2,
 				formatter:function(value){
 					for(var i=0; i<epochData.length; i++){
@@ -399,7 +399,7 @@
 					type:'numberbox',
 					options:{required:true,},},
 			},
-			{field:'delayTime', title:'delayTime',  width:66,rowspan:2,
+			{field:'delayTime', title:'delayTime', width:66, rowspan:2,
 				editor:{
 					type:'numberbox',
 				},
@@ -427,17 +427,17 @@
 					},
 				},
 			},
-			{field:'gain', title:'增益',  width:46,rowspan:2,
+			{field:'gain', title:'增益',  width:46, rowspan:2,
 				editor:{
 					type:'numberbox',
 				},
 			},
-			{field:'bin',  title:'Bin',  width:40, rowspan:2,
+			{field:'bin',  title:'Bin', width:40, rowspan:2,
 				editor:{
 					type:'numberbox',
 				},
 			},
-			{field:'readout', title:'读出速度',  width:58, rowspan:2,
+			{field:'readout', title:'读出速度', width:58, rowspan:2,
 				editor:{
 					type:'numberbox',
 					options:{required:true,},},
@@ -448,33 +448,32 @@
 				}
 			},
 		],[
-	
 			{field:'rightAscension1', width:33,title:'时',
 				editor:{
 					type:'numberbox',
 					options:{required:true,},
 				},
 			},
-			{field:'c1', 
+			{field:'c1', width:10,
 				formatter:function(value,row,index){
 					return ':';
 				}
 			},
 		
-			{field:'rightAscension2', width:33,title:'分',
+			{field:'rightAscension2',  width:33,title:'分',
 				editor:{
 					type:'numberbox',
 					options:{required:true,},
 				},
 			},
-			{field:'c2', 
+			{field:'c2', width:10,
 				formatter:function(value,row,index){
 					return ':';
 				}
 			},
 			{field:'rightAscension3', width:76,title:'秒',
 				editor:{
-					type:'validatebox',
+					type:'numberbox',
 					options:{required:true,},
 				},
 			},
@@ -485,7 +484,7 @@
 					options:{required:true,},
 				},
 			},
-			{field:'c3', 
+			{field:'c3', width:10,
 				formatter:function(value,row,index){
 					return ':';
 				}
@@ -497,14 +496,14 @@
 					options:{required:true,},
 				},
 			},
-			{field:'c4', 
+			{field:'c4', width:10,
 				formatter:function(value,row,index){
 					return ':';
 				}
 			},
 			{field:'declination3', width:76,title:'秒',
 				editor:{
-					type:'validatebox',
+					type:'numberbox',
 					options:{required:true,},
 				},
 			},
@@ -537,6 +536,8 @@
 
 //观测计划的 开始 停止 下一个按钮////////////////////////////
 //观测计划的开始 按钮//////////////////////////////////
+	var planStart = $('#planStart'); //计划开始 按钮
+	var planStop = $('#planStop'); //计划停止 按钮
 	var planErr = 0; //观测计划发送时的错误标识
 	$('#planModes').on('click', 'button', function () {
 		
@@ -575,19 +576,20 @@
 				},             
 	            success:  function (info) {
 		            planErr = 0;
-					layer.alert(info);
+					layer.alert(info, {shade:false});
 					if (info.indexOf('登录') !== -1)
 					{
 						location.href = '/';
 					}
 					if (info.indexOf('计划开始') !== -1)
 					{
-						$('#planStart').prop('disabled', true);
+						//planStart.prop('disabled', true);
+						//planStop.prop('disabled', false);
 					}
 					
 					if (info.indexOf('计划停止') !== -1)
 					{
-						$('#planStart').prop('disabled', false);
+						//planStart.prop('disabled', false);
 					}
 	            },
 	            error:  function () {
@@ -610,14 +612,14 @@
 		if ( n< 1) 
 		{
 			planErr = 1;
-			layer.alert('请先导入计划或添加计划!');
+			layer.alert('请先导入计划或添加计划!', {shade:false});
 		}
 		
 		//执行验证
 		if (!valid())
 		{
 			planErr = 1;
-			layer.alert('请先保存计划或检查第' + (editRow+1) + '行必填数据!');
+			layer.alert('请先保存计划或检查第' + (editRow+1) + '行必填数据!', {shade:false});
 		}
 
 		/*//js验证数据
@@ -687,19 +689,24 @@
 				},
 				success: function (info){
 					planErr = 0;
-					layer.alert(info);
+					layer.alert(info, {shade:false});
 					if (info.indexOf('登录') !== -1)
 					{
 						location.href = '/';
 					}
+
+					if (info.indexOf('观测计划发送完毕') !== -1)
+					{
+						//planStart.prop('disabled', false); //启用 计划开始按钮
+					}
 				},
 				error: function (){
-					layer.alert('网络异常,请重新提交计划！');
+					layer.alert('网络异常,请重新提交计划！', {shade:false});
 				},
 			});
 		}
 		
-	}//保存并提交计划  结束//////////////////////////////////////////
+	}//保存并提交计划  结束///////////////////////////////////
 	
 //数据验证函数 /////////////////////////////////////////////
 	function valid ()

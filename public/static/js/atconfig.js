@@ -29,7 +29,7 @@ $(function () {
     /*选择望远镜下拉列表 ajax判断19个固定属性是否添加足够*/
     var atNo = $('#atNo');
     atNo.change(function (){
-        var index = layer.load(2); //显示加载提示
+        var index = layer.load(1); //显示加载提示
         var val = $(this).val();
 
         if(val !== '0') //执行ajax请求 判断
