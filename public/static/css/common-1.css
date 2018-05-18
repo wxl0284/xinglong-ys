@@ -45,7 +45,7 @@ li {list-style-type:none;}
 
 .widthAuto {width: auto;}
 
-#all {width:1200px; margin: 0 auto;}
+#all {width:89.31%; margin: 0 auto;}
 
 footer {background-color:#656565;height:41px;}
 
@@ -61,10 +61,6 @@ header div.pos_r {top:1.5px;} /*此为公共头部导航栏 样式*/
 
 .layui-layer-title {background-color: #64B2E0;} /*修改 layer弹窗 标题 样式*/
 
-
-
-
-
 header {height:50px;background-color:#64B2E0;top:-6px;}
 
 header div {width:1200px;margin:0 auto;line-height:50px;color:#eaf1f9;font-size:14px;}
@@ -79,4 +75,4 @@ header div div {border:1px solid #fff; font-size:14px; text-align:center;
 			right:0px;top:12px; width:100px; height:26px;line-height:26px;}
 
 header div div a {color:#eaf1f9;}
-/* #res {left:300px; color:#eaf1f9;} 导航：观测结果样式*/
+/*** #res {left:300px; color:#eaf1f9;} 导航：观测结果样式*/

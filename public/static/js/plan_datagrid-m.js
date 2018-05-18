@@ -2,7 +2,7 @@
 //观测计划的赤经和赤纬 js事件//////////////////////////////
 	//赤经 的js事件//////////////////////////////////
 	//赤经之小时 js事件
-	$('#planInfo').on('keyup', 'td[field="rightAscension1"] input.datagrid-editable-input', function () {
+	$('#planInfo').on('keyup', 'td[field="rightAscension1"] input.textbox-text', function () {
 		
 		var patn = /^\d{2}$/;
 		var v = $.trim($(this).val());
@@ -15,7 +15,7 @@
 	});
 	
 	//赤经之小时 blur事件
-	$('#planInfo').on('blur', 'td[field="rightAscension1"] input.datagrid-editable-input', function () {
+	$('#planInfo').on('blur', 'td[field="rightAscension1"] input.textbox-text', function () {
 		
 		var patn = /^\d{1,2}$/;
 		var v = $.trim($(this).val());
@@ -23,13 +23,13 @@
 		{
 			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
 		}else{
-			$('#planInfo div.datagrid-body td[field="rightAscension2"] input.datagrid-editable-input').focus();
+			$('#planInfo div.datagrid-body td[field="rightAscension2"] input.textbox-text').focus();
 		}
 	
 	});
 	
 	//赤经之分钟 js事件
-	$('#planInfo').on('keyup', 'td[field="rightAscension2"] input.datagrid-editable-input', function () {
+	$('#planInfo').on('keyup', 'td[field="rightAscension2"] input.textbox-text', function () {
 		var patn = /^\d{2}$/;
 		var v = $.trim($(this).val());
 		if (patn.test(v))
@@ -39,20 +39,20 @@
 	})
 	
 	//赤经之分钟 blur事件
-	$('#planInfo').on('blur', 'td[field="rightAscension2"] input.datagrid-editable-input', function () {
+	$('#planInfo').on('blur', 'td[field="rightAscension2"] input.textbox-text', function () {
 		var patn = /^\d{1,2}$/;
 		var v = $.trim($(this).val());
 		if (!patn.test(v) || v < 0 || v >= 60)
 		{
 			layer.tips('参数超限', $(this), {tips: 1, tipsMore: true});
-		}else{
-			$('#planInfo div.datagrid-body td[field="rightAscension3"] input.datagrid-editable-input').focus();
+		}else{//$('#planInfo div.datagrid-body td[field="rightAscension3"] input.textbox-text') 先存入一个变量
+			$('#planInfo div.datagrid-body td[field="rightAscension3"] input.textbox-text').focus();
 		}
 	
 	})
 	
 	//赤经之秒 js事件
-	$('#planInfo').on('blur', 'td[field="rightAscension3"] input.datagrid-editable-input', function () {
+	$('#planInfo').on('blur', 'td[field="rightAscension3"] input.textbox-text', function () {
 		var v = $.trim($(this).val());
 		if (!$.isNumeric(v) || v >= 60 || v < 0)
 		{
@@ -63,7 +63,7 @@
 	
 	//赤纬 的js事件//////////////////////////////////
 	//赤纬之小时 js事件
-	$('#planInfo').on('keyup', 'td[field="declination1"] input.datagrid-editable-input', function () {
+	$('#planInfo').on('keyup', 'td[field="declination1"] input.textbox-text', function () {
 		var v = $.trim($(this).val());
 		v_R = v.replace(/-/, ''); //将-替换为空字符
 		if (v_R.length == 2)
@@ -74,20 +74,20 @@
 	});
 	
 	//赤纬之小时 blur事件
-	$('#planInfo').on('blur', 'td[field="declination1"] input.datagrid-editable-input', function () {
+	$('#planInfo').on('blur', 'td[field="declination1"] input.textbox-text', function () {
 		var v = $.trim($(this).val());
 		var patn = /^-?\d{1,2}$/;
 		if (!patn.test(v) || v > 90 || v < -90)
 		{
 			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
 		}else{
-			$('#planInfo div.datagrid-body td[field="declination2"] input.datagrid-editable-input').focus();
+			$('#planInfo div.datagrid-body td[field="declination2"] input.textbox-text').focus();
 		}
 	
 	});
 	
 	//赤纬之分钟 js事件
-	$('#planInfo').on('keyup', 'td[field="declination2"] input.datagrid-editable-input', function () {
+	$('#planInfo').on('keyup', 'td[field="declination2"] input.textbox-text', function () {
 		var patn = /^\d{2}$/;
 		var v = $.trim($(this).val());
 		if (patn.test(v))
@@ -98,7 +98,7 @@
 	})
 	
 	//赤纬之分钟 blur事件
-	$('#planInfo').on('blur', 'td[field="declination2"] input.datagrid-editable-input', function () {
+	$('#planInfo').on('blur', 'td[field="declination2"] input.textbox-text', function () {
 		var v = $.trim($(this).val());
 		var patn = /^\d{1,2}$/;
 		
@@ -106,13 +106,13 @@
 		{
 			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
 		}else{
-			$('#planInfo div.datagrid-body td[field="declination3"] input.datagrid-editable-input').focus();
+			$('#planInfo div.datagrid-body td[field="declination3"] input.textbox-text').focus();
 		}
 	
 	});
 	
 	//赤纬之秒 js事件
-	$('#planInfo').on('blur', 'td[field="declination3"] input.datagrid-editable-input', function () {
+	$('#planInfo').on('blur', 'td[field="declination3"] input.textbox-text', function () {
 		var v = $.trim($(this).val());
 		if (!$.isNumeric(v) || v >= 60 || v < 0)
 		{
@@ -330,9 +330,220 @@
 	];*/
 	
 	$(function(){
+		var table_w = ( $(window).width() ) * 0.8931;
+
+		$(window).resize(function(){
+			table_w = ( $(window).width() ) * 0.8931;
+			table.datagrid({
+				width: table_w,
+				height:400,
+				toolbar: '#toolbar',
+				checkOnSelect:true,
+				selectOnCheck:true,
+				singleSelect:false,
+				striped: true,
+				rownumbers:true,
+				/*idField: 'id',
+				fitColumns:false,
+				dropAccept:'tbody tr',
+				singleSelect:true,
+				dragSelection: true,
+				onLoadSuccess: function(){
+					$(this).datagrid('enableDnd'); //启用拖放
+				},*/
+	
+				columns:[[
+				{field:'id', title:'id', checkbox:true, rowspan:2},
+				{field:'target',  title:'目标名称', width:table_w*0.118666667,rowspan:2,
+					editor:{
+						type:'validatebox',
+						options:{required:true,missingMessage:'目标名必填!'},
+					},
+				},
+				{field:'type', title:'目标类型', width:table_w*0.0653333333,rowspan:2,
+					formatter:function(value){
+						for(var i=0; i<targetType.length; i++){
+							if (targetType[i].typeId == value) return targetType[i].name;
+						}
+						return value;
+					},
+					
+					editor:{
+						type:'combobox',
+						options:{
+							valueField:'typeId',
+							textField:'name',
+							data:targetType,
+							required:true,
+							missingMessage:'目标类型必选!'
+						},
+					},
+				},
+				{title:'赤经', colspan:5, width:table_w*0.1375,halign:'center'},
+				{title:'赤纬', colspan:5, width:table_w*0.1375,halign:'center'},
+				{field:'epoch', title:'历元',  width:table_w*0.055, rowspan:2,
+					formatter:function(value){
+						for(var i=0; i<epochData.length; i++){
+							if (epochData[i].epochId == value) return epochData[i].name;
+						}
+						return value;
+					},
+					
+					editor:{
+						type:'combobox',
+						options:{
+							valueField:'epochId',
+							textField:'name',
+							data:epochData,
+							required:true,
+							missingMessage:'历元必选!'
+						},
+					},
+				},
+				{field:'exposureTime', title:'曝光时间',  width:table_w*0.059, rowspan:2,
+					editor:{
+						type:'numberbox',
+						options:{required:true,},
+						missingMessage:'曝光时间必填!'
+					},
+				},
+				{field:'delayTime', title:'delayTime', width:table_w*0.069166667, rowspan:2,
+					editor:{
+						type:'numberbox',
+					},
+				},
+				{field:'exposureCount', title:'曝光数量', width:table_w*0.059, rowspan:2, 
+					editor:{
+						type:'numberbox',
+						options:{
+							required:true,
+							missingMessage:'曝光数量必填!'
+						},
+					},
+				},
+				{field:'filter', title:'滤光片',  width:table_w*0.045666667, rowspan:2,
+					formatter:function(value){
+						for(var i=0; i<filterData.length; i++){
+							if (filterData[i].filterId == value) return filterData[i].name;
+						}
+						return value;
+					},
+					
+					editor:{
+						type:'combobox',
+						options:{
+							valueField:'filterId',
+							textField:'name',
+							data:filterData,
+							required:true,
+							missingMessage:'滤光片必选!'
+						},
+					},
+				},
+				{field:'gain', title:'增益',  width:table_w*0.032166667, rowspan:2,
+					editor:{
+						type:'numberbox',
+					},
+				},
+				{field:'bin',  title:'Bin', width:table_w*0.026166667, rowspan:2,
+					editor:{
+						type:'numberbox',
+					},
+				},
+				{field:'readout', title:'读出速度', width:table_w*0.059166667, rowspan:2,
+					editor:{
+						type:'numberbox',
+						options:{
+							required:true,
+							missingMessage:'读出速度必填!'
+						},
+					},
+				},
+				{field:'del', title:'删除',  width:table_w*0.031266666, rowspan:2,
+					formatter:function(value,row,index){
+						return '<a onclick="delPlan1(this)">删除</a> ';
+					}
+				},
+			],[
+				{field:'rightAscension1', width:table_w*0.0325,title:'时',
+					editor:{
+						type:'numberbox',
+						options:{required:true,missingMessage:'小时,必填!'},
+					},
+				},
+				{field:'c1', width:table_w*0.013,
+					formatter:function(value,row,index){
+						return ':';
+					}
+				},
+			
+				{field:'rightAscension2',  width:table_w*0.0325,title:'分',
+					editor:{
+						type:'numberbox',
+						options:{required:true,missingMessage:'分,必填!'},
+					},
+				},
+				{field:'c2', width:table_w*0.013,
+					formatter:function(value,row,index){
+						return ':';
+					}
+				},
+				{field:'rightAscension3', width:table_w*0.063333333,title:'秒',
+					editor:{
+						type:'validatebox',
+						options:{required:true,missingMessage:'秒,必填!!'},
+					},
+				},
+		
+				{field:'declination1', width:table_w*0.0325, title:'时',
+					editor:{
+						type:'numberbox',
+						options:{required:true,missingMessage:'时,必填!!'},
+					},
+				},
+				{field:'c3', width:table_w*0.013,
+					formatter:function(value,row,index){
+						return ':';
+					}
+				},
+		
+				{field:'declination2', width:table_w*0.0325, title:'分',
+					editor:{
+						type:'numberbox',
+						options:{required:true,missingMessage:'分,必填!!'},
+					},
+				},
+				{field:'c4', width:table_w*0.013,
+					formatter:function(value,row,index){
+						return ':';
+					}
+				},
+				{field:'declination3', width:table_w*0.063333333,title:'秒',
+					editor:{
+						type:'validatebox',
+						options:{required:true,missingMessage:'秒,必填!!'},
+					},
+				},
+			]],
+			//在双击一个单元格的时候开始编辑并生成编辑器，然后定位到编辑器的输入框上
+			onDblClickCell: function(index,field,value){
+				if (editRow == undefined && field != 'id') {
+					table.datagrid('beginEdit', index); //对点击行 进行编辑
+					var ed = table.datagrid('getEditor', {index:index,field:field});
+					$(ed.target).focus();
+					editRow = index;
+				}	
+			},	
+	
+			/* onAfterEdit: function (rowIndex, rowData, changes){
+				editRow = undefined;
+			}, */
+		});
+		  });/*window.resize() 结束*/
+		
 		table.datagrid({
-			width:1200,
-			height:500,
+			width: table_w,
+			height:400,
 			toolbar: '#toolbar',
 			checkOnSelect:true,
 			selectOnCheck:true,
@@ -350,13 +561,13 @@
 
 			columns:[[
 			{field:'id', title:'id', checkbox:true, rowspan:2},
-			{field:'target',  title:'目标名称', width:200,rowspan:2,
+			{field:'target',  title:'目标名称', width:table_w*0.118666667,rowspan:2,
 				editor:{
 					type:'validatebox',
 					options:{required:true,missingMessage:'目标名必填!'},
 				},
 			},
-			{field:'type', title:'目标类型', width:76,rowspan:2,
+			{field:'type', title:'目标类型', width:table_w*0.0653333333,rowspan:2,
 				formatter:function(value){
 					for(var i=0; i<targetType.length; i++){
 						if (targetType[i].typeId == value) return targetType[i].name;
@@ -371,12 +582,13 @@
 						textField:'name',
 						data:targetType,
 						required:true,
+						missingMessage:'目标类型必选!'
 					},
 				},
 			},
-			{title:'赤经', colspan:5},
-			{title:'赤纬', colspan:5},
-			{field:'epoch', title:'历元',  width:66, rowspan:2,
+			{title:'赤经', colspan:5, width:table_w*0.1375,halign:'center'},
+			{title:'赤纬', colspan:5, width:table_w*0.1375,halign:'center'},
+			{field:'epoch', title:'历元',  width:table_w*0.055, rowspan:2,
 				formatter:function(value){
 					for(var i=0; i<epochData.length; i++){
 						if (epochData[i].epochId == value) return epochData[i].name;
@@ -391,25 +603,34 @@
 						textField:'name',
 						data:epochData,
 						required:true,
+						missingMessage:'历元必选!'
 					},
 				},
 			},
-			{field:'exposureTime', title:'曝光时间',  width:58,rowspan:2,
+			{field:'exposureTime', title:'曝光时间',  width:table_w*0.059,rowspan:2,
 				editor:{
 					type:'numberbox',
-					options:{required:true,},},
+					options:{
+						required:true,
+						missingMessage:'曝光时间必填!'
+					},
+				},
 			},
-			{field:'delayTime', title:'delayTime', width:66, rowspan:2,
+			{field:'delayTime', title:'delayTime', width:table_w*0.069166667, rowspan:2,
 				editor:{
 					type:'numberbox',
 				},
 			},
-			{field:'exposureCount', title:'曝光数量', width:58, rowspan:2, 
+			{field:'exposureCount', title:'曝光数量', width:table_w*0.059, rowspan:2, 
 				editor:{
 					type:'numberbox',
-					options:{required:true,},},
+					options:{
+						required:true,
+						missingMessage:'曝光数量必填!'
+					},
+				},
 			},
-			{field:'filter', title:'滤光片',  width:55, rowspan:2,
+			{field:'filter', title:'滤光片',  width:table_w*0.045666667, rowspan:2,
 				formatter:function(value){
 					for(var i=0; i<filterData.length; i++){
 						if (filterData[i].filterId == value) return filterData[i].name;
@@ -424,105 +645,109 @@
 						textField:'name',
 						data:filterData,
 						required:true,
+						missingMessage:'滤光片必选!'
 					},
 				},
 			},
-			{field:'gain', title:'增益',  width:46, rowspan:2,
+			{field:'gain', title:'增益',  width:table_w*0.032166667, rowspan:2,
 				editor:{
 					type:'numberbox',
 				},
 			},
-			{field:'bin',  title:'Bin', width:40, rowspan:2,
+			{field:'bin',  title:'Bin', width:table_w*0.026166667, rowspan:2,
 				editor:{
 					type:'numberbox',
 				},
 			},
-			{field:'readout', title:'读出速度', width:58, rowspan:2,
+			{field:'readout', title:'读出速度', width:table_w*0.059166667, rowspan:2,
 				editor:{
 					type:'numberbox',
-					options:{required:true,},},
+					options:{
+						required:true,
+						missingMessage:'读出速度必填!'
+					},
+				},
 			},
-			{field:'del', title:'删除',  width:40, rowspan:2,
+			{field:'del', title:'删除',  width:table_w*0.031266666, rowspan:2,
 				formatter:function(value,row,index){
 					return '<a onclick="delPlan1(this)">删除</a> ';
 				}
 			},
 		],[
-			{field:'rightAscension1', width:33,title:'时',
+			{field:'rightAscension1', width:table_w*0.0325, title:'时',
 				editor:{
 					type:'numberbox',
-					options:{required:true,},
+					options:{required:true,missingMessage:'时,必填!'},
 				},
 			},
-			{field:'c1', width:10,
+			{field:'c1', width:table_w*0.013,
 				formatter:function(value,row,index){
 					return ':';
 				}
 			},
 		
-			{field:'rightAscension2',  width:33,title:'分',
+			{field:'rightAscension2',  width:table_w*0.0325,title:'分',
 				editor:{
 					type:'numberbox',
-					options:{required:true,},
+					options:{required:true,missingMessage:'分,必填!'},
 				},
 			},
-			{field:'c2', width:10,
+			{field:'c2', width:table_w*0.013,
 				formatter:function(value,row,index){
 					return ':';
 				}
 			},
-			{field:'rightAscension3', width:76,title:'秒',
+			{field:'rightAscension3', width:table_w*0.063333333,title:'秒',
 				editor:{
-					type:'numberbox',
-					options:{required:true,},
+					type:'validatebox',
+					options:{required:true,missingMessage:'秒,必填!'},
 				},
 			},
 	
-			{field:'declination1', width:33,title:'时',
+			{field:'declination1', width:table_w*0.0325, title:'时',
 				editor:{
 					type:'numberbox',
-					options:{required:true,},
+					options:{required:true,missingMessage:'时,必填!'},
 				},
 			},
-			{field:'c3', width:10,
+			{field:'c3', width:table_w*0.013,
 				formatter:function(value,row,index){
 					return ':';
 				}
 			},
 	
-			{field:'declination2', width:33,title:'分',
+			{field:'declination2', width:table_w*0.0325, title:'分',
 				editor:{
 					type:'numberbox',
-					options:{required:true,},
+					options:{required:true,missingMessage:'分,必填!'},
 				},
 			},
-			{field:'c4', width:10,
+			{field:'c4', width:table_w*0.013,
 				formatter:function(value,row,index){
 					return ':';
 				}
 			},
-			{field:'declination3', width:76,title:'秒',
+			{field:'declination3', width:table_w*0.063333333,title:'秒',
 				editor:{
-					type:'numberbox',
-					options:{required:true,},
+					type:'validatebox',
+					options:{required:true,missingMessage:'秒,必填!'},
 				},
 			},
 		]],
 		//在双击一个单元格的时候开始编辑并生成编辑器，然后定位到编辑器的输入框上
 		onDblClickCell: function(index,field,value){
 			if (editRow == undefined && field != 'id') {
-				$(this).datagrid('beginEdit', index); //对点击行 进行编辑
-				var ed = $(this).datagrid('getEditor', {index:index,field:field});
+				table.datagrid('beginEdit', index); //对点击行 进行编辑
+				var ed = table.datagrid('getEditor', {index:index,field:field});
 				$(ed.target).focus();
 				editRow = index;
-			}
-			
-		}
+			}	
+		},
 
 		/* onAfterEdit: function (rowIndex, rowData, changes){
 			editRow = undefined;
 		}, */
-	});
+	});/*table.datagrid() 结束*/
 }) //jquery 结束编辑
 	//自定义的函数
 	function getrow(target){
@@ -711,13 +936,6 @@
 //数据验证函数 /////////////////////////////////////////////
 	function valid ()
 	{
-		/* var res = table.datagrid('validateRow', editRow); //验证编辑的行
-		if (!res)
-		{
-			//alert('请检查第' + (editRow+1) + '行必填数据!');
-			error = 1;
-			
-		} */
 		if (editRow === undefined)
 		{//从未进行编辑某一行
 			return true;
