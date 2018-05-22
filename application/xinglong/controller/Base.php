@@ -51,6 +51,5 @@ class Base extends Controller
                 'at_latitude' => $at_latitude
             ]);
         }
-    }
-    /*查询望远镜列表，并进行模板赋值 结束*/
+    }/*查询望远镜列表，并进行模板赋值 结束*/
 }

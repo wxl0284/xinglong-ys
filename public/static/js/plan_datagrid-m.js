@@ -3,60 +3,67 @@
 	//赤经 的js事件//////////////////////////////////
 	//赤经之小时 js事件
 	$('#planInfo').on('keyup', 'td[field="rightAscension1"] input.textbox-text', function () {
-		
+		var that = $(this);
 		var patn = /^\d{2}$/;
-		var v = $.trim($(this).val());
+		var v = $.trim(that.val());
 		//v_R = v.replace(/(-|\+)/g, ''); //将+或-替换为空字符
 		if (patn.test(v))
 		{
-			$(this).blur();
+			that.blur();
 		}
-	
 	});
 	
 	//赤经之小时 blur事件
 	$('#planInfo').on('blur', 'td[field="rightAscension1"] input.textbox-text', function () {
-		
+		var that = $(this);
 		var patn = /^\d{1,2}$/;
-		var v = $.trim($(this).val());
+		var v = $.trim(that.val());
+		var parent_td_rightAscension1 = that.closest('td[field="rightAscension1"]'); //当前input的父元素:td[field="rightAscension1"]
+		var td_rightAscension2 = parent_td_rightAscension1.siblings('td[field="rightAscension2"]'); //同辈的：td[field="rightAscension2"]
+		
 		if (!patn.test(v) || v >= 24 || v < 0)
 		{
-			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		}else{
-			$('#planInfo div.datagrid-body td[field="rightAscension2"] input.textbox-text').focus();
+			layer.tips('参数超限', that, {tips : 1,tipsMore: true});
+		}else{//focus进入到分钟的input
+			td_rightAscension2.find('input.textbox-text').focus();
 		}
-	
 	});
 	
 	//赤经之分钟 js事件
 	$('#planInfo').on('keyup', 'td[field="rightAscension2"] input.textbox-text', function () {
+		var that = $(this);
 		var patn = /^\d{2}$/;
-		var v = $.trim($(this).val());
+		var v = $.trim(that.val());
 		if (patn.test(v))
 		{
-			$(this).blur();
+			that.blur();
 		}
 	})
 	
 	//赤经之分钟 blur事件
 	$('#planInfo').on('blur', 'td[field="rightAscension2"] input.textbox-text', function () {
+		var that = $(this);
 		var patn = /^\d{1,2}$/;
-		var v = $.trim($(this).val());
+		var v = $.trim(that.val());
+		var parent_td_rightAscension2 = that.closest('td[field="rightAscension2"]'); //当前input的父元素:td[field="rightAscension2"]
+		var td_rightAscension3 = parent_td_rightAscension2.siblings('td[field="rightAscension3"]'); //同辈的：td[field="rightAscension3"]
+
 		if (!patn.test(v) || v < 0 || v >= 60)
 		{
-			layer.tips('参数超限', $(this), {tips: 1, tipsMore: true});
-		}else{//$('#planInfo div.datagrid-body td[field="rightAscension3"] input.textbox-text') 先存入一个变量
-			$('#planInfo div.datagrid-body td[field="rightAscension3"] input.textbox-text').focus();
+			layer.tips('参数超限', that, {tips: 1, tipsMore: true});
+		}else{//focus进入到秒的input
+			td_rightAscension3.find('input.validatebox-text').focus();
 		}
 	
 	})
 	
 	//赤经之秒 js事件
 	$('#planInfo').on('blur', 'td[field="rightAscension3"] input.textbox-text', function () {
+		var that = $(this);
 		var v = $.trim($(this).val());
 		if (!$.isNumeric(v) || v >= 60 || v < 0)
 		{
-			layer.tips('秒参数超限', $(this), {tips : 1,tipsMore: true});
+			layer.tips('秒参数超限', that, {tips : 1,tipsMore: true});
 		}	
 	})
 	//赤经 的js事件 结束/////////////////////////////////////
@@ -64,59 +71,66 @@
 	//赤纬 的js事件//////////////////////////////////
 	//赤纬之小时 js事件
 	$('#planInfo').on('keyup', 'td[field="declination1"] input.textbox-text', function () {
-		var v = $.trim($(this).val());
+		var that = $(this);
+		var v = $.trim(that.val());
 		v_R = v.replace(/-/, ''); //将-替换为空字符
 		if (v_R.length == 2)
 		{
-			$(this).blur();
+			that.blur();
 		}
-	
 	});
 	
 	//赤纬之小时 blur事件
 	$('#planInfo').on('blur', 'td[field="declination1"] input.textbox-text', function () {
-		var v = $.trim($(this).val());
+		var that = $(this);
+		var v = $.trim(that.val());
 		var patn = /^-?\d{1,2}$/;
+		var parent_td_declination1 = that.closest('td[field="declination1"]'); //当前input的父元素:td[field="declination1"]
+		var td_declination2 = parent_td_declination1.siblings('td[field="declination2"]'); //同辈的：td[field="declination2"]
+
 		if (!patn.test(v) || v > 90 || v < -90)
 		{
-			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		}else{
-			$('#planInfo div.datagrid-body td[field="declination2"] input.textbox-text').focus();
+			layer.tips('参数超限', that, {tips : 1,tipsMore: true});
+		}else{//focus进入到分钟的input
+			td_declination2.find('input.validatebox-text').focus();
 		}
 	
 	});
 	
 	//赤纬之分钟 js事件
 	$('#planInfo').on('keyup', 'td[field="declination2"] input.textbox-text', function () {
+		var that = $(this);
 		var patn = /^\d{2}$/;
-		var v = $.trim($(this).val());
+		var v = $.trim(that.val());
 		if (patn.test(v))
 		{
-			$(this).blur();
+			that.blur();
 		}
-	
 	})
 	
 	//赤纬之分钟 blur事件
 	$('#planInfo').on('blur', 'td[field="declination2"] input.textbox-text', function () {
-		var v = $.trim($(this).val());
+		var that = $(this);
+		var v = $.trim(that.val());
 		var patn = /^\d{1,2}$/;
+		var parent_td_declination2 = that.closest('td[field="declination2"]'); //当前input的父元素:td[field="declination2"]
+		var td_declination3 = parent_td_declination2.siblings('td[field="declination3"]'); //同辈的：td[field="declination3"]
 		
 		if (!patn.test(v) || v > 59 || v < 0)
 		{
-			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		}else{
-			$('#planInfo div.datagrid-body td[field="declination3"] input.textbox-text').focus();
+			layer.tips('参数超限', that, {tips : 1,tipsMore: true});
+		}else{//focus进入到秒的input
+			td_declination3.find('input.validatebox-text').focus();
 		}
-	
 	});
 	
 	//赤纬之秒 js事件
 	$('#planInfo').on('blur', 'td[field="declination3"] input.textbox-text', function () {
-		var v = $.trim($(this).val());
+		var that = $(this);
+		var v = $.trim(that.val());
 		if (!$.isNumeric(v) || v >= 60 || v < 0)
 		{
-			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
+			layer.tips('参数超限', that, {tips : 1,tipsMore: true});
 		}	
 	})
 	//赤纬 的js事件//////////////////////////////////

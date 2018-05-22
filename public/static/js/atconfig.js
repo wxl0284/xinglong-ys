@@ -533,10 +533,10 @@ $(function () {
             layer.alert('请选择您要配置的望远镜!');return;
         }
 
-        var gimbalData = new FormData(gimbalForm[0]);
-        gimbalData.append('teleid', atId); //将某望远镜的id 加入表单数据中
+        var gimbal_form = new FormData(gimbalForm[0]);
+        gimbal_form.append('teleid', atId); //将某望远镜的id 加入表单数据中
         //验证文本框类型、下拉框、复选框、 单选框配置项是否都已选择 
-        if ( !gimbal_select_valid (gimbalData) )
+        if ( !gimbal_select_valid (gimbal_form) )
         {
             return;
         }//验证文本框类型、下拉框、复选框、 单选框配置项是否都已选择        
@@ -544,7 +544,7 @@ $(function () {
         $.ajax({
             type: 'post',
             url: 'gimbal_config',
-            data : gimbalData,
+            data : gimbal_form,
             processData : false,
             contentType : false,
             success:  function (info) {
@@ -610,97 +610,97 @@ $(function () {
             gimbal_errMsg += '焦比未选择!<br>';
         }
 
-        if ( gimbalData.get('haveaxis3') === null ) //验证 是否有第3轴
+        if ( gimbal_form.get('haveaxis3') === null ) //验证 是否有第3轴
         {
             gimbal_errMsg += '是否有第3轴未选择!<br>';
         }
 
-        if ( gimbalData.get('haveaxis5') === null ) //验证 镜盖（轴5）
+        if ( gimbal_form.get('haveaxis5') === null ) //验证 镜盖（轴5）
         {
             gimbal_errMsg += '是否有镜盖（轴5）未选择!<br>';
         }
 
-        if ( gimbalData.get('canconnect') === null ) //验证 支持连接指令
+        if ( gimbal_form.get('canconnect') === null ) //验证 支持连接指令
         {
             gimbal_errMsg += '是否支持连接未选择!<br>';
         }
 
-        if ( gimbalData.get('canfindhome') === null ) //验证 支持找零指令
+        if ( gimbal_form.get('canfindhome') === null ) //验证 支持找零指令
         {
             gimbal_errMsg += '是否支持找零未选择!<br>';
         }
 
-        if ( gimbalData.get('cantrackstar') === null ) //验证 支持跟踪恒星
+        if ( gimbal_form.get('cantrackstar') === null ) //验证 支持跟踪恒星
         {
             gimbal_errMsg += '是否支持跟踪恒星未选择!<br>';
         }
 
-        if ( gimbalData.get('cansetobjectname') === null ) //验证 设置目标名称
+        if ( gimbal_form.get('cansetobjectname') === null ) //验证 设置目标名称
         {
             gimbal_errMsg += '是否支持设置目标名称未选择!<br>';
         }
 
-        if ( gimbalData.get('canslewazel') === null ) //验证 指向固定位置
+        if ( gimbal_form.get('canslewazel') === null ) //验证 指向固定位置
         {
             gimbal_errMsg += '是否支持指向固定位置未选择!<br>';
         }
 
-        if ( gimbalData.get('canslewderotator') === null ) //验证 轴3指向固定位置
+        if ( gimbal_form.get('canslewderotator') === null ) //验证 轴3指向固定位置
         {
             gimbal_errMsg += '是否支持轴3指向固定位置未选择!<br>';
         }
 
-        if ( gimbalData.get('canconfigderotator') === null ) //验证 设置轴3工作模式
+        if ( gimbal_form.get('canconfigderotator') === null ) //验证 设置轴3工作模式
         {
             gimbal_errMsg += '是否支持设置轴3工作模式未选择!<br>';
         }
 
-        if ( gimbalData.get('canstop') === null ) //验证 停止指令
+        if ( gimbal_form.get('canstop') === null ) //验证 停止指令
         {
             gimbal_errMsg += '是否支持停止指令未选择!<br>';
         }
 
-        if ( gimbalData.get('cansettrackspeed') === null ) //验证 设置跟踪速度
+        if ( gimbal_form.get('cansettrackspeed') === null ) //验证 设置跟踪速度
         {
             gimbal_errMsg += '是否支持设置跟踪速度未选择!<br>';
         }
 
-        if ( gimbalData.get('canpark') === null ) //验证 复位指令
+        if ( gimbal_form.get('canpark') === null ) //验证 复位指令
         {
             gimbal_errMsg += '是否支持复位指令未选择!<br>';
         }
 
-        if ( gimbalData.get('canfixedmove') === null ) //验证 恒速运动
+        if ( gimbal_form.get('canfixedmove') === null ) //验证 恒速运动
         {
             gimbal_errMsg += '是否支持恒速运动未选择!<br>';
         }
 
-        if ( gimbalData.get('canpositioncorrect') === null ) //验证 位置修正
+        if ( gimbal_form.get('canpositioncorrect') === null ) //验证 位置修正
         {
             gimbal_errMsg += '是否支持位置修正未选择!<br>';
         }
 
-        if ( gimbalData.get('cancoveroperation') === null ) //验证 镜盖操作
+        if ( gimbal_form.get('cancoveroperation') === null ) //验证 镜盖操作
         {
             gimbal_errMsg += '是否支持镜盖操作未选择!<br>';
         }
 
-        if ( gimbalData.get('canfocusoperation') === null ) //验证 焦点切换镜
+        if ( gimbal_form.get('canfocusoperation') === null ) //验证 焦点切换镜
         {
             gimbal_errMsg += '是否支持焦点切换镜未选择!<br>';
         }
 
-        if ( gimbalData.get('canemergencystop') === null ) //验证 急停指令
+        if ( gimbal_form.get('canemergencystop') === null ) //验证 急停指令
         {
             gimbal_errMsg += '是否支持急停指令未选择!<br>';
         }
 
-        if ( gimbalData.get('cansavesyncdata') === null ) //验证 保存同步数据
+        if ( gimbal_form.get('cansavesyncdata') === null ) //验证 保存同步数据
         {
             gimbal_errMsg += '是否支持保存同步数据未选择!<br>';
         }
 
-        if ( gimbalData.get('cantracksatellite') === null ) //验证 跟踪卫星
+        if ( gimbal_form.get('cantracksatellite') === null ) //验证 跟踪卫星
         {
             gimbal_errMsg += '是否支持跟踪卫星未选择!<br>';
         }
@@ -2343,7 +2343,7 @@ $(function () {
         {
             err = 1;
             that.data('info', '随动圆顶名称');
-            layer.tips('随动圆顶名称格式错误!', that, {tipsMore: true});
+            layer.tips('随动圆顶名称须10位字符!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 随动圆顶名称 结束

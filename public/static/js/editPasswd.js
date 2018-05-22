@@ -40,7 +40,7 @@ $(function () {
        if (!patn.test(pass))
        {
            err = 1;
-           layer.tips('密码须为6-12位数字字母—或_', $(this), {tips : 2,tipsMore: true});
+           layer.tips('密码须为6-12位数字字母_—', $(this), {tips : 2,tipsMore: true});
        }
 
        $(this).data('err', err);
@@ -53,7 +53,7 @@ $(function () {
        if (!patn.test(newPassV))
        {
            err = 1;
-           layer.tips('密码须为6-12位数字字母—或_', $(this), {tips : 2,tipsMore: true});
+           layer.tips('密码须为6-12位数字字母_—', $(this), {tips : 2,tipsMore: true});
        }
        
        $(this).data('err', err);
@@ -66,7 +66,7 @@ $(function () {
        if (!patn.test(rePassV))
        {
            err = 1;
-           layer.tips('密码须为6-12位数字字母—或_', $(this), {tips : 2,tipsMore: true});
+           layer.tips('密码须为6-12位数字字母_—', $(this), {tips : 2,tipsMore: true});
        }else {
            if (rePassV != newPassV)
            {
@@ -102,14 +102,14 @@ $(function () {
                RepasswdNew: rePassV,
            }, 
            success:  function (info) {
-                alert(info);
+                layer.alert(info, {shade:false});
                if (info.indexOf('登录') !== -1)
                {
                    location.href = '/';
                }
            },
             error:  function () {
-                 alert('网络异常,请重新提交');
+                 layer.alert('网络异常,请重新提交', {shade:false});
             },
        });//ajax结束/////////////////////////
 
