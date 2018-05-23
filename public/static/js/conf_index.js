@@ -1,8 +1,5 @@
 /*固定属性动态配置 js*/
-$(function () {
-    //页面加载完成后，默认所有选项为 未选中状态
-        $('input').prop('checked', false);
-        
+$(function () {        
     //显示导航栏望远镜列表///////////////////////////////////// 
        var ul = $('#atListUl');
        $('#atList').hover(
@@ -29,10 +26,11 @@ $(function () {
     //给全部固定属性的提交按钮 绑定点击事件
     var btn = $('#tbl input[type="button"]');
     btn.click(function () {
+        var that = $(this);
         //获取提交按钮 同辈的input文本框
-        var input = $(this).siblings('input');
+        var input = that.siblings('input');
 
-        var conf = $(this).attr('id').replace('Btn', '');
+        var conf = that.attr('id').replace('Btn', '');
         
         var confVal = $.trim( input.val() );
 
@@ -144,14 +142,20 @@ $(function () {
                 conf_val: confVal, 
             },
             success:  function (info) {
-                layer.alert(info);
-                if (info.indexOf('登录') !== -1)
-                {
-                    location.href = '/';
-                }
+                layer.alert(info, {
+                    shade:false,
+                    closeBtn:0,
+                    yes:function (n){
+                        layer.close(n);
+                        if (info.indexOf('登录') !== -1)
+                        {
+                            location.href = '/';
+                        }
+                    },
+                });
             },
-             error:  function () {
-              layer.alert('网络异常,请再次连接！');
+            error:  function () {
+              layer.alert('网络异常,请再次连接！', {shade:false});
             },
         })//ajax 结束
         
@@ -446,8 +450,19 @@ $(function () {
                     id: confId,
                 },
                 success: function (info){
-                    layer.alert(info, {shade:false});
                     tr.remove();
+                    
+                    layer.alert(info, {
+                        shade:false,
+                        closeBtn:0,
+                        yes:function (n){
+                            layer.close(n);
+                            if (info.indexOf('登录') !== -1)
+                            {
+                                location.href = '/';
+                            }
+                        },
+                    });
                 },
                 error: function (){
                     layer.alert('网络异常，请重新操作!', {shade:false});

@@ -34,43 +34,47 @@ $(function () {
             processData : false,
             contentType : false,  
             success:  function (info) {
-                alert(info);
-                if (info.indexOf('登录') !== -1)
-                {
-                    location.href = '/';
-                }else if (info.indexOf('用户成功') !== -1)
-                {
-                    location.href = '/xinglong/user';
-                }
+                layer.alert(info, {
+                    shade:false,
+                    closeBtn:0,
+                    yes:function (n){
+                        layer.close(n);
+                        if (info.indexOf('登录') !== -1)
+                        {
+                            location.href = '/';
+                        }else if (info.indexOf('用户成功') !== -1)
+                        {
+                            location.href = '/xinglong/user';
+                        }
+                    },
+                });
             },
             error:  function () {
-               alert('网络异常,请重新提交');
+               layer.alert('网络异常,请重新提交', {shade:false});
             },
         });
     });
 
     //禁用用户
     $('table a.userOff').on('click', function (){
-        var r = confirm('确定禁用此用户？');
-        var uid = $(this).attr('uid');
-        if (r)
-        {
-            $(this).attr('href', "/user/off/" + uid);
-        }else {
-            $(this).attr('href', '#');
-        }
+        var that = $(this);
+        var uid = that.attr('uid');
+
+        layer.confirm('确定禁用此用户？', {icon: 3, title:'提示'}, function(index){
+            location.href = "/user/off/" + uid;
+            layer.close(index);
+        });
     });//禁用用户 结束
     
     //启用用户
     $('table a.userOn').on('click', function (){
-        var r = confirm('确定启用此用户？');
-        var uid = $(this).attr('uid');
-        if (r)
-        {
-            $(this).attr('href', "/user/on/" + uid);
-        }else {
-            $(this).attr('href', '#');
-        }
+        var that = $(this);
+        var uid = that.attr('uid');
+
+        layer.confirm('确定启用此用户？', {icon: 3, title:'提示'}, function(index){
+            location.href = "/user/on/" + uid;
+            layer.close(index);
+        });
     });//启用用户 结束
 
 })

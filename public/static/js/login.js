@@ -16,16 +16,17 @@ $(function (){
 	}) */
 	//给用户名和密码框 绑定 blur事件///////////////////////
 	input.blur (function (){
-		var v = $.trim($(this).val());
+		var that = $(this);
+		var v = $.trim(that.val());
 		var err = 0;
 		var patn = /^[a-zA-Z0-9_-]{6,12}$/;
 		
 		if (!patn.test(v))
 		{
 			err = 1;
-			layer.tips('请输入6-12位数字字母_及-', $(this), {tipsMore: true});
+			layer.tips('请输入6-12位数字字母_及-', that, {tipsMore: true});
 		}
-		$(this).data('err', err);
+		that.data('err', err);
 	})
 	
 	//提交按钮 js事件//////////////////////////////

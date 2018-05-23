@@ -815,11 +815,17 @@
 				},             
 	            success:  function (info) {
 		            planErr = 0;
-					layer.alert(info, {shade:false});
-					if (info.indexOf('登录') !== -1)
-					{
-						location.href = '/';
-					}
+					layer.alert(info, {
+						shade:false,
+						closeBtn:0,
+						yes:function (n){
+							layer.close(n);
+							if (info.indexOf('登录') !== -1)
+							{
+								location.href = '/';
+							}
+						},
+					});
 					if (info.indexOf('计划开始') !== -1)
 					{
 						//planStart.prop('disabled', true);
@@ -832,7 +838,7 @@
 					}
 	            },
 	            error:  function () {
-	               alert('网络异常,请再次点击'+ btnText +'按钮!');
+				   layer.alert('网络异常,请再次点击'+ btnText +'按钮!', {shade:false, closeBtn:0});
 	            },
 			});
 		}
@@ -851,14 +857,14 @@
 		if ( n< 1) 
 		{
 			planErr = 1;
-			layer.alert('请先导入计划或添加计划!', {shade:false});
+			layer.alert('请先导入计划或添加计划!', {shade:false, closeBtn:0});
 		}
 		
 		//执行验证
 		if (!valid())
 		{
 			planErr = 1;
-			layer.alert('请先保存计划或检查第' + (editRow+1) + '行必填数据!', {shade:false});
+			layer.alert('请先保存计划或检查第' + (editRow+1) + '行必填数据!', {shade:false, closeBtn:0});
 		}
 
 		/*//js验证数据
@@ -928,11 +934,18 @@
 				},
 				success: function (info){
 					planErr = 0;
-					layer.alert(info, {shade:false});
-					if (info.indexOf('登录') !== -1)
-					{
-						location.href = '/';
-					}
+
+					layer.alert(info, {
+						shade:false,
+						closeBtn:0,
+						yes:function (n){
+							layer.close(n);
+							if (info.indexOf('登录') !== -1)
+							{
+								location.href = '/';
+							}
+						},
+					});
 
 					if (info.indexOf('观测计划发送完毕') !== -1)
 					{
@@ -940,7 +953,7 @@
 					}
 				},
 				error: function (){
-					layer.alert('网络异常,请重新提交计划！', {shade:false});
+					layer.alert('网络异常,请重新提交计划！', {shade:false, closeBtn:0});
 				},
 			});
 		}

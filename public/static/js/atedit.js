@@ -1,8 +1,5 @@
 /*编辑望远镜页面 js*/
-$(function () {
-    //页面加载完成后，默认所有选项为 未选中状态
-        $('input').prop('checked', false);
-        
+$(function () {        
     //显示导航栏望远镜列表///////////////////////////////////// 
        var ul = $('#atListUl');
        $('#atList').hover(
@@ -38,75 +35,81 @@ $(function () {
     //各input框的blur
     //验证望远镜id 之blur
     atId.blur(function () {
-        var v = $.trim($(this).val());
+        var that = $(this);
+        var v = $.trim(that.val());
 		//var patn = /0\d{4}/;
 		var err = 0;
 		
 		if ( v.length != 5 || !$.isNumeric(v) || v.indexOf('0') !== 0)
 		{
 			err = 1;
-			layer.tips('望远镜id格式错误!', $(this), {tipsMore: true});
+			layer.tips('望远镜id格式错误!', that, {tipsMore: true});
 		}		
-		$(this).data('err', err);
+		that.data('err', err);
     });//验证望远镜id 之blur 结束
 
     //验证望远镜名 之blur
     atName.blur(function () {
-        var v = $.trim($(this).val());
+        var that = $(this);
+        var v = $.trim(that.val());
 		var patn = /^\d(\d|\.)*m望远镜+$/;
 		var err = 0;
 		
 		if ( !patn.test(v) )
 		{
 			err = 1;
-			layer.tips('望远镜名格式错误!', $(this), {tipsMore: true});
+			layer.tips('望远镜名格式错误!', that, {tipsMore: true});
 		}		
-		$(this).data('err', err);
+		that.data('err', err);
     });//验证望远镜名 之blur 结束
 
      //验证望远镜地址 之blur
      address.blur(function () {
-        var v = $.trim($(this).val());
+        var that = $(this);
+        var v = $.trim(that.val());
 		var err = 0;
 		
 		if ( v.length < 2 )
 		{
 			err = 1;
-			layer.tips('望远镜地址格式错误!', $(this), {tipsMore: true});
+			layer.tips('望远镜地址格式错误!', that, {tipsMore: true});
 		}		
-		$(this).data('err', err);
+		that.data('err', err);
     });//验证望远镜地址 之blur 结束
 
     //验证望远镜经度 之blur
     longitude.blur(function () {
-        var v = $.trim($(this).val());
+        var that = $(this);
+        var v = $.trim(that.val());
         //v1 = v.replace('°', ''); //将字符°替换为空串
 		var err = 0;
 		
 		if ( !$.isNumeric(v) || v > 180 || v < -180 )
 		{
 			err = 1;
-			layer.tips('经度格式错误!', $(this), {tipsMore: true});
+			layer.tips('经度格式错误!', that, {tipsMore: true});
 		}		
-		$(this).data('err', err);
+		that.data('err', err);
     });//验证望远镜经度 之blur 结束
 
     //验证望远镜纬度 之blur
     latitude.blur(function () {
-        var v = $.trim($(this).val());
+        var that = $(this);
+        var v = $.trim(that.val());
         //v1 = v.replace('°', ''); //将字符°替换为空串
 		var err = 0;
 		
 		if ( !$.isNumeric(v) || v > 90 || v < -90 )
 		{
 			err = 1;
-			layer.tips('纬度格式错误!', $(this), {tipsMore: true});
+			layer.tips('纬度格式错误!', that, {tipsMore: true});
 		}		
-		$(this).data('err', err);
+		that.data('err', err);
     });//验证望远镜纬度 之blur 结束
 
     //验证望远镜海拔 之blur
     altitude.blur(function () {
+        var that = $(this);
         var v = $.trim($(this).val());
         //v1 = v.replace('m', ''); //将字符m 替换为空串
 		var err = 0;
@@ -114,23 +117,24 @@ $(function () {
 		if ( !$.isNumeric(v) || v > 6000 || v < -1000 )
 		{
 			err = 1;
-			layer.tips('海拔格式错误!', $(this), {tipsMore: true});
+			layer.tips('海拔格式错误!', that, {tipsMore: true});
 		}		
-		$(this).data('err', err);
+		that.data('err', err);
     });//验证望远镜海拔 之blur 结束
 
     //验证望远镜口径 之blur
     aperture.blur(function () {
-        var v = $.trim($(this).val());
+        var that = $(this);
+        var v = $.trim(that.val());
         //v1 = v.replace('cm', ''); //将字符m 替换为空串
 		var err = 0;
 		
 		if ( !$.isNumeric(v) )
 		{
 			err = 1;
-			layer.tips('口径格式错误!', $(this), {tipsMore: true});
+			layer.tips('口径格式错误!', that, {tipsMore: true});
 		}		
-		$(this).data('err', err);
+		that.data('err', err);
     });//验证望远镜口径 之blur 结束
 
     //提交按钮 点击事件
@@ -155,18 +159,23 @@ $(function () {
             processData : false,
             contentType : false,  
             success:  function (info) {
-                alert(info);
-                if (info.indexOf('登录') !== -1)
-                {
-                    location.href = '/';
-                }else if(info.indexOf('编辑望远镜信息ok') !== -1){
-                    location.href = '/atlist';
-                }
+                 layer.alert(info, {
+                    shade:false,
+                    closeBtn:0,
+                    yes:function (n){
+                        layer.close(n);
+                        if (info.indexOf('登录') !== -1)
+                        {
+                            location.href = '/';
+                        }else if(info.indexOf('编辑望远镜信息ok') !== -1){
+                            location.href = '/atlist';
+                        }
+                    },
+                });
            },
            error: function () {
-               layer.alert('网络异常,请重新提交');
+               layer.alert('网络异常,请重新提交', {shade:false});
            },
         });
     })//提交按钮 点击事件  结束
-
 })

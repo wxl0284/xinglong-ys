@@ -29,30 +29,32 @@ $(function () {
     var patn = /[\w-]{6,12}/;
 
     name.blur(function () {
-        var v = $.trim($(this).val());
+        var that = $(this);
+        var v = $.trim(that.val());
         var err = 0;
         if (!patn.test(v))
         {
             err = 1;
-            layer.tips('用户名须为6-12位数字字母—或_', $(this), {tips : 2,tipsMore: true});
+            layer.tips('用户名须为6-12位数字字母—或_', that, {tips : 2,tipsMore: true});
         }
 
-        $(this).data('err', err);
+        that.data('err', err);
     });
 
     pass.blur(function () {
-        var v = $.trim($(this).val());
+        var that = $(this);
+        var v = $.trim(that.val());
         var err = 0;
         if (v !== '')
         {
             if (!patn.test(v))
             {
                 err = 1;
-                layer.tips('密码须为6-12位数字字母—或_', $(this), {tips : 2,tipsMore: true});
+                layer.tips('密码须为6-12位数字字母—或_', that, {tips : 2,tipsMore: true});
             }
         }
         
-        $(this).data('err', err);
+        that.data('err', err);
     });
 
     $('#btn').click(function () {
@@ -82,18 +84,24 @@ $(function () {
                 role: role,
             }, 
             success:  function (info) {
-                 alert(info);
-                if (info.indexOf('登录') !== -1)
-                {
-                    location.href = '/';
-                }else if (info.indexOf('用户成功') !== -1)
-                {
-                    location.href = '/user';
-                }
+                layer.alert(info, {
+                    shade:false,
+                    closeBtn:0,
+                    yes:function (n){
+                        layer.close(n);
+                        if (info.indexOf('登录') !== -1)
+                        {
+                            location.href = '/';
+                        }else if (info.indexOf('用户成功') !== -1)
+                        {
+                            location.href = '/user';
+                        }
+                    },
+                });
             },
-             error:  function () {
-                  alert('网络异常,请重新提交');
-             },
+            error:  function () {
+                layer.alert('网络异常,请重新提交', {shade:false});
+            },
         });//ajax结束/////////////////////////
     })
 

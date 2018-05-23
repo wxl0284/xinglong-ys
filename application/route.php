@@ -11,7 +11,7 @@ Route::get('logout$', 'xinglong/login/logout');
 Route::get('atpage/:at$', 'xinglong/page/at_page', [], ['at'=>'\d{1,}']);
 //首页 路由
 Route::get('front$', 'xinglong/page/front');
-//用户管理 路由
+//用户管理及用户查询 路由
 Route::any('user$', 'xinglong/user/index');
 //显示用户添加页面 路由
 Route::get('user/add$', 'xinglong/user/add');

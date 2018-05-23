@@ -17,8 +17,16 @@ class User extends Base
 			$keyword = '';
 		}
 		
-		$userList =Db::table('atccsuser')->where('username', 'like', '%'.$keyword.'%')->order('id desc')->paginate(8, false, ['query' => ['keyword' => $keyword]]);
-		$vars['userList'] = $userList;
+		$userList =Db::table('atccsuser')->where('username', 'like', '%'.$keyword.'%')->order('id desc')->paginate(10, false, ['query' => ['keyword' => $keyword]]);
+		$user_num = count($userList);
+
+		if ( $user_num > 0 )
+		{
+			$vars['userList'] = $userList;
+		}else{
+			$vars['notice'] = '未查询到此用户!';
+		}
+		
 		return view('userIndex', $vars);
     }//用户管理首页 结束
     
@@ -190,9 +198,9 @@ class User extends Base
 				 ->update(['status' => 2]);
 			if($res)
 			{
-				$this->success('操作成功!');
+				$this->success('禁用成功!');
 			}else{
-				$this->error('操作失败!请重新执行操作!');
+				$this->error('禁用成功!请重新操作!');
 			}
 		}else{
 			$this->error('网络异常，请重新操作!');
@@ -208,9 +216,9 @@ class User extends Base
 				 ->update(['status' => 1]);
 			if($res)
 			{
-				$this->success('操作成功!');
+				$this->success('启用成功!');
 			}else{
-				$this->error('操作失败!请重新执行操作!');
+				$this->error('启用失败!请重新操作!');
 			}
 		}else{
 			$this->error('网络异常，请重新操作!');

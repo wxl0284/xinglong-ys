@@ -1,8 +1,5 @@
 /*望远镜配置页面 js*/
-$(function () {
-    //页面加载完成后，默认所有选项为 未选中状态
-        $('input').prop('checked', false);
-        
+$(function () {        
     //显示导航栏望远镜列表///////////////////////////////////// 
        var ul = $('#atListUl');
        $('#atList').hover(
@@ -43,12 +40,20 @@ $(function () {
                     if ( info.indexOf('{') == -1 )  //不是json, 返回信息需要提示给用户
                     {
                         layer.close(index);  //关闭加载提示
-                        layer.alert(info);
                         atNo.val('0');  //将望远镜选择下拉框置为初始值
-                        if (info.indexOf('登录') !== -1)
-                        {
-                            location.href = '/';
-                        }
+
+                        layer.alert(info, {
+                            shade:false,
+                            closeBtn:0,
+                            yes:function (n){
+                                layer.close(n);
+                                if (info.indexOf('登录') !== -1)
+                                {
+                                    location.href = '/';
+                                }
+                            },
+                        });
+
                     }else{//处理返回的json数据
                         
                         atNo.val(val);
@@ -145,9 +150,9 @@ $(function () {
 
                         layer.close(index);  //关闭加载提示
                     }
-                },
+                },/*success 方法结束*/
                 error:  function () {
-                      layer.alert('网络异常,请再次选择!');
+                      layer.alert('网络异常,请再次选择!', {shade:false, closeBtn:0});
                       layer.close(index);  //关闭加载提示
                 },
             });//执行ajax请求 判断 结束
@@ -530,7 +535,7 @@ $(function () {
         var atId = atNo.val();
         if ( atId == 0)
         {//未选择某个望远镜
-            layer.alert('请选择您要配置的望远镜!');return;
+            layer.alert('请选择您要配置的望远镜!', {shade:false,closeBtn:0});return;
         }
 
         var gimbal_form = new FormData(gimbalForm[0]);
@@ -550,14 +555,28 @@ $(function () {
             success:  function (info) {
                 if ( info.indexOf('{') == -1 ) //info 不是json数据
                 {
-                    layer.alert(info);
-                    if (info.indexOf('登录') !== -1)
-                    {
-                    	location.href = '/';
-                    }
+                    layer.alert(info, {
+                        shade:false,
+                        closeBtn:0,
+                        yes:function (n){
+                            layer.close(n);
+                            if (info.indexOf('登录') !== -1)
+                            {
+                                location.href = '/';
+                            }
+                        },
+                    });
                 }else{//解析 处理 json
                     var info = $.parseJSON(info);
-                    layer.alert(info.msg);
+
+                    layer.alert(info.msg, {
+                        shade:false,
+                        closeBtn:0,
+                        yes:function (n){
+                            layer.close(n);
+                        },
+                    });
+
                     gimbalAttrModifyTime.html(info.attrmodifytime); //显示属性更新时间
                     //在页面显示已上传的文件名
                     if ( info.file ) //有已上传的文件信息
@@ -568,9 +587,9 @@ $(function () {
                     }
                 }//解析 处理 json 结束
 
-             },
+             },/*success方法结束 */
              error:  function () {
-	              layer.alert('网络异常,请重新提交');
+	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0,});
              },
         })
     });//转台 提交按钮 js事件 结束
@@ -708,7 +727,7 @@ $(function () {
 
         if ( gimbal_errMsg !== '' )
         {
-            layer.alert(gimbal_errMsg, {shade:false});
+            layer.alert(gimbal_errMsg, {shade:false, closeBtn:0});
             return false;
         }else{
             return true;
@@ -1153,7 +1172,7 @@ $(function () {
         var atId = atNo.val();
         if ( atId == 0)
         {//未选择某个望远镜
-            layer.alert('请选择您要配置的望远镜!');return;
+            layer.alert('请选择您要配置的望远镜!', {shade:false, closeBtn:0});return;
         }
 
         var ccd_1_Data = new FormData(ccd_1Form[0]);
@@ -1175,14 +1194,20 @@ $(function () {
             success:  function (info) {
                 if ( info.indexOf('{') == -1 ) //info 不是json数据
                 {
-                    layer.alert(info);
-                    if (info.indexOf('登录') !== -1)
-                    {
-                    	location.href = '/';
-                    }
+                    layer.alert(info, {
+                        shade:false,
+                        closeBtn:0,
+                        yes:function (n){
+                            layer.close(n);
+                            if (info.indexOf('登录') !== -1)
+                            {
+                                location.href = '/';
+                            }
+                        },
+                    });
                 }else{//解析 处理 json
                     var info = $.parseJSON(info);
-                    layer.alert(info.msg);
+                    layer.alert(info.msg, {shade:false, closeBtn:0});
                     ccdAttrModifyTime.html(info.attrmodifytime); //显示属性更新时间
                     //在页面显示已上传的文件名
                     if ( info.file ) //有已上传的文件信息
@@ -1194,7 +1219,7 @@ $(function () {
                 }//解析 处理 json 结束
              },
              error:  function () {
-	              layer.alert('网络异常,请重新提交');
+	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
              },
         })
     });/*ccd 提交按钮 点击事件 结束*/
@@ -1519,7 +1544,7 @@ $(function () {
 
         if ( ccd_errMsg !== '' )
         {
-            layer.alert(ccd_errMsg, {shade:false});
+            layer.alert(ccd_errMsg, {shade:false, closeBtn:0});
             return false;
         }else{
             return true;
@@ -1831,7 +1856,7 @@ $(function () {
         var filterSlot_val = filterSlot.val(); //获取插槽序号的值
         if ( filterSlot_val == 0)
         {
-            layer.alert('请先选择插槽序号!');return;
+            layer.alert('请先选择插槽序号!', {shade:false, closeBtn:0});return;
         }
         var filter_val = $(this).val();
         if ( filter_val != 0 )
@@ -1868,7 +1893,7 @@ $(function () {
         var atId = atNo.val();
         if ( atId == 0)
         {//未选择某个望远镜
-            layer.alert('请选择您要配置的望远镜!');return;
+            layer.alert('请选择您要配置的望远镜!', {shade:false, closeBtn:0});return;
         }
 
         var filterData = new FormData(filterForm[0]);
@@ -1893,14 +1918,20 @@ $(function () {
             success:  function (info) {
                 if ( info.indexOf('{') == -1 ) //info 不是json数据
                 {
-                    layer.alert(info);
-                    if (info.indexOf('登录') !== -1)
-                    {
-                    	location.href = '/';
-                    }
+                    layer.alert(info, {
+                        shade:false,
+                        closeBtn:0,
+                        yes:function (n){
+                            layer.close(n);
+                            if (info.indexOf('登录') !== -1)
+                            {
+                                location.href = '/';
+                            }
+                        },
+                    });
                 }else{//解析 处理 json
                     var info = $.parseJSON(info);
-                    layer.alert(info.msg);
+                    layer.alert(info.msg, {shade:false, closeBtn:0});
                     filterAttrModifyTime.html(info.attrmodifytime); //显示属性更新时间
                     //在页面显示已上传的文件名
                     if ( info.file ) //有已上传的文件信息
@@ -1912,7 +1943,7 @@ $(function () {
                 }//解析 处理 json 结束
              },
              error:  function () {
-	              layer.alert('网络异常,请重新提交');
+	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
              },
         })
     }); /*滤光片 提交按钮 点击事件 结束*/
@@ -2004,7 +2035,7 @@ $(function () {
 
         if ( filter_errMsg !== '' )
         {
-            layer.alert(filter_errMsg, {shade:false});
+            layer.alert(filter_errMsg, {shade:false,closeBtn:0});
             return false;
         }else{
             return true;
@@ -2167,7 +2198,7 @@ $(function () {
         var atId = atNo.val();
         if ( atId == 0)
         {//未选择某个望远镜
-            layer.alert('请选择您要配置的望远镜!');return;
+            layer.alert('请选择您要配置的望远镜!', {shade:false, closeBtn:0});return;
         }
         var sDome_Data = new FormData(sDomeForm[0]);
         sDome_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
@@ -2187,14 +2218,21 @@ $(function () {
             success:  function (info) {
                 if ( info.indexOf('{') == -1 ) //info 不是json数据
                 {
-                    layer.alert(info);
-                    if (info.indexOf('登录') !== -1)
-                    {
-                    	location.href = '/';
-                    }
+                    layer.alert(info, {
+                        shade:false,
+                        closeBtn:0,
+                        yes:function (n){
+                            layer.close(n);
+                            if (info.indexOf('登录') !== -1)
+                            {
+                                location.href = '/';
+                            }
+                        },
+                    });
+
                 }else{//解析 处理 json
                     var info = $.parseJSON(info);
-                    layer.alert(info.msg);
+                    layer.alert(info.msg, {shade:false, closeBtn:0});
                     sDomeAttrModifyTime.html(info.attrmodifytime);
                     //在页面显示已上传的文件名
                     if ( info.file ) //有已上传的文件信息
@@ -2206,7 +2244,7 @@ $(function () {
                 }//解析 处理 json 结束
              },
              error:  function () {
-	              layer.alert('网络异常,请重新提交');
+	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
              },
         })
     });/*随动圆顶 ajax 结束*/
@@ -2299,7 +2337,7 @@ $(function () {
 
         if ( sDome_errMsg !== '' )
         {
-            layer.alert(sDome_errMsg, {shade:false});
+            layer.alert(sDome_errMsg, {shade:false, closeBtn:0});
             return false;
         }else{
             return true;
@@ -2413,7 +2451,7 @@ $(function () {
         var atId = atNo.val();
         if ( atId == 0)
         {//未选择某个望远镜
-            layer.alert('请选择您要配置的望远镜!');return;
+            layer.alert('请选择您要配置的望远镜!', {shade:false, closeBtn:0});return;
         }
         var oDome_Data = new FormData(oDomeForm[0]);
         oDome_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
@@ -2433,14 +2471,20 @@ $(function () {
             success:  function (info) {
                 if ( info.indexOf('{') == -1 ) //info 不是json数据
                 {
-                    layer.alert(info);
-                    if (info.indexOf('登录') !== -1)
-                    {
-                    	location.href = '/';
-                    }
+                     layer.alert(info, {
+                        shade:false,
+                        closeBtn:0,
+                        yes:function (n){
+                            layer.close(n);
+                            if (info.indexOf('登录') !== -1)
+                            {
+                                location.href = '/';
+                            }
+                        },
+                    });
                 }else{//解析 处理 json
                     var info = $.parseJSON(info);
-                    layer.alert(info.msg);
+                    layer.alert(info.msg, {shade:false, closeBtn:0});
                     oDomeAttrModifyTime.html(info.attrmodifytime);
                     //在页面显示已上传的文件名
                     if ( info.file ) //有已上传的文件信息
@@ -2452,7 +2496,7 @@ $(function () {
                 }//解析 处理 json 结束
              },
              error:  function () {
-	              layer.alert('网络异常,请重新提交');
+	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
              },
         })
     });/*全开圆顶 ajax 结束*/
@@ -2507,7 +2551,7 @@ $(function () {
 
         if ( oDome_errMsg !== '' )
         {
-            layer.alert(oDome_errMsg, {shade:false});
+            layer.alert(oDome_errMsg, {shade:false, closeBtn:0});
             return false;
         }else{
             return true;
@@ -2607,7 +2651,7 @@ $(function () {
         var atId = atNo.val();
         if ( atId == 0)
         {//未选择某个望远镜
-            layer.alert('请选择您要配置的望远镜!');return;
+            layer.alert('请选择您要配置的望远镜!', {shade:false, closeBtn:0});return;
         }
         var focus_Data = new FormData(focusForm[0]);
         focus_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
@@ -2627,14 +2671,20 @@ $(function () {
             success:  function (info) {
                 if ( info.indexOf('{') == -1 ) //info 不是json数据
                 {
-                    layer.alert(info);
-                    if (info.indexOf('登录') !== -1)
-                    {
-                    	location.href = '/';
-                    }
+                    layer.alert(info, {
+                        shade:false,
+                        closeBtn:0,
+                        yes:function (n){
+                            layer.close(n);
+                            if (info.indexOf('登录') !== -1)
+                            {
+                                location.href = '/';
+                            }
+                        },
+                    });
                 }else{//解析 处理 json
                     var info = $.parseJSON(info);
-                    layer.alert(info.msg);
+                    layer.alert(info.msg, {shade:false, closeBtn:0});
                     focusAttrModifyTime.html(info.attrmodifytime);
                     //在页面显示已上传的文件名
                     if ( info.file ) //有已上传的文件信息
@@ -2646,7 +2696,7 @@ $(function () {
                 }//解析 处理 json 结束
              },
              error:  function () {
-	              layer.alert('网络异常,请重新提交');
+	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
              },
         })
     });/*调焦器 ajax 结束*/
@@ -2734,7 +2784,7 @@ $(function () {
 
         if ( focus_errMsg !== '' )
         {
-            layer.alert(focus_errMsg, {shade:false});
+            layer.alert(focus_errMsg, {shade:false, closeBtn:0});
             return false;
         }else{
             return true;
@@ -2870,7 +2920,7 @@ $(function () {
         var atId = atNo.val();
         if ( atId == 0)
         {//未选择某个望远镜
-            layer.alert('请选择您要配置的望远镜!');return;
+            layer.alert('请选择您要配置的望远镜!', {shade:false, closeBtn:0});return;
         }
         var guide_Data = new FormData(guideScope[0]);
         guide_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
@@ -2890,14 +2940,20 @@ $(function () {
             success:  function (info) {
                 if ( info.indexOf('{') == -1 ) //info 不是json数据
                 {
-                    layer.alert(info);
-                    if (info.indexOf('登录') !== -1)
-                    {
-                    	location.href = '/';
-                    }
+                    layer.alert(info, {
+                        shade:false,
+                        closeBtn:0,
+                        yes:function (n){
+                            layer.close(n);
+                            if (info.indexOf('登录') !== -1)
+                            {
+                                location.href = '/';
+                            }
+                        },
+                    });
                 }else{//解析 处理 json
                     var info = $.parseJSON(info);
-                    layer.alert(info.msg);
+                    layer.alert(info.msg, {shade:false, closeBtn:0});
                     guideScopeAttrModifyTime.html(info.attrmodifytime);
                     //在页面显示已上传的文件名
                     if ( info.file ) //有已上传的文件信息
@@ -2909,7 +2965,7 @@ $(function () {
                 }//解析 处理 json 结束
              },
              error:  function () {
-	              layer.alert('网络异常,请重新提交');
+	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
              },
         })
     });/*导星望远镜 ajax 结束*/
@@ -2983,7 +3039,7 @@ $(function () {
 
         if ( guide_errMsg !== '' )
         {
-            layer.alert(guide_errMsg, {shade:false});
+            layer.alert(guide_errMsg, {shade:false, closeBtn:0});
             return false;
         }else{
             return true;

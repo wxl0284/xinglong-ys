@@ -5,6 +5,7 @@
     <title>用户管理</title>
    {load href='/static/css/userIndex.css'}
 	 {load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
+	 {load href='/static/plugin/layer/layer.js'}
 	 {load href='/static/js/user.js'}
 	 {load href='/static/css/common-1.css'}
 </head>
@@ -14,35 +15,40 @@
 	<div id='all'>
 	   <div id='user'>
 		  <span class='title_text'>用户列表</span>
-			<br /><a class='fl border1' href="{:url('/user/add')}">添加用户</a>
+			<br><a class='fl border1' href="{:url('/user/add')}">添加用户</a>
 		  <form class='fr' action="{:url('/user')}" method='post'>
 		    <input id='keywd' class='border' type='text'  name='keyword' placeholder='输入用户名'/> 
-			<input class='border1' type='submit' value='查询' /> 
-		  </form><br /><br />
+			<input class='border1' type='submit' value='查询'> 
+			</form><br><br>
+			{if condition="isset($userList)"}
 		  <table>
 			   <tr id='t1'>
 				  <td>用户序号</td><td>用户名</td><td>权限</td><td>操作</td>
-			   </tr>
-			   {volist name='userList' id='user'}
-			   <tr>
-				  <td>{$user.id}</td><td>{$user.username}</td><td>{$user.description}</td>
-				  <td>
-					<a href="{:url('xinglong/user/edit', ['id'=>$user.id])}">编辑&nbsp;&nbsp;</a>
-					{if condition="$user.status == 1"}
-					  {if condition="$user.role != 1"}
-						<a class='userOff' href='#' uid='{$user.id}'>禁用</a>
-					  {/if}
-					{elseif condition="$user.status == 2"}
-						<a class='userOn' href="#" uid='{$user.id}'>启用</a>
-					{/if}
-				  </td>
-			   </tr>
-			   {/volist}
+				 </tr>
+						{volist name='userList' id='user'}
+						<tr>
+							<td>{$user.id}</td><td>{$user.username}</td><td>{$user.description}</td>
+							<td>
+							<a href="{:url('xinglong/user/edit', ['id'=>$user.id])}">编辑&nbsp;&nbsp;</a>
+							{if condition="$user.role != 1"}
+								{if condition="$user.status == 1"}
+									<a class='userOff' href='#' uid='{$user.id}'>禁用</a>
+								{elseif condition="$user.status == 2"/}
+									<a class='userOn' href="#" uid='{$user.id}'>启用</a>
+								{/if}
+							{/if}
+							</td>
+						</tr>
+						{/volist}
 		  </table>
 	   </div>
-	   <div id='paging'>{$userList->render()}<div class='clear'></div></div><!--显示用户的分页-->
-    </div><br><br>
-	<footer class='center'>
+		 <div id='paging'>{$userList->render()}<!--显示用户的分页-->
+		{/if}
+			<span>{$notice ?? ''}</span>
+	</div>
+	</div><br><br>
+		
+	<footer class='center clear'>
 		<span>中科院国家天文台兴隆观测基地</span>
 	</footer>
 </body>

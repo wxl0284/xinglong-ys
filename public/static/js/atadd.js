@@ -155,24 +155,24 @@ $(function () {
             processData : false,
             contentType : false,  
             success:  function (info) {
-                if (info.indexOf('添加望远镜ok') !== -1)
-                {
-                    alert(info);
-                }else{
-                    layer.alert(info);
-                }
-                
-                if (info.indexOf('登录') !== -1)
-                {
-                    location.href = '/';
-                }
-                if (info.indexOf('添加望远镜ok') !== -1)
-                {
-                    location.href='/atadd';
-                }
+                layer.alert(info, {
+                    shade:false,
+                    closeBtn:0,
+                    yes:function (n){
+                        layer.close(n);
+                        if (info.indexOf('登录') !== -1)
+                        {
+                            location.href = '/';
+                        }
+                        if (info.indexOf('添加望远镜ok') !== -1)
+                        {
+                            location.href='/atadd';
+                        }
+                    },
+                });
            },
            error: function () {
-               layer.alert('网络异常,请重新提交');
+               layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
            },
         });
     })//提交按钮 点击事件  结束

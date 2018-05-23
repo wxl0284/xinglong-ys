@@ -194,7 +194,7 @@
 				getStatusErr ++;
 				if(getStatusErr <= 1)
 				{
-					layer.alert('网络异常,设备实时数据无法获取!', {shade:false});
+					layer.alert('网络异常,设备实时数据无法获取!', {shade:false, closeBtn:0});
 				}
 			},
 		});
@@ -311,14 +311,20 @@
 				at:at,	//望远镜序号
 			},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+				layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
-              error:  function () {
-	              layer.alert('网络异常,请再次连接！', {shade:false});
+             error:  function () {
+	              layer.alert('网络异常,请再次连接！', {shade:false, closeBtn:0});
             },
         });
     }); 
@@ -332,14 +338,20 @@
             url : '/gimbal',
             data : {connect:2, at:at},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	             layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
-              error:  function () {
-	              layer.alert('网络异常,请再次断开连接！', {shade:false});
+            error:  function () {
+	             layer.alert('网络异常,请再次断开连接！', {shade:false, closeBtn:0});
             },
         });
     }); 
@@ -353,14 +365,20 @@
             url : '/gimbal',
             data : {findHome:1,at:at},             
             success:  function (info) {
-               layer.alert(info, {shade:false});
-			   if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+				layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-               layer.alert('网络异常,请再次点击：找零按钮!', {shade:false});
+               layer.alert('网络异常,请再次点击：找零!', {shade:false, closeBtn:0});
             },
         });
     });
@@ -374,11 +392,17 @@
             url : '/gimbal',
             data : {park:1, at:at},             
             success:  function (info) {
-               layer.alert(info, {shade:false});
-			   if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	               layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
                layer.alert('网络异常,请再次复位!', {shade:false});
@@ -395,14 +419,20 @@
             url : '/gimbal',
             data : {stop:1, at:at},             
             success:  function (info) {
-              layer.alert(info, {shade:false});
-			   if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	               layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	            layer.alert('网络异常,请再次点击：停止按钮!', {shade:false});
+	            layer.alert('网络异常,请再次点击：停止按钮!', {shade:false, closeBtn:0});
             },
         });
     });  
@@ -416,14 +446,20 @@
             url : '/gimbal',
             data : {EmergenceStop:1, at:at},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-			   if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	             layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次点击：急停按钮!', {shade:false});
+	              layer.alert('网络异常,请再次点击：急停按钮!', {shade:false, closeBtn:0});
             },
         });
     });/////////////////////////////////////////// 
@@ -757,14 +793,20 @@ var gimbal_form = $('#at60Gimbal');    //获取转台表单元素
               processData : false,
               contentType : false,  
               success:  function (info) {
-				layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+				layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
               },
               error:  function () {
-	              layer.alert('网络异常,请重新提交', {shade:false});
+	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
               },
         	});
 	});
@@ -792,14 +834,20 @@ var gimbal_form = $('#at60Gimbal');    //获取转台表单元素
 				at: at,
 			},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-			   if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	            layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次连接ccd!', {shade:false});
+	              layer.alert('网络异常,请再次连接ccd!', {shade:false, closeBtn:0});
             },
         });
    });
@@ -816,14 +864,20 @@ var gimbal_form = $('#at60Gimbal');    //获取转台表单元素
 				at: at,
 			},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	             layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次断开ccd!', {shade:false});
+	              layer.alert('网络异常,请再次断开ccd!', {shade:false, closeBtn:0});
             },
         });
    });
@@ -840,14 +894,20 @@ var gimbal_form = $('#at60Gimbal');    //获取转台表单元素
 				at: at,
 			},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	            layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次停止曝光!', {shade:false});
+	              layer.alert('网络异常,请再次停止曝光!', {shade:false, closeBtn:0});
             },
         });
    });
@@ -864,14 +924,20 @@ var gimbal_form = $('#at60Gimbal');    //获取转台表单元素
 				at: at,
 			},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	            layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次终止曝光!', {shade:false});
+	              layer.alert('网络异常,请再次终止曝光!', {shade:false, closeBtn:0});
             },
         });
    });
@@ -1246,14 +1312,20 @@ var gimbal_form = $('#at60Gimbal');    //获取转台表单元素
               processData : false,
               contentType : false,  
               success:  function (info) {
-				layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+				layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
              },
              error:  function () {
-	              layer.alert('网络异常,请重新提交', {shade:false});
+	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
             },
           })    
     });
@@ -1291,14 +1363,20 @@ var gimbal_form = $('#at60Gimbal');    //获取转台表单元素
 				at: at,
 			},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	             layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次连接调焦器!', {shade:false});
+	              layer.alert('网络异常,请再次连接调焦器!', {shade:false, closeBtn:0});
             },
       });
    });
@@ -1315,14 +1393,20 @@ var gimbal_form = $('#at60Gimbal');    //获取转台表单元素
 				at: at,
 			},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	              layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次断开调焦器!', {shade:false});
+	              layer.alert('网络异常,请再次断开调焦器!', {shade:false, closeBtn:0});
             },
         });
    });
@@ -1339,14 +1423,20 @@ var gimbal_form = $('#at60Gimbal');    //获取转台表单元素
 				at: at,
 			},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	            layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次点击停止按钮!', {shade:false});
+	              layer.alert('网络异常,请再次点击停止按钮!', {shade:false, closeBtn:0});
             },
         });
    });
@@ -1363,14 +1453,20 @@ var gimbal_form = $('#at60Gimbal');    //获取转台表单元素
 				at: at,
 			},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	           layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次点击找零按钮!', {shade:false});
+	              layer.alert('网络异常,请再次点击找零按钮!', {shade:false, closeBtn:0});
             },
         });
    }); 
@@ -1449,14 +1545,20 @@ var focus_form = $('#at60Focus');    //获取focus表单元素
              processData : false,
              contentType : false,  
              success:  function (info) {
-                layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	                layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
              },
              error:  function () {
-	              layer.alert('网络异常,请重新提交', {shade:false});
+	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
             },
          })        
     });
@@ -1473,14 +1575,20 @@ var focus_form = $('#at60Focus');    //获取focus表单元素
 				at : at,
 			},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-			   if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+			       layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次连接圆顶!', {shade:false});
+	             layer.alert('网络异常,请再次连接圆顶!', {shade:false, closeBtn:0});
             },
         });
    });
@@ -1497,14 +1605,20 @@ var focus_form = $('#at60Focus');    //获取focus表单元素
 				at: at,
 			},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-			   if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	           layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次断开圆顶!', {shade:false});
+	              layer.alert('网络异常,请再次断开圆顶!', {shade:false,closeBtn:0});
             },
         });
    });
@@ -1521,14 +1635,20 @@ var focus_form = $('#at60Focus');    //获取focus表单元素
 				at: at,
 			},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-			   if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	           layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次点击该按钮!', {shade:false});
+	              layer.alert('网络异常,请再次点击该按钮!', {shade:false,closeBtn:0});
            },
         });
    });
@@ -1545,14 +1665,20 @@ var focus_form = $('#at60Focus');    //获取focus表单元素
 				at: at,
 			},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-               if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	            layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次打开天窗!', {shade:false});
+	              layer.alert('网络异常,请再次打开天窗!', {shade:false, closeBtn:0});
             },
         });
    });
@@ -1569,14 +1695,20 @@ var focus_form = $('#at60Focus');    //获取focus表单元素
 				at: at,
 			},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-               if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	             layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次关闭天窗!', {shade:false});
+	              layer.alert('网络异常,请再次关闭天窗!', {shade:false, closeBtn:0});
             },
         });
    });
@@ -1657,14 +1789,20 @@ var sDome_form = $('#at60Dome');    //获取圆顶表单元素
               processData : false,
               contentType : false,  
               success:  function (info) {
-                layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	               layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
              },
              error:  function () {
-	              layer.alert('网络异常,请重新提交', {shade:false});
+	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
             },
         })           
     });
@@ -1715,14 +1853,20 @@ var sDome_form = $('#at60Dome');    //获取圆顶表单元素
 				openDome : openDome
 			},
             success:  function (info) {
-				layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+				layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-                layer.alert('网络异常,请重新提交', {shade:false});
+                layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
            },
        });
    })/****************全开圆顶 连接/断开   结束****************/
@@ -1782,14 +1926,20 @@ var sDome_form = $('#at60Dome');    //获取圆顶表单元素
             url : '/filter',
             data : {filterConnect:1,at:at,},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	           layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次连接滤光片!', {shade:false});
+	              layer.alert('网络异常,请再次连接滤光片!', {shade:false, closeBtn:0});
             },
         });
    });
@@ -1803,14 +1953,20 @@ var sDome_form = $('#at60Dome');    //获取圆顶表单元素
             url : '/filter',
             data : {filterConnect:2,at:at,},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	            layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次断开滤光片!', {shade:false});
+	              layer.alert('网络异常,请再次断开滤光片!', {shade:false, closeBtn:0});
             },
         });
    });
@@ -1824,14 +1980,20 @@ var sDome_form = $('#at60Dome');    //获取圆顶表单元素
             url : '/filter',
             data : {filterFindHome:1,at:at,},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	            layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次进行找零!', {shade:false});
+	              layer.alert('网络异常,请再次进行找零!', {shade:false, closeBtn:0});
             },
         });
    });
@@ -1845,15 +2007,21 @@ var sDome_form = $('#at60Dome');    //获取圆顶表单元素
             url : '/filter',
             data : {filterPos:filterPosVal,at:at,},             
             success:  function (info) {
-	              layer.alert(info, {shade:false});
-				if (info.indexOf('登录') !== -1)
-				{
-					location.href = '/';
-				}
+	            layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
             },
             error:  function () {
-	              layer.alert('网络异常,请再次提交滤光片位置!', {shade:false});
-			   filterPosEle.val('0');
+	            layer.alert('网络异常,请再次提交滤光片位置!', {shade:false, closeBtn:0});
+			   	filterPosEle.val('0');
             },
         });
 	});
@@ -1935,17 +2103,24 @@ $('#coverOp').on('click', 'input:button', function () {
 			at: at,
 		},
 		success:  function (info) {
-            layer.alert(info, {shade:false});
 			that.addClass('click');
-			notThis.removeClass('click');
-			if (info.indexOf('登录') !== -1)
-			{
-				location.href = '/';
-			}
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次点击镜盖操作!', {shade:false});
-            },
+			notThis.removeClass('click');			
+
+			layer.alert(info, {
+				shade:false,
+				closeBtn:0,
+				yes:function (n){
+					layer.close(n);
+					if (info.indexOf('登录') !== -1)
+					{
+						location.href = '/';
+					}
+				},
+			});
+        },
+        error:  function () {
+              layer.alert('网络异常,请再次点击镜盖操作!', {shade:false, closeBtn:0});
+        },
 	});
 });
 /******************转台之镜盖操作指令 js事件 结束*****************/
@@ -1972,17 +2147,23 @@ $('#saveData').on('click', 'input:button', function () {
 			at: at,
 		},
 		success:  function (info) {
-            layer.alert(info, {shade:false});
 			that.addClass('click');
 			notThis.removeClass('click');
-			if (info.indexOf('登录') !== -1)
-			{
-				location.href = '/';
-			}
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次发送同步数据指令!', {shade:false});
-            },
+			layer.alert(info, {
+				shade:false,
+				closeBtn:0,
+				yes:function (n){
+					layer.close(n);
+					if (info.indexOf('登录') !== -1)
+					{
+						location.href = '/';
+					}
+				},
+			});
+       },
+       error:  function () {
+            layer.alert('网络异常,请再次发送同步数据指令!', {shade:false, closeBtn:0});
+       },
 	});
 });
 /****************转台之保存同步数据 js事件 结束***************/
