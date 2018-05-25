@@ -18,18 +18,57 @@
 			</span><br>
 			<a href='{:url("/conf_option")}' target="_blank">去配置上述固定属性</a>
 		</div><br>
-		<h3 class='center'>配置望远镜
+		<h3 id='atSelect' class='center border'>配置望远镜
 			<select id='atNo' style='width:auto;'>
 				<option value="0" selected="selected">请选择望远镜</option>
 				{volist name="atList" id="vo"}
 					<option value="{$vo.id}">{$vo.atname}</option>
 				{/volist}
 			</select>
-		</h3><br>
-		<div id='allOptions' class=""><!--所有配置项-->
-			<h4 class='center' id='gimbal_h'>转台固定属性</h4>
+			<span>
+				&nbsp;&nbsp;&nbsp;并选择此望远镜的子设备组成
+			</span>
+
+			<table>
+				<tr>
+					<td>转台<input id='have_gimbal' type="checkbox" name='gimbal' value="vv"></td>
+					<td>CCD<input id='have_ccd' type="checkbox" name='ccd'></td>
+					<td>CCD数量
+						<select name="ccdNum" id="ccd_num">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+						</select>
+					</td>
+					<td>滤光片转轮<input id='have_filter' type="checkbox" name='filter'></td>
+					<td>随动圆顶<input id='have_sDome' type="checkbox" name='sDome'></td>
+					<td>全开圆顶<input id='have_oDome' type="checkbox" name='oDome'></td>
+					<td>调焦器<input id='have_focus' type="checkbox" name='focus'></td>
+				</tr>
+				<tr>
+					<td>导星镜<input id='have_guide' type="checkbox" name='guide'></td>
+					<td>光谱终端<input id='have_spectral' type="checkbox" name='spectral'></td>
+					<td>光谱终端数量
+						<select name="spectral_Num" id="spectral_Num">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+						</select>
+					</td>
+					<td>数据处理模块1<input id='dataHandle_1' type="checkbox" name='dataHandle_1'></td>
+					<td>数据处理模块2<input id='dataHandle_2' type="checkbox" name='dataHandle_2'></td>
+					<td>数据处理模块3<input id='dataHandle_3' type="checkbox" name='dataHandle_3'></td>
+				</tr>	
+			</table>
+			<button id='devsBtn'>确认</button>
+		</h3>
+		<br>
+		<div id='allOptions'><!--所有配置项-->
+			<form id='gimbal' class="form displayNo" enctype='multipart/form-data'><!--转台配置项-->
+			<h4 class='center'>转台固定属性</h4>
 			<hr>
-			<form id='gimbal' class="form" enctype='multipart/form-data'><!--转台配置项-->
 				<table class="center_mrg">
 					<tr>
 						<td>转台ip:</td>
@@ -346,11 +385,12 @@
 					</tr>
 				</table>
 				<input id='gimbalBtn' type='button' value="提交转台配置">
-			</form><!--转台配置项 结束--><br>
+			</form><!--转台配置项 结束-->
 			<!--如下为ccd配置项-->
-			<h4 class='center' id='ccd_h'>CCD-No1固定属性</h4>
+			<form id='ccd-1' class="form displayNo" enctype='multipart/form-data'><!--ccd-No1配置项-->
+			<br>
+			<h4 class='center'>CCD-No1固定属性</h4>
 			<hr>
-			<form id='ccd-1' class="form" enctype='multipart/form-data'><!--ccd-No1配置项-->
 				<table class="center_mrg">
 					<tr>
 						<td>ccd之ip:</td>
@@ -655,11 +695,13 @@
 					</tr>
 				</table>
 				<input id='ccdBtn-1' type='button' value="提交CCD-No1配置">
-			</form><!--ccd-No1配置项 结束--><br>
+				<br>
+			</form><!--ccd-No1配置项 结束-->
 
-			<h4 class='center' id='filter_h'>滤光片固定属性</h4>
+			<form id='filter' class="form displayNo" enctype='multipart/form-data'><!--滤光片配置项-->
+			<br>
+			<h4 class='center'>滤光片固定属性</h4>
 			<hr>
-			<form id='filter' class="form" enctype='multipart/form-data'><!--滤光片配置项-->
 				<table class="center_mrg">
 					<tr>
 						<td>滤光片ip:</td>
@@ -738,11 +780,12 @@
 					</tr>
 				</table>
 				<input id='filterBtn' type='button' value="提交滤光片配置">
-			</form><!-- 滤光片固定属性配置项 结束--><br>
-			
-			<h4 class='center' id='sDome_h'>随动圆顶固定属性</h4>
+			</form><!-- 滤光片固定属性配置项 结束-->
+
+			<form id='sDome' class="form displayNo" enctype='multipart/form-data'><!--随动圆顶配置项-->
+			<br>
+			<h4 class='center'>随动圆顶固定属性</h4>
 			<hr>
-			<form id='sDome' class="form" enctype='multipart/form-data'><!--随动圆顶配置项-->
 				<table class="center_mrg">
 					<tr>
 						<td>随动圆顶ip:</td>
@@ -838,11 +881,12 @@
 					</tr>
 				</table>
 				<input id='sDomeBtn' type='button' value="提交随动圆顶配置">
-			</form><!-- 随动圆顶固定属性配置项 结束--><br>
+			</form><!-- 随动圆顶固定属性配置项 结束-->
 
+			<form id='oDome' class="form displayNo" enctype='multipart/form-data'><!--全开圆顶配置项-->
+			<br>
 			<h4 class='center' id='oDome_h'>全开圆顶固定属性</h4>
 			<hr>
-			<form id='oDome' class="form" enctype='multipart/form-data'><!--全开圆顶配置项-->
 				<table class="center_mrg">
 					<tr>
 						<td>全开圆顶ip:</td>
@@ -894,11 +938,12 @@
 					</tr>
 				</table>
 				<input id='oDomeBtn' type='button' value="提交全开圆顶配置">
-			</form><!-- 全开圆顶固定属性配置项 结束--><br>
+			</form><!-- 全开圆顶固定属性配置项 结束-->
 
+			<form id='focus' class="form displayNo" enctype='multipart/form-data'><!--调焦器配置项-->
+			<br>
 			<h4 class='center' id='focus_h'>调焦器固定属性</h4>
 			<hr>
-			<form id='focus' class="form" enctype='multipart/form-data'><!--调焦器配置项-->
 				<table class="center_mrg">
 					<tr>
 						<td>调焦器ip:</td>
@@ -998,11 +1043,12 @@
 					</tr>
 				</table>
 				<input id='focusBtn' type='button' value="提交调焦器配置">
-			</form><!--调焦器固定属性配置项 结束--><br>
+			</form><!--调焦器固定属性配置项 结束-->
 
+			<form id='guideScope' class="form displayNo" enctype='multipart/form-data'><!--导星望远镜配置项-->
+			<br>
 			<h4 class='center' id='guideScope_h'>导星望远镜固定属性</h4>
 			<hr>
-			<form id='guideScope' class="form" enctype='multipart/form-data'><!--导星望远镜配置项-->
 				<table class="center_mrg">
 					<tr>
 						<td>导星望远镜ip:</td>
@@ -1080,7 +1126,7 @@
 					</tr>
 				</table>
 				<input id='guideScopeBtn' type='button' value="提交导星望远镜配置">
-			</form><!--导星望远镜固定属性配置项 结束--><br>
+			</form><!--导星望远镜固定属性配置项 结束-->
 
 		</div><!-- 所有配置项 结束 -->
 	</div><!-- id='all' 结束 --><br>

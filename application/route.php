@@ -33,6 +33,8 @@ Route::post('user/edit_passwd$', 'xinglong/user/editPasswd');
 Route::get('weather$', 'xinglong/page/weather');
 //天气 显示详情 路由
 Route::get('weather_info$', 'xinglong/weather/weatherDetail');
+//ajax实时获取各子设备状态信息 路由
+Route::post('get_status$', 'xinglong/status/get_status');
 //发送转台指令 路由
 Route::post('gimbal$', 'xinglong/gimbal/sendCommand');
 //发送CCD指令 路由

@@ -66,130 +66,162 @@
 	var filterErrStr = $('#filterErrStr');
 	var planNum = $('#planNum');
 	/******************如下定义变量 存储各个需实时更新数据的元素 结束**********/
+	/*将转台实时状态信息显示在页面*/
+	function show_gimbal_status (info)
+	{
+		//date.html(info.date);
+		utcTime.html(info.UTC);
+		siderealTime.html(info.siderealTime);
+		curstatus.html(info.curstatus); //转台状态
+		trackError.html(info.trackError);
+		hourAngle.html(info.hourAngle);
+		coverStatus.html(info.coverStatus);
+		rightAscension.html(info.rightAscension);
+		declination.html(info.declination);
+		trackObjectName.html(info.trackObjectName);
+		trackType.html(info.trackType);
+		targetRightAscension.html(info.targetRightAscension);
+		targetDeclination.html(info.targetDeclination);
+		azmiuth.html(info.azmiuth);//当前方位
+		elevation.html(info.elevation);//当前俯仰
+		RightAscensionSpeed.html(info.RightAscensionSpeed);
+		declinationSpeed.html(info.declinationSpeed);
+		derotatorPositon.html(info.derotatorPositon);
+		targetDerotatorPosition.html(info.targetDerotatorPosition);
+		axis1TrackError.html(info.axis1TrackError);
+		axis2TrackError.html(info.axis2TrackError);
+		axis3TrackError.html(info.axis3TrackError);
+		//接下来为gimbal可变属性
+		stamp.html(info.timeStamp); //时间戳
+		siderealTime_1.html(info.siderealTime); //恒星时
+		hourAngle_1.html(info.hourAngle); //时角
+		rightAscension_1.html(info.rightAscension); //赤经
+		declination_1.html(info.declination); //赤纬
+		//J2000赤经
+		J2000RightAscension.html(info.J2000RightAscension);
+		//j2000赤纬
+		J2000Declination.html(info.J2000Declination);
+		azmiuth_1.html(info.azmiuth);//当前方位
+		elevation_1.html(info.elevation);//当前俯仰
+		//当前消旋位置
+		derotatorPositon_1.html(info.derotatorPositon);
+		//目标赤经
+		targetRightAscension_1.html(info.targetRightAscension);
+		//目标赤纬
+		targetDeclination_1.html(info.targetDeclination);
+		//目标j2000赤经
+		targetJ2000RightAscension.html(info.targetJ2000RightAscension);
+		//目标j2000赤纬
+		targetJ2000Declination.html(info.targetJ2000Declination);
+		//目标消旋位置 targetDerotatorPosition
+		targetDerotatorPosition_1.html(info.targetDerotatorPosition);
+		//gimbal可变属性 结束////////////////////////////
+		
+		//60cm各子设备状态//////////////////////////////////
+		//转台状态////////////////////////////
+		if (info.curstatus == '异常')
+		{
+			gimbPic.attr('src', '/static/images-1/error.jpg');
+		}else{
+			gimbPic.attr('src', '/static/images-1/ok.jpg');
+		}
+		gimbStatus.html('转台:' + info.curstatus);
+
+	}/*将转台实时状态信息显示在页面 结束*/
+
+	/*将ccd实时状态信息显示在页面*/
+	function show_ccd_status (info)
+	{
+		ccdStatus.html('CCD:' + info.ccdCurStatus);
+		//如下为ccd可变属性
+		ccdStatus_1.html(info.ccdCurStatus);
+		baseLine.html(info.ccdBaseline);
+		readMode.html(info.ccdReadOutMode);
+		ObserveBand.html(info.ccdObserveBand);
+		TargetRightAscension.html(info.ccdJ2000RightAscension);
+		TargetDeclination.html(info.ccdJ2000Declination);
+	}/*将ccd实时状态信息显示在页面 结束*/
+
+	/*将调焦器实时状态信息显示在页面*/
+	function show_focus_status (info)
+	{
+		focusStatus.html('调焦器:' + info.focusCurStatus);
+		curPos.html(info.focusPosition);
+		targetPosition.html(info.focusTargetPos);
+		//找零状态
+		focusIsHomed.html(info.focusIsHomed);
+		//是否温度补偿
+		compens.html(info.focusIsTCompensation);
+		//温度补偿系数
+		compensX.html(info.focusTCompenensation);
+	}/*将调焦器实时状态信息显示在页面 结束*/
+
+	/*将随动圆顶实时状态信息显示在页面*/
+	function show_sDome_status (info)
+	{
+		//圆顶状态//////////////////////////////////////////////////
+		/* if (info.curstatus == '异常')
+		{
+			$('#gimbPic').attr('src', '/static/images-1/error.jpg');
+		}else{
+			$('#gimbPic').attr('src', '/static/images-1/ok.jpg');
+		} */
+		domeStatus.html('圆顶:' + info.slaveDomeCurstatus);
+		domeStatus_1.html(info.slaveDomeCurstatus);
+		scuttle.html(info.slaveDomeScuttleStatus);//天窗状态
+		shadeStatus.html(info.slaveDomeShadeStatus);//风帘状态
+		errorStr.html(info.slaveDomeErrorStatus);//错误标识
+	}/*将随动圆顶实时状态信息显示在页面 结束*/
+
+	/*将滤光片实时状态信息显示在页面*/
+	function show_filter_status (info)
+	{
+		filterStatus.html('滤光片:' + info.filterCurstatus);
+		filterStatus_1.html(info.filterCurstatus);
+		filterIsHomed.html(info.filterIsHomed);
+		filterErrStr.html(info.filterErrorStatus);
+	}/*将滤光片实时状态信息显示在页面 结束*/
+
 	function getStatus()
 	{
 		$.ajax({
 			type : 'post',
-            url : '/xinglong/at60status/devsStatus',           
+			url : '/get_status', 
+			data : {at: at,},         
             success:  function (info) {
 				getStatusErr = 0; //将err变量重置为0
                 var info = eval( '(' + info +')' );
-				date.html(info.date);
-				utcTime.html(info.UTC);
-				siderealTime.html(info.siderealTime);
-				curstatus.html(info.curstatus); //转台状态
-				trackError.html(info.trackError);
-				hourAngle.html(info.hourAngle);
-				coverStatus.html(info.coverStatus);
-				rightAscension.html(info.rightAscension);
-				declination.html(info.declination);
-				trackObjectName.html(info.trackObjectName);
-				trackType.html(info.trackType);
-				targetRightAscension.html(info.targetRightAscension);
-				targetDeclination.html(info.targetDeclination);
-				azmiuth.html(info.azmiuth);//当前方位
-				elevation.html(info.elevation);//当前俯仰
-				RightAscensionSpeed.html(info.RightAscensionSpeed);
-				declinationSpeed.html(info.declinationSpeed);
-				derotatorPositon.html(info.derotatorPositon);
-				targetDerotatorPosition.html(info.targetDerotatorPosition);
-				axis1TrackError.html(info.axis1TrackError);
-				axis2TrackError.html(info.axis2TrackError);
-				axis3TrackError.html(info.axis3TrackError);
-				//接下来为gimbal可变属性
-				stamp.html(info.timeStamp); //时间戳
-				siderealTime_1.html(info.siderealTime); //恒星时
-				hourAngle_1.html(info.hourAngle); //时角
-				rightAscension_1.html(info.rightAscension); //赤经
-				declination_1.html(info.declination); //赤纬
-				//J2000赤经
-				J2000RightAscension.html(info.J2000RightAscension);
-				//j2000赤纬
-				J2000Declination.html(info.J2000Declination);
-				azmiuth_1.html(info.azmiuth);//当前方位
-				elevation_1.html(info.elevation);//当前俯仰
-				//当前消旋位置
-				derotatorPositon_1.html(info.derotatorPositon);
-				//目标赤经
-				targetRightAscension_1.html(info.targetRightAscension);
-				//目标赤纬
-				targetDeclination_1.html(info.targetDeclination);
-				//目标j2000赤经
-				targetJ2000RightAscension.html(info.targetJ2000RightAscension);
-				//目标j2000赤纬
-				targetJ2000Declination.html(info.targetJ2000Declination);
-				//目标消旋位置 targetDerotatorPosition
-				targetDerotatorPosition_1.html(info.targetDerotatorPosition);
-				//gimbal可变属性 结束////////////////////////////
 				
-				//60cm各子设备状态//////////////////////////////////
-				//转台状态////////////////////////////
-				if (info.curstatus == '异常')
+				//显示转台状态信息
+				if ( info.gimbal )
 				{
-					gimbPic.attr('src', '/static/images-1/error.jpg');
-				}else{
-					gimbPic.attr('src', '/static/images-1/ok.jpg');
+					show_gimbal_status (info.gimbal);
 				}
-				gimbStatus.html('转台:' + info.curstatus);
-				//转台状态结束/////////////////////////////
-				
-				//ccd状态/////////////////////////////////////
-				/* if (info.curstatus == '异常')
+
+				//显示ccd状态信息
+				if ( info.ccd )
 				{
-					$('#gimbPic').attr('src', '/static/images-1/error.jpg');
-				} */
-				ccdStatus.html('CCD:' + info.ccdCurStatus);
-				//如下为ccd可变属性
-				ccdStatus_1.html(info.ccdCurStatus);
-				baseLine.html(info.ccdBaseline);
-				readMode.html(info.ccdReadOutMode);
-				ObserveBand.html(info.ccdObserveBand);
-				TargetRightAscension.html(info.ccdJ2000RightAscension);
-				TargetDeclination.html(info.ccdJ2000Declination);				
-				//ccd 状态结束/////////////////////////////////
-				focusStatus.html('调焦器:' + info.focusCurStatus);
-				//如下为 调焦器可变属性/////////////////////////////////
-				curPos.html(info.focusPosition);
-				targetPosition.html(info.focusTargetPos);
-				//找零状态
-				focusIsHomed.html(info.focusIsHomed);
-				//是否温度补偿
-				compens.html(info.focusIsTCompensation);
-				//温度补偿系数
-				compensX.html(info.focusTCompenensation);
-				//调焦器 状态///////////////////////////////////////////////
-				//调焦器 状态 结束//////////////////////////////////////////
+					show_ccd_status (info.ccd);
+				}
 				
-				//圆顶状态//////////////////////////////////////////////////
-				/* if (info.curstatus == '异常')
+				//显示调焦器状态信息
+				if ( info.focus )
 				{
-					$('#gimbPic').attr('src', '/static/images-1/error.jpg');
-				}else{
-					$('#gimbPic').attr('src', '/static/images-1/ok.jpg');
-				} */
-				domeStatus.html('圆顶:' + info.slaveDomeCurstatus);
-				domeStatus_1.html(info.slaveDomeCurstatus);
-				scuttle.html(info.slaveDomeScuttleStatus);//天窗状态
-				shadeStatus.html(info.slaveDomeShadeStatus);//风帘状态
-				errorStr.html(info.slaveDomeErrorStatus);//错误标识
-				//圆顶状态 结束/////////////////////////////////////////////
-				/* if (info.curstatus == '异常')
-				{
-					$('#gimbPic').attr('src', '/static/images-1/error.jpg');
-				}else{
-					$('#gimbPic').attr('src', '/static/images-1/ok.jpg');
-				} */
-				filterStatus.html('滤光片:' + info.filterCurstatus);
-				filterStatus_1.html(info.filterCurstatus);
-				filterIsHomed.html(info.filterIsHomed);
-				filterErrStr.html(info.filterErrorStatus);
-				//观测计划tag 
-				planNum.html(info.planNum);
-				//滤光片状态////////////////////////////////////////////////
+					show_focus_status (info.focus);
+				}
 				
-				//滤光片状态 结束///////////////////////////////////////////
-				//60cm各子设备状态结束//////////////////////////////
-            },
+				//显示随动圆顶状态信息
+				if ( info.sDome )
+				{
+					show_sDome_status (info.sDome);
+				}
+				
+				//显示滤光片状态信息
+				if ( info.filter )
+				{
+					show_filter_status (info.filter);
+				}
+            },/* success方法 结束*/
 			error: function (){
 				getStatusErr ++;
 				if(getStatusErr <= 1)
@@ -199,7 +231,8 @@
 			},
 		});
 	}
-	//setInterval (getStatus, 1800);
+	//setInterval (getStatus, 1800);  //实时显示各设备状态信息
+
 /////////////////////////////////////////////////////////
 	//显示导航栏望远镜列表   
    var ul = $('#atListUl');

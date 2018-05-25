@@ -22,7 +22,29 @@ $(function () {
             } 
        );
     //望远镜列表js代码结束///////////////////////////////////
-    
+    /*选择各望远镜之自设备组成的js*/
+    var have_gimbal = $('#have_gimbal');
+
+    var devsBtn = $('#devsBtn');
+
+    devsBtn.click(function () {
+        var v = have_gimbal.prop('checked');
+        if ( have_gimbal.prop('checked') === true )
+        {
+            gimbalForm.show();
+        }else{
+            gimbalForm.hide();
+        }
+        
+        var v = have_gimbal.prop('checked');
+        if ( have_gimbal.prop('checked') === true )
+        {
+            gimbalForm.show();
+        }else{
+            gimbalForm.hide();
+        }
+    });
+    /*************8选择各望远镜之自设备组成的js 结束**************/
     /*选择望远镜下拉列表 ajax判断19个固定属性是否添加足够*/
     var atNo = $('#atNo');
     atNo.change(function (){
