@@ -1,8 +1,5 @@
 /*望远镜列表页面 js*/
-$(function () {
-    //页面加载完成后，默认所有选项为 未选中状态
-        $('input').prop('checked', false);
-        
+$(function () {        
     //显示导航栏望远镜列表///////////////////////////////////// 
        var ul = $('#atListUl');
        $('#atList').hover(
@@ -28,13 +25,11 @@ $(function () {
 
     //删除望远镜 
     $('table a.delete').on('click', function (){
-        var r = confirm('确定删除此望远镜信息？');
-        var uid = $(this).attr('atid');
-        if (r)
-        {
-            $(this).attr('href', "/at_delete/" + uid);
-        }else {
-            $(this).attr('href', '#');
-        }
+        var atid = $(this).attr('atid');
+        layer.confirm('确定删除？', {icon: 3, title:'提示'}, function(index){
+            //执行删除
+            location.href = "/at_delete/" + atid;
+            layer.close(index);
+        });
     });//删除望远镜 结束
 })

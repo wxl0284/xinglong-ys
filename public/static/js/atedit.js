@@ -24,8 +24,8 @@ $(function () {
     //望远镜列表js代码结束/////////////////////////////////
     //提交望远镜的数据
     var atForm = $('#form');
-    var atId = atForm.find('input[name="atid"]'); //望远镜id
-    var atName = atForm.find('input[name="atname"]'); //望远镜名称
+    //var atId = atForm.find('input[name="atid"]'); //望远镜id
+    //var atName = atForm.find('input[name="atname"]'); //望远镜名称
     var address = atForm.find('input[name="address"]'); //望远镜地址
     var longitude = atForm.find('input[name="longitude"]'); //经度
     var latitude = atForm.find('input[name="latitude"]'); //纬度
@@ -34,7 +34,7 @@ $(function () {
 
     //各input框的blur
     //验证望远镜id 之blur
-    atId.blur(function () {
+    /*atId.blur(function () {
         var that = $(this);
         var v = $.trim(that.val());
 		//var patn = /0\d{4}/;
@@ -46,10 +46,10 @@ $(function () {
 			layer.tips('望远镜id格式错误!', that, {tipsMore: true});
 		}		
 		that.data('err', err);
-    });//验证望远镜id 之blur 结束
+    });//验证望远镜id 之blur 结束*/
 
     //验证望远镜名 之blur
-    atName.blur(function () {
+    /*atName.blur(function () {
         var that = $(this);
         var v = $.trim(that.val());
 		var patn = /^\d(\d|\.)*m望远镜+$/;
@@ -61,7 +61,7 @@ $(function () {
 			layer.tips('望远镜名格式错误!', that, {tipsMore: true});
 		}		
 		that.data('err', err);
-    });//验证望远镜名 之blur 结束
+    });*///验证望远镜名 之blur 结束
 
      //验证望远镜地址 之blur
      address.blur(function () {

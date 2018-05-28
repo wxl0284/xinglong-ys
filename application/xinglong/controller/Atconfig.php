@@ -265,11 +265,14 @@ class Atconfig extends Base
 
        //属性更新时间
        $postData['attrmodifytime'] = date ('Y-m-d');
-
+       
+       //根据提交上来的ccd数量（假如是1个ccd,则删除字段ccdno大于1的配置数据）
+       Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', '>' $postData['ccd_num'])->delete();
+ 
         //定义错误提示
         $errMsg = '';
 
-        $data = Db::table('ccdconf')->where('teleid', $postData['teleid'])->find();
+        $data = Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', $postData['ccdno'])->find();
 
         if ( $data )
         {//已有配置数据 进行update
@@ -282,8 +285,9 @@ class Atconfig extends Base
         {
             $errMsg += 'ccd配置存数据库失败!<br>';
         }
-        //处理上传文件
-        $dir = 'ccd' . $postData['teleid']; //每个望远镜的每个设备建1个目录，如ccd1, focus2.....
+       
+        //处理上传文件, 每个望远镜的每个设备建1个目录，如ccd1, focus2.....
+        $dir = 'ccd' . $postData['teleid'] . '_' .$postData['ccdno'];   //每个望远镜的不同ccd, 各自建一个目录（如ccd1_1, ccd1_2...）
         /*处理测试报告*/
         $qecurveFile = $this->request->file('qecurve'); //获取量子效率曲线的上传数据
         if ( $qecurveFile !== null ) //有文件被上传

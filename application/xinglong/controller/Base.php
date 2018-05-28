@@ -37,7 +37,7 @@ class Base extends Controller
             //将id 和 口径 aperture对应起来
             foreach ( $res as $v)
             {
-                $at_aperture[$v['id']] = $v['aperture']; //将id 和 口径 aperture对应起来
+                $at_id[$v['id']] = $v['atid']; //将id 和 口径 aperture对应起来
                 $at_name[$v['id']] = $v['atname']; //将id 和 望远镜名称 对应起来
                 $at_longitude[$v['id']] = $v['longitude']; //将id 和 经度 对应起来
                 $at_latitude[$v['id']] = $v['latitude']; //将id 和 纬度 对应起来
@@ -45,7 +45,7 @@ class Base extends Controller
 
             $this->assign([
                 'atList' => $res,
-                'at_aperture' => $at_aperture,
+                'at_id' => $at_id,
                 'at_name' => $at_name,
                 'at_longitude' => $at_longitude,
                 'at_latitude' => $at_latitude

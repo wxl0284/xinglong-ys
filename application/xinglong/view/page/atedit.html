@@ -19,8 +19,8 @@
             <span>编辑望远镜</span><br>
             <form id='form' style="width:500px;" class='center_mrg'>
                     <input type='hidden' name='id' value='{$atData.id}'>
-                望远镜ID:&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='atid' value='{$atData.atid}'><br>
-                望远镜名:&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='atname' placeholder="1.26m望远镜" value='{$atData.atname}'><br>
+                <input type='hidden' name='atid' value='{$atData.atid}'>
+                望远镜名:&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='atname' readonly="readonly" value='{$atData.atname}'><br>
                 隶属观测站:<input type='text' name='address' placeholder="国家天文台兴隆观测基地" value='{$atData.address}'><br>
                 经度:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='longitude' placeholder="-180.0~+180.0" value='{$atData.longitude}'><br>
                 纬度:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='latitude' placeholder="-90.0~+90.0" value='{$atData.latitude}'><br>

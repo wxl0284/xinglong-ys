@@ -172,7 +172,7 @@
         </div><!--重要信息区域 结束-->
 		<br ><br>
 <script><!--子设备之固定属性值 -->
-	var at = "{$at_aperture[$configData['at_id']]}"; //该页面望远镜口径,用一个唯一不变的值来确定一个望远镜
+	var at = "{$at_id[$configData['at_id']]}"; //该页面望远镜口径,用一个唯一不变的值来确定一个望远镜
 	{if condition="isset($configData['filter']['filter_name_json'])"}
 	var plan_filter_option = {$configData['filter']['filter_name_json']};  //将滤光片名称的json数据赋于plan_filter_option
 	{/if}

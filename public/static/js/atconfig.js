@@ -24,10 +24,12 @@ $(function () {
     //望远镜列表js代码结束///////////////////////////////////
     /*选择各望远镜之自设备组成的js*/
     var have_gimbal = $('#have_gimbal');
+    var have_ccd = $('#have_ccd');
+    var ccd_num = $('#ccd_num'); //ccd数目的下拉框
 
     var devsBtn = $('#devsBtn');
 
-    devsBtn.click(function () {
+    /*devsBtn.click(function () {
         var v = have_gimbal.prop('checked');
         if ( have_gimbal.prop('checked') === true )
         {
@@ -43,7 +45,7 @@ $(function () {
         }else{
             gimbalForm.hide();
         }
-    });
+    });*/
     /*************8选择各望远镜之自设备组成的js 结束**************/
     /*选择望远镜下拉列表 ajax判断19个固定属性是否添加足够*/
     var atNo = $('#atNo');
@@ -89,6 +91,10 @@ $(function () {
                         /*在页面显示转台的配置数据*/
                         if (info.gimbal_data) //若接收到转台配置数据
                         {
+                           have_gimbal.prop('checked', true);  //将转台的选项勾选
+
+                           gimbalForm.show();  //显示转台配置表单
+
                             show_gimbal_data (info.gimbal_data);
                             if (info.gimbal_file)
                             {
@@ -101,14 +107,73 @@ $(function () {
                         /*在页面显示ccd-No1的配置数据*/
                         if (info.ccd_data) //若接收到转台配置数据
                         {
-                            show_ccd_data (info.ccd_data);
-                            if (info.ccd_file)
+                            have_ccd.prop('checked', true);  //将ccd的选项勾选
+                            /*接下来 根据ccd数量做相应处理*/
+                            var ccd_num = info.ccd_data.ccd_num;
+
+                            //将ccd数量之select进行设置
+                            if ( ccd_num > 0 )
                             {
-                                show_file (ccdFile, info.ccd_file);
-                            }else{
-                                ccdFile.html('');
+                                ccd_num.val(info.ccd_data.ccd_num);
+                                //显示对应数目的ccd配置表单
+                                for ( var ccd_num_i = 1; ccd_num_i <= ccd_num; ccd_num_i++)
+                                {
+                                    $('#ccd-' + ccd_num_i).show();
+                                    //接下来，逐一显示ccd配置表单的数据
+                                    if ( ccd_num_i == 1 ) //显示ccd-No1配置信息
+                                    {
+                                        ccdTeleId.html(info.ccd_data.atname);
+                                        show_ccd1_data (info.ccd_data[ccd_num_i-1]);
+                                        if (info.ccd_file[ccd_num_i])
+                                        {
+                                            show_file (ccdFile, info.ccd_file[ccd_num_i]);
+                                        }else{
+                                            ccdFile.html('');
+                                        }
+                                    }else if ( ccd_num_i == 2 ) //显示ccd-No3配置信息
+                                    {
+                                        ccd_2_TeleId.html(info.ccd_data.atname);
+                                        show_ccd2_data (info.ccd_data[ccd_num_i-1]);
+                                        if (info.ccd_file[ccd_num_i])
+                                        {
+                                            show_file (ccd_2_File, info.ccd_file[ccd_num_i]);
+                                        }else{
+                                            ccd_2_File.html('');
+                                        }
+                                    }else if ( ccd_num_i == 3 ) //显示ccd-No3配置信息
+                                    {
+                                        ccd_3_TeleId.html(info.ccd_data.atname);
+                                        show_ccd3_data (info.ccd_data[ccd_num_i-1]);
+                                        if (info.ccd_file[ccd_num_i])
+                                        {
+                                            show_file (ccd_3_File, info.ccd_file[ccd_num_i]);
+                                        }else{
+                                            ccd_3_File.html('');
+                                        }
+                                    }else if ( ccd_num_i == 4 ) //显示ccd-No4配置信息
+                                    {
+                                        ccd_4_TeleId.html(info.ccd_data.atname);
+                                        show_ccd4_data (info.ccd_data[ccd_num_i-1]);
+                                        if (info.ccd_file[ccd_num_i])
+                                        {
+                                            show_file (ccd_4_File, info.ccd_file[ccd_num_i]);
+                                        }else{
+                                            ccd_4_File.html('');
+                                        }
+                                    }else if ( ccd_num_i == 5 ) //显示ccd-No5配置信息
+                                    {
+                                        ccd_5_TeleId.html(info.ccd_data.atname);
+                                        show_ccd5_data (info.ccd_data[ccd_num_i-1]);
+                                        if (info.ccd_file[ccd_num_i])
+                                        {
+                                            show_file (ccd_5_File, info.ccd_file[ccd_num_i]);
+                                        }else{
+                                            ccd_5_File.html('');
+                                        }
+                                    }
+                                }//循环显示对应数目的ccd配置表单 结束
                             }
-                        }/*在页面显示ccd-No1的配置数据 结束*/
+                        }/*在页面显示ccd的配置数据 结束*/
 
                         /*在页面显示滤光片的配置数据*/
                         if (info.filter_data) //若接收到滤光片配置数据
@@ -630,7 +695,7 @@ $(function () {
                 $(this).blur();
                 if ( $(this).data('err') == 1 )
                 {
-                    gimbal_errMsg += $(this).data('info') + '格式错误!<br>';
+                    gimbal_errMsg += $(this).data('info') + '<br>';
                 }
             }
         );
@@ -756,7 +821,7 @@ $(function () {
         }
     }/*gimbal_select_valid() 结束*/
 
-    /*各text输入框的blur事件*/
+    /*各text输入框的blur事件
     gimbalId.blur(function () {//转台id
         var that = $(this);
         var v = $.trim( that.val() );
@@ -769,9 +834,9 @@ $(function () {
 			layer.tips('id格式错误, 正确格式:03000!', that, {tipsMore: true});
         }
         that.data('err', err);
-    })//转台id blur结束
+    })//转台id blur结束 */
 
-    gimbalName.blur(function () {//望远镜名
+    /*gimbalName.blur(function () {//望远镜名
         var that = $(this);
         var v = $.trim(that.val());
 		var patn = /^\d(\d|\.)*m望远镜+$/;
@@ -784,7 +849,7 @@ $(function () {
 			layer.tips('望远镜名格式错误!', that, {tipsMore: true});
 		}		
 		that.data('err', err);
-    });//望远镜名 blur结束
+    });*///望远镜名 blur结束
 
     gimbalAddress.blur(function () {//验证观测站
         var that = $(this);
@@ -794,8 +859,8 @@ $(function () {
 		if ( v.length < 2 )
 		{
             err = 1;
-            that.data('info', '隶属观测站');
-			layer.tips('隶属观测站格式错误!', that, {tipsMore: true});
+            that.data('info', '隶属观测站不能为空!');
+			layer.tips('隶属观测站不能为空!', that, {tipsMore: true});
 		}		
 		that.data('err', err);
     });//验证观测站 结束
@@ -808,8 +873,8 @@ $(function () {
 		if ( !$.isNumeric(v) || v > 180 || v < -180 )
 		{
             err = 1;
-            that.data('info', '经度');
-			layer.tips('经度格式错误!', that, {tipsMore: true});
+            that.data('info', '经度输入有误!');
+			layer.tips('经度输入有误!', that, {tipsMore: true});
 		}		
 		that.data('err', err);
     });//验证经度 结束
@@ -822,8 +887,8 @@ $(function () {
 		if ( !$.isNumeric(v) || v > 90 || v < -90 )
 		{
             err = 1;
-            that.data('info', '纬度');
-			layer.tips('纬度格式错误!', that, {tipsMore: true});
+            that.data('info', '纬度输入有误!');
+			layer.tips('纬度输入有误!', that, {tipsMore: true});
 		}		
 		that.data('err', err);
     });//验证纬度 结束
@@ -836,8 +901,8 @@ $(function () {
 		if ( !$.isNumeric(v) || v > 6000 || v < -1000 )
 		{
             err = 1;
-            that.data('info', '海拔');
-			layer.tips('海拔格式错误!', that, {tipsMore: true});
+            that.data('info', '海拔输入有误!');
+			layer.tips('海拔输入有误!', that, {tipsMore: true});
 		}		
 		that.data('err', err);
     });//验证海拔 结束
@@ -850,8 +915,8 @@ $(function () {
 		if ( !$.isNumeric(v) )
 		{
             err = 1;
-            that.data('info', '口径');
-			layer.tips('口径格式错误!', that, {tipsMore: true});
+            that.data('info', '口径输入有误!');
+			layer.tips('口径输入有误!', that, {tipsMore: true});
 		}		
 		that.data('err', err);
     });//验证口径 结束
@@ -865,8 +930,8 @@ $(function () {
 		if ( !patn.test(v) )
 		{
             err = 1;
-            that.data('info', '焦距');
-			layer.tips('焦距格式错误!', that, {tipsMore: true});
+            that.data('info', '焦距输入有误!');
+			layer.tips('焦距输入有误!', that, {tipsMore: true});
 		}		
         that.data('err', err);
 
@@ -880,8 +945,8 @@ $(function () {
         if ( !$.isNumeric(v) || v > 30 || v < 0 )
 		{
             err = 1;
-            that.data('info', '轴1最大速度');
-			layer.tips('轴1最大速度错误!', that, {tipsMore: true});
+            that.data('info', '轴1最大速度输入有误!');
+			layer.tips('轴1最大速度输入有误!', that, {tipsMore: true});
 		}		
         that.data('err', err);
     }); //验证 轴1最大速度 结束
@@ -894,8 +959,8 @@ $(function () {
         if ( !$.isNumeric(v) || v > 30 || v < 0 )
 		{
             err = 1;
-            that.data('info', '轴2最大速度');
-			layer.tips('轴2最大速度错误!', that, {tipsMore: true});
+            that.data('info', '轴2最大速度输入有误!');
+			layer.tips('轴2最大速度输入有误!', that, {tipsMore: true});
 		}		
         that.data('err', err);
     }); //验证 轴2最大速度 结束
@@ -908,8 +973,8 @@ $(function () {
         if ( !$.isNumeric(v) || v > 30 || v < 0 )
         {
             err = 1;
-            that.data('info', '轴3最大速度');
-            layer.tips('轴3最大速度错误!', that, {tipsMore: true});
+            that.data('info', '轴3最大速度输入有误!');
+            layer.tips('轴3最大速度输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 轴3最大速度 结束
@@ -922,8 +987,8 @@ $(function () {
         if ( !$.isNumeric(v) || v > 5 || v < 0 )
         {
             err = 1;
-            that.data('info', '轴1最大加速度');
-            layer.tips('轴1最大加速度错误!', that, {tipsMore: true});
+            that.data('info', '轴1最大加速度输入有误!');
+            layer.tips('轴1最大加速度输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 轴1最大加速度 结束
@@ -936,8 +1001,8 @@ $(function () {
         if ( !$.isNumeric(v) || v > 5 || v < 0 )
         {
             err = 1;
-            that.data('info', '轴2最大加速度');
-            layer.tips('轴2最大加速度错误!', that, {tipsMore: true});
+            that.data('info', '轴2最大加速度输入有误!');
+            layer.tips('轴2最大加速度输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 轴2最大加速度 结束
@@ -950,8 +1015,8 @@ $(function () {
         if ( !$.isNumeric(v) || v > 5 || v < 0 )
         {
             err = 1;
-            that.data('info', '轴3最大加速度');
-            layer.tips('轴3最大加速度错误!', that, {tipsMore: true});
+            that.data('info', '轴3最大加速度输入有误!');
+            layer.tips('轴3最大加速度输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 轴3最大加速度 结束
@@ -964,8 +1029,8 @@ $(function () {
         if ( !$.isNumeric(v) || v > 360 || v < 0 )
         {
             err = 1;
-            that.data('info', '轴1复位位置');
-            layer.tips('轴1复位位置错误!', that, {tipsMore: true});
+            that.data('info', '轴1复位位置输入有误!');
+            layer.tips('轴1复位位置输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 轴1复位位置 结束
@@ -978,8 +1043,8 @@ $(function () {
         if ( !$.isNumeric(v) || v > 360 || v < 0 )
         {
             err = 1;
-            that.data('info', '轴2复位位置');
-            layer.tips('轴2复位位置错误!', that, {tipsMore: true});
+            that.data('info', '轴2复位位置输入有误!');
+            layer.tips('轴2复位位置输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 轴2复位位置 结束
@@ -992,8 +1057,8 @@ $(function () {
         if ( !$.isNumeric(v) || v > 360 || v < 0 )
         {
             err = 1;
-            that.data('info', '轴3复位位置');
-            layer.tips('轴3复位位置错误!', that, {tipsMore: true});
+            that.data('info', '轴3复位位置输入有误!');
+            layer.tips('轴3复位位置输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 轴3复位位置 结束
@@ -1006,8 +1071,8 @@ $(function () {
         if ( !$.isNumeric(v) || v < 10 || v > 360)
         {
             err = 1;
-            that.data('info', '俯仰最低值');
-            layer.tips('俯仰最低值错误!', that, {tipsMore: true});
+            that.data('info', '俯仰最低值输入有误!');
+            layer.tips('俯仰最低值输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 俯仰最低值 结束
@@ -1021,8 +1086,8 @@ $(function () {
         if ( !patn.test(v) || v <= 0 )
         {
             err = 1;
-            that.data('info', '温度传感器数目');
-            layer.tips('温度传感器数目错误!', that, {tipsMore: true});
+            that.data('info', '温度传感器数目输入有误!');
+            layer.tips('温度传感器数目输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 温度传感器数目 结束
@@ -1036,8 +1101,8 @@ $(function () {
         if ( !patn.test(v) || v <= 0 )
         {
             err = 1;
-            that.data('info', '湿度传感器数目');
-            layer.tips('湿度传感器数目错误!', that, {tipsMore: true});
+            that.data('info', '湿度传感器数目输入有误!');
+            layer.tips('湿度传感器数目输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 湿度传感器数目 结束
@@ -1051,8 +1116,8 @@ $(function () {
         if ( !patn.test(v) || v <= 0 )
         {
             err = 1;
-            that.data('info', '属性版本号');
-            layer.tips('属性版本号错误!', that, {tipsMore: true});
+            that.data('info', '属性版本号输入有误!');
+            layer.tips('属性版本号输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 属性版本号 结束
@@ -1118,8 +1183,18 @@ $(function () {
     }/*显示转台的配置数据 结束*/
 
     /*ccd-No1 表单元素获取*/
-    var ccdBtn_1 = $('#ccdBtn-1'); //提交按钮
-    var ccd_1Form = $('#ccd-1'); //表单
+    /*如下：其他所有的ccd表单*/
+    var ccdBtn_2 = $('#ccdBtn-2'); //ccd-No2提交按钮
+    var ccd_2Form = $('#ccd-2'); //ccd-No2表单
+    var ccdBtn_3 = $('#ccdBtn-3'); //ccd-No3提交按钮
+    var ccd_3Form = $('#ccd-3'); //ccd-No3表单
+    var ccdBtn_4 = $('#ccdBtn-4'); //ccd-No4提交按钮
+    var ccd_4Form = $('#ccd-4'); //ccd-No4表单
+    var ccdBtn_5 = $('#ccdBtn-5'); //ccd-No5提交按钮
+    var ccd_5Form = $('#ccd-5'); //ccd-No5表单
+    /*以上：其他所有的ccd表单*/
+    var ccdBtn_1 = $('#ccdBtn-1'); //ccd-No1提交按钮
+    var ccd_1Form = $('#ccd-1'); //ccd-No1表单
     var ccdFile = $('#ccdFile'); //ccd相关文件区
     var ccdIp = $('#ccdIp'); // ccd ip
     var ccdId = $('#ccdId'); // ccd id
@@ -1192,14 +1267,23 @@ $(function () {
     ccdBtn_1.click(function () {
         //检查望远镜下拉选择框 是否选择了某望远镜
         var atId = atNo.val();
+        //检查是否选择了ccd的数量
+        var ccd_Num = ccd_num.val();
+
         if ( atId == 0)
         {//未选择某个望远镜
             layer.alert('请选择您要配置的望远镜!', {shade:false, closeBtn:0});return;
         }
 
+        if ( ccd_Num == 0)
+        {//未选择ccd的数量
+            layer.alert('请选择您ccd的数量!', {shade:false, closeBtn:0});return;
+        }
+
         var ccd_1_Data = new FormData(ccd_1Form[0]);
         ccd_1_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
-        ccd_1_Data.append('ccdno', '1'); //将此望远镜的序号 加入表单数据中
+        ccd_1_Data.append('ccdno', '1'); //将此ccd的序号 加入表单数据中
+        ccd_1_Data.append('ccd_num', ccd_Num); //将ccd的数量 加入表单数据中
         
         //验证文本框类型、下拉框、复选框、单选框配置项 是否都已选择 
          if ( !ccd_select_valid (ccd_1_Data) )
@@ -1247,17 +1331,17 @@ $(function () {
     });/*ccd 提交按钮 点击事件 结束*/
 
     /*显示ccd-No1配置数据*/
-    function show_ccd_data (data)
+    function show_ccd1_data (data)
     {
         ccdIp.val(data.ip);
         ccdId.val(data.ccdid);
         ccdName.val(data.name);
-        ccdTeleId.html(data.atname);
+        //ccdTeleId.html(data.atname);
         ccdXpixel.val(data.xpixel);
         ccdYpixel.val(data.ypixel);
         ccdXpixelSize.val(data.xpixelsize);
         ccdYpixelSize.val(data.ypixelsize);
-         ccdSensorName.val(data.sensorname);
+        ccdSensorName.val(data.sensorname);
         data.imagebits === undefined ? ccdImageBits.val('0') : ccdImageBits.val(data.imagebits);
         data.coolermode === undefined ? ccdCoolerMode.val('0') : ccdCoolerMode.val(data.coolermode);
         ccdLowCoolerT.val(data.lowcoolert);
@@ -1369,7 +1453,7 @@ $(function () {
                 $(this).blur();
                 if ( $(this).data('err') == 1 )
                 {
-                    ccd_errMsg += $(this).data('info') + '格式错误!<br>';
+                    ccd_errMsg += $(this).data('info') + '<br>';
                 }
             }
         );
@@ -1576,13 +1660,14 @@ $(function () {
     ccdId.blur(function () {//验证 ccdId
         var that = $(this);
         var v = $.trim(that.val());
+        var patn = /^[0-9]{5}$/;
         var err = 0;
 
-        if ( !$.isNumeric(v) || v.length != 5 )
+        if ( !patn.test(v) )
         {
             err = 1;
-            that.data('info', 'ccd Id');
-            layer.tips('ccd Id格式错误!', that, {tipsMore: true});
+            that.data('info', 'ccd Id应为5位数字!');
+            layer.tips('ccd Id应为5位数字!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 ccdId 结束
@@ -1595,8 +1680,8 @@ $(function () {
         if ( v.length < 2 )
         {
             err = 1;
-            that.data('info', 'ccd 名称');
-            layer.tips('ccd 名称格式错误!', that, {tipsMore: true});
+            that.data('info', 'ccd名称不能为空!');
+            layer.tips('ccd名称不能为空!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 ccd名称 结束
@@ -1610,8 +1695,8 @@ $(function () {
         if ( !patn.test(v) || v < 1024)
         {
             err = 1;
-            that.data('info', 'x像素');
-            layer.tips('x像素格式错误!', that, {tipsMore: true});
+            that.data('info', 'x像素输入有误!');
+            layer.tips('x像素格式输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 x像素 结束
@@ -1625,8 +1710,8 @@ $(function () {
         if ( !patn.test(v) || v < 1024)
         {
             err = 1;
-            that.data('info', 'y像素');
-            layer.tips('y像素格式错误!', that, {tipsMore: true});
+            that.data('info', 'y像素输入有误!');
+            layer.tips('y像素格式输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 y像素 结束
@@ -1639,8 +1724,8 @@ $(function () {
         if ( !$.isNumeric(v) || v <= 0)
         {
             err = 1;
-            that.data('info', 'x像元');
-            layer.tips('x像元格式错误!', that, {tipsMore: true});
+            that.data('info', 'x像元输入有误!');
+            layer.tips('x像元格式输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 x像元 结束
@@ -1653,8 +1738,8 @@ $(function () {
         if ( !$.isNumeric(v) || v <= 0)
         {
             err = 1;
-            that.data('info', 'y像元');
-            layer.tips('y像元格式错误!', that, {tipsMore: true});
+            that.data('info', 'y像元输入有误!');
+            layer.tips('y像元格式输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 y像元 结束
@@ -1667,8 +1752,8 @@ $(function () {
         if ( v.length < 3)
         {
             err = 1;
-            that.data('info', '传感器名称');
-            layer.tips('传感器名称格式错误!', that, {tipsMore: true});
+            that.data('info', '传感器名称输入有误!');
+            layer.tips('传感器名称输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 传感器名称 结束
@@ -1681,8 +1766,8 @@ $(function () {
         if ( !$.isNumeric(v) )
         {
             err = 1;
-            that.data('info', '最低制冷温度');
-            layer.tips('最低制冷温度格式错误!', that, {tipsMore: true});
+            that.data('info', '最低制冷温度输入有误!');
+            layer.tips('最低制冷温度输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 最低制冷温度 结束
@@ -1695,8 +1780,8 @@ $(function () {
         if ( !$.isNumeric(v) || v <= 0)
         {
             err = 1;
-            that.data('info', '最大曝光时间');
-            layer.tips('最大曝光时间格式错误!', that, {tipsMore: true});
+            that.data('info', '最大曝光时间输入有误!');
+            layer.tips('最大曝光时间输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 最大曝光时间 结束
@@ -1709,8 +1794,8 @@ $(function () {
         if ( !$.isNumeric(v) || v <= 0)
         {
             err = 1;
-            that.data('info', '最小曝光时间');
-            layer.tips('最小曝光时间格式错误!', that, {tipsMore: true});
+            that.data('info', '最小曝光时间输入有误!');
+            layer.tips('最小曝光时间输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 最小曝光时间 结束
@@ -1724,8 +1809,8 @@ $(function () {
         if ( !patn.test(v) || v < 1)
         {
             err = 1;
-            that.data('info', '曝光时间分辨率');
-            layer.tips('曝光时间分辨率格式错误!', that, {tipsMore: true});
+            that.data('info', '曝光时间分辨率输入有误!');
+            layer.tips('曝光时间分辨率输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 曝光时间分辨率 结束
@@ -1739,8 +1824,8 @@ $(function () {
         if ( !patn.test(v) || v < 1)
         {
             err = 1;
-            that.data('info', '满阱电荷');
-            layer.tips('满阱电荷格式错误!', that, {tipsMore: true});
+            that.data('info', '满阱电荷输入有误!');
+            layer.tips('满阱电荷输入有误!!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 满阱电荷 结束
@@ -1758,8 +1843,8 @@ $(function () {
         if ( !patn.test(v) )
         {
             err = 1;
-            that.data('info', '最大EM');
-            layer.tips('最大EM格式错误!', that, {tipsMore: true});
+            that.data('info', '最大EM输入有误!');
+            layer.tips('最大EM格式输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 最大EM 结束
@@ -1774,8 +1859,8 @@ $(function () {
         if ( !patn.test(v) || v >= parseInt(ccd_EmMaxVal) )
         {
             err = 1;
-            that.data('info', '最小EM');
-            layer.tips('最小EM格式错误!', that, {tipsMore: true});
+            that.data('info', '最小EM输入有误!');
+            layer.tips('最小EM格式输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 最小EM 结束
@@ -1788,8 +1873,8 @@ $(function () {
         if ( v.length < 1 )
         {
             err = 1;
-            that.data('info', '属性版本号');
-            layer.tips('属性版本号格式错误!', that, {tipsMore: true});
+            that.data('info', '属性版本号输入有误!');
+            layer.tips('属性版本号输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 属性版本号 结束
@@ -1973,13 +2058,13 @@ $(function () {
 
     /*显示滤光片配置数据 */
     function show_filter_data (data)
-    {
+    { 
         filterIp.val(data.ip);
         filterId.val(data.filterid);
         filterName.val(data.name);
         filterTeleId.html(data.atname);
         filterNum.val(data.numberoffilter);
-        data.numberoffilter !== '' && filterNum.blur(); //如果插槽数目有值，执行插槽数目input框的blur事件
+        data.numberoffilter !== undefined && filterNum.blur(); //如果插槽数目有值，执行插槽数目input框的blur事件
         /*将滤光片类型的值赋予：filter_type*/
         if (data.filtersystem)
         {
@@ -2018,7 +2103,7 @@ $(function () {
                 $(this).blur();
                 if ( $(this).data('err') == 1 )
                 {
-                    filter_errMsg += $(this).data('info') + '格式错误!<br>';
+                    filter_errMsg += $(this).data('info') + '<br>';
                 }
             }
         );
@@ -2073,8 +2158,8 @@ $(function () {
         if ( !$.isNumeric(v) || v.length != 5 )
         {
             err = 1;
-            that.data('info', '滤光片id');
-            layer.tips('滤光片id格式错误!', that, {tipsMore: true});
+            that.data('info', '滤光片id应为5位数字!');
+            layer.tips('滤光片id应为5位数字!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 滤光片id 结束
@@ -2084,11 +2169,11 @@ $(function () {
         var v = $.trim(that.val());
         var err = 0;
 
-        if ( v.length < 3 )
+        if ( v.length < 2 )
         {
             err = 1;
-            that.data('info', '滤光片名称');
-            layer.tips('滤光片名称格式错误!', that, {tipsMore: true});
+            that.data('info', '转轮名称不能为空!');
+            layer.tips('转轮名称不能为空!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 滤光片id 结束
@@ -2102,8 +2187,8 @@ $(function () {
         if ( !patn.test(v) )
         {
             err = 1;
-            that.data('info', '插槽大小');
-            layer.tips('插槽大小格式错误!', that, {tipsMore: true});
+            that.data('info', '插槽大小输入有误!');
+            layer.tips('插槽大小输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 插槽大小 结束
@@ -2117,8 +2202,8 @@ $(function () {
         if ( !v )//v值为空
         {
             err = 1;
-            that.data('info', '滤光片名称');
-            layer.tips('滤光片名称格式错误!', that, {tipsMore: true});
+            that.data('info', '各滤光片名称输入有误!');
+            layer.tips('各滤光片名称输入有误!', that, {tipsMore: true});
         }else{//v值不为空
 
             if ( v.indexOf('/') === -1 ) //字符串中无'/', 则表明应该有一个插槽
@@ -2126,7 +2211,7 @@ $(function () {
                 if ( filterNum_v  != 1 )
                 {
                     err = 1;
-                    that.data('info', '滤光片名称');
+                    that.data('info', '滤光片名称设置与插槽数目不匹配!');
                     layer.tips('滤光片名称设置与插槽数目不匹配!', that, {tipsMore: true});
                 }
             }else{//字符串中有'/', 则表明应该有大于一个插槽
@@ -2134,7 +2219,7 @@ $(function () {
                 if ( v_num != filterNum_v )
                 {
                     err = 1;
-                    that.data('info', '滤光片名称');
+                    that.data('info', '滤光片名称设置与插槽数目不匹配!');
                     layer.tips('滤光片名称设置与插槽数目不匹配!', that, {tipsMore: true});
                 }
             } 
@@ -2152,8 +2237,8 @@ $(function () {
         if ( !patn.test(v) )
         {
             err = 1;
-            that.data('info', '焦距偏差值');
-            layer.tips('焦距偏差值格式错误!', that, {tipsMore: true});
+            that.data('info', '焦距偏差值输入有误!');
+            layer.tips('焦距偏差值输入有误!', that, {tipsMore: true});
         }else{
             v = v.replace('[');
             v = v.replace(']');
@@ -2162,7 +2247,7 @@ $(function () {
             if ( v_num != filterNum_v )
             {
                 err = 1;
-                that.data('info', '焦距偏差值');
+                that.data('info', '焦距偏差值与插槽数目不匹配!');
                 layer.tips('焦距偏差值与插槽数目不匹配!', that, {tipsMore: true});
             }
         }
@@ -2178,8 +2263,8 @@ $(function () {
         if ( v.length < 1 )
         {
             err = 1;
-            that.data('info', '版本号');
-            layer.tips('版本号格式错误!', that, {tipsMore: true});
+            that.data('info', '属性版本号输入有误!');
+            layer.tips('属性版本号输入有误!', that, {tipsMore: true});
         }
         that.data('err', err);
     });//验证 版本号 结束
@@ -2307,7 +2392,7 @@ $(function () {
                 $(this).blur();
                 if ( $(this).data('err') == 1 )
                 {
-                    sDome_errMsg += $(this).data('info') + '格式错误!<br>';
+                    sDome_errMsg += $(this).data('info') + '<br>';
                 }
             }
         );
@@ -2369,27 +2454,14 @@ $(function () {
     sDomeId.blur(function () {//验证 随动圆顶id
         var that = $(this);
         var v = $.trim(that.val());
+        var patn = /^[0-9]{5}$/;
         var err = 0;
 
-        if ( !$.isNumeric(v) || v.length != 5 )
+        if ( !$.isNumeric(v) )
         {
             err = 1;
-            that.data('info', '随动圆顶id');
-            layer.tips('随动圆顶id格式错误!', that, {tipsMore: true});
-        }		
-        that.data('err', err);
-    });//验证 随动圆顶id 结束
-
-    sDomeId.blur(function () {//验证 随动圆顶id
-        var that = $(this);
-        var v = $.trim(that.val());
-        var err = 0;
-
-        if ( !$.isNumeric(v) || v.length != 5 )
-        {
-            err = 1;
-            that.data('info', '随动圆顶id');
-            layer.tips('随动圆顶id格式错误!', that, {tipsMore: true});
+            that.data('info', '随动圆顶id应为5位数字');
+            layer.tips('随动圆顶id应为5位数字!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 随动圆顶id 结束
@@ -2399,11 +2471,11 @@ $(function () {
         var v = $.trim(that.val());
         var err = 0;
 
-        if ( v.length < 10 )
+        if ( v.length < 2 )
         {
             err = 1;
-            that.data('info', '随动圆顶名称');
-            layer.tips('随动圆顶名称须10位字符!', that, {tipsMore: true});
+            that.data('info', '随动圆顶名称不能为空!');
+            layer.tips('随动圆顶名称不能为空!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 随动圆顶名称 结束
@@ -2416,8 +2488,8 @@ $(function () {
         if ( !$.isNumeric(v) || v <= 0 )
         {
             err = 1;
-            that.data('info', '最大转动速度');
-            layer.tips('最大转动速度格式错误!', that, {tipsMore: true});
+            that.data('info', '最大转动速度输入有误!');
+            layer.tips('最大转动速度输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 随动圆顶id 结束
@@ -2430,8 +2502,8 @@ $(function () {
         if ( !$.isNumeric(v) || v <= 0 )
         {
             err = 1;
-            that.data('info', '尺寸大小');
-            layer.tips('尺寸大小格式错误!', that, {tipsMore: true});
+            that.data('info', '尺寸大小输入有误!');
+            layer.tips('尺寸大小输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 尺寸大小 结束
@@ -2444,8 +2516,8 @@ $(function () {
         if ( v.length < 1 )
         {
             err = 1;
-            that.data('info', '版本号');
-            layer.tips('版本号格式错误!', that, {tipsMore: true});
+            that.data('info', '属性版本号输入有误!');
+            layer.tips('属性版本号输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 版本号 结束
@@ -2551,7 +2623,7 @@ $(function () {
                 $(this).blur();
                 if ( $(this).data('err') == 1 )
                 {
-                    oDome_errMsg += $(this).data('info') + '格式错误!<br>';
+                    oDome_errMsg += $(this).data('info') + '<br>';
                 }
             }
         );
@@ -2583,13 +2655,14 @@ $(function () {
     oDomeId.blur(function () {//验证 全开圆顶id
         var that = $(this);
         var v = $.trim(that.val());
+        var patn = /^[0-9]{5}$/;
         var err = 0;
 
-        if ( !$.isNumeric(v) || v.length != 5 )
+        if ( !patn.test(v) )
         {
             err = 1;
-            that.data('info', '全开圆顶id');
-            layer.tips('全开圆顶id格式错误!', that, {tipsMore: true});
+            that.data('info', '全开圆顶id应为5位数字!');
+            layer.tips('全开圆顶id应为5位数字!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 全开圆顶id 结束
@@ -2599,11 +2672,11 @@ $(function () {
         var v = $.trim(that.val());
         var err = 0;
 
-        if ( v.length < 10 )
+        if ( v.length < 2 )
         {
             err = 1;
-            that.data('info', '全开圆顶名称');
-            layer.tips('全开圆顶名称须10位字符!', that, {tipsMore: true});
+            that.data('info', '全开圆顶名称不能为空!');
+            layer.tips('全开圆顶名称不能为空!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 全开圆顶名称 结束
@@ -2616,8 +2689,8 @@ $(function () {
         if ( !$.isNumeric(v) || v <= 0 )
         {
             err = 1;
-            that.data('info', '全开圆顶尺寸');
-            layer.tips('全开圆顶尺寸格式错误!', that, {tipsMore: true});
+            that.data('info', '全开圆顶尺寸输入有误!');
+            layer.tips('全开圆顶尺寸输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 全开圆顶尺寸 结束
@@ -2630,8 +2703,8 @@ $(function () {
         if ( v.length < 1 )
         {
             err = 1;
-            that.data('info', '版本号');
-            layer.tips('版本号格式错误!', that, {tipsMore: true});
+            that.data('info', '属性版本号输入有误!');
+            layer.tips('属性版本号输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 版本号 结束
@@ -2759,7 +2832,7 @@ $(function () {
                 $(this).blur();
                 if ( $(this).data('err') == 1 )
                 {
-                    focus_errMsg += $(this).data('info') + '格式错误!<br>';
+                    focus_errMsg += $(this).data('info') + '<br>';
                 }
             }
         );
@@ -2816,13 +2889,14 @@ $(function () {
     focusId.blur(function () {//验证 调焦器id
         var that = $(this);
         var v = $.trim(that.val());
+        var patn = /^[0-9]{5}$/;
         var err = 0;
 
-        if ( !$.isNumeric(v) || v.length != 5 )
+        if ( !patn.test(v) )
         {
             err = 1;
-            that.data('info', '调焦器id');
-            layer.tips('调焦器id须5位数字!', that, {tipsMore: true});
+            that.data('info', '调焦器id应为5位数字!');
+            layer.tips('调焦器id应为5位数字!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 调焦器id 结束
@@ -2835,8 +2909,8 @@ $(function () {
         if ( v.length < 2 )
         {
             err = 1;
-            that.data('info', '调焦器名称');
-            layer.tips('调焦器名称格式错误!', that, {tipsMore: true});
+            that.data('info', '调焦器名称不能为空!');
+            layer.tips('调焦器名称不能为空!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 调焦器id 结束
@@ -2849,8 +2923,8 @@ $(function () {
         if ( !$.isNumeric(v) || v <= 0 )
         {
             err = 1;
-            that.data('info', '调焦器最大值');
-            layer.tips('调焦器最大值输入错误!', that, {tipsMore: true});
+            that.data('info', '调焦器最大值输入有误!');
+            layer.tips('调焦器最大值输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 调焦器最大值 结束
@@ -2863,8 +2937,8 @@ $(function () {
         if ( !$.isNumeric(v) || v <= 0 )
         {
             err = 1;
-            that.data('info', '调焦器最小值');
-            layer.tips('调焦器最小值输入错误!', that, {tipsMore: true});
+            that.data('info', '调焦器最小值输入有误!');
+            layer.tips('调焦器最小值输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 调焦器最小值 结束
@@ -2877,7 +2951,7 @@ $(function () {
         if ( !$.isNumeric(v) || v <= 0 )
         {
             err = 1;
-            that.data('info', '调焦器分辨率');
+            that.data('info', '调焦器分辨率输入有误!');
             layer.tips('调焦器分辨率输入错误!', that, {tipsMore: true});
         }		
         that.data('err', err);
@@ -2891,7 +2965,7 @@ $(function () {
         if ( !$.isNumeric(v) || v <= 0 )
         {
             err = 1;
-            that.data('info', '调焦器最大速度');
+            that.data('info', '调焦器最大速度输入有误!');
             layer.tips('调焦器最大速度输入错误!', that, {tipsMore: true});
         }		
         that.data('err', err);
@@ -2905,7 +2979,7 @@ $(function () {
         if ( v.length < 1 )
         {
             err = 1;
-            that.data('info', '调焦器版本号');
+            that.data('info', '调焦器版本号输入有误!');
             layer.tips('调焦器版本号输入错误!', that, {tipsMore: true});
         }		
         that.data('err', err);
@@ -3024,7 +3098,7 @@ $(function () {
                 $(this).blur();
                 if ( $(this).data('err') == 1 )
                 {
-                    guide_errMsg += $(this).data('info') + '格式错误!<br>';
+                    guide_errMsg += $(this).data('info') + '<br>';
                 }
             }
         );
@@ -3071,13 +3145,14 @@ $(function () {
     guideScopeId.blur(function () {//验证 导星镜id
         var that = $(this);
         var v = $.trim(that.val());
+        var patn = /^[0-9]{5}$/;
         var err = 0;
 
-        if ( !$.isNumeric(v) || v.length != 5 )
+        if ( !patn.test(v) )
         {
             err = 1;
-            that.data('info', '导星镜id');
-            layer.tips('导星镜id格式错误!', that, {tipsMore: true});
+            that.data('info', '导星镜id应为5位数字!');
+            layer.tips('导星镜id应为5位数字!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 导星镜id 结束
@@ -3087,11 +3162,11 @@ $(function () {
         var v = $.trim(that.val());
         var err = 0;
 
-        if ( v.length < 3 )
+        if ( v.length < 2 )
         {
             err = 1;
-            that.data('info', '导星镜名称');
-            layer.tips('导星镜名称格式错误!', that, {tipsMore: true});
+            that.data('info', '导星镜名称不能为空!');
+            layer.tips('导星镜名称不能为空!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 导星镜id 结束
@@ -3104,8 +3179,8 @@ $(function () {
         if ( !$.isNumeric(v) || v <= 0 )
         {
             err = 1;
-            that.data('info', '导星镜焦距');
-            layer.tips('导星镜焦距格式错误!', that, {tipsMore: true});
+            that.data('info', '导星镜焦距输入有误!');
+            layer.tips('导星镜焦距格式输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 导星镜焦距 结束
@@ -3118,8 +3193,8 @@ $(function () {
         if ( !$.isNumeric(v) || v <= 0 )
         {
             err = 1;
-            that.data('info', '导星镜口径');
-            layer.tips('导星镜口径格式错误!', that, {tipsMore: true});
+            that.data('info', '导星镜口径输入有误!');
+            layer.tips('导星镜口径输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 导星镜口径 结束
@@ -3132,8 +3207,8 @@ $(function () {
         if ( v.length < 1 )
         {
             err = 1;
-            that.data('info', '版本号');
-            layer.tips('版本号格式错误!', that, {tipsMore: true});
+            that.data('info', '属性版本号输入有误!');
+            layer.tips('属性版本号输入有误!', that, {tipsMore: true});
         }		
         that.data('err', err);
     });//验证 版本号 结束

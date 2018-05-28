@@ -66,7 +66,7 @@
 		</h3>
 		<br>
 		<div id='allOptions'><!--所有配置项-->
-			<form id='gimbal' class="form displayNo" enctype='multipart/form-data'><!--转台配置项-->
+			<form id='gimbal' class="form" enctype='multipart/form-data'><!--转台配置项-->
 			<h4 class='center'>转台固定属性</h4>
 			<hr>
 				<table class="center_mrg">
@@ -74,7 +74,7 @@
 						<td>转台ip:</td>
 						<td><input type='text' id='gimbalIp' name='ip' placeholder='ip地址'></td>
 						<td>望远镜id:</td>
-						<td><input type='text' id='gimbalId' name='atid' placeholder='0X000'></td>
+						<td><input type='text' id='gimbalId' name='atid' readonly='readonly'></td>
 						<td>望远镜名称:</td>
 						<td><input type='text' id='gimbalName' name='atname' placeholder='1.26m望远镜'></td>
 					</tr>
@@ -387,7 +387,7 @@
 				<input id='gimbalBtn' type='button' value="提交转台配置">
 			</form><!--转台配置项 结束-->
 			<!--如下为ccd配置项-->
-			<form id='ccd-1' class="form displayNo" enctype='multipart/form-data'><!--ccd-No1配置项-->
+			<form id='ccd-1' class="form" enctype='multipart/form-data'><!--ccd-No1配置项-->
 			<br>
 			<h4 class='center'>CCD-No1固定属性</h4>
 			<hr>
@@ -396,7 +396,7 @@
 						<td>ccd之ip:</td>
 						<td><input type='text' id='ccdIp' name='ip' placeholder='ip地址'></td>
 						<td>ccd之id:</td>
-						<td><input type='text' id='ccdId' name='ccdid'></td>
+						<td><input type='text' id='ccdId' name='ccdid' placeholder='格式:00006'></td>
 						<td>ccd名称:</td>
 						<td><input type='text' id='ccdName' name='name' placeholder='Andor DZ936/PI1300'></td>
 					</tr>
@@ -698,7 +698,7 @@
 				<br>
 			</form><!--ccd-No1配置项 结束-->
 
-			<form id='filter' class="form displayNo" enctype='multipart/form-data'><!--滤光片配置项-->
+			<form id='filter' class="form" enctype='multipart/form-data'><!--滤光片配置项-->
 			<br>
 			<h4 class='center'>滤光片固定属性</h4>
 			<hr>
@@ -707,7 +707,7 @@
 						<td>滤光片ip:</td>
 						<td><input type='text' id='filterIp' name='ip' placeholder='ip地址'></td>
 						<td>滤光片id:</td>
-						<td><input type='text' id='filterId' name='filterid'></td>
+						<td><input type='text' id='filterId' name='filterid' placeholder='格式:00006'></td>
 						<td>名称:</td>
 						<td><input type='text' id='filterName' name='name'></td>
 					</tr>
@@ -782,7 +782,7 @@
 				<input id='filterBtn' type='button' value="提交滤光片配置">
 			</form><!-- 滤光片固定属性配置项 结束-->
 
-			<form id='sDome' class="form displayNo" enctype='multipart/form-data'><!--随动圆顶配置项-->
+			<form id='sDome' class="form" enctype='multipart/form-data'><!--随动圆顶配置项-->
 			<br>
 			<h4 class='center'>随动圆顶固定属性</h4>
 			<hr>
@@ -791,7 +791,7 @@
 						<td>随动圆顶ip:</td>
 						<td><input type='text' id='sDomeIp' name='ip' placeholder='ip地址'></td>
 						<td>随动圆顶id:</td>
-						<td><input type='text' id='sDomeId' name='sdomeid'></td>
+						<td><input type='text' id='sDomeId' name='sdomeid' placeholder='格式:00006'></td>
 						<td>随动圆顶名称:</td>
 						<td><input type='text' id='sDomeName' name='name'></td>
 					</tr>
@@ -883,7 +883,7 @@
 				<input id='sDomeBtn' type='button' value="提交随动圆顶配置">
 			</form><!-- 随动圆顶固定属性配置项 结束-->
 
-			<form id='oDome' class="form displayNo" enctype='multipart/form-data'><!--全开圆顶配置项-->
+			<form id='oDome' class="form" enctype='multipart/form-data'><!--全开圆顶配置项-->
 			<br>
 			<h4 class='center' id='oDome_h'>全开圆顶固定属性</h4>
 			<hr>
@@ -892,7 +892,7 @@
 						<td>全开圆顶ip:</td>
 						<td><input type='text' id='oDomeIp' name='ip' placeholder='ip地址'></td>
 						<td>全开圆顶id:</td>
-						<td><input type='text' id='oDomeId' name='odomeid'></td>
+						<td><input type='text' id='oDomeId' name='odomeid' placeholder='格式:00006'></td>
 						<td>全开圆顶名称:</td>
 						<td><input type='text' id='oDomeName' name='name'></td>
 					</tr>
@@ -940,7 +940,7 @@
 				<input id='oDomeBtn' type='button' value="提交全开圆顶配置">
 			</form><!-- 全开圆顶固定属性配置项 结束-->
 
-			<form id='focus' class="form displayNo" enctype='multipart/form-data'><!--调焦器配置项-->
+			<form id='focus' class="form" enctype='multipart/form-data'><!--调焦器配置项-->
 			<br>
 			<h4 class='center' id='focus_h'>调焦器固定属性</h4>
 			<hr>
@@ -949,7 +949,7 @@
 						<td>调焦器ip:</td>
 						<td><input type='text' id='focusIp' name='ip' placeholder='ip地址'></td>
 						<td>调焦器id:</td>
-						<td><input type='text' id='focusId' name='focusid'></td>
+						<td><input type='text' id='focusId' name='focusid' placeholder='格式:00006'></td>
 						<td>调焦器名称:</td>
 						<td><input type='text' id='focusName' name='name'></td>
 					</tr>
@@ -1045,7 +1045,7 @@
 				<input id='focusBtn' type='button' value="提交调焦器配置">
 			</form><!--调焦器固定属性配置项 结束-->
 
-			<form id='guideScope' class="form displayNo" enctype='multipart/form-data'><!--导星望远镜配置项-->
+			<form id='guideScope' class="form" enctype='multipart/form-data'><!--导星望远镜配置项-->
 			<br>
 			<h4 class='center' id='guideScope_h'>导星望远镜固定属性</h4>
 			<hr>
@@ -1054,7 +1054,7 @@
 						<td>导星望远镜ip:</td>
 						<td><input type='text' id='guideScopeIp' name='ip' placeholder='ip地址'></td>
 						<td>导星望远镜id:</td>
-						<td><input type='text' id='guideScopeId' name='guidescopeid'></td>
+						<td><input type='text' id='guideScopeId' name='guidescopeid' placeholder='格式:00006'></td>
 						<td>导星望远镜名称:</td>
 						<td><input type='text' id='guideScopeName' name='name'></td>
 					</tr>
@@ -1129,7 +1129,7 @@
 			</form><!--导星望远镜固定属性配置项 结束-->
 
 		</div><!-- 所有配置项 结束 -->
-	</div><!-- id='all' 结束 --><br>
+	</div><!-- id='all' 结束 --><br><br>
 	<!-- <div class='clear'></div> -->
 	<footer class='center clear'>
 		<span>中科院国家天文台兴隆观测基地</span>
