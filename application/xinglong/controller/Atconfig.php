@@ -267,8 +267,9 @@ class Atconfig extends Base
        $postData['attrmodifytime'] = date ('Y-m-d');
        
        //根据提交上来的ccd数量（假如是1个ccd,则删除字段ccdno大于1的配置数据）
-       Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', '>' $postData['ccd_num'])->delete();
- 
+       Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', '>', $postData['ccd_num'])->delete();
+       //删除多余的$postData['ccd_num']字段
+       unset ($postData['ccd_num']);
         //定义错误提示
         $errMsg = '';
 
