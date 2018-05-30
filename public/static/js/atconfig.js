@@ -1262,7 +1262,7 @@ $(function () {
     var ccdBtn_3 = $('#ccdBtn-3'); //ccd-No3提交按钮
     var ccd_3Form = $('#ccd-3'); //ccd-No3表单
     var ccd_3_File = $('#ccd_3_File'); //ccd3相关文件区
-    var ccd_3_TeleId = $('#ccd_3_TeleId'); //ccd2隶属望远镜
+    var ccd_3_TeleId = $('#ccd_3_TeleId'); //ccd3隶属望远镜
     var ccd_3AttrModifyTime = $('#ccd_3AttrModifyTime'); //ccd3属性更新时间
 
     var ccdBtn_4 = $('#ccdBtn-4'); //ccd-No4提交按钮
@@ -1481,12 +1481,214 @@ $(function () {
         })
     });/**ccd-No2表单提交 结束***/
 
+     /**ccd-No3表单提交 点击事件***/
+     ccdBtn_3.click(function () {
+        //检查望远镜下拉选择框 是否选择了某望远镜
+        var atId = atNo.val();
+        //检查是否选择了ccd的数量
+        var ccd_Num = ccd_num.val();
+    
+        if ( atId == 0)
+        {//未选择某个望远镜
+            layer.alert('请选择您要配置的望远镜!', {shade:false, closeBtn:0});return;
+        }
+    
+        if ( ccd_Num < 3)
+        {//未选择ccd的数量
+            layer.alert('请检查您选择的ccd数量!', {shade:false, closeBtn:0});return;
+        }
+    
+        var ccd_3_Data = new FormData(ccd_3Form[0]);
+        ccd_3_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
+        ccd_3_Data.append('ccdno', '3'); //将此ccd的序号 加入表单数据中
+        ccd_3_Data.append('ccd_num', ccd_Num); //将ccd的数量 加入表单数据中
+        
+        //验证文本框类型、下拉框、复选框、单选框配置项 是否都已选择 
+        if ( !ccd3_select_valid (ccd_3_Data) )
+        {
+            return;
+        }//验证文本框类型、下拉框、复选框、单选框配置项  是否都已选择 结束
+    
+        $.ajax({
+            type: 'post',
+            url: 'ccd_config',
+            data : ccd_3_Data,
+            processData : false,
+            contentType : false,
+            success:  function (info) {
+                if ( info.indexOf('{') == -1 ) //info 不是json数据
+                {
+                    layer.alert(info, {
+                        shade:false,
+                        closeBtn:0,
+                        yes:function (n){
+                            layer.close(n);
+                            if (info.indexOf('登录') !== -1)
+                            {
+                                location.href = '/';
+                            }
+                        },
+                    });
+                }else{//解析 处理 json
+                    var info = $.parseJSON(info);
+                    layer.alert(info.msg, {shade:false, closeBtn:0});
+                    ccd_3AttrModifyTime.html(info.attrmodifytime); //显示属性更新时间
+                    //在页面显示已上传的文件名
+                    if ( info.file ) //有已上传的文件信息
+                    {
+                        show_file (ccd_3_File, info.file);
+                    }else{
+                        ccd_3_File.html('');
+                    }
+                }//解析 处理 json 结束
+            },
+            error:  function () {
+                  layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
+            },
+        })
+    });/**ccd-No3表单提交 结束***/
+
+    /*******显示ccd-No4表单提交*******/
+    ccdBtn_4.click(function () {
+        //检查望远镜下拉选择框 是否选择了某望远镜
+        var atId = atNo.val();
+        //检查是否选择了ccd的数量
+        var ccd_Num = ccd_num.val();
+    
+        if ( atId == 0)
+        {//未选择某个望远镜
+            layer.alert('请选择您要配置的望远镜!', {shade:false, closeBtn:0});return;
+        }
+    
+        if ( ccd_Num < 4)
+        {//未选择ccd的数量
+            layer.alert('请检查您ccd的数量!', {shade:false, closeBtn:0});return;
+        }
+    
+        var ccd_4_Data = new FormData(ccd_4Form[0]);
+        ccd_4_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
+        ccd_4_Data.append('ccdno', '4'); //将此ccd的序号 加入表单数据中
+        ccd_4_Data.append('ccd_num', ccd_Num); //将ccd的数量 加入表单数据中
+        
+        //验证文本框类型、下拉框、复选框、单选框配置项 是否都已选择 
+         if ( !ccd4_select_valid (ccd_4_Data) )
+         {
+             return;
+         }//验证文本框类型、下拉框、复选框、单选框配置项  是否都已选择 结束
+    
+        $.ajax({
+            type: 'post',
+            url: 'ccd_config',
+            data : ccd_4_Data,
+            processData : false,
+            contentType : false,
+            success:  function (info) {
+                if ( info.indexOf('{') == -1 ) //info 不是json数据
+                {
+                    layer.alert(info, {
+                        shade:false,
+                        closeBtn:0,
+                        yes:function (n){
+                            layer.close(n);
+                            if (info.indexOf('登录') !== -1)
+                            {
+                                location.href = '/';
+                            }
+                        },
+                    });
+                }else{//解析 处理 json
+                    var info = $.parseJSON(info);
+                    layer.alert(info.msg, {shade:false, closeBtn:0});
+                    ccd_4AttrModifyTime.html(info.attrmodifytime); //显示属性更新时间
+                    //在页面显示已上传的文件名
+                    if ( info.file ) //有已上传的文件信息
+                    {
+                        show_file (ccd_4_File, info.file);
+                    }else{
+                        ccd_4_File.html('');
+                    }
+                }//解析 处理 json 结束
+            },
+            error:  function () {
+                  layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
+            },
+        })
+    });/*******显示ccd-No4表单提交 结束**********/
+
+    /*******显示ccd-No5表单提交*******/
+    ccdBtn_5.click(function () {
+        //检查望远镜下拉选择框 是否选择了某望远镜
+        var atId = atNo.val();
+        //检查是否选择了ccd的数量
+        var ccd_Num = ccd_num.val();
+    
+        if ( atId == 0)
+        {//未选择某个望远镜
+            layer.alert('请选择您要配置的望远镜!', {shade:false, closeBtn:0});return;
+        }
+    
+        if ( ccd_Num < 5)
+        {//未选择ccd的数量
+            layer.alert('请检查您ccd的数量!', {shade:false, closeBtn:0});return;
+        }
+    
+        var ccd_5_Data = new FormData(ccd_5Form[0]);
+        ccd_5_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
+        ccd_5_Data.append('ccdno', '5'); //将此ccd的序号 加入表单数据中
+        ccd_5_Data.append('ccd_num', ccd_Num); //将ccd的数量 加入表单数据中
+        
+        //验证文本框类型、下拉框、复选框、单选框配置项 是否都已选择 
+         if ( !ccd5_select_valid (ccd_5_Data) )
+         {
+             return;
+         }//验证文本框类型、下拉框、复选框、单选框配置项  是否都已选择 结束
+    
+        $.ajax({
+            type: 'post',
+            url: 'ccd_config',
+            data : ccd_5_Data,
+            processData : false,
+            contentType : false,
+            success:  function (info) {
+                if ( info.indexOf('{') == -1 ) //info 不是json数据
+                {
+                    layer.alert(info, {
+                        shade:false,
+                        closeBtn:0,
+                        yes:function (n){
+                            layer.close(n);
+                            if (info.indexOf('登录') !== -1)
+                            {
+                                location.href = '/';
+                            }
+                        },
+                    });
+                }else{//解析 处理 json
+                    var info = $.parseJSON(info);
+                    layer.alert(info.msg, {shade:false, closeBtn:0});
+                    ccd_5AttrModifyTime.html(info.attrmodifytime); //显示属性更新时间
+                    //在页面显示已上传的文件名
+                    if ( info.file ) //有已上传的文件信息
+                    {
+                        show_file (ccd_5_File, info.file);
+                    }else{
+                        ccd_5_File.html('');
+                    }
+                }//解析 处理 json 结束
+            },
+            error:  function () {
+                  layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
+            },
+        })
+    });/*******显示ccd-No5表单提交 结束**********/
+
     /*显示ccd-No1配置数据*/
     function show_ccd1_data (data)
     {
         ccdIp.val(data.ip);
         ccdId.val(data.ccdid);
         ccdName.val(data.name);
+        ccdType.val(data.type);
         ccdXpixel.val(data.xpixel);
         ccdYpixel.val(data.ypixel);
         ccdXpixelSize.val(data.xpixelsize);
@@ -1585,110 +1787,425 @@ $(function () {
        ccdAttrVersion.val(data.attrversion);
     }/*显示ccd-No1配置数据 结束*/
 
-    /*显示ccd-No2配置数据*/
+    /*************显示ccd-No2配置数据******************/
     function show_ccd2_data (data)
     {
         $('#ccd_2Ip').val(data.ip);
         $('#ccd_2Id').val(data.ccdid);
         $('#ccd_2Name').val(data.name);
-    //     ccdXpixel.val(data.xpixel);
-    //     ccdYpixel.val(data.ypixel);
-    //     ccdXpixelSize.val(data.xpixelsize);
-    //     ccdYpixelSize.val(data.ypixelsize);
-    //     ccdSensorName.val(data.sensorname);
-    //     data.imagebits === undefined ? ccdImageBits.val('0') : ccdImageBits.val(data.imagebits);
-    //     data.coolermode === undefined ? ccdCoolerMode.val('0') : ccdCoolerMode.val(data.coolermode);
-    //     ccdLowCoolerT.val(data.lowcoolert);
-    //     ccdMaxExposureTime.val(data.maxexposuretime);
-    //     ccdMinExposureTime.val(data.minexposuretime);
-    //     ccdExposureTimeRation.val(data.exposuretimeration);
-    //     ccdFullWellDepth.val(data.fullwelldepth);
-    //     data.readoutspeed === undefined ? ccdReadoutSpeed.val('0') : ccdReadoutSpeed.val(data.readoutspeed);
-    //     /*读出模式*/
-    //     if ( data.readoutmode )
-    //     {
-    //         data.readoutmode = data.readoutmode.split('#');
-    //         var readout_mode_n = data.readoutmode.length;
-    //         for (var read_out_i = 0; read_out_i < readout_mode_n; read_out_i++)
-    //         {//将对应的选项设为checked
-    //             ccdreadoutMode.find('input[value="' + data.readoutmode[read_out_i] + '"]').prop('checked', true);
-    //         }
-    //     }/*读出模式 结束*/
-    //     data.transferspeed === undefined ? ccdTransferSpeed.val('0') : ccdTransferSpeed.val(data.transferspeed);
-    //     /*增益模式*/
-    //     if ( data.gainmode )
-    //     {
-    //         data.gainmode = data.gainmode.split('#');
-    //         var gainmode_n = data.gainmode.length;
-    //         for (var gainmode_i = 0; gainmode_i < gainmode_n; gainmode_i++)
-    //         {//将对应的选项设为checked
-    //             ccd_1gainmode.find('input[value="' + data.gainmode[gainmode_i] + '"]').prop('checked', true);
-    //         }
-    //     }/*增益模式 结束*/
-    //     data.gainnumber === undefined ? ccd_1GainNumber.val('0') : ccd_1GainNumber.val(data.gainnumber);
+        $('#ccd_2Type').val(data.type);
+        $('#ccd_2Xpixel').val(data.xpixel);
+        $('#ccd_2Ypixel').val(data.ypixel);
+        $('#ccd_2XpixelSize').val(data.xpixelsize);
+        $('#ccd_2YpixelSize').val(data.ypixelsize);
+        $('#ccd_2SensorName').val(data.sensorname);
+        data.imagebits === undefined ? ccd_2ImageBits.val('0') : ccd_2ImageBits.val(data.imagebits);
+        data.coolermode === undefined ? ccd_2CoolerMode.val('0') : ccd_2CoolerMode.val(data.coolermode);
+        $('#ccd_2LowCoolerT').val(data.lowcoolert);
+        $('#ccd_2MaxExposureTime').val(data.maxexposuretime);
+        $('#ccd_2MinExposureTime').val(data.minexposuretime);
+        $('#ccd_2ExposureTimeRation').val(data.exposuretimeration);
+        $('#ccd_2FullWellDepth').val(data.fullwelldepth);
+        data.readoutspeed === undefined ? ccd_2ReadoutSpeed.val('0') : ccd_2ReadoutSpeed.val(data.readoutspeed);
+        /*读出模式*/
+        if ( data.readoutmode )
+        {
+            data.readoutmode = data.readoutmode.split('#');
+            var readout_mode_n = data.readoutmode.length;
+            for (var read_out_i = 0; read_out_i < readout_mode_n; read_out_i++)
+            {//将对应的选项设为checked
+                ccd_2readoutMode.find('input[value="' + data.readoutmode[read_out_i] + '"]').prop('checked', true);
+            }
+        }/*读出模式 结束*/
+        data.transferspeed === undefined ? ccd_2TransferSpeed.val('0') : ccd_2TransferSpeed.val(data.transferspeed);
+        /*增益模式*/
+        if ( data.gainmode )
+        {
+            data.gainmode = data.gainmode.split('#');
+            var gainmode_n = data.gainmode.length;
+            for (var gainmode_i = 0; gainmode_i < gainmode_n; gainmode_i++)
+            {//将对应的选项设为checked
+                ccd_2gainmode.find('input[value="' + data.gainmode[gainmode_i] + '"]').prop('checked', true);
+            }
+        }/*增益模式 结束*/
+        data.gainnumber === undefined ? ccd_2GainNumber.val('0') : ccd_2GainNumber.val(data.gainnumber);
     //     /*
     //      *增益值和读出噪声值 暂时未做
     //     */
-    //    data.shuttertype === undefined ? ccdShutterType.val('0') : ccdShutterType.val(data.shuttertype);
-    //    /*快门模式*/
-    //    if ( data.shuttermode )
-    //    {
-    //        data.shuttermode = data.shuttermode.split('#');
-    //        var shuttermode_n = data.shuttermode.length;
-    //        for (var shuttermode_i = 0; shuttermode_i < shuttermode_n; shuttermode_i++)
-    //        {//将对应的选项设为checked
-    //         ccd_1ShutterMode.find('input[value="' + data.shuttermode[shuttermode_i] + '"]').prop('checked', true);
-    //        }
-    //    }/*快门模式 结束*/
-    //    data.issupportfullframe == '1' ? ccdIsSupportFullFrame.click() : ccdIsSupportFullFrame_1.click();
-    //    data.issupportem == '1' ? ccdIsSupportEM.click() : ccdIsSupportEM_1.click();
-    //    data.issupportscmosnoisefilter == '1' ? isSupportsCmosNoiseFilter.click() : isSupportsCmosNoiseFilter_1.click();
-    //    data.issupportbaseline == '1' ? isSupportBaseLine.click() : isSupportBaseLine_1.click();
-    //    data.issupportoverscan == '1' ? isSupportOverScan.click() : isSupportOverScan_1.click();
-    //    data.binarray === undefined ? ccd_1BinArray.val('0') : ccd_1BinArray.val(data.binarray);
-    //    data.issupportroi == '1' ? ccdIsSupportROI.click() : ccdIsSupportROI_1.click();
-    //    /*接口类型*/
-    //    if ( data.interfacetype )
-    //    {
-    //        data.interfacetype = data.interfacetype.split('#');
-    //        var interfacetype_n = data.interfacetype.length;
-    //        for (var interfacetype_i = 0; interfacetype_i < interfacetype_n; interfacetype_i++)
-    //        {//将对应的选项设为checked
-    //         ccd_1InterfaceType.find('input[value="' + data.interfacetype[interfacetype_i] + '"]').prop('checked', true);
-    //        }
-    //    }/*接口类型 结束*/
-    //    /*曝光触发模式*/
-    //    if ( data.exposetriggermode )
-    //    {
-    //        data.exposetriggermode = data.exposetriggermode.split('#');
-    //        var exposetrigger_n = data.exposetriggermode.length;
-    //        for (var exposetrigger_i = 0; exposetrigger_i < exposetrigger_n; exposetrigger_i++)
-    //        {//将对应的选项设为checked
-    //         ccd_1ExposeTriggerMode.find('input[value="' + data.exposetriggermode[exposetrigger_i] + '"]').prop('checked', true);
-    //        }
-    //    }/*曝光触发模式 结束*/
-    //    ccdEmMaxValue.val(data.emmaxvalue);
-    //    ccdEmMinValue.val(data.emminvalue);
-    //    data.canconnect == '1' ? ccdCanConnect.click() : ccdCanConnect_1.click();
-    //    data.cansetcoolert == '1' ? canSetCoolerT.click() : canSetCoolerT_1.click();
-    //    data.cansetexposureparam == '1' ? setExposureParam.click() : setExposureParam_1.click();
-    //    data.canstartexposure == '1' ? canStartExposure.click() : canStartExposure_1.click();
-    //    data.canstopexposure == '1' ? ccdCanStopExposure.click() : ccdCanStopExposure_1.click();
-    //    data.canabortexposure == '1' ? ccdCanAbortExposure.click() : ccdCanAbortExposure_1.click();
-    //    data.cansetgain == '1' ? ccdCanSetGain.click() : ccdCanSetGain_1.click();
-    //    data.cansetreadoutspeedmode == '1' ? setReadoutSpeedMode.click() : setReadoutSpeedMode_1.click();
-    //    data.cansettransferspeedmode == '1' ? setTransferSpeedMode.click() : setTransferSpeedMode_1.click();
-    //    data.cansetbin == '1' ? ccdCanSetBin.click() : ccdCanSetBin_1.click();
-    //    data.cansetroi == '1' ? ccdCanSetROI.click() : ccdCanSetROI_1.click();
-    //    data.cansetshutter == '1' ? ccdCanSetShutter.click() : ccdCanSetShutter_1.click();
-    //    data.cansetfullframe == '1' ? canSetFullFrame.click() : canSetFullFrame_1.click();
-    //    data.cansetem == '1' ? ccdCanSetEM.click() : ccdCanSetEM_1.click();
-    //    data.cannoisefilter == '1' ? canNoiseFilter.click() : canNoiseFilter_1.click();
-    //    data.cansetbaseline == '1' ? setBaseline.click() : setBaseline_1.click();
-    //    data.cansetoverscan == '1' ? ccdSetOverScan.click() : ccdSetOverScan_1.click();
-    //    ccdAttrVersion.val(data.attrversion);
-    }
-    /*显示ccd-No2配置数据 结束*/
+       data.shuttertype === undefined ? ccd_2ShutterType.val('0') : ccd_2ShutterType.val(data.shuttertype);
+       /*快门模式*/
+       if ( data.shuttermode )
+       {
+           data.shuttermode = data.shuttermode.split('#');
+           var shuttermode_n = data.shuttermode.length;
+           for (var shuttermode_i = 0; shuttermode_i < shuttermode_n; shuttermode_i++)
+           {//将对应的选项设为checked
+            ccd_2ShutterMode.find('input[value="' + data.shuttermode[shuttermode_i] + '"]').prop('checked', true);
+           }
+       }/*快门模式 结束*/
+       data.issupportfullframe == '1' ? $('#ccd_2IsSupportFullFrame').click() : $('#ccd_2IsSupportFullFrame-1').click();
+       data.issupportem == '1' ? $('#ccd_2IsSupportEM').click() : $('#ccd_2IsSupportEM-1').click();
+       data.issupportscmosnoisefilter == '1' ? $('#ccd_2IsSupportsCmosNoiseFilter').click() : $('#ccd_2IsSupportsCmosNoiseFilter-1').click();
+       data.issupportbaseline == '1' ? $('#ccd_2IsSupportBaseLine').click() : $('#ccd_2IsSupportBaseLine-1').click();
+       data.issupportoverscan == '1' ? $('#ccd_2IsSupportOverScan').click() : $('#ccd_2IsSupportOverScan-1').click();
+       data.binarray === undefined ? ccd_2BinArray.val('0') : ccd_2BinArray.val(data.binarray);
+       data.issupportroi == '1' ? $('#ccd_2IsSupportROI').click() : $('#ccd_2IsSupportROI-1').click();
+       /*接口类型*/
+       if ( data.interfacetype )
+       {
+           data.interfacetype = data.interfacetype.split('#');
+           var interfacetype_n = data.interfacetype.length;
+           for (var interfacetype_i = 0; interfacetype_i < interfacetype_n; interfacetype_i++)
+           {//将对应的选项设为checked
+            ccd_2InterfaceType.find('input[value="' + data.interfacetype[interfacetype_i] + '"]').prop('checked', true);
+           }
+       }/*接口类型 结束*/
+       /*曝光触发模式*/
+       if ( data.exposetriggermode )
+       {
+           data.exposetriggermode = data.exposetriggermode.split('#');
+           var exposetrigger_n = data.exposetriggermode.length;
+           for (var exposetrigger_i = 0; exposetrigger_i < exposetrigger_n; exposetrigger_i++)
+           {//将对应的选项设为checked
+            ccd_2ExposeTriggerMode.find('input[value="' + data.exposetriggermode[exposetrigger_i] + '"]').prop('checked', true);
+           }
+       }/*曝光触发模式 结束*/
+       $('#ccd_2EmMaxValue').val(data.emmaxvalue);
+       $('#ccd_2EmMinValue').val(data.emminvalue);
+       data.canconnect == '1' ? $('#ccd_2CanConnect').click() : $('#ccd_2CanConnect-1').click();
+       data.cansetcoolert == '1' ? $('#ccd_2CanSetCoolerT').click() : $('#ccd_2CanSetCoolerT-1').click();
+       data.cansetexposureparam == '1' ? $('#ccd_2CanSetExposureParam').click() : $('#ccd_2CanSetExposureParam-1').click();
+       data.canstartexposure == '1' ? $('#ccd_2CanStartExposure').click() : $('#ccd_2CanStartExposure-1').click();
+       data.canstopexposure == '1' ? $('#ccd_2CanStopExposure').click() : $('#ccd_2CanStopExposure-1').click();
+       data.canabortexposure == '1' ? $('#ccd_2CanAbortExposure').click() : $('#ccd_2CanAbortExposure-1').click();
+       data.cansetgain == '1' ? $('#ccd_2CanSetGain').click() : $('#ccd_2CanSetGain-1').click();
+       data.cansetreadoutspeedmode == '1' ? $('#ccd_2CanSetReadoutSpeedMode').click() : $('#ccd_2CanSetReadoutSpeedMode-1').click();
+       data.cansettransferspeedmode == '1' ? $('#ccd_2CanSetTransferSpeedMode').click() : $('#ccd_2CanSetTransferSpeedMode-1').click();
+       data.cansetbin == '1' ? $('#ccd_2CanSetBin').click() : $('#ccd_2CanSetBin-1').click();
+       data.cansetroi == '1' ? $('#ccd_2CanSetROI').click() : $('#ccd_2CanSetROI-1').click();
+       data.cansetshutter == '1' ? $('#ccd_2CanSetShutter').click() : $('#ccd_2CanSetShutter-1').click();
+       data.cansetfullframe == '1' ? $('#ccd_2CanSetFullFrame').click() : $('#ccd_2CanSetFullFrame-1').click();
+       data.cansetem == '1' ? $('#ccd_2CanSetEM').click() : $('#ccd_2CanSetEM-1').click();
+       data.cannoisefilter == '1' ? $('#ccd_2CanNoiseFilter').click() : $('#ccd_2CanNoiseFilter-1').click();
+       data.cansetbaseline == '1' ? $('#ccd_2CanSetBaseline').click() : $('#ccd_2CanSetBaseline-1').click();
+       data.cansetoverscan == '1' ? $('#ccd_2CanSetOverScan').click() : $('#ccd_2CanSetOverScan-1').click();
+    $('#ccd_2AttrVersion').val(data.attrversion);
+    }/**************显示ccd-No2配置数据 结束******************/
+
+    /*************显示ccd-No3配置数据******************/
+    function show_ccd3_data (data)
+    {
+        $('#ccd_3Ip').val(data.ip);
+        $('#ccd_3Id').val(data.ccdid);
+        $('#ccd_3Name').val(data.name);
+        $('#ccd_3Type').val(data.type);
+        $('#ccd_3Xpixel').val(data.xpixel);
+        $('#ccd_3Ypixel').val(data.ypixel);
+        $('#ccd_3XpixelSize').val(data.xpixelsize);
+        $('#ccd_3YpixelSize').val(data.ypixelsize);
+        $('#ccd_3SensorName').val(data.sensorname);
+        data.imagebits === undefined ? ccd_3ImageBits.val('0') : ccd_3ImageBits.val(data.imagebits);
+        data.coolermode === undefined ? ccd_3CoolerMode.val('0') : ccd_3CoolerMode.val(data.coolermode);
+        $('#ccd_3LowCoolerT').val(data.lowcoolert);
+        $('#ccd_3MaxExposureTime').val(data.maxexposuretime);
+        $('#ccd_3MinExposureTime').val(data.minexposuretime);
+        $('#ccd_3ExposureTimeRation').val(data.exposuretimeration);
+        $('#ccd_3FullWellDepth').val(data.fullwelldepth);
+        data.readoutspeed === undefined ? ccd_3ReadoutSpeed.val('0') : ccd_3ReadoutSpeed.val(data.readoutspeed);
+        /*读出模式*/
+        if ( data.readoutmode )
+        {
+            data.readoutmode = data.readoutmode.split('#');
+            var readout_mode_n = data.readoutmode.length;
+            for (var read_out_i = 0; read_out_i < readout_mode_n; read_out_i++)
+            {//将对应的选项设为checked
+                ccd_3readoutMode.find('input[value="' + data.readoutmode[read_out_i] + '"]').prop('checked', true);
+            }
+        }/*读出模式 结束*/
+        data.transferspeed === undefined ? ccd_3TransferSpeed.val('0') : ccd_3TransferSpeed.val(data.transferspeed);
+        /*增益模式*/
+        if ( data.gainmode )
+        {
+            data.gainmode = data.gainmode.split('#');
+            var gainmode_n = data.gainmode.length;
+            for (var gainmode_i = 0; gainmode_i < gainmode_n; gainmode_i++)
+            {//将对应的选项设为checked
+                ccd_3gainmode.find('input[value="' + data.gainmode[gainmode_i] + '"]').prop('checked', true);
+            }
+        }/*增益模式 结束*/
+        data.gainnumber === undefined ? ccd_3GainNumber.val('0') : ccd_3GainNumber.val(data.gainnumber);
+    //     /*
+    //      *增益值和读出噪声值 暂时未做
+    //     */
+       data.shuttertype === undefined ? ccd_3ShutterType.val('0') : ccd_3ShutterType.val(data.shuttertype);
+       /*快门模式*/
+       if ( data.shuttermode )
+       {
+           data.shuttermode = data.shuttermode.split('#');
+           var shuttermode_n = data.shuttermode.length;
+           for (var shuttermode_i = 0; shuttermode_i < shuttermode_n; shuttermode_i++)
+           {//将对应的选项设为checked
+            ccd_3ShutterMode.find('input[value="' + data.shuttermode[shuttermode_i] + '"]').prop('checked', true);
+           }
+       }/*快门模式 结束*/
+       data.issupportfullframe == '1' ? $('#ccd_3IsSupportFullFrame').click() : $('#ccd_3IsSupportFullFrame-1').click();
+       data.issupportem == '1' ? $('#ccd_3IsSupportEM').click() : $('#ccd_3IsSupportEM-1').click();
+       data.issupportscmosnoisefilter == '1' ? $('#ccd_3IsSupportsCmosNoiseFilter').click() : $('#ccd_3IsSupportsCmosNoiseFilter-1').click();
+       data.issupportbaseline == '1' ? $('#ccd_3IsSupportBaseLine').click() : $('#ccd_3IsSupportBaseLine-1').click();
+       data.issupportoverscan == '1' ? $('#ccd_3IsSupportOverScan').click() : $('#ccd_3IsSupportOverScan-1').click();
+       data.binarray === undefined ? ccd_3BinArray.val('0') : ccd_3BinArray.val(data.binarray);
+       data.issupportroi == '1' ? $('#ccd_3IsSupportROI').click() : $('#ccd_3IsSupportROI-1').click();
+       /*接口类型*/
+       if ( data.interfacetype )
+       {
+           data.interfacetype = data.interfacetype.split('#');
+           var interfacetype_n = data.interfacetype.length;
+           for (var interfacetype_i = 0; interfacetype_i < interfacetype_n; interfacetype_i++)
+           {//将对应的选项设为checked
+            ccd_3InterfaceType.find('input[value="' + data.interfacetype[interfacetype_i] + '"]').prop('checked', true);
+           }
+       }/*接口类型 结束*/
+       /*曝光触发模式*/
+       if ( data.exposetriggermode )
+       {
+           data.exposetriggermode = data.exposetriggermode.split('#');
+           var exposetrigger_n = data.exposetriggermode.length;
+           for (var exposetrigger_i = 0; exposetrigger_i < exposetrigger_n; exposetrigger_i++)
+           {//将对应的选项设为checked
+            ccd_3ExposeTriggerMode.find('input[value="' + data.exposetriggermode[exposetrigger_i] + '"]').prop('checked', true);
+           }
+       }/*曝光触发模式 结束*/
+       $('#ccd_3EmMaxValue').val(data.emmaxvalue);
+       $('#ccd_3EmMinValue').val(data.emminvalue);
+       data.canconnect == '1' ? $('#ccd_3CanConnect').click() : $('#ccd_3CanConnect-1').click();
+       data.cansetcoolert == '1' ? $('#ccd_3CanSetCoolerT').click() : $('#ccd_3CanSetCoolerT-1').click();
+       data.cansetexposureparam == '1' ? $('#ccd_3CanSetExposureParam').click() : $('#ccd_3CanSetExposureParam-1').click();
+       data.canstartexposure == '1' ? $('#ccd_3CanStartExposure').click() : $('#ccd_3CanStartExposure-1').click();
+       data.canstopexposure == '1' ? $('#ccd_3CanStopExposure').click() : $('#ccd_3CanStopExposure-1').click();
+       data.canabortexposure == '1' ? $('#ccd_3CanAbortExposure').click() : $('#ccd_3CanAbortExposure-1').click();
+       data.cansetgain == '1' ? $('#ccd_3CanSetGain').click() : $('#ccd_3CanSetGain-1').click();
+       data.cansetreadoutspeedmode == '1' ? $('#ccd_3CanSetReadoutSpeedMode').click() : $('#ccd_3CanSetReadoutSpeedMode-1').click();
+       data.cansettransferspeedmode == '1' ? $('#ccd_3CanSetTransferSpeedMode').click() : $('#ccd_3CanSetTransferSpeedMode-1').click();
+       data.cansetbin == '1' ? $('#ccd_3CanSetBin').click() : $('#ccd_3CanSetBin-1').click();
+       data.cansetroi == '1' ? $('#ccd_3CanSetROI').click() : $('#ccd_3CanSetROI-1').click();
+       data.cansetshutter == '1' ? $('#ccd_3CanSetShutter').click() : $('#ccd_3CanSetShutter-1').click();
+       data.cansetfullframe == '1' ? $('#ccd_3CanSetFullFrame').click() : $('#ccd_3CanSetFullFrame-1').click();
+       data.cansetem == '1' ? $('#ccd_3CanSetEM').click() : $('#ccd_3CanSetEM-1').click();
+       data.cannoisefilter == '1' ? $('#ccd_3CanNoiseFilter').click() : $('#ccd_3CanNoiseFilter-1').click();
+       data.cansetbaseline == '1' ? $('#ccd_3CanSetBaseline').click() : $('#ccd_3CanSetBaseline-1').click();
+       data.cansetoverscan == '1' ? $('#ccd_3CanSetOverScan').click() : $('#ccd_3CanSetOverScan-1').click();
+    $('#ccd_3AttrVersion').val(data.attrversion);
+    }/**************显示ccd-No3配置数据 结束******************/
+
+    /*************显示ccd-No4配置数据******************/
+    function show_ccd4_data (data)
+    {
+        $('#ccd_4Ip').val(data.ip);
+        $('#ccd_4Id').val(data.ccdid);
+        $('#ccd_4Name').val(data.name);
+        $('#ccd_4Type').val(data.type);
+        $('#ccd_4Xpixel').val(data.xpixel);
+        $('#ccd_4Ypixel').val(data.ypixel);
+        $('#ccd_4XpixelSize').val(data.xpixelsize);
+        $('#ccd_4YpixelSize').val(data.ypixelsize);
+        $('#ccd_4SensorName').val(data.sensorname);
+        data.imagebits === undefined ? ccd_4ImageBits.val('0') : ccd_4ImageBits.val(data.imagebits);
+        data.coolermode === undefined ? ccd_4CoolerMode.val('0') : ccd_4CoolerMode.val(data.coolermode);
+        $('#ccd_4LowCoolerT').val(data.lowcoolert);
+        $('#ccd_4MaxExposureTime').val(data.maxexposuretime);
+        $('#ccd_4MinExposureTime').val(data.minexposuretime);
+        $('#ccd_4ExposureTimeRation').val(data.exposuretimeration);
+        $('#ccd_4FullWellDepth').val(data.fullwelldepth);
+        data.readoutspeed === undefined ? ccd_4ReadoutSpeed.val('0') : ccd_4ReadoutSpeed.val(data.readoutspeed);
+        /*读出模式*/
+        if ( data.readoutmode )
+        {
+            data.readoutmode = data.readoutmode.split('#');
+            var readout_mode_n = data.readoutmode.length;
+            for (var read_out_i = 0; read_out_i < readout_mode_n; read_out_i++)
+            {//将对应的选项设为checked
+                ccd_4readoutMode.find('input[value="' + data.readoutmode[read_out_i] + '"]').prop('checked', true);
+            }
+        }/*读出模式 结束*/
+        data.transferspeed === undefined ? ccd_4TransferSpeed.val('0') : ccd_4TransferSpeed.val(data.transferspeed);
+        /*增益模式*/
+        if ( data.gainmode )
+        {
+            data.gainmode = data.gainmode.split('#');
+            var gainmode_n = data.gainmode.length;
+            for (var gainmode_i = 0; gainmode_i < gainmode_n; gainmode_i++)
+            {//将对应的选项设为checked
+                ccd_4gainmode.find('input[value="' + data.gainmode[gainmode_i] + '"]').prop('checked', true);
+            }
+        }/*增益模式 结束*/
+        data.gainnumber === undefined ? ccd_4GainNumber.val('0') : ccd_4GainNumber.val(data.gainnumber);
+    //     /*
+    //      *增益值和读出噪声值 暂时未做
+    //     */
+       data.shuttertype === undefined ? ccd_4ShutterType.val('0') : ccd_4ShutterType.val(data.shuttertype);
+       /*快门模式*/
+       if ( data.shuttermode )
+       {
+           data.shuttermode = data.shuttermode.split('#');
+           var shuttermode_n = data.shuttermode.length;
+           for (var shuttermode_i = 0; shuttermode_i < shuttermode_n; shuttermode_i++)
+           {//将对应的选项设为checked
+            ccd_4ShutterMode.find('input[value="' + data.shuttermode[shuttermode_i] + '"]').prop('checked', true);
+           }
+       }/*快门模式 结束*/
+       data.issupportfullframe == '1' ? $('#ccd_4IsSupportFullFrame').click() : $('#ccd_4IsSupportFullFrame-1').click();
+       data.issupportem == '1' ? $('#ccd_4IsSupportEM').click() : $('#ccd_4IsSupportEM-1').click();
+       data.issupportscmosnoisefilter == '1' ? $('#ccd_4IsSupportsCmosNoiseFilter').click() : $('#ccd_4IsSupportsCmosNoiseFilter-1').click();
+       data.issupportbaseline == '1' ? $('#ccd_4IsSupportBaseLine').click() : $('#ccd_4IsSupportBaseLine-1').click();
+       data.issupportoverscan == '1' ? $('#ccd_4IsSupportOverScan').click() : $('#ccd_4IsSupportOverScan-1').click();
+       data.binarray === undefined ? ccd_4BinArray.val('0') : ccd_4BinArray.val(data.binarray);
+       data.issupportroi == '1' ? $('#ccd_4IsSupportROI').click() : $('#ccd_4IsSupportROI-1').click();
+       /*接口类型*/
+       if ( data.interfacetype )
+       {
+           data.interfacetype = data.interfacetype.split('#');
+           var interfacetype_n = data.interfacetype.length;
+           for (var interfacetype_i = 0; interfacetype_i < interfacetype_n; interfacetype_i++)
+           {//将对应的选项设为checked
+            ccd_4InterfaceType.find('input[value="' + data.interfacetype[interfacetype_i] + '"]').prop('checked', true);
+           }
+       }/*接口类型 结束*/
+       /*曝光触发模式*/
+       if ( data.exposetriggermode )
+       {
+           data.exposetriggermode = data.exposetriggermode.split('#');
+           var exposetrigger_n = data.exposetriggermode.length;
+           for (var exposetrigger_i = 0; exposetrigger_i < exposetrigger_n; exposetrigger_i++)
+           {//将对应的选项设为checked
+            ccd_4ExposeTriggerMode.find('input[value="' + data.exposetriggermode[exposetrigger_i] + '"]').prop('checked', true);
+           }
+       }/*曝光触发模式 结束*/
+       $('#ccd_4EmMaxValue').val(data.emmaxvalue);
+       $('#ccd_4EmMinValue').val(data.emminvalue);
+       data.canconnect == '1' ? $('#ccd_4CanConnect').click() : $('#ccd_4CanConnect-1').click();
+       data.cansetcoolert == '1' ? $('#ccd_4CanSetCoolerT').click() : $('#ccd_4CanSetCoolerT-1').click();
+       data.cansetexposureparam == '1' ? $('#ccd_4CanSetExposureParam').click() : $('#ccd_4CanSetExposureParam-1').click();
+       data.canstartexposure == '1' ? $('#ccd_4CanStartExposure').click() : $('#ccd_4CanStartExposure-1').click();
+       data.canstopexposure == '1' ? $('#ccd_4CanStopExposure').click() : $('#ccd_4CanStopExposure-1').click();
+       data.canabortexposure == '1' ? $('#ccd_4CanAbortExposure').click() : $('#ccd_4CanAbortExposure-1').click();
+       data.cansetgain == '1' ? $('#ccd_4CanSetGain').click() : $('#ccd_4CanSetGain-1').click();
+       data.cansetreadoutspeedmode == '1' ? $('#ccd_4CanSetReadoutSpeedMode').click() : $('#ccd_4CanSetReadoutSpeedMode-1').click();
+       data.cansettransferspeedmode == '1' ? $('#ccd_4CanSetTransferSpeedMode').click() : $('#ccd_4CanSetTransferSpeedMode-1').click();
+       data.cansetbin == '1' ? $('#ccd_4CanSetBin').click() : $('#ccd_4CanSetBin-1').click();
+       data.cansetroi == '1' ? $('#ccd_4CanSetROI').click() : $('#ccd_4CanSetROI-1').click();
+       data.cansetshutter == '1' ? $('#ccd_4CanSetShutter').click() : $('#ccd_4CanSetShutter-1').click();
+       data.cansetfullframe == '1' ? $('#ccd_4CanSetFullFrame').click() : $('#ccd_4CanSetFullFrame-1').click();
+       data.cansetem == '1' ? $('#ccd_4CanSetEM').click() : $('#ccd_4CanSetEM-1').click();
+       data.cannoisefilter == '1' ? $('#ccd_4CanNoiseFilter').click() : $('#ccd_4CanNoiseFilter-1').click();
+       data.cansetbaseline == '1' ? $('#ccd_4CanSetBaseline').click() : $('#ccd_4CanSetBaseline-1').click();
+       data.cansetoverscan == '1' ? $('#ccd_4CanSetOverScan').click() : $('#ccd_4CanSetOverScan-1').click();
+    $('#ccd_4AttrVersion').val(data.attrversion);
+    }/**************显示ccd-No4配置数据 结束******************/
+
+     /*************显示ccd-No5配置数据******************/
+     function show_ccd5_data (data)
+     {
+        $('#ccd_5Ip').val(data.ip);
+        $('#ccd_5Id').val(data.ccdid);
+        $('#ccd_5Name').val(data.name);
+        $('#ccd_5Type').val(data.type);
+        $('#ccd_5Xpixel').val(data.xpixel);
+        $('#ccd_5Ypixel').val(data.ypixel);
+        $('#ccd_5XpixelSize').val(data.xpixelsize);
+        $('#ccd_5YpixelSize').val(data.ypixelsize);
+        $('#ccd_5SensorName').val(data.sensorname);
+        data.imagebits === undefined ? ccd_5ImageBits.val('0') : ccd_5ImageBits.val(data.imagebits);
+        data.coolermode === undefined ? ccd_5CoolerMode.val('0') : ccd_5CoolerMode.val(data.coolermode);
+        $('#ccd_5LowCoolerT').val(data.lowcoolert);
+        $('#ccd_5MaxExposureTime').val(data.maxexposuretime);
+        $('#ccd_5MinExposureTime').val(data.minexposuretime);
+        $('#ccd_5ExposureTimeRation').val(data.exposuretimeration);
+        $('#ccd_5FullWellDepth').val(data.fullwelldepth);
+        data.readoutspeed === undefined ? ccd_5ReadoutSpeed.val('0') : ccd_5ReadoutSpeed.val(data.readoutspeed);
+        /*读出模式*/
+        if ( data.readoutmode )
+        {
+            data.readoutmode = data.readoutmode.split('#');
+            var readout_mode_n = data.readoutmode.length;
+            for (var read_out_i = 0; read_out_i < readout_mode_n; read_out_i++)
+            {//将对应的选项设为checked
+                ccd_5readoutMode.find('input[value="' + data.readoutmode[read_out_i] + '"]').prop('checked', true);
+            }
+        }/*读出模式 结束*/
+        data.transferspeed === undefined ? ccd_5TransferSpeed.val('0') : ccd_5TransferSpeed.val(data.transferspeed);
+        /*增益模式*/
+        if ( data.gainmode )
+        {
+            data.gainmode = data.gainmode.split('#');
+            var gainmode_n = data.gainmode.length;
+            for (var gainmode_i = 0; gainmode_i < gainmode_n; gainmode_i++)
+            {//将对应的选项设为checked
+                ccd_5gainmode.find('input[value="' + data.gainmode[gainmode_i] + '"]').prop('checked', true);
+            }
+        }/*增益模式 结束*/
+        data.gainnumber === undefined ? ccd_5GainNumber.val('0') : ccd_5GainNumber.val(data.gainnumber);
+     //     /*
+     //      *增益值和读出噪声值 暂时未做
+     //     */
+        data.shuttertype === undefined ? ccd_5ShutterType.val('0') : ccd_5ShutterType.val(data.shuttertype);
+        /*快门模式*/
+        if ( data.shuttermode )
+        {
+            data.shuttermode = data.shuttermode.split('#');
+            var shuttermode_n = data.shuttermode.length;
+            for (var shuttermode_i = 0; shuttermode_i < shuttermode_n; shuttermode_i++)
+            {//将对应的选项设为checked
+               ccd_5ShutterMode.find('input[value="' + data.shuttermode[shuttermode_i] + '"]').prop('checked', true);
+            }
+        }/*快门模式 结束*/
+        data.issupportfullframe == '1' ? $('#ccd_5IsSupportFullFrame').click() : $('#ccd_5IsSupportFullFrame-1').click();
+        data.issupportem == '1' ? $('#ccd_5IsSupportEM').click() : $('#ccd_5IsSupportEM-1').click();
+        data.issupportscmosnoisefilter == '1' ? $('#ccd_5IsSupportsCmosNoiseFilter').click() : $('#ccd_5IsSupportsCmosNoiseFilter-1').click();
+        data.issupportbaseline == '1' ? $('#ccd_5IsSupportBaseLine').click() : $('#ccd_5IsSupportBaseLine-1').click();
+        data.issupportoverscan == '1' ? $('#ccd_5IsSupportOverScan').click() : $('#ccd_5IsSupportOverScan-1').click();
+        data.binarray === undefined ? ccd_5BinArray.val('0') : ccd_5BinArray.val(data.binarray);
+        data.issupportroi == '1' ? $('#ccd_5IsSupportROI').click() : $('#ccd_5IsSupportROI-1').click();
+        /*接口类型*/
+        if ( data.interfacetype )
+        {
+            data.interfacetype = data.interfacetype.split('#');
+            var interfacetype_n = data.interfacetype.length;
+            for (var interfacetype_i = 0; interfacetype_i < interfacetype_n; interfacetype_i++)
+            {//将对应的选项设为checked
+              ccd_5InterfaceType.find('input[value="' + data.interfacetype[interfacetype_i] + '"]').prop('checked', true);
+            }
+        }/*接口类型 结束*/
+        /*曝光触发模式*/
+        if ( data.exposetriggermode )
+        {
+            data.exposetriggermode = data.exposetriggermode.split('#');
+            var exposetrigger_n = data.exposetriggermode.length;
+            for (var exposetrigger_i = 0; exposetrigger_i < exposetrigger_n; exposetrigger_i++)
+            {//将对应的选项设为checked
+              ccd_5ExposeTriggerMode.find('input[value="' + data.exposetriggermode[exposetrigger_i] + '"]').prop('checked', true);
+            }
+        }/*曝光触发模式 结束*/
+        $('#ccd_5EmMaxValue').val(data.emmaxvalue);
+        $('#ccd_5EmMinValue').val(data.emminvalue);
+        data.canconnect == '1' ? $('#ccd_5CanConnect').click() : $('#ccd_5CanConnect-1').click();
+        data.cansetcoolert == '1' ? $('#ccd_5CanSetCoolerT').click() : $('#ccd_5CanSetCoolerT-1').click();
+        data.cansetexposureparam == '1' ? $('#ccd_5CanSetExposureParam').click() : $('#ccd_5CanSetExposureParam-1').click();
+        data.canstartexposure == '1' ? $('#ccd_5CanStartExposure').click() : $('#ccd_5CanStartExposure-1').click();
+        data.canstopexposure == '1' ? $('#ccd_5CanStopExposure').click() : $('#ccd_5CanStopExposure-1').click();
+        data.canabortexposure == '1' ? $('#ccd_5CanAbortExposure').click() : $('#ccd_5CanAbortExposure-1').click();
+        data.cansetgain == '1' ? $('#ccd_5CanSetGain').click() : $('#ccd_5CanSetGain-1').click();
+        data.cansetreadoutspeedmode == '1' ? $('#ccd_5CanSetReadoutSpeedMode').click() : $('#ccd_5CanSetReadoutSpeedMode-1').click();
+        data.cansettransferspeedmode == '1' ? $('#ccd_5CanSetTransferSpeedMode').click() : $('#ccd_5CanSetTransferSpeedMode-1').click();
+        data.cansetbin == '1' ? $('#ccd_5CanSetBin').click() : $('#ccd_5CanSetBin-1').click();
+        data.cansetroi == '1' ? $('#ccd_5CanSetROI').click() : $('#ccd_5CanSetROI-1').click();
+        data.cansetshutter == '1' ? $('#ccd_5CanSetShutter').click() : $('#ccd_5CanSetShutter-1').click();
+        data.cansetfullframe == '1' ? $('#ccd_5CanSetFullFrame').click() : $('#ccd_5CanSetFullFrame-1').click();
+        data.cansetem == '1' ? $('#ccd_5CanSetEM').click() : $('#ccd_5CanSetEM-1').click();
+        data.cannoisefilter == '1' ? $('#ccd_5CanNoiseFilter').click() : $('#ccd_5CanNoiseFilter-1').click();
+        data.cansetbaseline == '1' ? $('#ccd_5CanSetBaseline').click() : $('#ccd_5CanSetBaseline-1').click();
+        data.cansetoverscan == '1' ? $('#ccd_5CanSetOverScan').click() : $('#ccd_5CanSetOverScan-1').click();
+     $('#ccd_5AttrVersion').val(data.attrversion);
+     }/**************显示ccd-No5配置数据 结束******************/
     
     /*验证ccd-No1 表单数据*/
     /*
@@ -2043,9 +2560,10 @@ $(function () {
     ccdMinExposureTime.blur(function () {//验证 最小曝光时间
         var that = $(this);
         var v = $.trim(that.val());
+        var v1 = $.trim(ccdMaxExposureTime.val());
         var err = 0;
 
-        if ( !$.isNumeric(v) || v <= 0)
+        if ( !$.isNumeric(v) || v > v1 )
         {
             err = 1;
             that.data('info', '最小曝光时间输入有误!');
@@ -2157,66 +2675,66 @@ $(function () {
             ccd2_errMsg += '探测器类型未选择!<br>';
         }
 
-        if ( $('#ccd_2ImageBits').val() == 0 ) //验证 图像位数
+        if ( ccd_2ImageBits.val() == 0 ) //验证 图像位数
         {
             ccd2_errMsg += '图像位数未选择!<br>';
         }
 
-        if ( $('#ccd_2CoolerMode').val() == 0 ) //验证 制冷方式
+        if ( ccd_2CoolerMode.val() == 0 ) //验证 制冷方式
         {
             ccd2_errMsg += '制冷方式未选择!<br>';
         }
 
-        if ( $('#ccd_2ReadoutSpeed').val() == 0 ) //验证 读出速度模式
+        if ( ccd_2ReadoutSpeed.val() == 0 ) //验证 读出速度模式
         {
             ccd2_errMsg += '读出速度模式未选择!<br>';
         }
 
-        if ( $('#ccd_2TransferSpeed').val() == 0 ) //验证 转移速度模式
+        if ( ccd_2TransferSpeed.val() == 0 ) //验证 转移速度模式
         {
             ccd2_errMsg += '转移速度模式未选择!<br>';
         }
 
-        if ( $('#ccd_2GainNumber').val() == 0 ) //验证 增益档位
+        if ( ccd_2GainNumber.val() == 0 ) //验证 增益档位
         {
             ccd2_errMsg += '增益档位未选择!<br>';
         }
 
-        if ( $('#ccd_2ShutterType').val() == 0 ) //验证 快门类型
+        if ( ccd_2ShutterType.val() == 0 ) //验证 快门类型
         {
             ccd2_errMsg += '快门类型未选择!<br>';
         }
 
-        if ( $('#ccd_2BinArray').val() == 0 ) //验证 Bin值
+        if ( ccd_2BinArray.val() == 0 ) //验证 Bin值
         {
             ccd2_errMsg += 'Bin值未选择!<br>';
         }
 
-        var ccdreadoutMode_check_num = $('#ccd_2readoutMode').children('input:checkbox:checked').length; //读出模式复选框 被选中的数量
+        var ccdreadoutMode_check_num = ccd_2readoutMode.children('input:checkbox:checked').length; //读出模式复选框 被选中的数量
         if ( ccdreadoutMode_check_num < 1)
         {
             ccd2_errMsg += '读出模式未选择!<br>';
         }
 
-        var ccd_1gainmode_check_num = $('#ccd_2gainmode').children('input:checkbox:checked').length; //增益模式复选框 被选中的数量
+        var ccd_1gainmode_check_num = ccd_2gainmode.children('input:checkbox:checked').length; //增益模式复选框 被选中的数量
         if ( ccd_1gainmode_check_num < 1)
         {
             ccd2_errMsg += '增益模式未选择!<br>';
         }
 
-        var ccd_1ShutterMode_check_num = $('#ccd_2ShutterMode').children('input:checkbox:checked').length; //快门模式复选框 被选中的数量
+        var ccd_1ShutterMode_check_num = ccd_2ShutterMode.children('input:checkbox:checked').length; //快门模式复选框 被选中的数量
         if ( ccd_1ShutterMode_check_num < 1)
         {
             ccd2_errMsg += '快门模式未选择!<br>';
         }
 
-        var ccd_1InterfaceType_check_num = $('#ccd_2InterfaceType').children('input:checkbox:checked').length; //接口类型复选框 被选中的数量
+        var ccd_1InterfaceType_check_num = ccd_2InterfaceType.children('input:checkbox:checked').length; //接口类型复选框 被选中的数量
         if ( ccd_1InterfaceType_check_num < 1)
         {
             ccd2_errMsg += '接口类型未选择!<br>';
         }
 
-        var ccd_1ExposeTriggerMode_check_num = $('#ccd_2ExposeTriggerMode').children('input:checkbox:checked').length; //曝光触发模式复选框 被选中的数量
+        var ccd_1ExposeTriggerMode_check_num = ccd_2ExposeTriggerMode.children('input:checkbox:checked').length; //曝光触发模式复选框 被选中的数量
         if ( ccd_1ExposeTriggerMode_check_num < 1)
         {
             ccd2_errMsg += '曝光触发模式未选择!<br>';
@@ -2484,9 +3002,10 @@ $(function () {
     $('#ccd_2MinExposureTime').blur(function () {//验证 最小曝光时间
         var that = $(this);
         var v = $.trim(that.val());
+        var v1 = $.trim($('#ccd_2MaxExposureTime').val());
         var err = 0;
 
-        if ( !$.isNumeric(v) || v <= 0)
+        if ( !$.isNumeric(v) || v > v1)
         {
             err = 1;
             that.data('info', '最小曝光时间输入有误!');
@@ -2574,6 +3093,1332 @@ $(function () {
         that.data('err', err);
     });//验证 属性版本号 结束
     /****************ccd-No2 验证 结束 ****************/
+
+    /****************ccd-No3 验证 ****************/
+    var ccd3_text = ccd_3Form.find('input[type="text"]');
+
+    function ccd3_select_valid (ccd_3_Data)
+    {
+        var ccd3_errMsg = ''; //ccd表单的错误提示
+
+        ccd3_text.each(//逐一验证文本输入框
+            function () {
+                $(this).blur();
+                if ( $(this).data('err') == 1 )
+                {
+                ccd3_errMsg += $(this).data('info') + '<br>';
+                }
+            }
+        );
+
+        //逐一验证下拉选择框
+        if ( $('#ccd_3Type').val() == 0 ) //验证 探测器类型
+        {
+            ccd3_errMsg += '探测器类型未选择!<br>';
+        }
+
+        if ( ccd_3ImageBits.val() == 0 ) //验证 图像位数
+        {
+            ccd3_errMsg += '图像位数未选择!<br>';
+        }
+
+        if ( ccd_3CoolerMode.val() == 0 ) //验证 制冷方式
+        {
+            ccd3_errMsg += '制冷方式未选择!<br>';
+        }
+
+        if ( ccd_3ReadoutSpeed.val() == 0 ) //验证 读出速度模式
+        {
+            ccd3_errMsg += '读出速度模式未选择!<br>';
+        }
+
+        if ( ccd_3TransferSpeed.val() == 0 ) //验证 转移速度模式
+        {
+            ccd3_errMsg += '转移速度模式未选择!<br>';
+        }
+
+        if ( ccd_3GainNumber.val() == 0 ) //验证 增益档位
+        {
+            ccd3_errMsg += '增益档位未选择!<br>';
+        }
+
+        if ( ccd_3ShutterType.val() == 0 ) //验证 快门类型
+        {
+            ccd3_errMsg += '快门类型未选择!<br>';
+        }
+
+        if ( ccd_3BinArray.val() == 0 ) //验证 Bin值
+        {
+            ccd3_errMsg += 'Bin值未选择!<br>';
+        }
+
+        var ccdreadoutMode_check_num = ccd_3readoutMode.children('input:checkbox:checked').length; //读出模式复选框 被选中的数量
+        if ( ccdreadoutMode_check_num < 1)
+        {
+            ccd3_errMsg += '读出模式未选择!<br>';
+        }
+
+        var ccd_1gainmode_check_num = ccd_3gainmode.children('input:checkbox:checked').length; //增益模式复选框 被选中的数量
+        if ( ccd_1gainmode_check_num < 1)
+        {
+            ccd3_errMsg += '增益模式未选择!<br>';
+        }
+
+        var ccd_1ShutterMode_check_num = ccd_3ShutterMode.children('input:checkbox:checked').length; //快门模式复选框 被选中的数量
+        if ( ccd_1ShutterMode_check_num < 1)
+        {
+            ccd3_errMsg += '快门模式未选择!<br>';
+        }
+
+        var ccd_1InterfaceType_check_num = ccd_3InterfaceType.children('input:checkbox:checked').length; //接口类型复选框 被选中的数量
+        if ( ccd_1InterfaceType_check_num < 1)
+        {
+            ccd3_errMsg += '接口类型未选择!<br>';
+        }
+
+        var ccd_1ExposeTriggerMode_check_num = ccd_3ExposeTriggerMode.children('input:checkbox:checked').length; //曝光触发模式复选框 被选中的数量
+        if ( ccd_1ExposeTriggerMode_check_num < 1)
+        {
+            ccd3_errMsg += '曝光触发模式未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('issupportfullframe') === null ) //验证 支持帧转移
+        {
+            ccd3_errMsg += '是否支持帧转移未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('issupportem') === null ) //验证 支持EM
+        {
+            ccd3_errMsg += '是否支持EM未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('issupportscmosnoisefilter') === null ) //验证 CMOS noise filter
+        {
+            ccd3_errMsg += 'CMOS noise filter未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('issupportbaseline') === null ) //验证 支持base line
+        {
+            ccd3_errMsg += '是否支持base line未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('issupportoverscan') === null ) //验证 支持Over scan
+        {
+            ccd3_errMsg += '是否支持Over scan未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('issupportroi') === null ) //验证 支持开窗
+        {
+            ccd3_errMsg += '是否支持开窗未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('issupportroi') === null ) //验证 支持开窗
+        {
+            ccd3_errMsg += '是否支持开窗未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('canconnect') === null ) //验证 支持连接
+        {
+            ccd3_errMsg += '是否支持连接未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('cansetcoolert') === null ) //验证 设置制冷温度
+        {
+            ccd3_errMsg += '是否支持设置制冷温度未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('cansetexposureparam') === null ) //验证 设置曝光策略
+        {
+            ccd3_errMsg += '是否支持设置曝光策略未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('canstartexposure') === null ) //验证 支持开始曝光
+        {
+            ccd3_errMsg += '是否支持开始曝光未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('canstopexposure') === null ) //验证 支持停止曝光
+        {
+            ccd3_errMsg += '是否支持停止曝光未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('canabortexposure') === null ) //验证 支持终止曝光
+        {
+            ccd3_errMsg += '是否支持终止曝光未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('cansetgain') === null ) //验证 设置增益
+        {
+            ccd3_errMsg += '是否支持设置增益未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('cansetreadoutspeedmode') === null ) //验证 读出速度模式
+        {
+            ccd3_errMsg += '是否支持设置读出速度模式未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('cansettransferspeedmode') === null ) //验证 转移速度模式
+        {
+            ccd3_errMsg += '是否支持设置转移速度模式未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('cansetbin') === null ) //验证 设置BIN
+        {
+            ccd3_errMsg += '是否支持设置BIN未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('cansetroi') === null ) //验证 设置ROI
+        {
+            ccd3_errMsg += '是否支持设置ROI未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('cansetshutter') === null ) //验证 设置快门
+        {
+            ccd3_errMsg += '是否支持设置快门未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('cansetfullframe') === null ) //验证 设置帧转移
+        {
+            ccd3_errMsg += '是否支持设置帧转移未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('cansetem') === null ) //验证 设置EM
+        {
+            ccd3_errMsg += '是否支持设置EM未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('cannoisefilter') === null ) //验证 设置CMOS noise filter
+        {
+            ccd3_errMsg += '是否支持设置CMOS noise filter未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('cansetbaseline') === null ) //验证 设置Base line
+        {
+            ccd3_errMsg += '是否支持设置Base line未选择!<br>';
+        }
+
+        if ( ccd_3_Data.get('cansetoverscan') === null ) //验证 设置Over scan
+        {
+            ccd3_errMsg += '是否支持设置Over scan未选择!<br>';
+        }
+
+        if (ccd3_errMsg !== '' )
+        {
+            layer.alert(ccd3_errMsg, {shade:false, closeBtn:0});
+            return false;
+        }else{
+            return true;
+        }
+    }
+    
+        //接下来逐一验证ccd3 text
+        $('#ccd_3Id').blur(function (e) {//验证 ccdId
+            var that = $(this);
+            var v = $.trim(that.val());
+            var patn = /^[0-9]{5}$/;
+            var err = 0;
+    
+            if ( !patn.test(v) )
+            {
+                err = 1;
+                that.data('info', 'ccd Id应为5位数字!');
+                layer.tips('ccd Id应为5位数字!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_3Name').blur(function () {//验证 ccd名称
+            var that = $(this);
+            var v = $.trim(that.val());
+            var err = 0;
+    
+            if ( v.length < 2 )
+            {
+                err = 1;
+                that.data('info', 'ccd名称不能为空!');
+                layer.tips('ccd名称不能为空!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_3Xpixel').blur(function () {//验证 x像素
+            var that = $(this);
+            var v = $.trim(that.val());
+            var patn = /^[0-9]{4,}$/;
+            var err = 0;
+    
+            if ( !patn.test(v) || v < 1024)
+            {
+                err = 1;
+                that.data('info', 'x像素输入有误!');
+                layer.tips('x像素格式输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_3Ypixel').blur(function () {//验证 y像素
+            var that = $(this);
+            var v = $.trim(that.val());
+            var patn = /^[0-9]{4,}$/;
+            var err = 0;
+    
+            if ( !patn.test(v) || v < 1024)
+            {
+                err = 1;
+                that.data('info', 'y像素输入有误!');
+                layer.tips('y像素格式输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_3XpixelSize').blur(function () {//验证 x像元
+            var that = $(this);
+            var v = $.trim(that.val());
+            var err = 0;
+    
+            if ( !$.isNumeric(v) || v <= 0)
+            {
+                err = 1;
+                that.data('info', 'x像元输入有误!');
+                layer.tips('x像元格式输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_3YpixelSize').blur(function () {//验证 y像元
+            var that = $(this);
+            var v = $.trim(that.val());
+            var err = 0;
+    
+            if ( !$.isNumeric(v) || v <= 0)
+            {
+                err = 1;
+                that.data('info', 'y像元输入有误!');
+                layer.tips('y像元格式输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_3SensorName').blur(function () {//验证 传感器名称
+            var that = $(this);
+            var v = $.trim(that.val());
+            var err = 0;
+    
+            if ( v.length < 3)
+            {
+                err = 1;
+                that.data('info', '传感器名称输入有误!');
+                layer.tips('传感器名称输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_3LowCoolerT').blur(function () {//验证 最低制冷温度
+            var that = $(this);
+            var v = $.trim(that.val());
+            var err = 0;
+    
+            if ( !$.isNumeric(v) )
+            {
+                err = 1;
+                that.data('info', '最低制冷温度输入有误!');
+                layer.tips('最低制冷温度输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_3MaxExposureTime').blur(function () {//验证 最大曝光时间
+            var that = $(this);
+            var v = $.trim(that.val());
+            var err = 0;
+    
+            if ( !$.isNumeric(v) || v <= 0)
+            {
+                err = 1;
+                that.data('info', '最大曝光时间输入有误!');
+                layer.tips('最大曝光时间输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_3MinExposureTime').blur(function () {//验证 最小曝光时间
+            var that = $(this);
+            var v = $.trim(that.val());
+            var v1 = $.trim($('#ccd_3MaxExposureTime').val());
+            var err = 0;
+    
+            if ( !$.isNumeric(v) || v > v1*1 )
+            {
+                err = 1;
+                that.data('info', '最小曝光时间输入有误!');
+                layer.tips('最小曝光时间输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_3ExposureTimeRation').blur(function () {//验证 曝光时间分辨率
+            var that = $(this);
+            var v = $.trim(that.val());
+            var patn = /^[0-9]+$/;
+            var err = 0;
+    
+            if ( !patn.test(v) || v < 1)
+            {
+                err = 1;
+                that.data('info', '曝光时间分辨率输入有误!');
+                layer.tips('曝光时间分辨率输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_3FullWellDepth').blur(function () {//验证 满阱电荷
+            var that = $(this);
+            var v = $.trim(that.val());
+            var patn = /^[0-9]+$/;
+            var err = 0;
+    
+            if ( !patn.test(v) || v < 1)
+            {
+                err = 1;
+                that.data('info', '满阱电荷输入有误!');
+                layer.tips('满阱电荷输入有误!!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        // /*验证 增益值 */
+    
+        // /*验证 读出噪声值*/
+    
+        $('#ccd_3EmMaxValue').blur(function () {//验证 最大EM
+            var that = $(this);
+            var v = $.trim(that.val());
+            var patn = /^[0-9]+$/;
+            var err = 0;
+    
+            if ( !patn.test(v) )
+            {
+                err = 1;
+                that.data('info', '最大EM输入有误!');
+                layer.tips('最大EM格式输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+        
+        $('#ccd_3EmMinValue').blur(function () {//验证 最小EM
+            var that = $(this);
+            var v = $.trim(that.val());
+            var patn = /^[0-9]+$/;
+            var err = 0;
+            var ccd_EmMaxVal = $.trim($('#ccd_3EmMaxValue').val());
+     
+            if ( !patn.test(v) || v >= parseInt(ccd_EmMaxVal) )
+            {
+                err = 1;
+                that.data('info', '最小EM输入有误!');
+                layer.tips('最小EM格式输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_3AttrVersion').blur(function () {//验证 属性版本号
+            var that = $(this);
+            var v = $.trim(that.val());
+            var err = 0;
+    
+            if ( v.length < 1 )
+            {
+                err = 1;
+                that.data('info', '属性版本号输入有误!');
+                layer.tips('属性版本号输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });//验证 属性版本号 结束
+    /*****************ccd-No3 表单验证 结束*************/
+
+    /****************ccd-No4 验证 ****************/
+    var ccd4_text = ccd_4Form.find('input[type="text"]');
+
+    function ccd4_select_valid (ccd_4_Data)
+    {
+        var ccd4_errMsg = ''; //ccd表单的错误提示
+
+        ccd4_text.each(//逐一验证文本输入框
+            function () {
+                $(this).blur();
+                if ( $(this).data('err') == 1 )
+                {
+                    ccd4_errMsg += $(this).data('info') + '<br>';
+                }
+            }
+        );
+
+        //逐一验证下拉选择框
+        if ( $('#ccd_4Type').val() == 0 ) //验证 探测器类型
+        {
+            ccd4_errMsg += '探测器类型未选择!<br>';
+        }
+
+        if ( ccd_4ImageBits.val() == 0 ) //验证 图像位数
+        {
+            ccd4_errMsg += '图像位数未选择!<br>';
+        }
+
+        if ( ccd_4CoolerMode.val() == 0 ) //验证 制冷方式
+        {
+            ccd4_errMsg += '制冷方式未选择!<br>';
+        }
+
+        if ( ccd_4ReadoutSpeed.val() == 0 ) //验证 读出速度模式
+        {
+            ccd4_errMsg += '读出速度模式未选择!<br>';
+        }
+
+        if ( ccd_4TransferSpeed.val() == 0 ) //验证 转移速度模式
+        {
+            ccd4_errMsg += '转移速度模式未选择!<br>';
+        }
+
+        if ( ccd_4GainNumber.val() == 0 ) //验证 增益档位
+        {
+            ccd4_errMsg += '增益档位未选择!<br>';
+        }
+
+        if ( ccd_4ShutterType.val() == 0 ) //验证 快门类型
+        {
+            ccd4_errMsg += '快门类型未选择!<br>';
+        }
+
+        if ( ccd_4BinArray.val() == 0 ) //验证 Bin值
+        {
+            ccd4_errMsg += 'Bin值未选择!<br>';
+        }
+
+        var ccdreadoutMode_check_num = ccd_4readoutMode.children('input:checkbox:checked').length; //读出模式复选框 被选中的数量
+        if ( ccdreadoutMode_check_num < 1)
+        {
+            ccd4_errMsg += '读出模式未选择!<br>';
+        }
+
+        var ccd_1gainmode_check_num = ccd_4gainmode.children('input:checkbox:checked').length; //增益模式复选框 被选中的数量
+        if ( ccd_1gainmode_check_num < 1)
+        {
+            ccd4_errMsg += '增益模式未选择!<br>';
+        }
+
+        var ccd_1ShutterMode_check_num = ccd_4ShutterMode.children('input:checkbox:checked').length; //快门模式复选框 被选中的数量
+        if ( ccd_1ShutterMode_check_num < 1)
+        {
+            ccd4_errMsg += '快门模式未选择!<br>';
+        }
+
+        var ccd_1InterfaceType_check_num = ccd_4InterfaceType.children('input:checkbox:checked').length; //接口类型复选框 被选中的数量
+        if ( ccd_1InterfaceType_check_num < 1)
+        {
+            ccd4_errMsg += '接口类型未选择!<br>';
+        }
+
+        var ccd_1ExposeTriggerMode_check_num = ccd_4ExposeTriggerMode.children('input:checkbox:checked').length; //曝光触发模式复选框 被选中的数量
+        if ( ccd_1ExposeTriggerMode_check_num < 1)
+        {
+            ccd4_errMsg += '曝光触发模式未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('issupportfullframe') === null ) //验证 支持帧转移
+        {
+            ccd4_errMsg += '是否支持帧转移未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('issupportem') === null ) //验证 支持EM
+        {
+            ccd4_errMsg += '是否支持EM未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('issupportscmosnoisefilter') === null ) //验证 CMOS noise filter
+        {
+            ccd4_errMsg += 'CMOS noise filter未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('issupportbaseline') === null ) //验证 支持base line
+        {
+            ccd4_errMsg += '是否支持base line未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('issupportoverscan') === null ) //验证 支持Over scan
+        {
+            ccd4_errMsg += '是否支持Over scan未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('issupportroi') === null ) //验证 支持开窗
+        {
+            ccd4_errMsg += '是否支持开窗未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('issupportroi') === null ) //验证 支持开窗
+        {
+            ccd4_errMsg += '是否支持开窗未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('canconnect') === null ) //验证 支持连接
+        {
+            ccd4_errMsg += '是否支持连接未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('cansetcoolert') === null ) //验证 设置制冷温度
+        {
+            ccd4_errMsg += '是否支持设置制冷温度未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('cansetexposureparam') === null ) //验证 设置曝光策略
+        {
+            ccd4_errMsg += '是否支持设置曝光策略未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('canstartexposure') === null ) //验证 支持开始曝光
+        {
+            ccd4_errMsg += '是否支持开始曝光未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('canstopexposure') === null ) //验证 支持停止曝光
+        {
+            ccd4_errMsg += '是否支持停止曝光未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('canabortexposure') === null ) //验证 支持终止曝光
+        {
+            ccd4_errMsg += '是否支持终止曝光未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('cansetgain') === null ) //验证 设置增益
+        {
+            ccd4_errMsg += '是否支持设置增益未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('cansetreadoutspeedmode') === null ) //验证 读出速度模式
+        {
+            ccd4_errMsg += '是否支持设置读出速度模式未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('cansettransferspeedmode') === null ) //验证 转移速度模式
+        {
+            ccd4_errMsg += '是否支持设置转移速度模式未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('cansetbin') === null ) //验证 设置BIN
+        {
+            ccd4_errMsg += '是否支持设置BIN未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('cansetroi') === null ) //验证 设置ROI
+        {
+            ccd4_errMsg += '是否支持设置ROI未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('cansetshutter') === null ) //验证 设置快门
+        {
+            ccd4_errMsg += '是否支持设置快门未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('cansetfullframe') === null ) //验证 设置帧转移
+        {
+            ccd4_errMsg += '是否支持设置帧转移未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('cansetem') === null ) //验证 设置EM
+        {
+            ccd4_errMsg += '是否支持设置EM未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('cannoisefilter') === null ) //验证 设置CMOS noise filter
+        {
+            ccd4_errMsg += '是否支持设置CMOS noise filter未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('cansetbaseline') === null ) //验证 设置Base line
+        {
+            ccd4_errMsg += '是否支持设置Base line未选择!<br>';
+        }
+
+        if ( ccd_4_Data.get('cansetoverscan') === null ) //验证 设置Over scan
+        {
+            ccd4_errMsg += '是否支持设置Over scan未选择!<br>';
+        }
+
+        if (ccd4_errMsg !== '' )
+        {
+            layer.alert(ccd4_errMsg, {shade:false, closeBtn:0});
+            return false;
+        }else{
+            return true;
+        }
+    }/***ccd4_select_valic() 结束***/
+    
+        //接下来逐一验证ccd4 text
+        $('#ccd_4Id').blur(function (e) {//验证 ccdId
+            var that = $(this);
+            var v = $.trim(that.val());
+            var patn = /^[0-9]{5}$/;
+            var err = 0;
+    
+            if ( !patn.test(v) )
+            {
+                err = 1;
+                that.data('info', 'ccd Id应为5位数字!');
+                layer.tips('ccd Id应为5位数字!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_4Name').blur(function () {//验证 ccd名称
+            var that = $(this);
+            var v = $.trim(that.val());
+            var err = 0;
+    
+            if ( v.length < 2 )
+            {
+                err = 1;
+                that.data('info', 'ccd名称不能为空!');
+                layer.tips('ccd名称不能为空!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_4Xpixel').blur(function () {//验证 x像素
+            var that = $(this);
+            var v = $.trim(that.val());
+            var patn = /^[0-9]{4,}$/;
+            var err = 0;
+    
+            if ( !patn.test(v) || v < 1024)
+            {
+                err = 1;
+                that.data('info', 'x像素输入有误!');
+                layer.tips('x像素格式输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_4Ypixel').blur(function () {//验证 y像素
+            var that = $(this);
+            var v = $.trim(that.val());
+            var patn = /^[0-9]{4,}$/;
+            var err = 0;
+    
+            if ( !patn.test(v) || v < 1024)
+            {
+                err = 1;
+                that.data('info', 'y像素输入有误!');
+                layer.tips('y像素格式输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_4XpixelSize').blur(function () {//验证 x像元
+            var that = $(this);
+            var v = $.trim(that.val());
+            var err = 0;
+    
+            if ( !$.isNumeric(v) || v <= 0)
+            {
+                err = 1;
+                that.data('info', 'x像元输入有误!');
+                layer.tips('x像元格式输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_4YpixelSize').blur(function () {//验证 y像元
+            var that = $(this);
+            var v = $.trim(that.val());
+            var err = 0;
+    
+            if ( !$.isNumeric(v) || v <= 0)
+            {
+                err = 1;
+                that.data('info', 'y像元输入有误!');
+                layer.tips('y像元格式输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_4SensorName').blur(function () {//验证 传感器名称
+            var that = $(this);
+            var v = $.trim(that.val());
+            var err = 0;
+    
+            if ( v.length < 3)
+            {
+                err = 1;
+                that.data('info', '传感器名称输入有误!');
+                layer.tips('传感器名称输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_4LowCoolerT').blur(function () {//验证 最低制冷温度
+            var that = $(this);
+            var v = $.trim(that.val());
+            var err = 0;
+    
+            if ( !$.isNumeric(v) )
+            {
+                err = 1;
+                that.data('info', '最低制冷温度输入有误!');
+                layer.tips('最低制冷温度输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_4MaxExposureTime').blur(function () {//验证 最大曝光时间
+            var that = $(this);
+            var v = $.trim(that.val());
+            var err = 0;
+    
+            if ( !$.isNumeric(v) || v <= 0)
+            {
+                err = 1;
+                that.data('info', '最大曝光时间输入有误!');
+                layer.tips('最大曝光时间输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_4MinExposureTime').blur(function () {//验证 最小曝光时间
+            var that = $(this);
+            var v = $.trim(that.val());
+            var v1 = $.trim($('#ccd_4MaxExposureTime').val());
+            var err = 0;
+    
+            if ( !$.isNumeric(v) || v > v1*1 )
+            {
+                err = 1;
+                that.data('info', '最小曝光时间输入有误!');
+                layer.tips('最小曝光时间输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_4ExposureTimeRation').blur(function () {//验证 曝光时间分辨率
+            var that = $(this);
+            var v = $.trim(that.val());
+            var patn = /^[0-9]+$/;
+            var err = 0;
+    
+            if ( !patn.test(v) || v < 1)
+            {
+                err = 1;
+                that.data('info', '曝光时间分辨率输入有误!');
+                layer.tips('曝光时间分辨率输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_4FullWellDepth').blur(function () {//验证 满阱电荷
+            var that = $(this);
+            var v = $.trim(that.val());
+            var patn = /^[0-9]+$/;
+            var err = 0;
+    
+            if ( !patn.test(v) || v < 1)
+            {
+                err = 1;
+                that.data('info', '满阱电荷输入有误!');
+                layer.tips('满阱电荷输入有误!!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        // /*验证 增益值 */
+    
+        // /*验证 读出噪声值*/
+    
+        $('#ccd_4EmMaxValue').blur(function () {//验证 最大EM
+            var that = $(this);
+            var v = $.trim(that.val());
+            var patn = /^[0-9]+$/;
+            var err = 0;
+    
+            if ( !patn.test(v) )
+            {
+                err = 1;
+                that.data('info', '最大EM输入有误!');
+                layer.tips('最大EM格式输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+        
+        $('#ccd_4EmMinValue').blur(function () {//验证 最小EM
+            var that = $(this);
+            var v = $.trim(that.val());
+            var patn = /^[0-9]+$/;
+            var err = 0;
+            var ccd_EmMaxVal = $.trim($('#ccd_4EmMaxValue').val());
+     
+            if ( !patn.test(v) || v >= parseInt(ccd_EmMaxVal) )
+            {
+                err = 1;
+                that.data('info', '最小EM输入有误!');
+                layer.tips('最小EM格式输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });
+    
+        $('#ccd_4AttrVersion').blur(function () {//验证 属性版本号
+            var that = $(this);
+            var v = $.trim(that.val());
+            var err = 0;
+    
+            if ( v.length < 1 )
+            {
+                err = 1;
+                that.data('info', '属性版本号输入有误!');
+                layer.tips('属性版本号输入有误!', that, {tipsMore: true});
+            }		
+            that.data('err', err);
+        });//验证 属性版本号 结束
+    /*****************ccd-No4 表单验证 结束*************/
+
+    /*****************ccd-No5 表单验证*************/
+    var ccd5_text = ccd_5Form.find('input[type="text"]');
+
+    function ccd5_select_valid (ccd_5_Data)
+    {
+        var ccd5_errMsg = ''; //ccd表单的错误提示
+
+        ccd5_text.each(//逐一验证文本输入框
+            function () {
+                $(this).blur();
+                if ( $(this).data('err') == 1 )
+                {
+                    ccd5_errMsg += $(this).data('info') + '<br>';
+                }
+            }
+        );
+
+        //逐一验证下拉选择框
+        if ( $('#ccd_5Type').val() == 0 ) //验证 探测器类型
+        {
+            ccd5_errMsg += '探测器类型未选择!<br>';
+        }
+
+        if ( ccd_5ImageBits.val() == 0 ) //验证 图像位数
+        {
+            ccd5_errMsg += '图像位数未选择!<br>';
+        }
+
+        if ( ccd_5CoolerMode.val() == 0 ) //验证 制冷方式
+        {
+            ccd5_errMsg += '制冷方式未选择!<br>';
+        }
+
+        if ( ccd_5ReadoutSpeed.val() == 0 ) //验证 读出速度模式
+        {
+            ccd5_errMsg += '读出速度模式未选择!<br>';
+        }
+
+        if ( ccd_5TransferSpeed.val() == 0 ) //验证 转移速度模式
+        {
+            ccd5_errMsg += '转移速度模式未选择!<br>';
+        }
+
+        if ( ccd_5GainNumber.val() == 0 ) //验证 增益档位
+        {
+            ccd5_errMsg += '增益档位未选择!<br>';
+        }
+
+        if ( ccd_5ShutterType.val() == 0 ) //验证 快门类型
+        {
+            ccd5_errMsg += '快门类型未选择!<br>';
+        }
+
+        if ( ccd_5BinArray.val() == 0 ) //验证 Bin值
+        {
+            ccd5_errMsg += 'Bin值未选择!<br>';
+        }
+
+        var ccdreadoutMode_check_num = ccd_5readoutMode.children('input:checkbox:checked').length; //读出模式复选框 被选中的数量
+        if ( ccdreadoutMode_check_num < 1)
+        {
+            ccd5_errMsg += '读出模式未选择!<br>';
+        }
+
+        var ccd_1gainmode_check_num = ccd_5gainmode.children('input:checkbox:checked').length; //增益模式复选框 被选中的数量
+        if ( ccd_1gainmode_check_num < 1)
+        {
+            ccd5_errMsg += '增益模式未选择!<br>';
+        }
+
+        var ccd_1ShutterMode_check_num = ccd_5ShutterMode.children('input:checkbox:checked').length; //快门模式复选框 被选中的数量
+        if ( ccd_1ShutterMode_check_num < 1)
+        {
+            ccd5_errMsg += '快门模式未选择!<br>';
+        }
+
+        var ccd_1InterfaceType_check_num = ccd_5InterfaceType.children('input:checkbox:checked').length; //接口类型复选框 被选中的数量
+        if ( ccd_1InterfaceType_check_num < 1)
+        {
+            ccd5_errMsg += '接口类型未选择!<br>';
+        }
+
+        var ccd_1ExposeTriggerMode_check_num = ccd_5ExposeTriggerMode.children('input:checkbox:checked').length; //曝光触发模式复选框 被选中的数量
+        if ( ccd_1ExposeTriggerMode_check_num < 1)
+        {
+            ccd5_errMsg += '曝光触发模式未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('issupportfullframe') === null ) //验证 支持帧转移
+        {
+            ccd5_errMsg += '是否支持帧转移未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('issupportem') === null ) //验证 支持EM
+        {
+            ccd5_errMsg += '是否支持EM未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('issupportscmosnoisefilter') === null ) //验证 CMOS noise filter
+        {
+            ccd5_errMsg += 'CMOS noise filter未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('issupportbaseline') === null ) //验证 支持base line
+        {
+            ccd5_errMsg += '是否支持base line未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('issupportoverscan') === null ) //验证 支持Over scan
+        {
+            ccd5_errMsg += '是否支持Over scan未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('issupportroi') === null ) //验证 支持开窗
+        {
+            ccd5_errMsg += '是否支持开窗未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('issupportroi') === null ) //验证 支持开窗
+        {
+            ccd5_errMsg += '是否支持开窗未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('canconnect') === null ) //验证 支持连接
+        {
+            ccd5_errMsg += '是否支持连接未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('cansetcoolert') === null ) //验证 设置制冷温度
+        {
+            ccd5_errMsg += '是否支持设置制冷温度未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('cansetexposureparam') === null ) //验证 设置曝光策略
+        {
+            ccd5_errMsg += '是否支持设置曝光策略未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('canstartexposure') === null ) //验证 支持开始曝光
+        {
+            ccd5_errMsg += '是否支持开始曝光未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('canstopexposure') === null ) //验证 支持停止曝光
+        {
+            ccd5_errMsg += '是否支持停止曝光未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('canabortexposure') === null ) //验证 支持终止曝光
+        {
+            ccd5_errMsg += '是否支持终止曝光未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('cansetgain') === null ) //验证 设置增益
+        {
+            ccd5_errMsg += '是否支持设置增益未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('cansetreadoutspeedmode') === null ) //验证 读出速度模式
+        {
+            ccd5_errMsg += '是否支持设置读出速度模式未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('cansettransferspeedmode') === null ) //验证 转移速度模式
+        {
+            ccd5_errMsg += '是否支持设置转移速度模式未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('cansetbin') === null ) //验证 设置BIN
+        {
+            ccd5_errMsg += '是否支持设置BIN未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('cansetroi') === null ) //验证 设置ROI
+        {
+            ccd5_errMsg += '是否支持设置ROI未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('cansetshutter') === null ) //验证 设置快门
+        {
+            ccd5_errMsg += '是否支持设置快门未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('cansetfullframe') === null ) //验证 设置帧转移
+        {
+            ccd5_errMsg += '是否支持设置帧转移未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('cansetem') === null ) //验证 设置EM
+        {
+            ccd5_errMsg += '是否支持设置EM未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('cannoisefilter') === null ) //验证 设置CMOS noise filter
+        {
+            ccd5_errMsg += '是否支持设置CMOS noise filter未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('cansetbaseline') === null ) //验证 设置Base line
+        {
+            ccd5_errMsg += '是否支持设置Base line未选择!<br>';
+        }
+
+        if ( ccd_5_Data.get('cansetoverscan') === null ) //验证 设置Over scan
+        {
+            ccd5_errMsg += '是否支持设置Over scan未选择!<br>';
+        }
+
+        if (ccd5_errMsg !== '' )
+        {
+            layer.alert(ccd5_errMsg, {shade:false, closeBtn:0});
+            return false;
+        }else{
+            return true;
+        }
+    }/*****ccd5_select_valid() 结束*****/
+
+    //接下来逐一验证ccd5 text
+    $('#ccd_5Id').blur(function (e) {//验证 ccdId
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^[0-9]{5}$/;
+        var err = 0;
+
+        if ( !patn.test(v) )
+        {
+            err = 1;
+            that.data('info', 'ccd Id应为5位数字!');
+            layer.tips('ccd Id应为5位数字!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });
+
+    $('#ccd_5Name').blur(function () {//验证 ccd名称
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( v.length < 2 )
+        {
+            err = 1;
+            that.data('info', 'ccd名称不能为空!');
+            layer.tips('ccd名称不能为空!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });
+
+    $('#ccd_5Xpixel').blur(function () {//验证 x像素
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^[0-9]{4,}$/;
+        var err = 0;
+
+        if ( !patn.test(v) || v < 1024)
+        {
+            err = 1;
+            that.data('info', 'x像素输入有误!');
+            layer.tips('x像素格式输入有误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });
+
+    $('#ccd_5Ypixel').blur(function () {//验证 y像素
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^[0-9]{4,}$/;
+        var err = 0;
+
+        if ( !patn.test(v) || v < 1024)
+        {
+            err = 1;
+            that.data('info', 'y像素输入有误!');
+            layer.tips('y像素格式输入有误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });
+
+    $('#ccd_5XpixelSize').blur(function () {//验证 x像元
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v <= 0)
+        {
+            err = 1;
+            that.data('info', 'x像元输入有误!');
+            layer.tips('x像元格式输入有误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });
+
+    $('#ccd_5YpixelSize').blur(function () {//验证 y像元
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v <= 0)
+        {
+            err = 1;
+            that.data('info', 'y像元输入有误!');
+            layer.tips('y像元格式输入有误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });
+
+    $('#ccd_5SensorName').blur(function () {//验证 传感器名称
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( v.length < 3)
+        {
+            err = 1;
+            that.data('info', '传感器名称输入有误!');
+            layer.tips('传感器名称输入有误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });
+
+    $('#ccd_5LowCoolerT').blur(function () {//验证 最低制冷温度
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) )
+        {
+            err = 1;
+            that.data('info', '最低制冷温度输入有误!');
+            layer.tips('最低制冷温度输入有误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });
+
+    $('#ccd_5MaxExposureTime').blur(function () {//验证 最大曝光时间
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v <= 0)
+        {
+            err = 1;
+            that.data('info', '最大曝光时间输入有误!');
+            layer.tips('最大曝光时间输入有误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });
+
+    $('#ccd_5MinExposureTime').blur(function () {//验证 最小曝光时间
+        var that = $(this);
+        var v = $.trim(that.val());
+        var v1 = $.trim($('#ccd_5MaxExposureTime').val());
+        var err = 0;
+
+        if ( !$.isNumeric(v) || v > v1*1 )
+        {
+            err = 1;
+            that.data('info', '最小曝光时间输入有误!');
+            layer.tips('最小曝光时间输入有误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });
+
+    $('#ccd_5ExposureTimeRation').blur(function () {//验证 曝光时间分辨率
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^[0-9]+$/;
+        var err = 0;
+
+        if ( !patn.test(v) || v < 1)
+        {
+            err = 1;
+            that.data('info', '曝光时间分辨率输入有误!');
+            layer.tips('曝光时间分辨率输入有误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });
+
+    $('#ccd_5FullWellDepth').blur(function () {//验证 满阱电荷
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^[0-9]+$/;
+        var err = 0;
+
+        if ( !patn.test(v) || v < 1)
+        {
+            err = 1;
+            that.data('info', '满阱电荷输入有误!');
+            layer.tips('满阱电荷输入有误!!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });
+
+    // /*验证 增益值 */
+
+    // /*验证 读出噪声值*/
+
+    $('#ccd_5EmMaxValue').blur(function () {//验证 最大EM
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^[0-9]+$/;
+        var err = 0;
+
+        if ( !patn.test(v) )
+        {
+            err = 1;
+            that.data('info', '最大EM输入有误!');
+            layer.tips('最大EM格式输入有误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });
+
+    $('#ccd_5EmMinValue').blur(function () {//验证 最小EM
+        var that = $(this);
+        var v = $.trim(that.val());
+        var patn = /^[0-9]+$/;
+        var err = 0;
+        var ccd_EmMaxVal = $.trim($('#ccd_5EmMaxValue').val());
+
+        if ( !patn.test(v) || v >= parseInt(ccd_EmMaxVal) )
+        {
+            err = 1;
+            that.data('info', '最小EM输入有误!');
+            layer.tips('最小EM格式输入有误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });
+
+    $('#ccd_5AttrVersion').blur(function () {//验证 属性版本号
+        var that = $(this);
+        var v = $.trim(that.val());
+        var err = 0;
+
+        if ( v.length < 1 )
+        {
+            err = 1;
+            that.data('info', '属性版本号输入有误!');
+            layer.tips('属性版本号输入有误!', that, {tipsMore: true});
+        }		
+        that.data('err', err);
+    });//验证 属性版本号 结束
+    /*****************ccd-No5 表单验证 结束*************/
 
     /*****************滤光片表单 按钮 js事件*************/
     var filterBtn = $('#filterBtn');
