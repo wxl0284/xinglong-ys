@@ -229,11 +229,6 @@ class Page extends Base
             /*查ccd配置数据*/
             $ccd_data = Db::table('ccdconf')->where('teleid', $id)->select();
             $ccd_num = count ($ccd_data);  //已配置的ccd数量
-            //隶属望远镜的值 是at_data['atname'] $ccd_data['atname'] = $at_data['atname'];
-            if ( isset ( $at_data['atname'] ) )
-            {
-                $ccd_data['atname'] = $at_data['atname'];
-            }
             
             $ccd_data['ccd_num'] = $ccd_num;
          
@@ -260,11 +255,11 @@ class Page extends Base
                 }
             }/*查ccd-No1相关文件 结束*/
             /*查ccd配置数据 结束*/
-
+            
             /*查滤光片配置数据*/
             $fiter_data = Db::table('filterconf')->where('teleid', $id)->find();
             //隶属望远镜的值 是at_data['atname'] $ccd_data['atname'] = $at_data['atname'];
-            if ( isset ( $at_data['atname'] ) ) $fiter_data['atname'] = $at_data['atname'];
+            //if ( isset ( $at_data['atname'] ) ) $fiter_data['atname'] = $at_data['atname'];
          
             $result['filter_data'] = $fiter_data;
 
@@ -288,7 +283,7 @@ class Page extends Base
 
              /*查随动圆顶配置数据*/
              $sDome_data = Db::table('sdomeconf')->where('teleid', $id)->find();
-             if ( isset ( $at_data['atname'] ) ) $sDome_data['atname'] = $at_data['atname'];
+             //if ( isset ( $at_data['atname'] ) ) $sDome_data['atname'] = $at_data['atname'];
           
              $result['sDome_data'] = $sDome_data;
  
@@ -312,7 +307,7 @@ class Page extends Base
 
              /*查全开圆顶配置数据*/
              $oDome_data = Db::table('odomeconf')->where('teleid', $id)->find();
-             if ( isset ( $at_data['atname'] ) ) $oDome_data['atname'] = $at_data['atname'];
+             //if ( isset ( $at_data['atname'] ) ) $oDome_data['atname'] = $at_data['atname'];
           
              $result['oDome_data'] = $oDome_data;
  
@@ -336,7 +331,7 @@ class Page extends Base
 
              /*查调焦器配置数据*/
              $focus_data = Db::table('focusconf')->where('teleid', $id)->find();
-             if ( isset ( $at_data['atname'] ) ) $focus_data['atname'] = $at_data['atname'];
+             //if ( isset ( $at_data['atname'] ) ) $focus_data['atname'] = $at_data['atname'];
           
              $result['focus_data'] = $focus_data;
  
@@ -360,7 +355,7 @@ class Page extends Base
 
              /*查导星望远镜配置数据*/
              $guide_data = Db::table('guideconf')->where('teleid', $id)->find();
-             if ( isset ( $at_data['atname'] ) ) $guide_data['atname'] = $at_data['atname'];
+             //if ( isset ( $at_data['atname'] ) ) $guide_data['atname'] = $at_data['atname'];
           
              $result['guide_data'] = $guide_data;
  

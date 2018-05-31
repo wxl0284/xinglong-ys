@@ -23,29 +23,101 @@ $(function () {
        );
     //望远镜列表js代码结束///////////////////////////////////
     /*选择各望远镜之自设备组成的js*/
-    var have_gimbal = $('#have_gimbal');
+    var have_gimbal = $('#have_gimbal'); //
     var have_ccd = $('#have_ccd');
     var ccd_num = $('#ccd_num'); //ccd数目的下拉框
+    var have_filter = $('#have_filter'); //滤光片
+    var have_sDome = $('#have_sDome'); //随动圆顶
+    var have_oDome = $('#have_oDome'); //全开圆顶
+    var have_focus = $('#have_focus'); //调焦器
+    var have_guide = $('#have_guide'); //导星镜
+    var have_spectral = $('#have_spectral'); //光谱终端
+    var spectral_Num = $('#spectral_Num'); //光谱终端数目
 
     var devsBtn = $('#devsBtn');
 
-    /*devsBtn.click(function () {
-        var v = have_gimbal.prop('checked');
+    devsBtn.click(function () {
+        var ccd_nums = ccd_num.val(); //选定的ccd数量
+        
         if ( have_gimbal.prop('checked') === true )
         {
-            gimbalForm.show();
-        }else{
-            gimbalForm.hide();
+            gimbalForm.show(); //显示转台表单
         }
         
-        var v = have_gimbal.prop('checked');
-        if ( have_gimbal.prop('checked') === true )
+        if ( have_ccd.prop('checked') === true && ccd_nums >= 1 )
         {
-            gimbalForm.show();
-        }else{
-            gimbalForm.hide();
+            if ( ccd_nums == 1 )
+            {
+                ccd_1Form.show();
+                ccd_2Form.hide();
+                ccd_3Form.hide();
+                ccd_4Form.hide();
+                ccd_5Form.hide();
+            }else if ( ccd_nums == 2 )
+            {
+                ccd_1Form.show();
+                ccd_2Form.show();
+                ccd_3Form.hide();
+                ccd_4Form.hide();
+                ccd_5Form.hide();
+            }else if ( ccd_nums == 3 )
+            {
+                ccd_1Form.show();
+                ccd_2Form.show();
+                ccd_3Form.show();
+                ccd_4Form.hide();
+                ccd_5Form.hide();
+            }else if ( ccd_nums == 4 )
+            {
+                ccd_1Form.show();
+                ccd_2Form.show();
+                ccd_3Form.show();
+                ccd_4Form.show();
+                ccd_5Form.hide();
+            }else if ( ccd_nums == 5 )
+            {
+                ccd_1Form.show();
+                ccd_2Form.show();
+                ccd_3Form.show();
+                ccd_4Form.show();
+                ccd_5Form.show();
+            }
+            
         }
-    });*/
+
+        if ( have_filter.prop('checked') === true )
+        {
+            filterForm.show();
+        }else{
+            filterForm.hide();
+        }
+
+        if ( have_sDome.prop('checked') === true )
+        {
+            sDomeForm.show();
+        }else{
+            sDomeForm.hide();
+        }
+
+        if ( have_oDome.prop('checked') === true )
+        {
+            oDomeForm.show();
+        }else{
+            oDomeForm.hide();
+        }
+
+        if ( have_focus.prop('checked') === true )
+        {
+            focusForm.show();
+        }
+
+        if ( have_guide.prop('checked') === true )
+        {
+            guideScope.show();
+        }else{
+            guideScope.hide();
+        }
+    });
     /*************8选择各望远镜之自设备组成的js 结束**************/
     /*选择望远镜下拉列表 ajax判断19个固定属性是否添加足够*/
     var atNo = $('#atNo');
@@ -94,6 +166,18 @@ $(function () {
                            have_gimbal.prop('checked', true);  //将转台的选项勾选
 
                            gimbalForm.show();  //显示转台配置表单
+                            ccdTeleId.html(info.gimbal_data.atname);  //隶属望远镜
+                            ccd_2_TeleId.html(info.gimbal_data.atname);  //隶属望远镜
+                            ccd_3_TeleId.html(info.gimbal_data.atname);  //隶属望远镜
+                            ccd_4_TeleId.html(info.gimbal_data.atname);  //隶属望远镜
+                            ccd_5_TeleId.html(info.gimbal_data.atname);  //隶属望远镜
+                            filterTeleId.html(info.gimbal_data.atname);  //隶属望远镜
+                            sDomeTeleId.html(info.gimbal_data.atname);  //隶属望远镜
+                            oDomeTeleId.html(info.gimbal_data.atname);  //隶属望远镜
+                            focusTeleId.html(info.gimbal_data.atname);  //隶属望远镜
+                            guideScopeTeleId.html(info.gimbal_data.atname);  //隶属望远镜
+
+
 
                             show_gimbal_data (info.gimbal_data);
                             if (info.gimbal_file)
@@ -105,7 +189,7 @@ $(function () {
                         }/*在页面显示转台的配置数据 结束*/
 
                         /*在页面显示ccd-No1的配置数据*/
-                        if (info.ccd_data) //若接收到ccd配置数据
+                        if ( info.ccd_data.ccd_num > 0 ) //若接收到ccd配置数据
                         {
                             have_ccd.prop('checked', true);  //将ccd的选项勾选
                             /*接下来 根据ccd数量做相应处理*/
@@ -188,6 +272,7 @@ $(function () {
                         /*在页面显示滤光片的配置数据*/
                         if (info.filter_data) //若接收到滤光片配置数据
                         {
+                            have_filter.prop('checked', true);  //将滤光片的选项勾选
                             show_filter_data (info.filter_data);
                             if (info.filter_file)
                             {
@@ -198,8 +283,9 @@ $(function () {
                         }/*在页面显示滤光片的配置数据 结束*/
 
                         /*在页面显示随动圆顶的配置数据*/
-                        if (info.sDome_data) //若接收到滤光片配置数据
+                        if (info.sDome_data) //若接收到随动圆顶配置数据
                         {
+                            have_sDome.prop('checked', true);  //将随动圆顶的选项勾选
                             show_sDome_data (info.sDome_data);
                             if (info.sDome_file)
                             {
@@ -210,8 +296,9 @@ $(function () {
                         }/*在页面显示随动圆顶的配置数据 结束*/
 
                         /*在页面显示全开圆顶的配置数据*/
-                        if (info.oDome_data) //若接收到滤光片配置数据
+                        if (info.oDome_data) //若接收到全开圆顶配置数据
                         {
+                            have_oDome.prop('checked', true);  //将全开圆顶的选项勾选
                             show_oDome_data (info.oDome_data);
                             if (info.oDome_file)
                             {
@@ -222,8 +309,9 @@ $(function () {
                         }/*在页面显示全开圆顶的配置数据 结束*/
 
                         /*在页面显示调焦器的配置数据*/
-                        if (info.focus_data) //若接收到滤光片配置数据
+                        if (info.focus_data) //若接收到调焦器配置数据
                         {
+                            have_focus.prop('checked', true);  //将调焦器的选项勾选
                             show_focus_data (info.focus_data);
                             if (info.focus_file)
                             {
@@ -234,8 +322,9 @@ $(function () {
                         }/*在页面显示调焦器的配置数据 结束*/
 
                         /*在页面显示导星望远镜的配置数据*/
-                        if (info.guide_data) //若接收到滤光片配置数据
+                        if (info.guide_data) //若接收到导星望远镜配置数据
                         {
+                            have_guide.prop('checked', true);  //将导星望远镜的选项勾选
                             show_guide_data (info.guide_data);
                             if (info.guide_file)
                             {
@@ -4599,7 +4688,7 @@ $(function () {
     function show_filter_data (data)
     { 
         filterIp.val(data.ip);
-        filterId.val(data.filterid);
+        //filterId.val(data.filterid);
         filterName.val(data.name);
         filterTeleId.html(data.atname);
         filterNum.val(data.numberoffilter);
@@ -4899,7 +4988,7 @@ $(function () {
         sDomeIp.val(data.ip);
         sDomeId.val(data.sdomeid);
         sDomeName.val(data.name);
-        sDomeTeleId.html(data.atname);
+        //sDomeTeleId.html(data.atname);
         data.dometype === undefined ? sDomeType.val('0') : sDomeType.val(data.dometype);
         sDomeMaxSpeed.val(data.maxspeed);
         sDomeDiameter.val(data.diameter);
@@ -5135,7 +5224,7 @@ $(function () {
         oDomeIp.val(data.ip);
         oDomeId.val(data.odomeid);
         oDomeName.val(data.name);
-        oDomeTeleId.html(data.atname);
+        //oDomeTeleId.html(data.atname);
         data.type === undefined ? oDomeType.val('0') : oDomeType.val(data.type);
         oDomeDiameter.val(data.diameter);
         data.canopendome == '1' ? oDomeCanOpenDome.click() : oDomeCanOpenDome_1.click();
@@ -5334,7 +5423,7 @@ $(function () {
         focusIp.val(data.ip);
         focusId.val(data.focusid);
         focusName.val(data.name);
-        focusTeleId.html(data.atname);
+        //focusTeleId.html(data.atname);
         focusMaxValue.val(data.maxvalue);
         focusMinValue.val(data.minvalue);
         focusIncrement.val(data.increment);
@@ -5601,7 +5690,7 @@ $(function () {
         guideScopeIp.val(data.ip);
         guideScopeId.val(data.guidescopeid);
         guideScopeName.val(data.name);
-        guideScopeTeleId.html(data.atname);
+        //guideScopeTeleId.html(data.atname);
         guideScopeAperture.val(data.aperture);
         guideScopeFocusLength.val(data.focuslength);
         data.opticalstructure === undefined ? guideScopeOpticalStructure.val('0') : guideScopeOpticalStructure.val(data.opticalstructure);
