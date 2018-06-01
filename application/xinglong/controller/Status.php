@@ -23,6 +23,25 @@ class Status extends Base
        //首先 判断需要获取哪个望远镜状态信息
        $this->at = input ('at');
 
+       if ( $this->at == md5 ('60cm望远镜') )
+        {
+            $this->at = 60;
+        }else if ( $this->at == md5 ('80cm望远镜') ){
+            $this->at = 80;
+        }else if ( $this->at == md5 ('50cm望远镜')  ){
+            $this->at = 60;
+        }else if ( $this->at == md5 ('85cm望远镜')  ){
+            $this->at = 85;
+        }else if ( $this->at == md5 ('100cm望远镜')  ){
+            $this->at = 100;
+        }else if ( $this->at == md5 ('126cm望远镜')  ){
+            $this->at = 126;
+        }else if ( $this->at == md5 ('216cm望远镜')  ){
+            $this->at = 216;
+        }else if ( $this->at == md5 ('大气消光望远镜')  ){
+            $this->at = 'xxx'; //待定
+        }
+
        $status = [];	//存放状态信息的数组
 
        //获取utc时间

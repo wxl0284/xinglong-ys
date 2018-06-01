@@ -157,13 +157,19 @@
 				processData : false,
 				contentType : false, 
 	            success: function (info) {
-					if (!info.match("^\{(.+:.+,*){1,}\}$"))
-					{//非json数据
-						layer.alert(info, {shade:false});
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
+					if (!info.match("^\{(.+:.+,*){1,}\}$"))  //非json数据
+					{
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});
 					}else{			
 						var info = $.parseJSON(info);
 						var arr = [];
@@ -184,7 +190,7 @@
 					
 				},
 	            error:  function () {
-	               alert('网络异常,请重新导入计划');
+	               layer.alert('网络异常,请重新导入计划', {shade:false, closeBtn:0});
 	            },
 			});
 		});
@@ -270,7 +276,7 @@
 				table.datagrid('beginEdit', n);
 				editRow = n;
 			}else if (num > 1){//选中的多于1行
-				layer.alert('添加时:只能选择一条数据!', {shade:false});return;
+				layer.alert('添加时:只能选择一条数据!', {shade:false, closeBtn:0});return;
 			}else if (num == 1){
 				var num = table.datagrid('getRowIndex', selectRows[0]);
 				table.datagrid('insertRow', {
@@ -285,7 +291,7 @@
 			//滚动至新插入的行那里
 			table.datagrid('scrollTo', editRow);
 		}else{
-			layer.alert('请先保存编辑的第'+ (editRow+1) +'条数据!', {shade:false});return;
+			layer.alert('请先保存编辑的第'+ (editRow+1) +'条数据!', {shade:false, closeBtn:0});return;
 		}
 		
 	}//添加计划  结束/////////////////////////////////////
@@ -298,7 +304,7 @@
 		var res = table.datagrid('validateRow', editRow); //验证编辑的行
 		if (!res)
 		{
-			layer.alert('请检查第' + (editRow+1) + '行必填数据!', {shade:false}); return;
+			layer.alert('请检查第' + (editRow+1) + '行必填数据!', {shade:false, closeBtn:0}); return;
 			
 		}
 		
@@ -986,3 +992,51 @@
 		
 	})
 //数据验证函数 结束////////////////////////////////////////
+var trS = $('table.datagrid-btable tbody tr');
+/*******实时获取 获取正在执行的计划*******/
+function get_plan () {
+	$.ajax({
+		url: '/plan',
+		type: 'post',
+		data: {at: at, command: 'get_plan'},
+		success: function (info) {
+			if ( info.indexOf("{") === -1 )
+			{//非json数据
+				layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if (info.indexOf('登录') !== -1)
+						{
+							location.href = '/';
+						}
+					},
+				});
+			}else{			
+				var info = $.parseJSON(info);
+				var arr = [];
+				var ii = 0;
+				for (var p in info)
+				{
+					arr[ii] = info[p];
+					ii ++;
+				}
+				
+				table.datagrid({
+						data: arr,
+				});
+				
+				editRow = undefined; //否则 导入后无法插入新行
+				planErr = 0; //将提交计划的错误标识 改为0
+				
+				//table.datagrid('scrollTo', 3); //滚动到第3行
+				//table.datagrid('highlightRow', 3); //高亮第3行
+			
+			}
+		},//success 方法结束
+	})/*ajax 结束*/
+}
+
+setInterval (get_plan, 2000); //定时执行get_plan()
+/*******实时获取 获取正在执行的计划 结束*******/

@@ -52,21 +52,23 @@ class Opendome extends Base
         $this->port = config('port');
 
         //根据望远镜编号，给 $this->$at赋值
-        if ($postData['at']== 60)
+        if ( $postData['at'] == md5 ('60cm望远镜') )
         {
             $this->at = 37;
-        }else if ($postData['at']== 80){
+        }else if ( $postData['at'] == md5 ('80cm望远镜') ){
             $this->at = 36;
-        }else if ($postData['at']== 50){
+        }else if ( $postData['at'] == md5 ('50cm望远镜')  ){
             $this->at = 38;
-        }else if ($postData['at']== 85){
+        }else if ( $postData['at'] == md5 ('85cm望远镜')  ){
             $this->at = 35;
-        }else if ($postData['at']== 100){
+        }else if ( $postData['at'] == md5 ('100cm望远镜')  ){
             $this->at = 34;
-        }else if ($postData['at']== 126){
+        }else if ( $postData['at'] == md5 ('126cm望远镜')  ){
             $this->at = 33;
-        }else if ($postData['at']== 216){
+        }else if ( $postData['at'] == md5 ('216cm望远镜')  ){
             $this->at = 32;
+        }else if ( $postData['at'] == md5 ('大气消光望远镜')  ){
+            $this->at = 39;
         }
 
         //根据不同参数 调用相应方法发送指令

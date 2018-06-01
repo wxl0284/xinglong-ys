@@ -3,7 +3,8 @@ namespace app\xinglong\controller;
 
 use app\xinglong\controller\Base;
 use think\Cookie;
-//use think\Db;
+use think\Db;
+use think\Session;
 
 /*此控制器 负责各望远镜的计划发送*/
 class Plan extends Base
@@ -156,21 +157,23 @@ class Plan extends Base
         $this->port = config('port');
 
         //根据望远镜编号，给 $this->$at赋值
-        if ($postData['at']== 60)
+        if ( $postData['at'] == md5 ('60cm望远镜') )
         {
             $this->at = 37;
-        }else if ($postData['at']== 80){
+        }else if ( $postData['at'] == md5 ('80cm望远镜') ){
             $this->at = 36;
-        }else if ($postData['at']== 50){
+        }else if ( $postData['at'] == md5 ('50cm望远镜')  ){
             $this->at = 38;
-        }else if ($postData['at']== 85){
+        }else if ( $postData['at'] == md5 ('85cm望远镜')  ){
             $this->at = 35;
-        }else if ($postData['at']== 100){
+        }else if ( $postData['at'] == md5 ('100cm望远镜')  ){
             $this->at = 34;
-        }else if ($postData['at']== 126){
+        }else if ( $postData['at'] == md5 ('126cm望远镜')  ){
             $this->at = 33;
-        }else if ($postData['at']== 216){
+        }else if ( $postData['at'] == md5 ('216cm望远镜')  ){
             $this->at = 32;
+        }else if ( $postData['at'] == md5 ('大气消光望远镜')  ){
+            $this->at = 39;
         }
 
         //$command = input('command'); //获取提交的指令
@@ -180,12 +183,14 @@ class Plan extends Base
             return $this->sendPlan($postData);   //执行发送
         }else if( $postData['command'] == 2 ){//根据计划执行方式，开始执行计划       
             return $this->planOption($postData); //执行发送
+        }else if( $postData['command'] == 'get_plan' ){//查询当前用户是否有观测计划正在执行      
+            return $this->get_plan($postData['at']);
         }
 
     }//观测计划 根据提交的参数 调用函数 结束 
     
     //获取计划数据 验证并发送计划数据/////////////////////////////
-	protected function sendPlan ($planData)  //即原来的savePlan函数
+	protected function sendPlan ($postData)  //即原来的savePlan函数
 	{	
 		//halt($planData['plan_filter_option']);
 		//定义全局$sequence 此变量在packHead()函数中要使用
@@ -200,21 +205,21 @@ class Plan extends Base
                   
 		//return $planData['planData'][0]['type'];
 		//验证计划数据
-		$planNum = count($planData['planData']);
+		$planNum = count($postData['planData']);
 		$errMsg = '';	//错误提示
-		$filter_option = $planData['plan_filter_option'];  //['u','v','b'] 每台望远镜配置的滤光片名称
+		$filter_option = $postData['plan_filter_option'];  //['u','v','b'] 每台望远镜配置的滤光片名称
 		//循环验证每条计划数据
 		for ($i = 0; $i < $planNum; $i ++)
 		{
 			//验证目标
-			$target = $planData['planData'][$i]['target'];
+			$target = $postData['planData'][$i]['target'];
 			if ($target === '')
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:目标名称参数超限!<br>';
 			}
 
 			//验证目标类型
-			$type = $planData['planData'][$i]['type'];
+			$type = $postData['planData'][$i]['type'];
 			
 			if( $type === '' || !(preg_match('/^[0-9]{1}$/', $type) || in_array($type, ['恒星','太阳','月亮','彗星','行星','卫星','固定位置','本底','暗流','平场'])) )
 			{
@@ -222,7 +227,7 @@ class Plan extends Base
 			}
 
 			//处理赤经数据
-			$rightAscension = $planData['planData'][$i]['rightAscension1']. ':' .$planData['planData'][$i]['rightAscension2'] .':'. $planData['planData'][$i]['rightAscension3'];
+			$rightAscension = $postData['planData'][$i]['rightAscension1']. ':' .$postData['planData'][$i]['rightAscension2'] .':'. $postData['planData'][$i]['rightAscension3'];
 			
 			//验证 rightAscension
 			if ($rightAscension !== '::')	//赤经：有输入时
@@ -242,7 +247,7 @@ class Plan extends Base
 			}
 
 			//处理赤纬数据
-			$declination = $planData['planData'][$i]['declination1']. ':' .$planData['planData'][$i]['declination2']. ':' .$planData['planData'][$i]['declination3'];
+			$declination = $postData['planData'][$i]['declination1']. ':' .$postData['planData'][$i]['declination2']. ':' .$postData['planData'][$i]['declination3'];
 			
 			//验证 赤纬
 			if ($declination !== '::')	//赤纬：有输入时
@@ -263,7 +268,7 @@ class Plan extends Base
 			}
 
 			//验证历元 
-			$epoch = $planData['planData'][$i]['epoch'];
+			$epoch = $postData['planData'][$i]['epoch'];
 			if($epoch === '') //历元 未填写
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:历元参数超限!<br>';
@@ -276,7 +281,7 @@ class Plan extends Base
 			}
 
 			//验证 曝光时间
-			$exposureTime = $planData['planData'][$i]['exposureTime'];
+			$exposureTime = $postData['planData'][$i]['exposureTime'];
 			if($exposureTime === '')
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:曝光时间参数超限!<br>';
@@ -288,7 +293,7 @@ class Plan extends Base
 			}
 
 			//验证 delayTime
-			$delayTime = $planData['planData'][$i]['delayTime'];
+			$delayTime = $postData['planData'][$i]['delayTime'];
 
 			if($delayTime === '') //delayTime 未输入时
 			{
@@ -301,7 +306,7 @@ class Plan extends Base
 			}
 
 			//验证 exposureCount
-			$exposureCount = $planData['planData'][$i]['exposureCount'];
+			$exposureCount = $postData['planData'][$i]['exposureCount'];
 
 			if($exposureCount === '') //曝光数量 未输入
 			{
@@ -314,7 +319,7 @@ class Plan extends Base
 			}
 
 			//验证 滤光片
-			$filter = strtolower ($planData['planData'][$i]['filter']);
+			$filter = strtolower ($postData['planData'][$i]['filter']);
 			if($filter === '')//滤光片 未填写
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:滤光片参数超限!<br>';
@@ -326,7 +331,7 @@ class Plan extends Base
 			}
 
 			//验证增益
-			$gain = $planData['planData'][$i]['gain'];
+			$gain = $postData['planData'][$i]['gain'];
 			if($gain === '')//增益 未填写
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:增益参数超限!<br>';
@@ -338,7 +343,7 @@ class Plan extends Base
 			}
 
 			//验证Bin 
-			$bin = $planData['planData'][$i]['bin'];
+			$bin = $postData['planData'][$i]['bin'];
 			if($bin === '')//Bin 未填写
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:bin参数超限!<br>';
@@ -350,7 +355,7 @@ class Plan extends Base
 			}
 
 			//验证读出速度 
-			$readout = $planData['planData'][$i]['readout'];
+			$readout = $postData['planData'][$i]['readout'];
 			if($readout === '')//读出速度 未填写
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:读出速度参数超限!<br>';
@@ -381,7 +386,7 @@ class Plan extends Base
             $sendMsg .= pack('a48', $this->user); //user
 			$sendMsg .= pack('a48', '02'); //project
 			
-			$target = $planData['planData'][$i]['target']; //目标名		
+			$target = $postData['planData'][$i]['target']; //目标名		
 			$sendMsg .= pack('a48', $target);
 			
 			//目标类型
@@ -414,15 +419,15 @@ class Plan extends Base
 			}
 
 			//赤经 rightAscension	
-			$rightAscension = $planData['planData'][$i]['rightAscension1'].':'.$planData['planData'][$i]['rightAscension2'].':'.$planData['planData'][$i]['rightAscension3'];			
+			$rightAscension = $postData['planData'][$i]['rightAscension1'].':'.$postData['planData'][$i]['rightAscension2'].':'.$postData['planData'][$i]['rightAscension3'];			
 			$rightAscension = time2Data($rightAscension);
 			$sendMsg .= pack('d', $rightAscension);
 			//赤纬
-			$declination = $planData['planData'][$i]['declination1'].':'.$planData['planData'][$i]['declination2'].':'.$planData['planData'][$i]['declination3'];
+			$declination = $postData['planData'][$i]['declination1'].':'.$postData['planData'][$i]['declination2'].':'.$postData['planData'][$i]['declination3'];
 			$declination = time2Data($declination);
 			$sendMsg .= pack('d', $declination);
 			//历元
-			$epoch = $planData['planData'][$i]['epoch'];
+			$epoch = $postData['planData'][$i]['epoch'];
 		
 			if ( preg_match('/^[0-9]{1}$/', $epoch) ) //数字类型
 			{
@@ -442,32 +447,32 @@ class Plan extends Base
 			}	//历元结束
 
 			//曝光时间
-			$exposureTime = $planData['planData'][$i]['exposureTime'];
+			$exposureTime = $postData['planData'][$i]['exposureTime'];
 			$sendMsg .= pack('d', $exposureTime); 
 
 			//delayTime
-			 $delayTime = $planData['planData'][$i]['delayTime'];
+			 $delayTime = $postData['planData'][$i]['delayTime'];
 			 $sendMsg .= pack('d', $delayTime);
 
 			 //曝光数量
-			 $exposureCount = $planData['planData'][$i]['exposureCount'];
+			 $exposureCount = $postData['planData'][$i]['exposureCount'];
 			 $sendMsg .= pack('L', $exposureCount);
 
 			 //滤光片
-			 $filter = $planData['planData'][$i]['filter'];
+			 $filter = $postData['planData'][$i]['filter'];
 			 $filter = strtoupper ($filter);
 			 $sendMsg .= pack('a8', $filter); 
 
 			//增益 gain
-			$gain = $planData['planData'][$i]['gain'];
+			$gain = $postData['planData'][$i]['gain'];
 			$sendMsg .= pack('S', $gain); 
 			
 			//bin
-			$bin = $planData['planData'][$i]['bin'];
+			$bin = $postData['planData'][$i]['bin'];
 			$sendMsg .= pack('S', $bin);
 			
 			//读出速度
-			$readout = $planData['planData'][$i]['readout'];
+			$readout = $postData['planData'][$i]['readout'];
 			$sendMsg .= pack('S', $readout);
 			
 			//发送 计划数据
@@ -475,8 +480,26 @@ class Plan extends Base
            
             udpSendPlan($sendMsg, $this->ip, $this->port); //无返回值
 		}//给中控 发送数据 结束///////////////
-		//在此 把计划数据写入cache
-		
+
+		// 把计划数据写入表plandata中
+		$plan_data_json = json_encode ($postData['planData']); //将提交上来的计划数据转为json字串
+		$data = [
+			'atuser' => $this->user,
+			'at' => $postData['at'],
+			'plan' => $plan_data_json
+		];
+
+		$res = Db::table('plandata')->insert($data);
+
+		while (!$res)
+		{
+			$res = Db::table('plandata')->insert($data);
+		}
+		if (!$res)
+		{
+			return '观测计划缓存失败, 请重新提交观测计划!';
+		}
+
 		return '观测计划发送完毕!';
 
     } //获取计划数据 验证并发送计划数据 结束////////////////////////////////////////
@@ -532,4 +555,57 @@ class Plan extends Base
 			return '下一条计划:' .udpSend($sendMsg, $this->ip, $this->port);
 		}
 	}//观测计划的 开始 停止 下一个 结束////////////////////////////
+
+	/*ajax 请求  是否有观测计划在执行*/
+	protected function get_plan ($at)
+	{
+		$plan_table = ''; //中控之 各望远镜的观测计划表
+
+		switch ($this->at)
+		{
+			case 37:
+				$plan_table = 'at60plan';
+				break;
+			case 36:
+				$plan_table = 'at80plan';
+				break;
+			case 38:
+				$plan_table = 'at50plan';
+				break;
+			case 35:
+				$plan_table = 'at85plan';
+				break;
+			case 34:
+				$plan_table = 'at100plan';
+				break;
+			case 33:
+				$plan_table = 'at126plan';
+				break;
+			case 32:
+				$plan_table = 'at216plan';
+				break;
+			case 39:
+				//$plan_table = '大气消光镜';
+				break;
+		}
+
+		try{
+			//Db::table($plan_table)->where('user', $this->user)->order('id', 'desc')->field('tag, executing')->find();
+			//如果此用户用正在执行的计划，
+			//........
+			//去表plandata中倒序获取第一条，以json格式返回给ajax
+			//.............
+			//$exetue = Db::table($plan_table)->where('user', $this->user)->order('id', 'desc')->field('tag')->find();
+			$plan_data = Db::table('plandata')->where('atuser', $this->user)->where('at', $at)->order('id', 'desc')->field('plan')->find();
+			if ($plan_data)
+			{
+				return $plan_data['plan'];
+			}
+		}catch(\Exception $e){
+			return '查询正在执行计划遇异常!';
+		}
+
+
+	}
+	/****ajax 请求  是否有观测计划在执行 结束*******/
 }

@@ -41,6 +41,7 @@ class Base extends Controller
                 $at_name[$v['id']] = $v['atname']; //将id 和 望远镜名称 对应起来
                 $at_longitude[$v['id']] = $v['longitude']; //将id 和 经度 对应起来
                 $at_latitude[$v['id']] = $v['latitude']; //将id 和 纬度 对应起来
+                $at_aperture[$v['id']] = $v['aperture']; //将id 和 口径 对应起来
             }
 
             $this->assign([
@@ -48,7 +49,8 @@ class Base extends Controller
                 'at_id' => $at_id,
                 'at_name' => $at_name,
                 'at_longitude' => $at_longitude,
-                'at_latitude' => $at_latitude
+                'at_latitude' => $at_latitude,
+                'at_aperture' => $at_aperture,
             ]);
         }
     }/*查询望远镜列表，并进行模板赋值 结束*/

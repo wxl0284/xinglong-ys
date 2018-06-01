@@ -16,7 +16,7 @@ class Page extends Base
         //halt(isset($result['gimbal']));
         //halt($result['filter']);
         
-        //判断$result中转台 ccd 调焦器 是否有未配置的
+        //判断$result中转台 ccd 调焦器 是否有未配置的 
         $err_notice = ''; //错误提示
 
         if ( !isset($result['gimbal']) )
