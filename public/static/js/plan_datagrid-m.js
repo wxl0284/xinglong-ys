@@ -992,7 +992,8 @@
 		
 	})
 //数据验证函数 结束////////////////////////////////////////
-var trS = $('table.datagrid-btable tbody tr');
+var t = 1200; //起始更新table要快，使用户体验好
+var t_i = 0;  //更新table的次数，当第3次时，将t设置为正常速度
 /*******实时获取 获取正在执行的计划*******/
 function get_plan () {
 	$.ajax({
@@ -1013,7 +1014,12 @@ function get_plan () {
 						}
 					},
 				});
-			}else{			
+			}else{
+				t_i ++;
+				if ( t_i == 2)
+				{
+					t = 50000; // 50秒更新一次计划执行情况
+				}
 				var info = $.parseJSON(info);
 				var arr = [];
 				var ii = 0;
@@ -1031,12 +1037,11 @@ function get_plan () {
 				planErr = 0; //将提交计划的错误标识 改为0
 				
 				//table.datagrid('scrollTo', 3); //滚动到第3行
-				//table.datagrid('highlightRow', 3); //高亮第3行
-			
+				//table.datagrid('highlightRow', 3); //高亮第3行		
 			}
 		},//success 方法结束
 	})/*ajax 结束*/
 }
 
-setInterval (get_plan, 2000); //定时执行get_plan()
+setInterval (get_plan, t); //定时执行get_plan() 5秒执行一次查询，否则浏览器卡顿
 /*******实时获取 获取正在执行的计划 结束*******/

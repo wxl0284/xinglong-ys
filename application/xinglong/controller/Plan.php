@@ -491,17 +491,12 @@ class Plan extends Base
 
 		$res = Db::table('plandata')->insert($data);
 
-		while (!$res)
-		{
-			$res = Db::table('plandata')->insert($data);
-		}
 		if (!$res)
 		{
 			return '观测计划缓存失败, 请重新提交观测计划!';
 		}
 
 		return '观测计划发送完毕!';
-
     } //获取计划数据 验证并发送计划数据 结束////////////////////////////////////////
     
     //观测计划的 开始 停止 下一个 ////////////////////////////////
