@@ -350,217 +350,11 @@
 	];*/
 	
 	$(function(){
-		var table_w = ( $(window).width() ) * 0.8931;
 
-		$(window).resize(function(){
-			table_w = ( $(window).width() ) * 0.8931;
-			table.datagrid({
-				width: table_w,
-				height:400,
-				toolbar: '#toolbar',
-				checkOnSelect:true,
-				selectOnCheck:true,
-				singleSelect:false,
-				striped: true,
-				rownumbers:true,
-				/*idField: 'id',
-				fitColumns:false,
-				dropAccept:'tbody tr',
-				singleSelect:true,
-				dragSelection: true,
-				onLoadSuccess: function(){
-					$(this).datagrid('enableDnd'); //启用拖放
-				},*/
+
 	
-				columns:[[
-				{field:'id', title:'id', checkbox:true, rowspan:2},
-				{field:'target',  title:'目标名称', width:table_w*0.118666667,rowspan:2,
-					editor:{
-						type:'validatebox',
-						options:{required:true,missingMessage:'目标名必填!'},
-					},
-				},
-				{field:'type', title:'目标类型', width:table_w*0.0653333333,rowspan:2,
-					formatter:function(value){
-						for(var i=0; i<targetType.length; i++){
-							if (targetType[i].typeId == value) return targetType[i].name;
-						}
-						return value;
-					},
-					
-					editor:{
-						type:'combobox',
-						options:{
-							valueField:'typeId',
-							textField:'name',
-							data:targetType,
-							required:true,
-							missingMessage:'目标类型必选!'
-						},
-					},
-				},
-				{title:'赤经', colspan:5, width:table_w*0.1375,halign:'center'},
-				{title:'赤纬', colspan:5, width:table_w*0.1375,halign:'center'},
-				{field:'epoch', title:'历元',  width:table_w*0.055, rowspan:2,
-					formatter:function(value){
-						for(var i=0; i<epochData.length; i++){
-							if (epochData[i].epochId == value) return epochData[i].name;
-						}
-						return value;
-					},
-					
-					editor:{
-						type:'combobox',
-						options:{
-							valueField:'epochId',
-							textField:'name',
-							data:epochData,
-							required:true,
-							missingMessage:'历元必选!'
-						},
-					},
-				},
-				{field:'exposureTime', title:'曝光时间',  width:table_w*0.059, rowspan:2,
-					editor:{
-						type:'numberbox',
-						options:{required:true,},
-						missingMessage:'曝光时间必填!'
-					},
-				},
-				{field:'delayTime', title:'delayTime', width:table_w*0.069166667, rowspan:2,
-					editor:{
-						type:'numberbox',
-					},
-				},
-				{field:'exposureCount', title:'曝光数量', width:table_w*0.059, rowspan:2, 
-					editor:{
-						type:'numberbox',
-						options:{
-							required:true,
-							missingMessage:'曝光数量必填!'
-						},
-					},
-				},
-				{field:'filter', title:'滤光片',  width:table_w*0.045666667, rowspan:2,
-					formatter:function(value){
-						for(var i=0; i<filterData.length; i++){
-							if (filterData[i].filterId == value) return filterData[i].name;
-						}
-						return value;
-					},
-					
-					editor:{
-						type:'combobox',
-						options:{
-							valueField:'filterId',
-							textField:'name',
-							data:filterData,
-							required:true,
-							missingMessage:'滤光片必选!'
-						},
-					},
-				},
-				{field:'gain', title:'增益',  width:table_w*0.032166667, rowspan:2,
-					editor:{
-						type:'numberbox',
-					},
-				},
-				{field:'bin',  title:'Bin', width:table_w*0.026166667, rowspan:2,
-					editor:{
-						type:'numberbox',
-					},
-				},
-				{field:'readout', title:'读出速度', width:table_w*0.059166667, rowspan:2,
-					editor:{
-						type:'numberbox',
-						options:{
-							required:true,
-							missingMessage:'读出速度必填!'
-						},
-					},
-				},
-				{field:'del', title:'删除',  width:table_w*0.031266666, rowspan:2,
-					formatter:function(value,row,index){
-						return '<a onclick="delPlan1(this)">删除</a> ';
-					}
-				},
-			],[
-				{field:'rightAscension1', width:table_w*0.0325,title:'时',
-					editor:{
-						type:'numberbox',
-						options:{required:true,missingMessage:'小时,必填!'},
-					},
-				},
-				{field:'c1', width:table_w*0.013,
-					formatter:function(value,row,index){
-						return ':';
-					}
-				},
-			
-				{field:'rightAscension2',  width:table_w*0.0325,title:'分',
-					editor:{
-						type:'numberbox',
-						options:{required:true,missingMessage:'分,必填!'},
-					},
-				},
-				{field:'c2', width:table_w*0.013,
-					formatter:function(value,row,index){
-						return ':';
-					}
-				},
-				{field:'rightAscension3', width:table_w*0.063333333,title:'秒',
-					editor:{
-						type:'validatebox',
-						options:{required:true,missingMessage:'秒,必填!!'},
-					},
-				},
-		
-				{field:'declination1', width:table_w*0.0325, title:'时',
-					editor:{
-						type:'numberbox',
-						options:{required:true,missingMessage:'时,必填!!'},
-					},
-				},
-				{field:'c3', width:table_w*0.013,
-					formatter:function(value,row,index){
-						return ':';
-					}
-				},
-		
-				{field:'declination2', width:table_w*0.0325, title:'分',
-					editor:{
-						type:'numberbox',
-						options:{required:true,missingMessage:'分,必填!!'},
-					},
-				},
-				{field:'c4', width:table_w*0.013,
-					formatter:function(value,row,index){
-						return ':';
-					}
-				},
-				{field:'declination3', width:table_w*0.063333333,title:'秒',
-					editor:{
-						type:'validatebox',
-						options:{required:true,missingMessage:'秒,必填!!'},
-					},
-				},
-			]],
-			//在双击一个单元格的时候开始编辑并生成编辑器，然后定位到编辑器的输入框上
-			onDblClickCell: function(index,field,value){
-				if (editRow == undefined && field != 'id') {
-					table.datagrid('beginEdit', index); //对点击行 进行编辑
-					var ed = table.datagrid('getEditor', {index:index,field:field});
-					$(ed.target).focus();
-					editRow = index;
-				}	
-			},	
-	
-			/* onAfterEdit: function (rowIndex, rowData, changes){
-				editRow = undefined;
-			}, */
-		});
-		  });/*window.resize() 结束*/
-		
+
+		var table_w = ( $(window).width() ) * 0.889546;
 		table.datagrid({
 			width: table_w,
 			height:400,
@@ -763,10 +557,6 @@
 				editRow = index;
 			}	
 		},
-
-		/* onAfterEdit: function (rowIndex, rowData, changes){
-			editRow = undefined;
-		}, */
 	});/*table.datagrid() 结束*/
 }) //jquery 结束编辑
 	//自定义的函数
@@ -988,12 +778,9 @@
 		console.log(tstdata); */
 		//让正在执行的计划那行 执行mouseover(),此处eq()的2 就是正执行的行索引
 		
-		$('table.datagrid-btable tbody tr').eq(2).mouseover();
-		
 	})
 //数据验证函数 结束////////////////////////////////////////
-var t = 1200; //起始更新table要快，使用户体验好
-var t_i = 0;  //更新table的次数，当第3次时，将t设置为正常速度
+
 /*******实时获取 获取正在执行的计划*******/
 function get_plan () {
 	$.ajax({
@@ -1015,11 +802,6 @@ function get_plan () {
 					},
 				});
 			}else{
-				t_i ++;
-				if ( t_i == 2)
-				{
-					t = 50000; // 50秒更新一次计划执行情况
-				}
 				var info = $.parseJSON(info);
 				var arr = [];
 				var ii = 0;
@@ -1043,5 +825,9 @@ function get_plan () {
 	})/*ajax 结束*/
 }
 
-setInterval (get_plan, t); //定时执行get_plan() 5秒执行一次查询，否则浏览器卡顿
+ setInterval (get_plan, 60000); //定时执行get_plan() 60秒执行一次查询，否则浏览器卡顿
+
+ function plan_executing (){ //显示正在执行的计划
+	get_plan();
+ }
 /*******实时获取 获取正在执行的计划 结束*******/

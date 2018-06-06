@@ -9,13 +9,21 @@
      {load href='/static/plugin/easyui-1.3.5/themes/icon.css'}
      {load href='/static/plugin/easyui-1.3.5/jquery.easyui.min.js'}
 	 {load href='/static/plugin/easyui-1.3.5/locale/easyui-lang-zh_CN.js'}
+	 {load href='/static/plugin/vue.js'}
 	 {load href='/static/css/common-1.css'}
      {load href='/static/css/at60_1.css'}
-     {load href='/static/js/at60.js'}
+	 {load href='/static/js/at60.js'}
 </head>
 <body>
+<script>
+	var at = "{$at_id[$configData['at_id']]}"; //用一个唯一不变的值来确定一个望远镜
+	{if condition="isset($configData['filter']['filter_name_json'])"}
+	var plan_filter_option = {$configData['filter']['filter_name_json']};  //将滤光片名称的json数据赋于plan_filter_option
+	{/if}
+</script>
+
 	{include file="common/common"/}
-    <div id='all'>
+	<div id='all'>
         <div class='pos_r'><!--重要信息区域 开始-->
 			<div id='atPic'>
                 <img src='/static/images-1/location_1.png'/>
@@ -173,16 +181,11 @@
 			</div>
         </div><!--重要信息区域 结束-->
 		<br ><br>
-<script>
-	var at = "{$at_id[$configData['at_id']]}"; //用一个唯一不变的值来确定一个望远镜
-	{if condition="isset($configData['filter']['filter_name_json'])"}
-	var plan_filter_option = {$configData['filter']['filter_name_json']};  //将滤光片名称的json数据赋于plan_filter_option
-	{/if}
-</script>
+
         <div id='devsNav'><!--望远镜子设备导航:js用code/public/static/js/dev1.js-->
             <table>
                 <tr>
-				  <td><a name='planInfo'>观测计划</a></td>
+				  <td><a name='planInfo' id='plan_div'>观测计划</a></td>
 				  <td><a name='at60Res'>观测图像</a></td>
 				  {if condition="isset($configData.gimbal)"}
 				  <td><a name='gimbalInfo' class='borderBtm'>转台</a></td>
@@ -1056,8 +1059,25 @@
              </ul>
            <div class='clear'></div>
 		 </div><!--滤光片 固定属性 结束-->
-	   </div><!--滤光片 结束-->
-	   <div id='planInfo' class='displayNo pos_r'><!--观测计划表格 开始-->
+	   </div><!--滤光片 结束-->	
+		<br>
+		<div id='at60Res' class='displayNo center_mrg' style='width:92%;'><!--观测图像 开始-->
+			<div id='bigPic' class='pos_r'>
+				<img src='/static/images-1/pic_Res.jpg' style='width:100%;'>
+				<button class='pos_a'>最新图像</button>
+			</div>
+			<div id='smallPic' class='pos_r'>
+				<img id='pre' src='/static/images-1/left.jpg'>
+				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
+				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
+				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
+				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
+				<img id='next' class='pos_a' src='/static/images-1/right.jpg'>
+			</div>
+		</div><!--观测图像 结束-->	
+	</div><!-- id='all' 结束 --><br>
+	
+	<div id='planInfo' class='displayNo pos_r'><!--观测计划表格 开始-->
 			 <table id="dg" title="计划表格" style='text-align: center;'> 
 			 </table>
 			<div id="toolbar">
@@ -1084,24 +1104,8 @@
 		   <form id='imptPlan' style='display:none;' enctype='multipart/form-data'>
 				<input type='file' name='plan'>
 		   </form><!--计划文件上传表单-->
-		</div><!--观测计划表格 结束-->
-		{load href='/static/js/plan_datagrid-m.js'}
-		<br>
-		<div id='at60Res' class='displayNo center_mrg' style='width:92%;'><!--观测图像 开始-->
-			<div id='bigPic' class='pos_r'>
-				<img src='/static/images-1/pic_Res.jpg' style='width:100%;'>
-				<button class='pos_a'>最新图像</button>
-			</div>
-			<div id='smallPic' class='pos_r'>
-				<img id='pre' src='/static/images-1/left.jpg'>
-				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
-				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
-				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
-				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
-				<img id='next' class='pos_a' src='/static/images-1/right.jpg'>
-			</div>
-		</div><!--观测图像 结束-->
-	</div><!-- id='all' 结束 --><br>
+	</div><!--观测计划表格 结束-->
+	{load href='/static/js/plan_datagrid-m.js'}
 	<footer class='center clear'>
 		<span>中科院国家天文台兴隆观测基地</span>
 	</footer>
