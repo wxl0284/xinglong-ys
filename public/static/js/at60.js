@@ -1,5 +1,63 @@
 /** 设备1js  at60*/
  $(function () {
+	 var planInfo = $('#planInfo'); //观测计划的表格
+	 //vue 实例化
+	var vm = new Vue({
+		el: '#all',
+		data: {
+			configData: configData,
+			device_nav: {//此对象中的数据用以区分是否给各子设备加上蓝色底框
+				dev_click: 'gimbal',
+			}
+		},
+		methods: {
+			plan_click: function () {
+				this.device_nav.dev_click = 'plan';
+				planInfo.removeClass('displayNo');
+			},
+			gimbal_click: function () {
+				this.device_nav.dev_click = 'gimbal';
+				planInfo.addClass('displayNo');
+			},
+			ccd_click: function () {
+				this.device_nav.dev_click = 'ccd';
+				planInfo.addClass('displayNo');
+			},
+			filter_click: function () {
+				this.device_nav.dev_click = 'filter';
+				planInfo.addClass('displayNo');
+			},
+			sDome_click: function () {
+				this.device_nav.dev_click = 'sDome';
+				planInfo.addClass('displayNo');
+			},
+			oDome_click: function () {
+				this.device_nav.dev_click = 'oDome';
+				planInfo.addClass('displayNo');
+			},
+			focus_click: function () {
+				this.device_nav.dev_click = 'focus';
+				planInfo.addClass('displayNo');
+			},
+			guide_click: function () {
+				this.device_nav.dev_click = 'guide';
+				planInfo.addClass('displayNo');
+			},
+			handle_click: function () {
+				this.device_nav.dev_click = 'handle';
+				planInfo.addClass('displayNo');
+			},
+			spectrum_click: function () {
+				this.device_nav.dev_click = 'spectrum';
+				planInfo.addClass('displayNo');
+			},
+			pic_click: function () {
+				this.device_nav.dev_click = 'pic';
+				planInfo.addClass('displayNo');
+			},
+		},
+	});/*vue js结束*/
+
  	//ajax 实时更新60cm望远镜子设备状态数据///////////////////////	
 	var getStatusErr = 0;  //控制错误时，弹窗数量
 	/******************如下定义变量 存储各个需实时更新数据的元素***************/
@@ -274,7 +332,7 @@
 	//接管 弹窗代码 结束////////////////////////////////////////////////
 	
     //望远镜 子设备导航栏 js事件 ////////////////////////////
-    $('#devsNav table').on('click', 'a', function (){
+   /* $('#devsNav table').on('click', 'a', function (){
         var btm = $('#devsNav a.borderBtm').not($(this));  //排除自己被多次点击时的情况
         var dev = $(this).attr('name');
         var display = $('div.display');
@@ -288,7 +346,7 @@
         display.addClass('displayNo');
         dev.removeClass('displayNo');
         dev.addClass('display');
-    }); ///////////////////////////////////////////////////////
+    }); *///////////////////////////////////////////////////////
     
 /*//接管望远镜按钮 js事件 ///////////////////////////////////////
      $('#takeOver').click(function () {

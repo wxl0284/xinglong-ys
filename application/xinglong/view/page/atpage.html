@@ -2,20 +2,26 @@
 <html lang="en">
 <head>
     <meta charset='utf-8'>
-    <title>{$at_name[$configData['at_id']]}</title>
+    <title>{$at_name[$data['at_id']]}</title>
 	 {load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
 	 {load href='/static/plugin/layer/layer.js'}
 	 {load href='/static/plugin/easyui-1.3.5/themes/default/easyui.css'}
      {load href='/static/plugin/easyui-1.3.5/themes/icon.css'}
      {load href='/static/plugin/easyui-1.3.5/jquery.easyui.min.js'}
 	 {load href='/static/plugin/easyui-1.3.5/locale/easyui-lang-zh_CN.js'}
+	 {load href='/static/plugin/vue.js'}
 	 {load href='/static/css/common-1.css'}
-     {load href='/static/css/at60_1.css'}
-     {load href='/static/js/at60.js'}
+	 {load href='/static/css/at60_1.css'}
+	 <script>
+		var at = "{$at_id[$data['at_id']]}"; //用一个唯一不变的值来确定一个望远镜
+		var configData =  {$data['configData']}; //各子设备的配置数据
+		console.log(configData.gimbal);
+	</script>
+	 {load href='/static/js/at60.js'}
 </head>
 <body>
 	{include file="common/common"/}
-    <div id='all'>
+	<div id='all'>{{configData.has_gimbal}}
         <div class='pos_r'><!--重要信息区域 开始-->
 			<div id='atPic'>
                 <img src='/static/images-1/location_1.png'/>
@@ -173,107 +179,82 @@
 			</div>
         </div><!--重要信息区域 结束-->
 		<br ><br>
-<script>
-	var at = "{$at_id[$configData['at_id']]}"; //用一个唯一不变的值来确定一个望远镜
-	{if condition="isset($configData['filter']['filter_name_json'])"}
-	var plan_filter_option = {$configData['filter']['filter_name_json']};  //将滤光片名称的json数据赋于plan_filter_option
-	{/if}
-</script>
+
         <div id='devsNav'><!--望远镜子设备导航:js用code/public/static/js/dev1.js-->
             <table>
                 <tr>
-				  <td><a name='planInfo'>观测计划</a></td>
-				  <td><a name='at60Res'>观测图像</a></td>
-				  {if condition="isset($configData.gimbal)"}
-				  <td><a name='gimbalInfo' class='borderBtm'>转台</a></td>
-				  {/if}
-				  {if condition="isset($configData.ccd)"}
-				  <td><a name='ccdInfo'>CCD</a></td>
-				  {/if}
-				  {if condition="isset($configData.filter)"}
-				  <td><a name='filterInfo'>滤光片</a></td>
-				  {/if}
-				  {if condition="isset($configData.sDome)"}
-				  <td><a name='domeInfo'>随动圆顶</a></td>
-				  {/if}
-				  {if condition="isset($configData.oDome)"}
-				  <td><a name='oDomeInfo'>全开圆顶</a></td>
-				  {/if}
-				  {if condition="isset($configData.focus)"}
-				  <td><a name='focusInfo'>调焦器</a></td>
-				 {/if}
-				 {if condition="isset($configData.guide)"}
-				  <td><a>导星</a></td><!--固定属性、可变属性、及指令的html未写-->
-				 {/if}
-				  <td><a>数据处理</a></td>
-				  
-				  <td><a>光谱终端</a></td>
-				  
+				  <td><a :class='{borderBtm: device_nav.dev_click=="plan"}' @click='plan_click' >观测计划</a></td>
+				  <td><a :class='{borderBtm: device_nav.dev_click=="pic"}' @click='pic_click' >观测图像</a></td>
+				  <td v-if='configData.has_gimbal'><a :class='{borderBtm: device_nav.dev_click=="gimbal"}' @click='gimbal_click' >转台</a></td>
+				  <td v-if='configData.has_ccd'><a :class='{borderBtm: device_nav.dev_click=="ccd"}' @click='ccd_click' >CCD</a></td>
+				  <td v-if='configData.has_filter'><a :class='{borderBtm: device_nav.dev_click=="filter"}' @click='filter_click' >滤光片</a></td>
+				  <td v-if='configData.has_sDome'><a :class='{borderBtm: device_nav.dev_click=="sDome"}' @click='sDome_click' >随动圆顶</a></td>
+				  <td v-if='configData.has_oDome'><a :class='{borderBtm: device_nav.dev_click=="oDome"}' @click='oDome_click' >全开圆顶</a></td>
+				  <td v-if='configData.has_focus'><a :class='{borderBtm: device_nav.dev_click=="focus"}' @click='focus_click' >调焦器</a></td>
+				  <td v-if='configData.has_guide'><a :class='{borderBtm: device_nav.dev_click=="guide"}' @click='guide_click' >导星</a></td>
+				  <td v-if='configData.has_handle'><a :class='{borderBtm: device_nav.dev_click=="handle"}' @click='handle_click' >数据处理</a></td>
+				  <td v-if='configData.has_spectrum'><a :class='{borderBtm: device_nav.dev_click=="spectrum"}' @click='spectrum_click' >光谱终端</a></td>
                 </tr>
             </table>
 			<hr style='height:3px;border:none;border-top:3px solid #ccc;'/>
 		</div><!--望远镜子设备导航结束-->
-		{if condition="isset($configData.gimbal)"}
+	
 		  <div id='gimbalInfo' class='display'><!--转台指令和属性-->
-		{else /}<div id='gimbalInfo' style='display: none;'>
-		{/if}
+		
+	
              <nav class='center'><!--转台指令 导航-->
-				{if condition="$configData.gimbal.cantrackstar"}
+			
 			    <span name='trackStar'>跟踪恒星</span>
-				{/if}
-				{if condition="$configData.gimbal.cansetobjectname"}
+		
+		
 				<span name='targetName'>设置目标名称</span>
-				{/if}
-				{if condition="$configData.gimbal.canslewazel"}
+	
 				<span name='poitFix'>指向固定位置</span>
-				{/if}
-				{if condition="$configData.gimbal.canslewderotator"}
+	
+	
 				<span name='slewDerotator'>轴3指向固定位置</span>
-				{/if}
-				{if condition="$configData.gimbal.canconfigderotator"}
+	
+				
 				<span name='axis3Mode'>轴3工作模式</span>
-				{/if}
+	
 				<!-- <span name='speedX'>速度修正</span> 似乎无此指令 -->
-				{if condition="$configData.gimbal.canfixedmove"}
+			
 				<span name='speedF'>恒速运动</span>
-				{/if}
-				{if condition="$configData.gimbal.canpositioncorrect"}
+	
+				
 				<span name='positionX'>位置修正</span>
-				{/if}
-				{if condition="$configData.gimbal.cancoveroperation"}
+	
+			
 				<span name='coverOp'>镜盖操作</span>
-				{/if}
-				{if condition="$configData.gimbal.canfocusoperation"}
+	
+				
 				<span name='focusOp'>焦点切换镜</span>
-			    {/if}
-				{if condition="$configData.gimbal.cansavesyncdata"}
+		
+			
 				<span name='saveData'>保存同步数据</span>
-				{/if}
-				{if condition="$configData.gimbal.cantracksatellite"}
+	
+			
 				<span name='trackS'>跟踪卫星</span>
-				{/if}
-				{if condition="$configData.gimbal.canconfigproperty"}
+	
 				<span name='PropCfg'>属性设置</span>
-				{/if}
+	
 			 </nav>
 			 <div class='border2'><!--转台指令和可变属性-->
 				<div id='btnsGimbal' class='center_mrg center BtnsDiv'>
-				   {if condition="$configData.gimbal.canconnect"}
+				 
 					<input id='gimbalConnect' class='border1 btnCommand' type='button' value='连接望远镜'>
 					<input id='gimbalDisConnect' class='border1 btnCommand' type='button' value='断开望远镜'>
-					{/if}
-					{if condition="$configData.gimbal.canfindhome"}
+		
                    <input id='gimbalFindhome' class='border1 btnCommand' type='button' value='找  零'>
-				   {/if}
-				   {if condition="$configData.gimbal.canpark"}
+				   
                    <input id='gimbalPark' class='border1 btnCommand' type='button' value='复 位'>
-				   {/if}
-				   {if condition="$configData.gimbal.canstop"}
+				
+				  
                    <input id='gimbalStop' class='border1 btnCommand' type='button' value='停 止'>
-				   {/if}
-				   {if condition="$configData.gimbal.canemergencystop"}
+				   
+				 
                    <input id='gimbalEmergenceStop' class='border1 btnCommand' type='button' value='急 停'>
-				   {/if}
+				   
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
 				<form id='at60Gimbal' class='center command'>
@@ -340,8 +321,8 @@
 						   <select name="axis" style='width:129px;'> 
 							  <option value="1">轴1</option>
 							  <option value="2">轴2</option>
-							  {if condition="$configData.gimbal.haveaxis3"}
-							  <option value="3">轴3</option>{/if}
+							 
+							  <option value="3">轴3</option>
 					 	   </select>
                            速度：<input id='speedCorrect'type="text" name='correction' class='blur'>
 					</div>
@@ -351,8 +332,7 @@
 						   <select name="FixedMoveAxis" style='width:129px;'> 
 							<option value="1">轴1</option>
 							<option value="2">轴2</option>
-							{if condition="$configData.gimbal.haveaxis3"}
-							<option value="3">轴3</option>{/if}
+							<option value="3">轴3</option>
 						  </select>
                            速度：<input id='speedFVal' type="text" name='FixedMoveSpeed' class='blur'>
 					</div>
@@ -362,8 +342,7 @@
 						   <select name="PositionCorrectAxis" style='width:129px;'> 
 							<option value="1">轴1</option>
 							<option value="2">轴2</option>
-							{if condition="$configData.gimbal.haveaxis3"}
-							<option value="3">轴3</option>{/if}
+							<option value="3">轴3</option>
 						  </select>
                            修正值：<input id='PositionCorrectVal' type="text" name='PositionCorrectVal' class='blur'>
 					</div>
@@ -432,71 +411,69 @@
 		 <div class='border2'><!--转台固定属性-->
 			<br><span class='propT'>转台固定属性:</span><br><br>
                 <ul class='properUl'>
-                    <li class='li fl'>经度:<span>{$at_longitude[$configData['at_id']]}</span></li>
-                    <li class='li fl'>纬度:<span>{$at_latitude[$configData['at_id']]}</span></li>
-                    <li class='li fl'>口径:<span>{$at_aperture[$configData['at_id']]}</span> </li>
-                    <li class='li fl'>类型:<span>{$configData.gimbal.type}</span></li>
-                    <li class='li fl'> 焦点类型:<span>{$configData.gimbal.focustype}</span></li>
-                    <li class='li fl'>焦比:<span>{$configData.gimbal.focusratio}</span></li>
-                    <li class='li fl'>焦距:<span>{$configData.gimbal.focuslength}</span></li>
-                    <li class='li fl'>轴1最大速度:<span>{$configData.gimbal.maxaxis1speed}</span></li>
-                    <li class='li fl'> 轴2最大速度:<span>{$configData.gimbal.maxaxis2speed}</span></li>
-                    <li class='li fl'> 轴3最大速度:<span>{$configData.gimbal.maxaxis3speed}</span></li>
-					<li class='li fl'>轴1最大加速度:<span>{$configData.gimbal.maxaxis1acceleration}</span></li>
-                    <li class='li fl'> 轴2最大加速度:<span>{$configData.gimbal.maxaxis2acceleration}</span></li>
-                    <li class='li fl'> 轴3最大加速度:<span>{$configData.gimbal.maxaxis3acceleration}</span></li>
-                    <li class='li fl'> 轴1复位位置:<span>{$configData.gimbal.axis1parkposition}</span></li>
-                    <li class='li fl'> 轴2复位位置:<span>{$configData.gimbal.axis2parkposition}</span></li>
-                    <li class='li fl'> 轴3复位位置:<span>{$configData.gimbal.axis3parkposition}</span></li>
-                    <li class='li fl'> 是否有第3轴:	<span>{$configData.gimbal.haveaxis3 ? '有' : '无'}</span></li>
-                    <li class='li fl'> 是否有镜盖:<span>{$configData.gimbal.haveaxis5 ? '有' : '无'}</span></li>
-                    <li class='li fl'> 支持恒速运动:<span>{$configData.gimbal.canfixedmove ? '是' : '否'}</span></li>
+                    <li class='li fl'>经度:<span></span></li>
+                    <li class='li fl'>纬度:<span></span></li>
+                    <li class='li fl'>口径:<span></span> </li>
+                    <li class='li fl'>类型:<span></span></li>
+                    <li class='li fl'> 焦点类型:<span></span></li>
+                    <li class='li fl'>焦比:<span></span></li>
+                    <li class='li fl'>焦距:<span></span></li>
+                    <li class='li fl'>轴1最大速度:<span></span></li>
+                    <li class='li fl'> 轴2最大速度:<span></span></li>
+                    <li class='li fl'> 轴3最大速度:<span></span></li>
+					<li class='li fl'>轴1最大加速度:<span></span></li>
+                    <li class='li fl'> 轴2最大加速度:<span></span></li>
+                    <li class='li fl'> 轴3最大加速度:<span></span></li>
+                    <li class='li fl'> 轴1复位位置:<span></span></li>
+                    <li class='li fl'> 轴2复位位置:<span></span></li>
+                    <li class='li fl'> 轴3复位位置:<span></span></li>
+                    <li class='li fl'> 是否有第3轴:	<span></span></li>
+                    <li class='li fl'> 是否有镜盖:<span></span></li>
+                    <li class='li fl'> 支持恒速运动:<span></span></li>
                 </ul><div class='clear'></div>
 		 </div><!--固定属性 结束-->
 	   </div><!--转台 结束-->
-	   {if condition="isset($configData.ccd)"}
-	   <div id='ccdInfo' class='displayNo'><!--ccd 指令和属性-->
-		{else /} <div id='ccdInfo' style="display: none;">
-	   {/if}
+	   
+	   <div id='ccdInfo' class='displayNo'><!--ccd 指令和属性-->	   
 			<nav class='center'><!--ccd指令 导航-->
-				{if condition="$configData.ccd.cansetcoolert"}
-			    <span name='coolTemp'>制冷温度</span>{/if}
-				{if condition="$configData.ccd.cansetexposureparam"}
-				<span name='exposStratic'>曝光策略</span>{/if}
-				{if condition="$configData.ccd.canstartexposure"}
-				<span name='startExp'>开始曝光</span>{/if}
-				{if condition="$configData.ccd.cansetgain"}
-				<span name='setGear'>设置增益</span>{/if}
-				{if condition="$configData.ccd.cansetreadoutspeedmode"}
-				<span name='readOut'>读出速度模式</span>{/if}
-				{if condition="$configData.ccd.cansettransferspeedmode"}
-				<span name='transSpeed'>转移速度模式</span>{/if}
-				{if condition="$configData.ccd.cansetbin"}
-				<span name='setBin'>设置Bin</span>{/if}
-				{if condition="$configData.ccd.cansetroi"}
-				<span name='setRoi'>设置Roi</span>{/if}
-				{if condition="$configData.ccd.cansetshutter"}
-				<span name='setShutter'>设置快门</span>{/if}
-				{if condition="$configData.ccd.cansetfullframe"}
-				<span name='setFrame'>设置帧转移</span>{/if}
-				{if condition="$configData.ccd.cansetem"}
-				<span name='setEm'>设置EM</span>{/if}
-				{if condition="$configData.ccd.cannoisefilter"}
-				<span name='setCmos'>CMOS noise</span>{/if}
-				{if condition="$configData.ccd.cansetbaseline"}
-				<span name='setBase'>Base line</span>{/if}
-				{if condition="$configData.ccd.cansetoverscan"}
-				<span name='setOverScan'>Over Scan</span>{/if}
+				
+			    <span name='coolTemp'>制冷温度</span>
+				
+				<span name='exposStratic'>曝光策略</span>
+				
+				<span name='startExp'>开始曝光</span>
+				
+				<span name='setGear'>设置增益</span>
+				
+				<span name='readOut'>读出速度模式</span>
+				
+				<span name='transSpeed'>转移速度模式</span>
+				
+				<span name='setBin'>设置Bin</span>
+				
+				<span name='setRoi'>设置Roi</span>
+				
+				<span name='setShutter'>设置快门</span>
+				
+				<span name='setFrame'>设置帧转移</span>
+				
+				<span name='setEm'>设置EM</span>
+				
+				<span name='setCmos'>CMOS noise</span>
+				
+				<span name='setBase'>Base line</span>
+				
+				<span name='setOverScan'>Over Scan</span>
 			</nav>
 			<div class='border2'><!--ccd 指令和可变属性-->
 				<div id='btnsCCD' class='center_mrg center BtnsDiv'>
-				    {if condition="$configData.ccd.canconnect"}
+				    
 					<input id='ccdConnect' class='border1 btnCommand' type='button' value='连接CCD'>
-					<input id='ccdDisConnect' class='border1 btnCommand' type='button' value='断开CCD'>{/if}
-					{if condition="$configData.ccd.canstopexposure"}
-					<input id='ccdStopExpose' class='border1 btnCommand' type='button' value='停止曝光'>{/if}
-					{if condition="$configData.ccd.canabortexposure"}
-					<input id='ccdAbortExpose' class='border1 btnCommand' type='button' value='终止曝光'>{/if}
+					<input id='ccdDisConnect' class='border1 btnCommand' type='button' value='断开CCD'>
+					
+					<input id='ccdStopExpose' class='border1 btnCommand' type='button' value='停止曝光'>
+					
+					<input id='ccdAbortExpose' class='border1 btnCommand' type='button' value='终止曝光'>
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
 				<form id='at60Ccd' class='center command'>
@@ -590,75 +567,58 @@
 					  <div id='setGear'>
 					   <input type='radio' name='command' value='4'>
 					   增益模式：<select name="mode" style='width:auto;'> 
-							{if condition="strripos($configData.ccd.gainmode, 'capacity') !== false"}
-								<option value="1">High Capacity</option>{/if}
-							{if condition="strripos($configData.ccd.gainmode, 'sensitivity') !== false"}
-								<option value="2">High Sensitivity</option>{/if}
+							
+								<option value="1">High Capacity</option>
+							
+								<option value="2">High Sensitivity</option>
 						    </select>
 					   增益档位：<select name="gear" style='width:60px;'>
-							{php}
-								$gain_num = $configData['ccd']['gainnumber'];
-								for ($gain_i = 1; $gain_i <= $gain_num;  $gain_i++)
-								{
-									echo "<option value='$gain_i'>$gain_i" . "x" . '</option>';
-								}
-							{/php}
+	
+							
 						    </select>
 					  </div>
 					  <div id='readOut'>
 					   <input type='radio' name='command' value='5'>读出速度模式：
 					   <!-- <input type="text" id='ReadSpeedModeIn' name='ReadSpeedMode' placeholder='整数' class='blur'> -->
 					   <select name="ReadSpeedMode" style="width:80px">
-						{if condition="$configData.ccd.readoutspeed == 'A'"}
+						
 						 <option value="1">A</option>
-						{elseif condition="$configData.ccd.readoutspeed == 'B'"/}
+						
 						 <option value="2">B</option>
-						{elseif condition="$configData.ccd.readoutspeed == 'C'"/}
+						
 						 <option value="3">C</option>
-						{/if}
+			
 					   </select>	   
 					  </div>
 					  <div id='transSpeed'>
                            <input type='radio' name='command' value='6'>转移速度模式：
 						   <!-- <input type="text" id='TransferSpeedIn' name='SetTransferSpeed' placeholder='整数' class='blur'> -->
 						   <select name="SetTransferSpeed" style="width:80px">
-							{if condition="$configData.ccd.transferspeed == 'a'"}
+							
 								<option value="1">a</option>
-							{elseif condition="$configData.ccd.transferspeed == 'b'"/}
+							
 								<option value="2">b</option>
-							{/if}
+				
 							</select>
 					  </div>
 					  <div id='setBin'>
                            <input type='radio' name='command' value='7'>
                            BinX：<select name="BinX" style='width:60px;'>
-								   <!-- <option value="1">1</option>
+								   <option value="1">1</option>
 								   <option value="2">2</option>
 								   <option value="3">3</option>
 								   <option value="4">4</option>
-								   <option value="5">5</option> -->
+								   <option value="5">5</option>
 
-							{php}
-								$bin_num = $configData['ccd']['binarray'];
-								for ($bin_i = 1; $bin_i <= $bin_num;  $bin_i++)
-								{
-									echo "<option value='$bin_i'>$bin_i" . '</option>';
-								}
-							{/php}
+						
 						    </select>
                            BinY：<select name="BinY" style='width:60px;'>
-								<!-- <option value="1">1</option>
+								<option value="1">1</option>
 								<option value="2">2</option>
 								<option value="3">3</option>
 								<option value="4">4</option>
-								<option value="5">5</option> -->
-							{php}
-								$bin_num = $configData['ccd']['binarray'];
-								for ($bin_i = 1; $bin_i <= $bin_num;  $bin_i++)
-								{
-									echo "<option value='$bin_i'>$bin_i" . '</option>';
-								}
-							{/php}
+								<option value="5">5</option>
+							
 						    </select>
 					  </div>
 					  <div id='setRoi'>
@@ -671,10 +631,10 @@
 					  <div id='setShutter'>
                            <input type='radio' name='command' value='9'>设置快门：
 						   <select name="shutter" style='width:118px;'>
-								{if condition="strripos($configData.ccd.shuttermode, 'global') !== false"}
-								   <option value="0">GlobalShutter</option>{/if}
-								{if condition="strripos($configData.ccd.shuttermode, 'rolling') !== false"}
-								   <option value="1">RollingShutter</option>{/if}
+								
+								   <option value="0">GlobalShutter</option>
+								
+								   <option value="1">RollingShutter</option>
 						    </select>
 					  </div>
 					  <div id='setFrame'>
@@ -755,27 +715,25 @@
 		 <div class='border2'><!--ccd 固定属性-->
 			<br><span class='propT'>CCD固定属性:</span><br><br>
 			<ul class='properUl'>
-				<li class='li fl'>探测器类型:<span>{$configData.ccd.type}</span></li>
-				<li class='li fl'>传感器名称:<span>{$configData.ccd.sensorname}</span></li>
-				<li class='li fl'>图像位数:<span>{$configData.ccd.imagebits}</span></li>
-				<li class='li fl'>制冷方式:<span>{$configData.ccd.coolermode}</span></li>
-				<li class='li fl'>最低制冷温度:<span>{$configData.ccd.lowcoolert}</span></li>
-				<li class='li fl'>最大曝光时间:<span>{$configData.ccd.maxexposuretime}</span></li>
-				<li class='li fl'>最小曝光时间:<span>{$configData.ccd.minexposuretime}</span></li>
-				<li class='li fl'>快门类型:<span>{$configData.ccd.shuttertype}</span></li>
-				<li class='li fl' style='width:578px;'>快门模式:<span>{$configData.ccd.shuttermode}</span></li>
-				<li class='li fl' style='width:578px;'>读出模式:<span>{$configData.ccd.readoutmode}</span></li>
-				<li class='li fl' style='width:578px;'>增益模式:<span>{$configData.ccd.gainmode}</span></li>
-				<li class='li fl' style='width:578px;'>接口类型:<span>{$configData.ccd.interfacetype}</span></li>
-				<li class='li fl' style='width:578px;'>曝光触发模式:<span>{$configData.ccd.exposetriggermode}</span></li>
+				<li class='li fl'>探测器类型:<span></span></li>
+				<li class='li fl'>传感器名称:<span></span></li>
+				<li class='li fl'>图像位数:<span></span></li>
+				<li class='li fl'>制冷方式:<span></span></li>
+				<li class='li fl'>最低制冷温度:<span></span></li>
+				<li class='li fl'>最大曝光时间:<span></span></li>
+				<li class='li fl'>最小曝光时间:<span></span></li>
+				<li class='li fl'>快门类型:<span></span></li>
+				<li class='li fl' style='width:578px;'>快门模式:<span></span></li>
+				<li class='li fl' style='width:578px;'>读出模式:<span></span></li>
+				<li class='li fl' style='width:578px;'>增益模式:<span></span></li>
+				<li class='li fl' style='width:578px;'>接口类型:<span></span></li>
+				<li class='li fl' style='width:578px;'>曝光触发模式:<span></span></li>
              </ul>
            <div class='clear'></div>
 		 </div><!--ccd固定属性 结束-->
 	   </div><!--ccd 结束-->
-	   {if condition="isset($configData.focus)"}
+	   
 	   <div id='focusInfo' class='displayNo'><!--调焦器指令和属性 -->
-		{else /}<div id='focusInfo' style='display:none;'>
-		{/if}
 			<nav class='center'><!--调焦器指令 导航-->
 			
 			    <span name='targetPos'>设置目标位置</span>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -861,31 +819,28 @@
            <div class='clear'></div>
 		 </div><!--调焦器 固定属性 结束-->
 	   </div><!--调焦器 结束-->
-	   {if condition="isset($configData.sDome)"}
 	   <div id='domeInfo' class='displayNo'><!--随动圆顶指令和属性-->
-		{else /}<div id='domeInfo' style='display:none;'>
-		{/if}
 			<nav class='center'><!--随动圆顶指令 导航-->
-			{if condition="isset($configData.sDome.cansetdomepositin) && $configData.sDome.cansetdomepositin == 1"}
-			    <span name='setPos'>设置目标方位</span>&nbsp;&nbsp;&nbsp;&nbsp;{/if}
-			{if condition="isset($configData.sDome.cansetrotatespeed) && $configData.sDome.cansetrotatespeed == 1"}
-				<span name='rotateSpd'>设置转动速度</span>&nbsp;&nbsp;&nbsp;&nbsp;{/if}
-			{if condition="isset($configData.sDome.cansetshadeposition) && $configData.sDome.cansetshadeposition == 1"}
-				<span name='shadePos'>设置风帘位置</span>&nbsp;&nbsp;&nbsp;&nbsp;{/if}
-			{if condition="isset($configData.sDome.cansetshadespeed) && $configData.sDome.cansetshadespeed == 1"}
-				<span name='shadeAct'>控制风帘运动</span>{/if}
+			
+			    <span name='setPos'>设置目标方位</span>&nbsp;&nbsp;&nbsp;&nbsp;
+			
+				<span name='rotateSpd'>设置转动速度</span>&nbsp;&nbsp;&nbsp;&nbsp;
+			
+				<span name='shadePos'>设置风帘位置</span>&nbsp;&nbsp;&nbsp;&nbsp;
+			
+				<span name='shadeAct'>控制风帘运动</span>
 			</nav>
 			<div class='border2'><!--随动圆顶 指令和可变属性-->
 				<div id='btnsSlaveD' class='center_mrg center BtnsDiv'>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				{if condition="isset($configData.sDome.canconnect) && $configData.sDome.canconnect == 1"}
+				
 				   <input id='sDomeConnect' class='border1 btnCommand' type='button' value='连接圆顶'>
-				   <input id='sDomeDisConnect' class='border1 btnCommand' type='button' value='断开圆顶'>{/if}
-				{if condition="isset($configData.sDome.canstop) && $configData.sDome.canstop == 1"}
-				   <input id='sDomeStop' class='border1 btnCommand' type='button' value='停止运动'>{/if}
-				{if condition="isset($configData.sDome.canopenshutter) && $configData.sDome.canopenshutter == 1"}
+				   <input id='sDomeDisConnect' class='border1 btnCommand' type='button' value='断开圆顶'>
+				
+				   <input id='sDomeStop' class='border1 btnCommand' type='button' value='停止运动'>
+				
 				   <input id='sDomeScuttle' class='border1 btnCommand' type='button' value='打开天窗'>
-				   <input id='sDomeScuttleClose' class='border1 btnCommand' type='button' value='关闭天窗'>{/if}
+				   <input id='sDomeScuttleClose' class='border1 btnCommand' type='button' value='关闭天窗'>
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
 				<form id='at60Dome' class='center command'>
@@ -926,45 +881,37 @@
 		<div class='border2'><!--随动圆顶 固定属性-->
 			<br><span class='propT'>随动圆顶固定属性:</span><br><br>
 			<ul class='properUl'>
-			   <li class='li fl'>类型:&nbsp;&nbsp;<span>{$configData.sDome.dometype ?? ''}</span></li>
-			   <li class='li fl'>最大转动速度:&nbsp;&nbsp;<span>{$configData.sDome.maxspeed ?? ''}</span></li>
+			   <li class='li fl'>类型:&nbsp;&nbsp;<span></span></li>
+			   <li class='li fl'>最大转动速度:&nbsp;&nbsp;<span></span></li>
                <li class='li fl'>具备风帘:&nbsp;&nbsp;<span>
-				{if condition="isset($configData.sDome.hasshade) && $configData.sDome.hasshade == 1"}是
-				{else /}否
-				{/if}	
+				是
+		
 			   </span></li>
                <li class='li fl'>控制风帘运动:&nbsp;&nbsp;<span>
-				{if condition="isset($configData.sDome.cansetshadespeed) && $configData.sDome.cansetshadespeed == 1"}是
-				{else /}否
-				{/if}
+				否
+	
 			   </span></li>
                <li class='li fl'>可否连接:&nbsp;&nbsp;<span>
-				{if condition="isset($configData.sDome.canconnect) && $configData.sDome.canconnect == 1"}是
-				{else /}否
-				{/if}
+				否
+	
 			   </span></li>
              </ul>
            <div class='clear'></div>
 		 </div><!--随动圆顶 固定属性 结束-->
 	   </div><!--随动圆顶 结束-->
 
-
-
-
-	   {if condition="isset($configData.oDome)"}
 	   <div id='oDomeInfo' class='displayNo'><!--全开圆顶指令和属性-->
-		{else /}<div id='oDomeInfo' style='display:none;'>
-		{/if}
+
 			<div class='border2'><!--全开圆顶 指令和可变属性-->
 				<div id='oDome_command' class='center_mrg center BtnsDiv'>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				{if condition="isset($configData.oDome.canconnect) && $configData.oDome.canconnect ==1"}
+				
 				   <input id='oDomeConnect' class='border1 btnCommand' type='button' value='连接圆顶'>
-				   <input id='oDomeDisConnect' class='border1 btnCommand' type='button' value='断开圆顶'>{/if}
-				{if condition="isset($configData.oDome.canopendome) && $configData.oDome.canopendome ==1"}
+				   <input id='oDomeDisConnect' class='border1 btnCommand' type='button' value='断开圆顶'>
+				
 				   <input id='oDomeOpen' class='border1 btnCommand' type='button' value='打开'>
 				   <input id='oDomeClose' class='border1 btnCommand' type='button' value='关闭'>
-				   <input id='oDomeStop' class='border1 btnCommand' type='button' value='停止运动'>{/if}
+				   <input id='oDomeStop' class='border1 btnCommand' type='button' value='停止运动'>
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
 			<div><!--全开圆顶 可变属性-->
@@ -981,16 +928,14 @@
 		<div class='border2'><!--全开圆顶 固定属性-->
 			<br><span class='propT'>全开圆顶固定属性:</span><br><br>
 			<ul class='properUl'>
-			   <li class='li fl'>类型:&nbsp;&nbsp;<span id='oDomeType'>{$configData.oDome.type ?? ''}</span></li>
+			   <li class='li fl'>类型:&nbsp;&nbsp;<span id='oDomeType'></span></li>
 			   <li class='li fl'>支持打开圆顶:&nbsp;&nbsp;<span id='oDomeCanOpen'>
-				{if condition="isset($configData.oDome.canopendome) && $configData.oDome.canopendome == 1"}是
-				{else /}否
-				{/if}
+				否
+	
 				</span></li>
                <li class='li fl'>支持连接:&nbsp;&nbsp;<span id='oDomeCanConnect'>
-				{if condition="isset($configData.oDome.canconnect) && $configData.oDome.canconnect == 1"}是
-				{else /}否
-				{/if}	
+				否
+		
 			   </span></li>
              </ul>
            <div class='clear'></div>
@@ -998,36 +943,24 @@
 	   </div><!--全开圆顶 结束-->
 
 
-	   {if condition="isset($configData.filter)"}
 	   <div id='filterInfo' class='displayNo'><!--滤光片指令和属性-->
-		{else /}<div id='filterInfo' style='display: none;'>
-		{/if}
 			<div class='border2'><!--滤光片 指令和可变属性-->
 				<div id='btnsFilter' class='center_mrg center BtnsDiv' style='width:850px;'>
-				{if condition="isset($configData.filter.canconnect) && $configData.filter.canconnect == 1"}
+				
 					<input id='filterConnect' class='border1 btnCommand' type='button' value='连接滤光片'>&nbsp;&nbsp;&nbsp;&nbsp;
-					<input id='filterDisConnect' class='border1 btnCommand' type='button' value='断开滤光片'>&nbsp;&nbsp;&nbsp;&nbsp;{/if}
-				{if condition="isset($configData.filter.canfindhome) && $configData.filter.canfindhome == 1"}
-					<input id='filterFindHome' class='border1 btnCommand' type='button' value='找 零'>&nbsp;&nbsp;&nbsp;&nbsp;{/if}
-				{if condition="isset($configData.filter.cansetfilterposition) && $configData.filter.cansetfilterposition == 1"}
+					<input id='filterDisConnect' class='border1 btnCommand' type='button' value='断开滤光片'>&nbsp;&nbsp;&nbsp;&nbsp;
+				
+					<input id='filterFindHome' class='border1 btnCommand' type='button' value='找 零'>&nbsp;&nbsp;&nbsp;&nbsp;
+
 					滤光片位置：<select id='filterPosi' class='border1 btnCommand' name="filterPos" style='width:90px;color:#000;border:1px solid #7a7a7a;'>
-							    <!-- <option value="">请选择</option>
+							    <option value="">请选择</option>
 							    <option value="0">0</option>
 							    <option value="1">1</option>
 							    <option value="2">2</option>
-								<option value="3">3</option> -->
-							{php}
-								$filter_name = explode ('/', $configData['filter']['filtername']);
-								$filter_num = count ($filter_name);
-								echo '<option value="">请选择</option>';
-								for ($filter_i = 1; $filter_i <= $filter_num;  $filter_i++)
-								{
-									$filter_index = $filter_i -1;
-									echo "<option value='$filter_i'>$filter_name[$filter_index]</option>";
-								}
-							{/php}
+								<option value="3">3</option>
+			
 						 </select>&nbsp;&nbsp;
-					<input id='filterPosBtn' class='border submitBtn' type='button' value='提交滤光片位置'>{/if}
+					<input id='filterPosBtn' class='border submitBtn' type='button' value='提交滤光片位置'>
 				</div><br>
 			<hr style='width:98%;' class='center_mrg'><br>
 			<div><!--滤光片 可变属性-->
@@ -1043,21 +976,37 @@
 		<div class='border2'><!--滤光片 固定属性-->
 			<br><span class='propT'>滤光片固定属性:</span><br><br>
 			<ul class='properUl'>
-			    <li class='li fl'>插槽数目:&nbsp;&nbsp;<span>{$configData.filter.numberoffilter ?? ''}</span></li>
+			    <li class='li fl'>插槽数目:&nbsp;&nbsp;<span></span></li>
 			   <li class='li fl'>滤光片类型:&nbsp;&nbsp;<span>
 				Johnshon-Bessel  
 			   </span></li>
 			   <li class='li fl'>可否设置滤光片位置:&nbsp;&nbsp;<span>
-					{if condition="isset($configData.filter.cansetfilterposition) && $configData.filter.cansetfilterposition == 1"} 是
-					{else /} 否
-					{/if}
+				否
+		
 			   </span></li>
-			   <li class='li fl' style='width:1180px;'>滤光片焦距偏差值:&nbsp;&nbsp;<span>{$configData.filter.filterfocuslengthcompensate ?? ''}</span></li>
+			   <li class='li fl' style='width:1180px;'>滤光片焦距偏差值:&nbsp;&nbsp;<span></span></li>
              </ul>
            <div class='clear'></div>
 		 </div><!--滤光片 固定属性 结束-->
-	   </div><!--滤光片 结束-->
-	   <div id='planInfo' class='displayNo pos_r'><!--观测计划表格 开始-->
+	   </div><!--滤光片 结束-->	
+		<br>
+		<div id='at60Res' class='center_mrg' style='width:92%;' v-if='device_nav.dev_click=="pic"'><!--观测图像 开始-->
+			<div id='bigPic' class='pos_r'>
+				<img src='/static/images-1/pic_Res.jpg' style='width:100%;'>
+				<button class='pos_a'>最新图像</button>
+			</div>
+			<div id='smallPic' class='pos_r'>
+				<img id='pre' src='/static/images-1/left.jpg'>
+				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
+				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
+				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
+				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
+				<img id='next' class='pos_a' src='/static/images-1/right.jpg'>
+			</div>
+		</div><!--观测图像 结束-->	
+	</div><!-- id='all' 结束 --><br>
+	
+	<div id='planInfo' class='displayNo pos_r'><!--观测计划表格 开始-->
 			 <table id="dg" title="计划表格" style='text-align: center;'> 
 			 </table>
 			<div id="toolbar">
@@ -1084,24 +1033,8 @@
 		   <form id='imptPlan' style='display:none;' enctype='multipart/form-data'>
 				<input type='file' name='plan'>
 		   </form><!--计划文件上传表单-->
-		</div><!--观测计划表格 结束-->
-		{load href='/static/js/plan_datagrid-m.js'}
-		<br>
-		<div id='at60Res' class='displayNo center_mrg' style='width:92%;'><!--观测图像 开始-->
-			<div id='bigPic' class='pos_r'>
-				<img src='/static/images-1/pic_Res.jpg' style='width:100%;'>
-				<button class='pos_a'>最新图像</button>
-			</div>
-			<div id='smallPic' class='pos_r'>
-				<img id='pre' src='/static/images-1/left.jpg'>
-				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
-				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
-				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
-				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
-				<img id='next' class='pos_a' src='/static/images-1/right.jpg'>
-			</div>
-		</div><!--观测图像 结束-->
-	</div><!-- id='all' 结束 --><br>
+	</div><!--观测计划表格 结束-->
+	{load href='/static/js/plan_datagrid-m.js'}
 	<footer class='center clear'>
 		<span>中科院国家天文台兴隆观测基地</span>
 	</footer>

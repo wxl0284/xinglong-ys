@@ -12,24 +12,22 @@ class Page extends Base
     public function at_page($at)
     {
         //根据$at获取相应望远镜的固定属性配置数据
-        $result = $this->get_conf ($at);
-        //halt(isset($result['gimbal']));
-        //halt($result['filter']);
+        $config_data = $this->get_conf ($at);
         
-        //判断$result中转台 ccd 调焦器 是否有未配置的 
+        //判断$result中 转台 ccd 调焦器 是否有未配置的 
         $err_notice = ''; //错误提示
 
-        if ( !isset($result['gimbal']) )
+        if ( !isset($config_data['gimbal']) )
         {
             $err_notice .= '此望远镜转台的固定属性未配置或读取失败!<br>';
         }
 
-        if ( !isset($result['ccd']) )
+        if ( !isset($config_data['ccd']) )
         {
             $err_notice .= '此望远镜CCD的固定属性未配置或读取失败!<br>';
         }
 
-        if ( !isset($result['focus']) )
+        if ( !isset($config_data['focus']) )
         {
             $err_notice .= '此望远镜调焦器的固定属性未配置或读取失败!<br>';
         }
@@ -41,13 +39,12 @@ class Page extends Base
         }
 
         //如果$result中无数据，即未进行任何配置
-        if ( !$result )
+        if ( !$config_data )
         {
             $vars['not_config'] = 1;
             return view('atpage_notice', $vars);
         }
 
-        $result['at_id'] = $at;
         //计算晨光始、昏影终
         $mjd = GetJD();  //修正儒略日
         
@@ -55,15 +52,17 @@ class Page extends Base
         $sunSet = 0; //昏影终
         
         sunTwilight ($sunRise, $sunSet, $mjd, 8);
-        //halt(data2Time ($sunRise));
         $sunRise = substr(data2Time ($sunRise), 1, 8);
         $sunSet = substr(data2Time ($sunSet), 1, 8);
 
         //将晨光始 昏影终 存入session
         Session::set('sunRise', $sunRise);
         Session::set('sunSet', $sunSet);
-        
-        $vars['configData'] = $result;
+        //返回数据
+        $result['at_id'] = $at;  //返回该望远镜在atlist表中的id字段
+        $result['configData'] = json_encode ($config_data); //将配置数据以json格式返回
+
+        $vars['data'] = $result;
         return view('atpage', $vars);
     }//根据at参数显示不同望远镜页面 结束
 
@@ -925,6 +924,7 @@ class Page extends Base
         if ( $gimbal )
         {
             $result['gimbal'] = $gimbal;
+            $result['has_gimbal'] = 1; //表示有转台的配置数据
         }
 
         //查ccd-No1配置数据
@@ -960,6 +960,7 @@ class Page extends Base
             }
 
             $result['ccd'] = $ccd;
+            $result['has_ccd'] = 1; //表示有ccd的配置数据
         }//查ccd-No1配置数据 结束
         
         //查滤光片配置数据
@@ -973,6 +974,7 @@ class Page extends Base
                 $filter['filter_name_json'] = json_encode ($temp_filtername);
             }
             $result['filter'] = $filter;
+            $result['has_filter'] = 1; //表示有ccd的配置数据
         }
 
         //查随动圆顶配置数据
@@ -980,6 +982,7 @@ class Page extends Base
         if ( $sDome )
         {
             $result['sDome'] = $sDome;
+            $result['has_sDome'] = 1; //表示有 随动圆顶的配置数据
         }
 
         //查全开圆顶配置数据
@@ -987,6 +990,7 @@ class Page extends Base
         if ( $oDome )
         {
             $result['oDome'] = $oDome;
+            $result['has_oDome'] = 1; //表示有 全开圆顶的配置数据
         }
 
         //查调焦器配置数据
@@ -994,6 +998,7 @@ class Page extends Base
         if ( $focus )
         {
             $result['focus'] = $focus;
+            $result['has_focus'] = 1; //表示有 调焦器的配置数据
         }
 
         //查导星镜配置数据
@@ -1001,6 +1006,7 @@ class Page extends Base
         if ( $guide )
         {
             $result['guide'] = $guide;
+            $result['has_guide'] = 1; //表示有 导星镜的配置数据
         }
 
         return $result;

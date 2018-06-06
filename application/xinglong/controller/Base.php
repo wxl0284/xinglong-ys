@@ -34,10 +34,10 @@ class Base extends Controller
         $res = Db::table('atlist')->order('id asc')->select();
         if ( $res )
         {
-            //将id 和 口径 aperture对应起来
+            //将id 与表中其他字段一一对应起来
             foreach ( $res as $v)
             {
-                $at_id[$v['id']] = $v['atid']; //将id 和 口径 aperture对应起来
+                $at_id[$v['id']] = $v['atid']; //将id 和 望远镜唯一id对应起来
                 $at_name[$v['id']] = $v['atname']; //将id 和 望远镜名称 对应起来
                 $at_longitude[$v['id']] = $v['longitude']; //将id 和 经度 对应起来
                 $at_latitude[$v['id']] = $v['latitude']; //将id 和 纬度 对应起来

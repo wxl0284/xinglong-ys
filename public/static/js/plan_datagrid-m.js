@@ -332,28 +332,24 @@
 	{epochId:'3',name:'J2050'},];
 	
 	//将固定属性中的滤光片名称:u/v/b，对变量filterData进行赋值
-	var filterData = [];
+	/*var filterData = [];
 	var filterData_num = plan_filter_option.length;
 	for (var filterData_i = 0; filterData_i < filterData_num; filterData_i++)
 	{
 		filterData[filterData_i] = {filterId:'', name:''};
 		filterData[filterData_i].filterId = plan_filter_option[filterData_i];
 		filterData[filterData_i].name = plan_filter_option[filterData_i];
-	}
+	}*/
 
-	/*var filterData = [
+	var filterData = [
 	{filterId:'U',name:'U'},
 	{filterId:'B',name:'B'},
 	{filterId:'V',name:'V'},
 	{filterId:'R',name:'R'},
 	{filterId:'I',name:'I'},
-	];*/
+	];
 	
 	$(function(){
-
-
-	
-
 		var table_w = ( $(window).width() ) * 0.889546;
 		table.datagrid({
 			width: table_w,

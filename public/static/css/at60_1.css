@@ -57,9 +57,7 @@ footer span {color:#fff;line-height:41px;font-size:13px;}
 
 #devsInfo img.pos_a {left:8px; top:28px;}
 
-#planInfo {margin: 15px auto;}
-
-/* #planInfo {width:1200px;margin: -30px auto 20px auto;} */
+#planInfo {width:1200px;margin: -30px auto 20px auto;}
 
 #takeOverBtn {top:240px;left:98px;width:60px;background-color:#64B2E0;color:#fff;cursor:pointer;}
 
