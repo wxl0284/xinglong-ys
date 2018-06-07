@@ -11,13 +11,13 @@
 	 {load href='/static/plugin/easyui-1.3.5/locale/easyui-lang-zh_CN.js'}
 	 {load href='/static/plugin/vue.js'}
 	 {load href='/static/css/common-1.css'}
-	 {load href='/static/css/at60_1.css'}
+	 {load href='/static/css/atpage.css'}
 	 <script>
 		var at = "{$at_id[$data['at_id']]}"; //用一个唯一不变的值来确定一个望远镜
 		var configData =  {$data['configData']}; //各子设备的配置数据
 		console.log(configData.gimbal);
 	</script>
-	 {load href='/static/js/at60.js'}
+	 {load href='/static/js/atpage.js'}
 </head>
 <body>
 	{include file="common/common"/}
@@ -199,194 +199,64 @@
 			<hr style='height:3px;border:none;border-top:3px solid #ccc;'/>
 		</div><!--望远镜子设备导航结束-->
 	
-		  <div id='gimbalInfo' class='display'><!--转台指令和属性-->
-		
-	
+		  <div id='gimbalInfo' v-if='device_nav.dev_click=="gimbal"'><!--转台指令和属性-->
              <nav class='center'><!--转台指令 导航-->
-			
-			    <span name='trackStar'>跟踪恒星</span>
-		
-		
-				<span name='targetName'>设置目标名称</span>
-	
-				<span name='poitFix'>指向固定位置</span>
-	
-	
-				<span name='slewDerotator'>轴3指向固定位置</span>
-	
-				
-				<span name='axis3Mode'>轴3工作模式</span>
-	
-				<!-- <span name='speedX'>速度修正</span> 似乎无此指令 -->
-			
-				<span name='speedF'>恒速运动</span>
-	
-				
-				<span name='positionX'>位置修正</span>
-	
-			
-				<span name='coverOp'>镜盖操作</span>
-	
-				
-				<span name='focusOp'>焦点切换镜</span>
-		
-			
-				<span name='saveData'>保存同步数据</span>
-	
-			
-				<span name='trackS'>跟踪卫星</span>
-	
-				<span name='PropCfg'>属性设置</span>
-	
+			    <span :class='{active: device_nav.gimbal_command=="trackStar"}' @click ='device_nav.gimbal_command="trackStar"'>跟踪恒星</span>
+				<span :class='{active: device_nav.gimbal_command=="setObjName"}' @click ='device_nav.gimbal_command="setObjName"'>设置目标名称</span>
+				<span>指向固定位置</span>		
+				<span>轴3指向固定位置</span>		
+				<span>轴3工作模式</span>
+				<span>恒速运动</span>				
+				<span>位置修正</span>		
+				<span>镜盖操作</span>	
+				<span>焦点切换镜</span>	
+				<span>保存同步数据</span>
+				<span>跟踪卫星</span>
+				<span>属性设置</span>
+				<!-- <span>速度修正</span> 似乎无此指令 -->
 			 </nav>
 			 <div class='border2'><!--转台指令和可变属性-->
 				<div id='btnsGimbal' class='center_mrg center BtnsDiv'>
-				 
-					<input id='gimbalConnect' class='border1 btnCommand' type='button' value='连接望远镜'>
-					<input id='gimbalDisConnect' class='border1 btnCommand' type='button' value='断开望远镜'>
-		
-                   <input id='gimbalFindhome' class='border1 btnCommand' type='button' value='找  零'>
-				   
-                   <input id='gimbalPark' class='border1 btnCommand' type='button' value='复 位'>
-				
-				  
-                   <input id='gimbalStop' class='border1 btnCommand' type='button' value='停 止'>
-				   
-				 
-                   <input id='gimbalEmergenceStop' class='border1 btnCommand' type='button' value='急 停'>
-				   
+				   <input id='gimbalConnect' v-if='configData.gimbal.canconnect==1' :class='{btnClick:  device_nav.gimbal_btn=="connect"}' @click='gimbal_btn_command(1)' class='border1 btnCommand' type='button' value='连接望远镜'>
+				   <input id='gimbalDisConnect' v-if='configData.gimbal.canconnect==1' :class='{btnClick:  device_nav.gimbal_btn=="disConnect"}' @click='gimbal_btn_command(2)' class='border1 btnCommand' type='button' value='断开望远镜'>		
+                   <input id='gimbalFindhome' v-if='configData.gimbal.canfindhome==1' :class='{btnClick:  device_nav.gimbal_btn=="findhome"}' @click='gimbal_btn_command(3)' class='border1 btnCommand' type='button' value='找  零'>
+                   <input id='gimbalPark' v-if='configData.gimbal.canpark==1' :class='{btnClick:  device_nav.gimbal_btn=="park"}' @click='gimbal_btn_command(4)' class='border1 btnCommand' type='button' value='复 位'>		
+                   <input id='gimbalStop' v-if='configData.gimbal.canstop==1' :class='{btnClick:  device_nav.gimbal_btn=="stop"}' @click='gimbal_btn_command(5)' class='border1 btnCommand' type='button' value='停 止'>	 
+                   <input id='gimbalEmergenceStop' v-if='configData.gimbal.canemergencystop==1' :class='{btnClick:  device_nav.gimbal_btn=="emergstop"}' @click='gimbal_btn_command(6)' class='border1 btnCommand' type='button' value='急 停'>
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
-				<form id='at60Gimbal' class='center command'>
-					<div id='trackStar' class='pos_r'>
-					   <input type='radio' name='command' value='1' />
-					   赤经：
-					   <input id='inputIn1' class='hourMin blur border_b' type="text" name='rightAscension1'>:
-					   <input id='inputIn1_1' class='hourMin blur border_b' type="text" name='rightAscension2'>:
-					   <input id='inputIn1_2' class='sec blur border_b' type="text" name='rightAscension3'>
-					   赤纬：
-					   <input id='inputIn2' class='hourMin blur border_b' type="text" name='declination1'>:
-					   <input id='inputIn2_1' class='hourMin blur border_b' type="text" name='declination2'>:
-					   <input id='inputIn2_2' class='sec blur border_b' type="text" name='declination3'>
-					  历元：<select name="epoch" style='width:69px;'>
-						       <option value="0">real</option>
-							   <option value="1">J2000</option>
-							   <option value="2">B1950</option>
-							   <option value="3">J2050</option>
-						    </select>
-					  跟踪类型：
-					   <select name="speed" style='width:66px;'>
-						   <option value="0">恒星</option>
-						   <option value="1">太阳</option>
-						   <option value="2">月亮</option>
-						   <option value="3">彗星</option>
-						</select>
-						<p style='position:absolute;border:1px solid #7a7a7a;top:1px;left:262px;width:162px;height:19px;z-index:-1;'></p>
-						<p style='position:absolute;border:1px solid #7a7a7a;top:1px;left:495px;width:162px;height:19px;z-index:-1;'></p>
-					</div>
-					<div id='targetName'>
-					   <input type='radio' name='command' value='2'>
-					   目标名称：<input id='objectNameInput' type="text" name='objectName' class='blur'>
-					  目标类型：<select name="objectType" style='width:81px;'>
-						           <option value="0">恒星</option>
-								   <option value="1">太阳</option>
-								   <option value="2">月亮</option>
-								   <option value="3">彗星</option>
-								   <option value="4">行星</option>
-								   <option value="5">卫星</option>
-								   <option value="6">固定位置</option>
-						    </select>
-					  </div>
-					<div id='poitFix'>
-						   <input type='radio' name='command' value='3'>
-						   方位：<input id='azimuth' type="text" name='azimuth' class='blur'>
-						   俯仰：<input id='elevationV' type="text" name='elevation' class='blur'>
-					</div>
-					<div id='slewDerotator'>
-					   <input type='radio' name='command' value='4'>轴3指向固定位置：
-					   <input id='slewDerotatorV' type="text" name='slewDerotator' class='blur'>
-					</div>
-					<div id='axis3Mode'>
-					   <input type='radio' name='command' value='5'>
-					   模式：<select id='at60Axis3' name="mode" style='width:129px;'> 
-						           <option value="0">不消旋</option>
-								   <option value="1">偏差消旋</option>
-								   <option value="2">始终指向同一角度</option>
-						    </select>
-					   <span class='displayNo'>起偏角：<input type="text" name='polarizingAngle' class='blur'></span>
-					</div>
-					<div id='speedX'>
-                           <input type='radio' name='command' value='6'>
-						   轴：<!-- <input id='speedXInput' type="text" name='axis' class='blur'> -->
-						   <select name="axis" style='width:129px;'> 
-							  <option value="1">轴1</option>
-							  <option value="2">轴2</option>
-							 
-							  <option value="3">轴3</option>
-					 	   </select>
-                           速度：<input id='speedCorrect'type="text" name='correction' class='blur'>
-					</div>
-					<div id='speedF'>
-                           <input type='radio' name='command' value='7'>
-						   轴：<!-- 轴：<input id='speedFAxis' type="text" name='FixedMoveAxis' class='blur'> -->
-						   <select name="FixedMoveAxis" style='width:129px;'> 
-							<option value="1">轴1</option>
-							<option value="2">轴2</option>
-							<option value="3">轴3</option>
-						  </select>
-                           速度：<input id='speedFVal' type="text" name='FixedMoveSpeed' class='blur'>
-					</div>
-					<div id='positionX'>
-                           <input type='radio' name='command' value='8'>
-						   轴：<!-- 轴：<input id='PositionCorrectAxis' type="text" name='PositionCorrectAxis' class='blur'> -->
-						   <select name="PositionCorrectAxis" style='width:129px;'> 
-							<option value="1">轴1</option>
-							<option value="2">轴2</option>
-							<option value="3">轴3</option>
-						  </select>
-                           修正值：<input id='PositionCorrectVal' type="text" name='PositionCorrectVal' class='blur'>
-					</div>
-					<div id='coverOp'>
-                           <input type='radio' name='command' value='9'>镜盖操作：
-						   <!-- <select name="openCover" style='width:56px;'>
-						           <option value="1">开</option>
-								   <option value="2">关</option>
-								   <option value="0">停</option>
-							</select>                      -->
-							<input type='button' value="打开">
-							<input type='button' value="关闭">
-							<input type='button' value="停止">
-					</div>
-					<div id='focusOp'>
-                           <input type='radio' name='command' value='10'>焦点切换镜：
-						   <select name="setFocusType" style='width:56px;'>
-						        <option value="1">1</option>
-							    <option value="2">2</option>
-							    <option value="3">3</option>
-							    <option value="-1">停</option>
-						    </select>
-                          
-					</div>
-					<div id='saveData'>
-						   <input type='radio' name='command' value='11'>保存同步数据：
-						   <!-- <select name="saveSyncData" style='width:56px;'>
-						        <option value="0">否</option>
-							    <option value="1">是</option>
-							</select> -->
-							<input type="button" value="是" style="width:80px">
-							<input type="button" value="否" style="width:80px">
-					</div>
-					<div id='trackS'>
-                           <input type='radio' name='command' value='12'>跟踪卫星：
-						   <input type="text" name='trackSatellite' class='blur'>
-					</div>
-					<div id='PropCfg'>
-                           <input type='radio' name='command' value='13'>属性设置：
-						   <input type="text" name='configProp' class='blur'>
-					</div>
-					<br><input id='gimbalSbmt' class='border submitBtn' type="button" value="确认提交指令">
+				<form class='center' v-if='device_nav.gimbal_command == "trackStar"'><!--跟踪恒星-->
+					赤经:<input type="text" class='hour' ref='trackstar_asc1' v-model.trim='gimbal_form.trackStar.rightAscension1' @blur='gimbal_track_star_Asc1(true)' @keyup='gimbal_Asc1_up' >:
+					<input type="text" class='hour' ref='trackstar_asc2' v-model.trim='gimbal_form.trackStar.rightAscension2' @blur='gimbal_track_star_Asc2' @keyup='' >:
+					<input type="text" class='sec' v-model.trim='gimbal_form.trackStar.rightAscension3' @blur='gimbal_track_star_Asc3' >
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					赤纬:<input type="text" class='hour' v-model.trim='gimbal_form.trackStar.declination1' @blur='gimbal_track_star_Dsc1' @keyup='' >:
+					<input type="text" class='hour' v-model.trim='gimbal_form.trackStar.declination2' @blur='gimbal_track_star_Dsc2' @keyup='' >:
+					<input type="text" class='sec' v-model.trim='gimbal_form.trackStar.declination3' @blur='gimbal_track_star_Dsc3' >
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					历元:<select v-model="gimbal_form.trackStar.epoch">
+						<option value="-1">请选择</option>
+						<option value="0">real</option>
+						<option value="1">J2000</option>
+						<option value="2">B1950</option>
+						<option value="3">J2050</option>
+					</select>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					跟踪速度:
+					<select v-model="gimbal_form.trackStar.speed">
+						<option value="-1">请选择</option>
+						<option value="0">恒星</option>
+						<option value="1">太阳</option>
+						<option value="2">月亮</option>
+						<option value="3">彗星</option>
+					</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<br><input type="button" class='margin_10' value="提交指令" @click='trackStar_sbmt' >
 				</form>
-			  <br><hr style='width:98%;' class='center_mrg'><br>
+				<form class='center' v-if='device_nav.gimbal_command == "setObjName"'><!--设置目标名称-->
+					
+					<br><input type="button" class='margin_10' value="提交目标名称" @click='trackStar_sbmt' >
+				</form>
+			  <hr style='width:98%;' class='center_mrg'><br>
 			  <div><!--转台可变属性-->
                 <span class='propT'>转台可变属性:</span><br><br>
                 <ul class='properUl'>
@@ -432,7 +302,7 @@
                     <li class='li fl'> 支持恒速运动:<span></span></li>
                 </ul><div class='clear'></div>
 		 </div><!--固定属性 结束-->
-	   </div><!--转台 结束-->
+	  </div><!--转台 结束-->
 	   
 	   <div id='ccdInfo' class='displayNo'><!--ccd 指令和属性-->	   
 			<nav class='center'><!--ccd指令 导航-->

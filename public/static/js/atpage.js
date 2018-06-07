@@ -1,14 +1,43 @@
-/** 设备1js  at60*/
+/** 望远镜控制页面js*/
  $(function () {
-	 var planInfo = $('#planInfo'); //观测计划的表格
-	 //vue 实例化
-	var vm = new Vue({
+	//显示导航栏望远镜列表   
+	var ul = $('#atListUl');
+	$('#atList').hover(
+		function (){
+			ul.show();
+		}, 
+		function (){		
+			ul.hide();
+		} 
+	);  
+	//各望远镜配置 js事件
+	var configList = $('#atConfigList');
+	$('#atConfig').hover(
+		function (){
+			configList.show();
+		}, 
+		function (){		
+			configList.hide();
+		} 
+	);
+//望远镜列表js代码结束///////////////////////////////////
+	var planInfo = $('#planInfo'); //观测计划的表格
+	
+	var vm = new Vue({//vue 实例化
 		el: '#all',
 		data: {
-			configData: configData,
+			configData: configData, //configData是后端返回的json数据
 			device_nav: {//此对象中的数据用以区分是否给各子设备加上蓝色底框
-				dev_click: 'gimbal',
-			}
+				dev_click: 'gimbal',  //区分各自设备
+				gimbal_command: '',   //区分转台各指令
+				gimbal_btn: '',   //区分转台各按钮型指令
+			},
+			gimbal_form: {//转台表单指令的参数
+				trackStar: {
+					rightAscension1: '', rightAscension2: '', rightAscension3: '',
+					epoch: '-1', speed: '-1', command:'trackStar', at:at
+				},
+			},
 		},
 		methods: {
 			plan_click: function () {
@@ -17,8 +46,74 @@
 			},
 			gimbal_click: function () {
 				this.device_nav.dev_click = 'gimbal';
+				this.device_nav.gimbal_command = '';
 				planInfo.addClass('displayNo');
 			},
+			gimbal_btn_command: function (connect) { //转台之 连接 断开 找零 复位 停止 急停
+				var that = this; //存储vue实例化的对象
+				var btn_str = ''; //控制按钮的样式
+				var btn_text = '';
+				var data = {at: at, command: ''}; //提交的数据
+
+				switch (connect) {
+					case 1:
+						btn_str = 'connect';
+						btn_text = '连接';
+						data.command = 'connect';
+						break;
+					case 2:
+						btn_str = 'disConnect';
+						btn_text = '断开';
+						data.command = 'disConnect';
+						break;
+					case 3:
+						btn_str = 'findhome';
+						btn_text = '找零';
+						data.command = 'findhome';
+						break;
+					case 4:
+						btn_str = 'park';
+						btn_text = '复位';
+						data.command = 'park';
+						break;
+					case 5:
+						btn_str = 'stop';
+						btn_text = '停止';
+						data.command = 'stop';
+						break;
+					case 6:
+						btn_str = 'emergstop';
+						btn_text = '急停';
+						data.command = 'emergstop';
+						break;
+					default:
+						break;
+				}
+				var gimbal_btn = this.device_nav.gimbal_btn;
+				//执行ajax
+				$.ajax({
+					type : 'post',
+					url : '/gimbal',
+					data : data,             
+		            success: function (info) {
+						that.device_nav.gimbal_btn = btn_str;  //更改按钮样式
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});
+		            },
+		            error: function () {
+			        	layer.alert('网络异常,请再次' + btn_text, {shade:false, closeBtn:0});
+		            },
+				});
+			},/*转台之 连接 断开 找零 复位 停止 急停 结束*/
 			ccd_click: function () {
 				this.device_nav.dev_click = 'ccd';
 				planInfo.addClass('displayNo');
@@ -55,8 +150,40 @@
 				this.device_nav.dev_click = 'pic';
 				planInfo.addClass('displayNo');
 			},
+			gimbal_track_star_Asc1: function (tip) {
+				var msg = '';
+				var patn = /^\d{2}$/;
+				var v = this.gimbal_form.trackStar.rightAscension1;
+				if ( !patn.test(v) || v > 24 || v < 0 )
+				{
+					msg = '赤经小时参数超限';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.trackstar_asc1, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},
+			gimbal_Asc1_up:function () {
+				var res = this.gimbal_track_star_Asc1(false);
+				if ( res === '' ) this.$refs.trackstar_asc2.focus();
+			},
+			trackStar_sbmt:function () { //转台 跟踪恒星 指令提交
+				var msg = '';
+				msg += this.gimbal_track_star_Asc1(false);
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:false,closeBtn:0});return;
+				}else{//表单参数无错误
+					$.ajax({
+						url: '1.php',
+						type: 'post',
+						data: this.gimbal_form.trackStar
+					});/*ajax 结束*/
+				}
+			},/*转台 跟踪恒星 指令提交 结束*/
 		},
-	});/*vue js结束*/
+	});/***************vue js结束*****************/
 
  	//ajax 实时更新60cm望远镜子设备状态数据///////////////////////	
 	var getStatusErr = 0;  //控制错误时，弹窗数量
@@ -291,31 +418,6 @@
 	}
 	//setInterval (getStatus, 1800);  //实时显示各设备状态信息
 
-/////////////////////////////////////////////////////////
-	//显示导航栏望远镜列表   
-   var ul = $('#atListUl');
-   $('#atList').hover(
-        function (){
-            ul.show();
-        }, 
-       function (){		
-			ul.hide();
-        } 
-   );
-   
-   //各望远镜配置 js事件
-   var configList = $('#atConfigList');
-   $('#atConfig').hover(
-        function (){
-            configList.show();
-        }, 
-       function (){		
-			configList.hide();
-        } 
-   );
-   
-//望远镜列表js代码结束///////////////////////////////////
-
 //接管 弹窗代码////////////////////////////////////////////////
 	$('#takeOverBtn').click(function () {
 		$('#panel').removeClass('displayNo');
@@ -373,187 +475,6 @@
         });
      
     });//////////////////////////////////////////////////////////*/
-	
-//每个设备 指令导航栏 nav下span 点击事件/////////////////////////
-	var navSpan = $('nav span');
-	var divs = $('form div');//获取页面指令表单中所有div
-	$('nav').on('click', 'span', function() {
-		$(this).addClass('active');
-		navSpan.not($(this)).removeClass('active');
-		
-		//显示或隐藏相应指令 
-		var divID = $(this).attr('name');
-		divID = '#' + divID;
-		var commandDiv = $(divID);
-		divs.not(commandDiv).hide();//隐藏其他指令
-		commandDiv.show();//显示相应指令		
-		commandDiv.click();//同时执行此指令的点击事件
-	});
-//每个设备 指令导航栏 nav下span 点击事件  结束///////////////////
-	
-//转台 连接按钮js事件/////////////////////////////////
-    $('#gimbalConnect').click(function () {
-		$(this).addClass('btnClick');
-		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
-        $.ajax({
-            type : 'post',
-            url : '/gimbal',
-			data : {connect:1,
-				at:at,	//望远镜序号
-			},             
-            success:  function (info) {
-				layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-             error:  function () {
-	              layer.alert('网络异常,请再次连接！', {shade:false, closeBtn:0});
-            },
-        });
-    }); 
-	
-//转台 断开连接按钮 js事件/////////////////////////////////
-    $('#gimbalDisConnect').click(function () {
-		$(this).addClass('btnClick');
-		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
-        $.ajax({
-            type : 'post',
-            url : '/gimbal',
-            data : {connect:2, at:at},             
-            success:  function (info) {
-	             layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	             layer.alert('网络异常,请再次断开连接！', {shade:false, closeBtn:0});
-            },
-        });
-    }); 
-	
-//转台 找零按钮js事件//////////////////////////////////
-    $('#gimbalFindhome').click(function () {
-		$(this).addClass('btnClick');
-		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
-        $.ajax({
-            type : 'post',
-            url : '/gimbal',
-            data : {findHome:1,at:at},             
-            success:  function (info) {
-				layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-               layer.alert('网络异常,请再次点击：找零!', {shade:false, closeBtn:0});
-            },
-        });
-    });
-    
-//转台 复位按钮 js事件////////////////////////////////////
-    $('#gimbalPark').click(function () {
-		$(this).addClass('btnClick');
-		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
-        $.ajax({
-            type : 'post',
-            url : '/gimbal',
-            data : {park:1, at:at},             
-            success:  function (info) {
-	               layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-               layer.alert('网络异常,请再次复位!', {shade:false});
-            },
-        });
-    }); 
-	 
-//转台 停止按钮 js事件///////////////////////////////////
-    $('#gimbalStop').click(function () {
-		$(this).addClass('btnClick');
-		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
-        $.ajax({
-            type : 'post',
-            url : '/gimbal',
-            data : {stop:1, at:at},             
-            success:  function (info) {
-	               layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	            layer.alert('网络异常,请再次点击：停止按钮!', {shade:false, closeBtn:0});
-            },
-        });
-    });  
-	
-//转台 急停按钮 js事件/////////////////////////////////////
-    $('#gimbalEmergenceStop').click(function () {
-		$(this).addClass('btnClick');
-		$('#btnsGimbal input').not($(this)).removeClass('btnClick');
-        $.ajax({
-            type : 'post',
-            url : '/gimbal',
-            data : {EmergenceStop:1, at:at},             
-            success:  function (info) {
-	             layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次点击：急停按钮!', {shade:false, closeBtn:0});
-            },
-        });
-    });/////////////////////////////////////////// 
 	
 //转台 带参数指令  js事件///////////////////////////////////////
 	var gimbalForm = $('#at60Gimbal');

@@ -18,7 +18,21 @@ class Gimbal extends Base
     protected $plan = 0;  //计划
     protected $user = 0;  //操作者
     protected $ip = '';  //中控通信 ip
-	protected $port = '';  //中控通信 port
+    protected $port = '';  //中控通信 port
+    protected $command_length = [//各指令长度
+        'connect' => 50,
+        'findhome' => 48,
+        'park' => 48,
+        'stop' => 48,
+        'emergstop' => 48,
+    ];
+    protected $operation = [//各指令之编号
+        'connect' => 1,
+        'findhome' => 2,
+        'park' => 10,
+        'stop' => 8,
+        'emergstop' => 15,
+    ];
 
     //接收参数，根据不同参数，向不同望远镜的转台指令
     public function sendCommand ()
@@ -28,7 +42,7 @@ class Gimbal extends Base
         {//无权执行
             return '您无权限执行此操作!';
         }*/
-
+        
         //接受表单数据
         $postData = input ();
         //验证数据
@@ -70,81 +84,66 @@ class Gimbal extends Base
             $this->at = 39;
         }
 
-        $command = input('command'); //获取提交的指令
-        //根据不同参数 调用相应方法发送指令
-        if ( ($connect = input('connect')) !== null ) //连接或断开指令
-        {
-            if (!($connect== 1 || $connect == 2)) //匹配1和2
-			{
-                return '连接/断开指令无效!'; 
-            }
-         
-            return $this->connect($connect);   //执行发送
-        }else if( ($findHome=input('findHome')) !== null){//找零
-            if ($findHome != 1)
-			{
-                return '找零指令无效!';  
-            }
-            
-            return $this->findHome($findHome); //执行发送
-        }else if( ($park=input('park')) !== null){//复位
-            if ($park != 1)
-			{
-                return '复位指令无效!';  
-            }
-          
-            return $this->park();  //执行发送
-        }else if( ($stop=input('stop')) !== null){//停止
-            if ($stop != 1)
-			{
-                return '停止指令无效!';  
-            }
-            
-            return $this->stop(); //执行发送
-        }else if( ($EmergStop=input('EmergenceStop')) !== null){//急停
-            if ($EmergStop != 1)
-			{
-                return '急停指令无效!';  
-            }
-            
-            return $this->emergStop(); //执行发送
-        }else if( $command == 1 ){//跟踪恒星指令            
-            return $this->trackStar(); //执行发送
-        }else if( $command == 2 ){//设置目标名称             
-            return $this->objectName();  //执行发送
-        }else if( $command == 3 ){//指向固定位置            
-            return $this->direct();   //执行发送
-        }else if( $command == 4 ){//轴3指向固定位置            
-            return $this->axis3_direct();    //执行发送
-        }else if( $command == 5 ){//设置轴3工作模式            
-            return $this->axis3_mode();    //执行发送
-        }else if( $command == 6 ){//速度修正            
-            return $this->speed_alter();    //执行发送
-        }else if( $command == 7 ){//恒速运动            
-            return $this->fixed_move();    //执行发送
-        }else if( $command == 8 ){//位置修正            
-            return $this->pos_correct();    //执行发送
-        }else if( $command == 9 ){//镜盖操作            
-            return $this->cover_op();    //执行发送
-        }else if( $command == 10 ){//焦点切换镜操作            
-            return $this->setFocusType();    //执行发送
-        }else if( $command == 11 ){//保存同步数据            
-            return $this->saveSynchData();    //执行发送
-        }else if( $command == 12 ){//跟踪卫星            
-            return $this->track_satellite();    //执行发送
-        }else if( $command == 13 ){//属性设置            
-            return $this->property_config();    //执行发送
+        $command = $postData['command']; //要执行的指令
+        //halt($this->command_length[$command]);
+        switch ($command) {
+            case 'connect':
+                return $this->connect (1, 'connect');
+                break;
+            case 'disConnect':
+                return $this->connect (2, 'connect');
+                break;
+            case 'findhome':
+                return $this->findHome ('findhome');
+                break;
+            case 'park':
+                return $this->button_command ('park');
+                break;
+            case 'stop':
+                return $this->button_command ('stop');
+                break;
+            case 'emergstop':
+                return $this->button_command ('emergstop');
+                break;
+            default:
+                break;
         }
-
+       
+        // }else if( $command == 1 ){//跟踪恒星指令            
+        //     return $this->trackStar(); //执行发送
+        // }else if( $command == 2 ){//设置目标名称             
+        //     return $this->objectName();  //执行发送
+        // }else if( $command == 3 ){//指向固定位置            
+        //     return $this->direct();   //执行发送
+        // }else if( $command == 4 ){//轴3指向固定位置            
+        //     return $this->axis3_direct();    //执行发送
+        // }else if( $command == 5 ){//设置轴3工作模式            
+        //     return $this->axis3_mode();    //执行发送
+        // }else if( $command == 6 ){//速度修正            
+        //     return $this->speed_alter();    //执行发送
+        // }else if( $command == 7 ){//恒速运动            
+        //     return $this->fixed_move();    //执行发送
+        // }else if( $command == 8 ){//位置修正            
+        //     return $this->pos_correct();    //执行发送
+        // }else if( $command == 9 ){//镜盖操作            
+        //     return $this->cover_op();    //执行发送
+        // }else if( $command == 10 ){//焦点切换镜操作            
+        //     return $this->setFocusType();    //执行发送
+        // }else if( $command == 11 ){//保存同步数据            
+        //     return $this->saveSynchData();    //执行发送
+        // }else if( $command == 12 ){//跟踪卫星            
+        //     return $this->track_satellite();    //执行发送
+        // }else if( $command == 13 ){//属性设置            
+        //     return $this->property_config();    //执行发送
+        // }
     }//接收参数，根据不同参数，向不同望远镜的转台指令 结束/////
 
     //连接 断开 指令
-    protected function connect ($connect)
+    protected function connect ($connect, $param)
     {
-        $length = 48 + 2;
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=1);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
         
         $sendMsg = pack('S', $connect);  //unsigned short
       
@@ -155,63 +154,42 @@ class Gimbal extends Base
             return '连接指令：'. udpSend($sendMsg, $this->ip, $this->port);
         }elseif ($connect == 2)
         {
-            return '断开连接指令：'. udpSend($sendMsg, $this->ip, $this->port);
+            return '断开指令：'. udpSend($sendMsg, $this->ip, $this->port);
         }
     }//连接 断开 指令 结束
 
-
     //找零 指令
-    protected function findHome ($findHome)
+    protected function findHome ($param)
     {
-        $length = 48 + 2;    //该结构体总长度
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=2);
-        $sendMsg = pack('S', $findHome);  //unsigned short
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
+        $sendMsg = pack('S', 1);  //unsigned short
         
         //socket发送数据
         $sendMsg = $headInfo . $sendMsg;
         return '找零指令：'. udpSend($sendMsg, $this->ip, $this->port);
     }//找零 指令 结束
     
-    //复位 指令
-    protected function park ()
+    //复位 停止 急停 指令
+    protected function button_command ($param)
     {
-        $length = 48;    //该结构体总长度
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=10);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
         
         //socket发送数据
         $sendMsg = $headInfo;
-        return '复位指令：'. udpSend($sendMsg, $this->ip, $this->port);
-    }//park 复位 指令 结束
-
-    //停止 指令
-    protected function stop ()
-    {
-        $length = 48;    //该结构体总长度
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
-
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=8);
+        if ( $param == 'park' )
+        {
+            return '复位指令：'. udpSend($sendMsg, $this->ip, $this->port);
+        }else if ( $param == 'stop' ){
+            return '停止指令：'. udpSend($sendMsg, $this->ip, $this->port);
+        }else if ( $param == 'emergstop' ){
+            return '急停指令：'. udpSend($sendMsg, $this->ip, $this->port);
+        }
         
-        //socket发送数据
-        $sendMsg = $headInfo;
-        return '停止指令：'. udpSend($sendMsg, $this->ip, $this->port);
-    }//停止 指令 结束
-    
-    //急停 指令
-    protected function emergStop ()
-    {
-        $length = 48;    //该结构体总长度
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
-
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=15);
-        
-        //socket发送数据
-        $sendMsg = $headInfo;
-        return '急停指令：'. udpSend($sendMsg, $this->ip, $this->port);
-    }//急停 指令 结束
+    }//复位 停止 急停 指令 结束
 
     //跟踪恒星 指令
     protected function trackStar ()

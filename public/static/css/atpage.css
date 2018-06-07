@@ -105,13 +105,8 @@ form input[type='radio'], form div {display:none;}
 
 #bigPic button { right:38px;bottom:8px; cursor:pointer;}
 /*转台和ccd 之赤经赤纬输入框样式*/
-#trackStar .hourMin {width:28px;margin-right: 0;}
-
-#trackStar .sec {width:86px;}
-
-#exposStratic .hourMin {width:28px;margin-right: 0;}
-
-#exposStratic .sec {width:86px;}
+.hour {width:2.508%;}
+.sec {width:5.518%;}
 /*转台和ccd 之赤经赤纬输入框样式 结束*/
 
 /*观测计划模式：单选钮和按钮的样式*/
@@ -131,3 +126,4 @@ form input[type='radio'], form div {display:none;}
 
 div.datagrid-view2 div.datagrid-header td {text-align: center;}  /*观测计划的表格的：表头各字段居中*/
 /*观测计划模式：单选钮和按钮的样式 结束*/
+.margin_10 {margin: 10px auto;}
