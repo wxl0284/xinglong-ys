@@ -227,8 +227,8 @@
 				<hr style='width:98%;' class='center_mrg'><br>
 				<form class='center' v-if='device_nav.gimbal_command == "trackStar"'><!--跟踪恒星-->
 					赤经:<input type="text" class='hour' ref='trackstar_asc1' v-model.trim='gimbal_form.trackStar.rightAscension1' @blur='gimbal_track_star_Asc1(true)' @keyup='gimbal_Asc1_up' >:
-					<input type="text" class='hour' ref='trackstar_asc2' v-model.trim='gimbal_form.trackStar.rightAscension2' @blur='gimbal_track_star_Asc2' @keyup='' >:
-					<input type="text" class='sec' v-model.trim='gimbal_form.trackStar.rightAscension3' @blur='gimbal_track_star_Asc3' >
+					<input type="text" class='hour' ref='trackstar_asc2' v-model.trim='gimbal_form.trackStar.rightAscension2' @blur='gimbal_track_star_Asc2(true)' @keyup='gimbal_Asc2_up' >:
+					<input type="text" class='sec' ref='trackstar_asc3' v-model.trim='gimbal_form.trackStar.rightAscension3' @blur='gimbal_track_star_Asc3(true)' >
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					赤纬:<input type="text" class='hour' v-model.trim='gimbal_form.trackStar.declination1' @blur='gimbal_track_star_Dsc1' @keyup='' >:
 					<input type="text" class='hour' v-model.trim='gimbal_form.trackStar.declination2' @blur='gimbal_track_star_Dsc2' @keyup='' >:

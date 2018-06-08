@@ -89,7 +89,6 @@
 					default:
 						break;
 				}
-				var gimbal_btn = this.device_nav.gimbal_btn;
 				//执行ajax
 				$.ajax({
 					type : 'post',
@@ -164,13 +163,46 @@
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},
+			gimbal_track_star_Asc2: function (tip) {
+				var msg = '';
+				var patn = /^\d{2}$/;
+				var v = this.gimbal_form.trackStar.rightAscension2;
+				if ( !patn.test(v) || v > 59 || v < 0 )
+				{
+					msg = '赤经分钟参数超限';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.trackstar_asc2, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},
+			gimbal_track_star_Asc3: function (tip) {
+				var msg = '';
+				var v = this.gimbal_form.trackStar.rightAscension3;
+				if ( !$.isNumeric(v) || v >= 60 || v < 0 )
+				{
+					msg = '赤经秒参数超限';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.trackstar_asc3, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},
 			gimbal_Asc1_up:function () {
 				var res = this.gimbal_track_star_Asc1(false);
 				if ( res === '' ) this.$refs.trackstar_asc2.focus();
 			},
+			gimbal_Asc2_up:function () {
+				var res = this.gimbal_track_star_Asc2(false);
+				if ( res === '' ) this.$refs.trackstar_asc3.focus();
+			},
 			trackStar_sbmt:function () { //转台 跟踪恒星 指令提交
 				var msg = '';
 				msg += this.gimbal_track_star_Asc1(false);
+				msg += this.gimbal_track_star_Asc2(false);
+				msg += this.gimbal_track_star_Asc3(false);
 				if ( msg !== '' )
 				{
 					layer.alert(msg, {shade:false,closeBtn:0});return;
@@ -500,76 +532,7 @@
     });
     
 //验证转台 表单指令数据 逐一验证//////////////////////////////
-	//验证 跟踪恒星-赤经之小时
-	var inputIn1 = $('#inputIn1');
-	var inputIn1_1 = $('#inputIn1_1');
-	var inputIn1_2 = $('#inputIn1_2');
-	
-	inputIn1.keyup(function () {
-		var patn = /^\d{2}$/;
-		var v = $.trim($(this).val());
-		if (patn.test(v))
-		{
-			$(this).blur();
-		}
-	});
-	
-	//赤经之小时 blur事件
-	inputIn1.blur(function () {
-		/*var patn = /^\d{1,2}$/;
-		var v = $.trim($(this).val());
-		var err = 0; //错误标识
-		if (!patn.test(v) || v > 24 || v < 0)
-		{
-			err = 1;
-			layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		}else{
-			inputIn1_1.focus();
-		}
-		
-		$(this).data('err', err);*/
-	});
-	
-	//赤经之分钟 js事件
-	inputIn1_1.keyup(function () {
-		var patn = /^\d{2}$/;
-		var v = $.trim($(this).val());
-		if (patn.test(v))
-		{
-			$(this).blur();
-		}
-	})
-	
-	//赤经之分钟 blur事件
-	inputIn1_1.blur(function () {
-		// var patn = /^\d{1,2}$/;
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		// if (!patn.test(v) || v < 0 || v >= 60)
-		// {
-		// 	err = 1;
-		// 	layer.tips('参数超限', $(this), {tips: 1, tipsMore: true});
-		// }else{
-		// 	inputIn1_2.focus();
-		// }
-	
-		// $(this).data('err', err);
-	})
-	
-	//赤经之秒 js事件
-	inputIn1_2.blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		// if (!$.isNumeric(v) || v >= 60 || v < 0)
-		// {
-		// 	err = 1;
-		// 	layer.tips('秒参数超限', $(this), {tips : 1,tipsMore: true});
-		// }
-		
-		// $(this).data('err', err);
-	})
-	//验证 跟踪恒星-赤经 结束//////////////////////////
-	
+
 	//验证 跟踪恒星-赤纬之小时
 	var inputIn2 = $('#inputIn2');
 	var inputIn2_1 = $('#inputIn2_1');
