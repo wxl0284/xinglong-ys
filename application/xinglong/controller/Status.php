@@ -9,7 +9,7 @@ use think\Db;
 class Status extends Base
 {
     //定义变量
-    protectd $at = 0; //望远镜
+    protected $at = 0; //望远镜
 
     /******实时获取各子设备的状态信息 以json格式返回*******/
    public function get_status ()
@@ -137,6 +137,9 @@ class Status extends Base
             case 21:
                 $status['curstatus'] = '异常';
                 break;
+            default:
+                $status['curstatus'] = '未获取到';
+                break;
         }//转台当前状态结束///////////////////////////////////////
 
         $status['trackError'] = 2.11; //位置信息：跟踪误差（？咋获取）
@@ -186,6 +189,9 @@ class Status extends Base
             case 6:
                 $status['trackType'] = '固定位置';
                 break;
+            default:
+                $status['trackType'] = '未获取到';
+                break;
         }
         
         if (is_numeric($gimbalStatus['targetRightAscension']))
@@ -223,7 +229,7 @@ class Status extends Base
         //接下来：转台可变属性
         $status['timeStamp'] = time(); //时间戳
                 
-        if (is_numeric())
+        if (is_numeric($gimbalStatus['J2000RightAscension']))
         {//j2000赤经
             $gimbalStatus['J2000RightAscension'] = floatval ($gimbalStatus['J2000RightAscension']);
             $status['J2000RightAscension'] = data2Time($gimbalStatus['J2000RightAscension']/15);
@@ -294,6 +300,9 @@ class Status extends Base
             case 9:
                 $status['ccdCurStatus'] = '空闲';
                 break;
+            default:
+                $status['ccdCurStatus'] = '未获取到';
+                break;
         }
 
         $status['ccdBaseline'] = $ccdStatus['baseline'];  //ccd可变属性：baseline值
@@ -361,6 +370,9 @@ class Status extends Base
             case 11:
                 $status['focusCurStatus'] = '急停';
                 break;
+            default:
+                $status['focusCurStatus'] = '未获取到';
+                break;
         }
         //调焦器当前状态 结束/////////////////////////////////////////
         
@@ -418,6 +430,9 @@ class Status extends Base
             case 12:
                 $status['slaveDomeCurstatus'] = '异常';
                 break;
+            default:
+                $status['slaveDomeCurstatus'] = '未获取到';
+                break;
         }//圆顶当前状态结束////////////////////////////////////////
         
         $status['slaveDomeScuttleStatus'] = $slaveDomeStatus['scuttleStatus']; //天窗状态
@@ -468,6 +483,9 @@ class Status extends Base
                 break;
             case 11:
                 $status['filterCurstatus'] = '急停';
+                break;
+            default:
+                $status['filterCurstatus'] = '未获取到';
                 break;
         }
         //滤光片当前状态 结束 /////////////////////////////////////

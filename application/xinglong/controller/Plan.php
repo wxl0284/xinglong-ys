@@ -595,6 +595,8 @@ class Plan extends Base
 			if ($plan_data)
 			{
 				return $plan_data['plan'];
+			}else{
+				return '无正执行计划!';
 			}
 		}catch(\Exception $e){
 			return '查询正在执行计划遇异常!';

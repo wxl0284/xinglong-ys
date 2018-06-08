@@ -795,6 +795,10 @@ function get_plan () {
 						{
 							location.href = '/';
 						}
+						if ( info.indexOf('无正执行计划') !== -1 )
+						{
+							clearInterval(get_plan_i); //清楚定时器
+						}
 					},
 				});
 			}else{
@@ -821,9 +825,10 @@ function get_plan () {
 	})/*ajax 结束*/
 }
 
- setInterval (get_plan, 60000); //定时执行get_plan() 60秒执行一次查询，否则浏览器卡顿
+var get_plan_i = setInterval (get_plan, 60000); //定时执行get_plan() 60秒执行一次查询，否则浏览器卡顿
 
  function plan_executing (){ //显示正在执行的计划
 	get_plan();
+	setInterval (get_plan, 60000);
  }
 /*******实时获取 获取正在执行的计划 结束*******/
