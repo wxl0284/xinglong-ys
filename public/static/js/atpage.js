@@ -31,14 +31,49 @@
 				dev_click: 'gimbal',  //区分各自设备
 				gimbal_command: '',   //区分转台各指令
 				gimbal_btn: '',   //区分转台各按钮型指令
+				polarizingAngle: '',   //轴3工作模式之 是否显示起偏角
+				speed_alter_btn: '',   //速度修正 标记8个按钮是否被点击
+				pos_alter_btn: '',   //位置修正 标记8个按钮是否被点击
+				cover_btn: '',   //镜盖操作 标记3个按钮是否被点击
+				save_data_btn: '',   //保存同步数据 标记3个按钮是否被点击
 			},
 			gimbal_form: {//转台表单指令的参数
 				trackStar: {
 					rightAscension1: '', rightAscension2: '', rightAscension3: '',
 					epoch: '-1', speed: '-1', command:'trackStar', at:at
 				},
-			},
-		},
+				objName: {
+					objectName: '', objectType: '-1', command:'set_obj_name', at:at
+				},
+				slewAzEl: {
+					azimuth: '', elevation: '', command:'slewAzEl', at:at
+				},
+				slewDerotator: {
+					slewDerotator: '', command:'slewDerotator', at:at
+				},
+				axis3_mode: {
+					mode: '-1', polarizingAngle: '', command:'axis3Mode', at:at
+				},
+				speed_alter: {//速度修正指令
+					axis: '', correction: '-1', command:'speed_alter', at:at
+				},
+				speed_fixed: {//恒速运动
+					axis: '1', speed: '', command:'speed_fixed', at:at
+				},
+				position_alter: {//恒速运动
+					axis: '', correction: '-1', command:'position_alter', at:at
+				},
+				cover_op: {//镜盖操作
+					operation: '', command:'cover_op', at:at
+				},
+				setFocusType: {//焦点切换镜
+					focusType: '-2', command:'setFocusType', at:at
+				},
+				save_data: {//保存同步数据
+					command:'save_sync_data', at:at
+				},
+			},/**转台 表单 结束**/
+		},/********vue data属性对象 结束********/
 		methods: {
 			plan_click: function () {
 				this.device_nav.dev_click = 'plan';
@@ -85,8 +120,6 @@
 						btn_str = 'emergstop';
 						btn_text = '急停';
 						data.command = 'emergstop';
-						break;
-					default:
 						break;
 				}
 				//执行ajax
@@ -198,27 +231,506 @@
 				var res = this.gimbal_track_star_Asc2(false);
 				if ( res === '' ) this.$refs.trackstar_asc3.focus();
 			},
+			gimbal_track_star_Dec1:function (tip) {
+				var msg = '';
+				var patn = /^-?\d{2}$/;
+				var v = this.gimbal_form.trackStar.declination1;
+				if ( !patn.test(v) || v > 90 || v < -90 )
+				{
+					msg = '赤纬小时参数超限';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.trackstar_dec1, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},
+			gimbal_track_star_Dec2:function (tip) {
+				var msg = '';
+				var patn = /^\d{2}$/;
+				var v = this.gimbal_form.trackStar.declination2;
+				if ( !patn.test(v) || v > 59 || v < 0 )
+				{
+					msg = '赤纬分钟参数超限';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.trackstar_dec2, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},
+			gimbal_track_star_Dec3:function (tip) {
+				var msg = '';
+				var v = this.gimbal_form.trackStar.declination3;
+				if ( !$.isNumeric(v) || v >= 60 || v < 0 )
+				{
+					msg = '赤纬秒参数超限';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.trackstar_dec3, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},
+			gimbal_dec1_up:function () {
+				var res = this.gimbal_track_star_Dec1(false);
+				if ( res === '' ) this.$refs.trackstar_dec2.focus();
+			},
+			gimbal_dec2_up:function () {
+				var res = this.gimbal_track_star_Dec2(false);
+				if ( res === '' ) this.$refs.trackstar_dec3.focus();
+			},
 			trackStar_sbmt:function () { //转台 跟踪恒星 指令提交
 				var msg = '';
 				msg += this.gimbal_track_star_Asc1(false);
 				msg += this.gimbal_track_star_Asc2(false);
 				msg += this.gimbal_track_star_Asc3(false);
+				msg += this.gimbal_track_star_Dec1(false);
+				msg += this.gimbal_track_star_Dec2(false);
+				msg += this.gimbal_track_star_Dec3(false);
+				if ( this.gimbal_form.trackStar.epoch == -1 )
+				{
+					msg += '历元未选择<br>';
+				}
+				if ( this.gimbal_form.trackStar.speed == -1 )
+				{
+					msg += '跟踪速度未选择';
+				}
 				if ( msg !== '' )
 				{
 					layer.alert(msg, {shade:false,closeBtn:0});return;
 				}else{//表单参数无错误
 					$.ajax({
-						url: '1.php',
+						url: '/gimbal',
 						type: 'post',
-						data: this.gimbal_form.trackStar
+						data: this.gimbal_form.trackStar,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error: function () {
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
 					});/*ajax 结束*/
 				}
 			},/*转台 跟踪恒星 指令提交 结束*/
-		},
+			obj_name_check:function (tip) {
+				var msg = '';
+				var v = this.gimbal_form.objName.objectName;
+				var patn = /([\u4e00-\u9fa5]| )+/;
+				if ( patn.test(v) || v == '' )
+				{
+					msg = '名称不能有汉字或空格!';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.objName, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},
+			obj_name_sbmt:function () {
+				var msg = '';
+				msg += this.obj_name_check(false);
+				if ( this.gimbal_form.objName.objectType == -1 )
+				{
+					msg += '目标类型未选择';
+				}
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:false,closeBtn:0});return;
+				}else{//表单参数无错误
+					$.ajax({
+						url: '/gimbal',
+						type: 'post',
+						data: this.gimbal_form.objName,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error: function () {
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					});/*ajax 结束*/
+				}
+			},/******obj_name_sbmt 结束******/
+			azimuth_check:function (tip) {
+				var msg = '';
+				var v = this.gimbal_form.slewAzEl.azimuth;
+				if ( !$.isNumeric(v) || v > 360 || v < 0 )
+				{
+					msg = '方位参数超限!';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.azimuth, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},
+			elevation_check:function (tip) {
+				var msg = '';
+				var v = this.gimbal_form.slewAzEl.elevation;
+				if ( !$.isNumeric(v) || v > 90 || v < configData.gimbal.minelevation )
+				{
+					msg = '俯仰参数超限!';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.elevation, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},
+			slewAzEl_sbmt:function () {
+				var msg = '';
+				msg += this.azimuth_check(false);
+				msg += this.elevation_check(false);
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:false,closeBtn:0});return;
+				}else{//表单参数无错误
+					$.ajax({
+						url: '/gimbal',
+						type: 'post',
+						data: this.gimbal_form.slewAzEl,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error: function () {
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					});/*ajax 结束*/
+				}
+			},/**slewAzEl_sbmt 结束**/
+			slewDerotator_check:function (tip) {
+				var msg = '';
+				var v = this.gimbal_form.slewDerotator.slewDerotator;
+				if ( !$.isNumeric(v) || v < 0 || v > 360 )
+				{
+					msg = '参数超限!';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.slewDerotator, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},
+			slewDerotator_sbmt:function (tip) {
+				var msg = this.slewDerotator_check(false);
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:false,closeBtn:0});return;
+				}else{//表单参数无错误
+					$.ajax({
+						url: '/gimbal',
+						type: 'post',
+						data: this.gimbal_form.slewDerotator,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error: function () {
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					});/*ajax 结束*/
+				}
+			},/**slewDerotator_sbmt 结束**/
+			polar_Angle_check:function (tip) {
+				var msg = '';
+				var v = this.gimbal_form.axis3_mode.polarizingAngle;
+				if ( !$.isNumeric(v) || v < 0 || v > 360 )
+				{
+					msg = '起偏角参数超限!';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.polar_Angle, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},
+			axis3Mode_sbmt:function () {
+				var msg = '';
+				var v = this.gimbal_form.axis3_mode.mode;
+				if ( v == -1 )
+				{
+					msg += '未选择模式!<br>';
+				}
+				if ( v == 2 )
+				{
+					msg += this.polar_Angle_check(false);
+				}
+				
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:false,closeBtn:0});return;
+				}else{//表单参数无错误
+					$.ajax({
+						url: '/gimbal',
+						type: 'post',
+						data: this.gimbal_form.axis3_mode,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error: function () {
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					});/*ajax 结束*/
+				}
+			},/**axis3Mode_sbmt 结束**/
+			speed_alter_sbmt:function (btn){
+				var that = this; //存储vue实例化的对象
+				if ( this.gimbal_form.speed_alter.correction == -1)
+				{
+					layer.alert('未选择速度值!', {shade:false, closeBtn:0});return;
+				}
+
+				this.gimbal_form.speed_alter.axis = btn; //将按钮对应的方向 赋值给axis
+				$.ajax({
+					url: '/gimbal',
+					type: 'post',
+					data: this.gimbal_form.speed_alter,
+					success: function (info) {
+						that.device_nav.speed_alter_btn = btn; //将此按钮字体变红色
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});/*layer.alert 结束*/
+					},/*success方法 结束*/
+					error:function (){
+						layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+					},
+				})/*ajax 结束*/
+			},/**speed_alter_sbmt 结束**/
+			speed_fixed_check:function (tip){
+				var msg = '';
+				var v = this.gimbal_form.speed_fixed.speed;
+				var v_max = 0; //定义最大速度值
+
+				if ( !$.isNumeric(v) )
+				{
+					msg = '参数超限!';
+				}
+
+				switch (this.gimbal_form.speed_fixed.axis) { //判断是哪个轴
+					case '1':
+						v_max = configData.gimbal.maxaxis1speed;
+						break;
+					case '2':
+						v_max = configData.gimbal.maxaxis2speed;
+						break;
+					case '3':
+						v_max = configData.gimbal.maxaxis3speed;
+						break;
+				}
+
+				if ( v == 0 || v > v_max || v < v_max*-1)
+				{
+					msg = '参数超限!';
+				}
+
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.speed_fixed, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},
+			speed_fixed_sbmt:function (){
+				var msg = '';
+				var msg = this.speed_fixed_check(false);
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:false,closeBtn:0});return;
+				}else{//表单参数无错误
+					$.ajax({
+						url: '/gimbal',
+						type: 'post',
+						data: this.gimbal_form.speed_fixed,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error: function () {
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					});/*ajax 结束*/
+				}
+			},/**speed_fixed_sbmt 结束**/
+			position_alter_sbmt:function (btn){
+				var that = this; //存储vue实例化的对象
+				if ( this.gimbal_form.position_alter.correction == -1)
+				{
+					layer.alert('未选择偏移量!', {shade:false, closeBtn:0});return;
+				}
+
+				this.gimbal_form.position_alter.axis = btn; //将按钮对应的方向 赋值给axis
+				
+				$.ajax({
+					url: '/gimbal',
+					type: 'post',
+					data: this.gimbal_form.position_alter,
+					success: function (info) {
+						that.device_nav.pos_alter_btn = btn; //将此按钮字体变红色
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});/*layer.alert 结束*/
+					},/*success方法 结束*/
+					error:function (){
+						layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+					},
+				})/*ajax 结束*/
+			},/**position_alter_sbmt 结束**/
+			cover_sbmt:function (op){
+				var that = this; //保存vue实例
+				this.gimbal_form.cover_op.operation = op; //将按钮对应的操作 赋值给operation
+				$.ajax({
+					url: '/gimbal',
+					type: 'post',
+					data: this.gimbal_form.cover_op,
+					success: function (info) {
+						that.device_nav.cover_btn = op; //将此按钮字体变红色
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});/*layer.alert 结束*/
+					},/*success方法 结束*/
+					error:function (){
+						layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+					},
+				})/*ajax 结束*/
+			},/**cover_sbmt 结束**/
+			setFocusType_sbmt:function (){
+				if ( this.gimbal_form.setFocusType.focusType == -2 )
+				{
+					layer.alert('未选择焦点类型!', {shade:false, closeBtn:0});return;
+				}
+				$.ajax({
+					url: '/gimbal',
+					type: 'post',
+					data: this.gimbal_form.setFocusType,
+					success: function (info) {
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});/*layer.alert 结束*/
+					},/*success方法 结束*/
+					error:function (){
+						layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+					},
+				})/*ajax 结束*/
+			},/**setFocusType_sbmt 结束**/
+			save_data_sbmt:function (p){
+				var that = this;
+				//this.gimbal_form.save_data.saveSyncData = p;
+				$.ajax({
+					url: '/gimbal',
+					type: 'post',
+					data: this.gimbal_form.save_data,
+					success: function (info) {
+						that.device_nav.save_data_btn = p; //将此按钮字体变红色
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});/*layer.alert 结束*/
+					},/*success方法 结束*/
+					error:function (){
+						layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+					},
+				})/*ajax 结束*/
+			},/**save_data_sbmt 结束**/
+		},/******methods 结束******/
 	});/***************vue js结束*****************/
 
  	//ajax 实时更新60cm望远镜子设备状态数据///////////////////////	
-	var getStatusErr = 0;  //控制错误时，弹窗数量
 	/******************如下定义变量 存储各个需实时更新数据的元素***************/
 	var date = $('#date');
 	var utcTime = $('#utcTime');
@@ -406,7 +918,6 @@
 			url : '/get_status', 
 			data : {at: at,},         
             success:  function (info) {
-				getStatusErr = 0; //将err变量重置为0
                 var info = eval( '(' + info +')' );
 				
 				//显示转台状态信息
@@ -440,11 +951,7 @@
 				}
             },/* success方法 结束*/
 			error: function (){
-				getStatusErr ++;
-				if(getStatusErr <= 1)
-				{
-					layer.alert('网络异常,设备实时数据无法获取!', {shade:false, closeBtn:0});
-				}
+				layer.alert('网络异常,设备实时数据无法获取!', {shade:false, closeBtn:0});
 			},
 		});
 	}
@@ -507,295 +1014,6 @@
         });
      
     });//////////////////////////////////////////////////////////*/
-	
-//转台 带参数指令  js事件///////////////////////////////////////
-	var gimbalForm = $('#at60Gimbal');
-    var gimbalSelect = gimbalForm.find('div');
-
-    gimbalSelect.click(function () {
-         $(this).find('input:radio').prop('checked', true);
-         var notcheck = gimbalSelect.not($(this));
-         notcheck.addClass('notCheck');
-         $(this).removeClass('notCheck'); 
-     });
-	 
-//转台 轴3工作模式 仅对模式2有效 js事件////////////////////////////
-	$('#at60Axis3').change(function (){
-        var e = $(this).next('span');
-       if ($(this).val() == 2)
-       {
-          e.removeClass('displayNo');
-           
-       }else{
-           e.addClass('displayNo');
-       }
-    });
-    
-//验证转台 表单指令数据 逐一验证//////////////////////////////
-
-	//验证 跟踪恒星-赤纬之小时
-	var inputIn2 = $('#inputIn2');
-	var inputIn2_1 = $('#inputIn2_1');
-	var inputIn2_2 = $('#inputIn2_2');
-	
-	inputIn2.keyup(function () {
-		var v = $.trim($(this).val());
-		v_R = v.replace(/-/, ''); //将-替换为空字符
-		if (v_R.length == 2)
-		{
-			$(this).blur();
-		}
-	
-	});
-	
-	//赤纬之小时 blur事件
-	inputIn2.blur(function () {
-		// var v = $.trim($(this).val());
-		// var patn = /^-?\d{1,2}$/;
-		// var err = 0;
-		
-		// if (!patn.test(v) || v > 90 || v < -90)
-		// {
-		// 	err = 1;
-		// 	layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		// }else{
-		// 	inputIn2_1.focus();
-		// }
-	
-		// $(this).data('err', err);
-	});
-	
-	//赤纬之分钟 js事件
-	inputIn2_1.keyup(function () {
-		var patn = /^\d{2}$/;
-		var v = $.trim($(this).val());
-		if (patn.test(v))
-		{
-			$(this).blur();
-		}
-	})
-	
-	//赤纬之分钟 blur事件
-	inputIn2_1.blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		// var patn = /^\d{1,2}$/;
-		
-		// if (!patn.test(v) || v > 59 || v < 0)
-		// {
-		// 	err = 1;
-		// 	layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		// }else{
-		// 	inputIn2_2.focus();
-		// }
-		
-		// $(this).data('err', err);
-	});
-	
-	//赤纬之秒 js事件
-	inputIn2_2.blur(function () {
-		// var err = 0;
-		// var v = $.trim($(this).val());
-		
-		// if (!$.isNumeric(v) || v >= 60 || v < 0)
-		// {
-		// 	err = 1;
-		// 	layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		// }		
-		// $(this).data('err', err);
-	})
-	//验证 跟踪恒星-赤纬 结束//////////////////////////
-	
-	//验证 设置目标名称//////////////////////////////////
-	$('#objectNameInput').blur(function () {
-		// var v = $.trim($(this).val());
-		// var patn = /([\u4e00-\u9fa5]| )+/;
-		// var err = 0;
-		
-		// if (patn.test(v) || v == '')
-		// {
-		// 	err = 1;
-		// 	layer.tips('名称不能有汉字或空格!', $(this), {tipsMore: true});
-		// }		
-		// $(this).data('err', err);
-	});////验证 设置目标名称 结束//////////////////////////
-	
-	//验证 指向固定位置 之方位和俯仰/////////////////////////////
-	//方位
-	$('#azimuth').blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		
-		// if (!$.isNumeric(v) || v < 0 || v > 360)
-		// {
-		// 	err = 1;
-		// 	layer.tips('参数超限!', $(this), {tipsMore: true});
-		// }		
-		// $(this).data('err', err);
-	});
-	
-	//俯仰
-	$('#elevationV').blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		
-		// if (!$.isNumeric(v)  || v < minelevationval || v > 90)
-		// {
-		// 	err = 1;
-		// 	layer.tips('参数超限!', $(this), {tipsMore: true});
-		// }		
-		// $(this).data('err', err);
-	});
-	//验证 指向固定位置 之方位和俯仰 结束//////////////////////////
-	
-	//验证 轴3指向固定位置 //////////////////////////////////
-	$('#slewDerotatorV').blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		
-		// if ((!$.isNumeric(v)) || v < 0 || v > 360)
-		// {
-		// 	err = 1;
-		// 	layer.tips('参数超限!', $(this), {tipsMore: true});
-		// }
-		
-		// $(this).data('err', err);
-	});////验证 轴3指向固定位置 结束//////////////////////////
-	
-	//验证 速度修正-轴 //////////////////////////////////
-	$('#speedXInput').blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		
-		// if (!(v == 1 || v == 2))
-		// {
-		// 	err = 1;
-		// 	layer.tips('轴设置有误!', $(this), {tipsMore: true});
-		// }		
-		// $(this).data('err', err);
-	});////验证 速度修正-轴 结束//////////////////////////
-	
-	//验证 速度修正-速度 //////////////////////////////////
-	$('#speedCorrect').blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		
-		// if ((!$.isNumeric(v)) || (v > 1 || v < -1))
-		// {
-		// 	err = 1;
-		// 	layer.tips('速度设置有误!', $(this), {tipsMore: true});
-		// }
-		
-		// $(this).data('err', err);
-	});////验证 速度修正-速度 结束//////////////////////////
-	
-	//验证 恒速运动-轴 //////////////////////////////////
-	$('#speedFAxis').blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		
-		// if (!(v == 1 || v == 2))
-		// {
-		// 	layer.tips('轴设置有误!', $(this), {tipsMore: true});
-		// }
-		
-		// $(this).data('err', err);
-	});////验证 恒速运动-轴 结束//////////////////////////
-	
-	//验证 恒速运动-速度 //////////////////////////////////
-	$('#speedFVal').blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		
-		// if ((!$.isNumeric(v)) || (v > 1 || v < -1))
-		// {
-		// 	err = 1;
-		// 	layer.tips('速度设置有误!', $(this), {tipsMore: true});
-		// }
-		
-		// $(this).data('err', err);
-	});////验证 恒速运动-速度 结束//////////////////////////
-	
-	//验证 位置修正-轴 //////////////////////////////////
-	$('#PositionCorrectAxis').blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		
-		// if (!(v == 1 || v == 2))
-		// {
-		// 	err = 1;
-		// 	layer.tips('轴设置有误!', $(this), {tipsMore: true});
-		// }
-		
-		// $(this).data('err', err);
-	});////验证 位置修正-轴 结束//////////////////////////
-	
-	//验证 位置修正-速度 //////////////////////////////////
-	$('#PositionCorrectVal').blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		
-		// if ((!$.isNumeric(v)) || (v > 1 || v < -1))
-		// {
-		// 	err = 1;
-		// 	layer.tips('速度设置有误!', $(this), {tipsMore: true});
-		// }
-		
-		// $(this).data('err', err);
-	});////验证 位置修正-速度 结束//////////////////////////
-//验证转台 表单指令数据 结束/////////////////////////////////////
-var gimbal_form = $('#at60Gimbal');    //获取转台表单元素
-//转台 带参数指令 表单提交//////////////////////////////////
-    $('#gimbalSbmt').click(function () {
-		var err = 0; //错误标识
-		var textE = gimbal_form.children('div:not(.notCheck)').find('input.blur');
-		textE.each(function () {
-			$(this).blur();
-			err += $(this).data('err');
-		});
-		
-		if (err > 0){
-			return;  //指令输入有误 不提交
-		}
-		
-        var gimbal_formData = new FormData(gimbal_form[0]);  //将jquery对象转为js-dom对象
-		gimbal_formData.append('at', at);
-		//执行ajax
-			$.ajax ({
-              type: 'post',
-              url : '/gimbal',
-              data : gimbal_formData,
-              processData : false,
-              contentType : false,  
-              success:  function (info) {
-				layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-              },
-              error:  function () {
-	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
-              },
-        	});
-	});
-//转台 带参数指令 表单提交////////////////////////////////// 
-  
-//转台 表单提交按钮 hover //////////////////////////////////
-   $('#gimbalSbmt').hover(
-        function (){
-            $(this).addClass("hover");
-        }, 
-        function (){
-            $(this).removeClass("hover");
-        }
-   );
    
    //CCD 连接按钮 js事件///////////////////////////////////
    $('#ccdConnect').click(function (){
@@ -2050,100 +2268,5 @@ var sDome_form = $('#at60Dome');    //获取圆顶表单元素
 		{
 			$('#planNext').hide();
 		}
-	});
-
-//观测计划 若为single和singleLoop 隐藏‘下一个’按钮 结束/////////
-
-/******************转台之镜盖操作指令 js事件**********************/
-$('#coverOp').on('click', 'input:button', function () {
-	var val;  //不同按钮对应的提交数据值
-	var that = $(this); //当前被点击的元素
-	var notThis = that.siblings('input[type="button"]'); //另外2个按钮
-	var v = that.val();
-
-	if (v == '打开')
-	{
-		val = 1;
-	}else if (v == '关闭'){
-		val = 2;
-	}else if (v == '停止'){
-		val = 0;
-	}
-	$.ajax({
-		url: '/gimbal',
-		type: 'post',
-		data: {
-			command: 9,
-			openCover: val,
-			at: at,
-		},
-		success:  function (info) {
-			that.addClass('click');
-			notThis.removeClass('click');			
-
-			layer.alert(info, {
-				shade:false,
-				closeBtn:0,
-				yes:function (n){
-					layer.close(n);
-					if (info.indexOf('登录') !== -1)
-					{
-						location.href = '/';
-					}
-				},
-			});
-        },
-        error:  function () {
-              layer.alert('网络异常,请再次点击镜盖操作!', {shade:false, closeBtn:0});
-        },
-	});
-});
-/******************转台之镜盖操作指令 js事件 结束*****************/
-
-/******************转台之保存同步数据 js事件**********************/
-$('#saveData').on('click', 'input:button', function () {
-	var val;  //不同按钮对应的提交数据值
-	var that = $(this); //当前被点击的元素
-	var notThis = that.siblings('input[type="button"]'); //另外1个按钮
-	var v = that.val();
-
-	if (v == '是')
-	{
-		val = 1;
-	}else if (v == '否'){
-		val = 0;
-	}
-	$.ajax({
-		url: '/gimbal',
-		type: 'post',
-		data: {
-			command: 11,
-			saveSyncData: val,
-			at: at,
-		},
-		success:  function (info) {
-			that.addClass('click');
-			notThis.removeClass('click');
-			layer.alert(info, {
-				shade:false,
-				closeBtn:0,
-				yes:function (n){
-					layer.close(n);
-					if (info.indexOf('登录') !== -1)
-					{
-						location.href = '/';
-					}
-				},
-			});
-       },
-       error:  function () {
-            layer.alert('网络异常,请再次发送同步数据指令!', {shade:false, closeBtn:0});
-       },
-	});
-});
-/****************转台之保存同步数据 js事件 结束***************/
-
+	});//观测计划 若为single和singleLoop 隐藏‘下一个’按钮 结束/////////
 })
-
-
-

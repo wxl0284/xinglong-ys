@@ -211,18 +211,18 @@ class Status extends Base
         }
         $status['azmiuth'] = round($gimbalStatus['azmiuth'],5); //当前方位
         $status['elevation'] = round($gimbalStatus['elevation'],5); //当前俯仰
-        $status['RightAscensionSpeed'] = 12.3; //赤经速度 ?咋获取
-        $status['declinationSpeed'] = 12.5; //赤纬速度 ?咋获取
-        $status['derotatorPositon'] = $gimbalStatus['derotatorPositon']; //当前消旋位置
-        $status['targetDerotatorPosition'] = $gimbalStatus['targetDerotatorPosition']; //目标消旋位置
-        $status['axis1TrackError'] = $gimbalStatus['axis1TrackError']; //轴1跟踪误差
-        $status['axis2TrackError'] = $gimbalStatus['axis2TrackError']; //轴2跟踪误差
-        $status['axis3TrackError'] = $gimbalStatus['axis3TrackError']; //轴3跟踪误差
+        $status['RightAscensionSpeed'] = round($gimbalStatus['axis1Speed'],2); //赤经速度 ?
+        $status['declinationSpeed'] = round($gimbalStatus['axis2Speed'], 2); //赤纬速度 ?
+        $status['derotatorPositon'] = round($gimbalStatus['derotatorPositon'], 4);; //当前消旋位置
+        $status['targetDerotatorPosition'] = round($gimbalStatus['targetDerotatorPosition'], 4); //目标消旋位置
+        $status['axis1TrackError'] = round($gimbalStatus['axis1TrackError'], 5); //轴1跟踪误差
+        $status['axis2TrackError'] = round($gimbalStatus['axis2TrackError'], 5); //轴2跟踪误差
+        $status['axis3TrackError'] = round($gimbalStatus['axis3TrackError'], 5); //轴3跟踪误差
         
         if (is_numeric($gimbalStatus['siderealTime']))
         {//当前恒星时
             $gimbalStatus['siderealTime'] = floatval ($gimbalStatus['siderealTime']);
-            $status['siderealTime'] = data2Time($gimbalStatus['siderealTime']);
+            $status['siderealTime'] = round(data2Time($gimbalStatus['siderealTime']), 5);
         }else{
             $status['siderealTime'] = $gimbalStatus['siderealTime'];
         }
@@ -232,7 +232,7 @@ class Status extends Base
         if (is_numeric($gimbalStatus['J2000RightAscension']))
         {//j2000赤经
             $gimbalStatus['J2000RightAscension'] = floatval ($gimbalStatus['J2000RightAscension']);
-            $status['J2000RightAscension'] = data2Time($gimbalStatus['J2000RightAscension']/15);
+            $status['J2000RightAscension'] = round(data2Time($gimbalStatus['J2000RightAscension']/15), 5);
         }else{
             $status['J2000RightAscension'] = $gimbalStatus['J2000RightAscension'];
         }
@@ -240,7 +240,7 @@ class Status extends Base
         if (is_numeric($gimbalStatus['J2000Declination']))
         {//j2000赤纬
             $gimbalStatus['J2000Declination'] = floatval($gimbalStatus['J2000Declination']);
-            $status['J2000Declination'] = data2Time($gimbalStatus['J2000Declination']);
+            $status['J2000Declination'] = round(data2Time($gimbalStatus['J2000Declination']), 5);
         }else{
             $status['J2000Declination'] = $gimbalStatus['J2000Declination'];
         }
@@ -248,7 +248,7 @@ class Status extends Base
         if (is_numeric($gimbalStatus['targetJ2000RightAscension']))
         {//目标j2000赤经
             $gimbalStatus['targetJ2000RightAscension'] = floatval($gimbalStatus['targetJ2000RightAscension']);
-            $status['targetJ2000RightAscension'] = data2Time($gimbalStatus['targetJ2000RightAscension']/15);
+            $status['targetJ2000RightAscension'] = round(data2Time($gimbalStatus['targetJ2000RightAscension']/15), 5);
         }else{
             $status['targetJ2000RightAscension'] = $gimbalStatus['targetJ2000RightAscension'];
         }
@@ -256,7 +256,7 @@ class Status extends Base
         if (is_numeric($gimbalStatus['targetJ2000Declination']))
         {//目标j2000赤纬
             $gimbalStatus['targetJ2000Declination'] = floatval($gimbalStatus['targetJ2000Declination']);
-            $status['targetJ2000Declination'] = data2Time($gimbalStatus['targetJ2000Declination']);
+            $status['targetJ2000Declination'] = round(data2Time($gimbalStatus['targetJ2000Declination']), 5);
         }else{
             $status['targetJ2000Declination'] = $gimbalStatus['targetJ2000Declination'];
         }
@@ -379,7 +379,7 @@ class Status extends Base
         $status['focusPosition'] = $focusStatus['position'];  //当前位置
         $status['focusTargetPos'] = $focusStatus['targetPosition'];  //目标位置
         $status['focusIsHomed'] = $focusStatus['isHomed'];  //找零状态
-        $status['focusIsTCompensation'] = $focusStatus['isTCompensation'];  //是否进行温度补偿
+        $status['focusIsTCompensation'] = $focusStatus['isTCompensation'] : '是' ? '否';  //是否进行温度补偿
         $status['focusTCompenensation'] = $focusStatus['TCompenensation']; //温度补偿系数
 
         //返回数据
@@ -435,8 +435,37 @@ class Status extends Base
                 break;
         }//圆顶当前状态结束////////////////////////////////////////
         
-        $status['slaveDomeScuttleStatus'] = $slaveDomeStatus['scuttleStatus']; //天窗状态
-        $status['slaveDomeShadeStatus'] = $slaveDomeStatus['shadeStatus']; //风帘状态
+        switch ($slaveDomeStatus['scuttleStatus']) //天窗状态
+		{
+			case: 1:
+				$status['slaveDomeScuttleStatus'] = '开';
+				break;
+			case: 2:
+				$status['slaveDomeScuttleStatus'] = '关';
+				break;
+			case: 3:
+				$status['slaveDomeScuttleStatus'] = '正在开';
+				break;
+			case: 4:
+				$status['slaveDomeScuttleStatus'] = '正在关';
+				break;
+			default:
+				$status['slaveDomeScuttleStatus'] = '未获取到';
+				break;
+        }
+        
+        switch ($slaveDomeStatus['shadeStatus']) //风帘状态
+		{
+			case: 1:
+				$status['slaveDomeShadeStatus'] = '运动中';
+				break;
+			case: 2:
+				$status['slaveDomeShadeStatus'] = '到位';
+				break;
+			default:
+				$status['slaveDomeShadeStatus'] = '未获取到';
+				break;
+		}
         $status['slaveDomeErrorStatus'] = $slaveDomeStatus['errorString']; //错误标识
 
         return $status;
@@ -489,7 +518,7 @@ class Status extends Base
                 break;
         }
         //滤光片当前状态 结束 /////////////////////////////////////
-        $status['filterIsHomed'] = $filterStatus['isHomed']; //是否找零
+        $status['filterIsHomed'] = $filterStatus['isHomed'] ==1 : '是' ? '否'; //是否找零 //是否找零
         //错误标识
         $status['filterErrorStatus'] = $filterStatus['errorString']; 
 

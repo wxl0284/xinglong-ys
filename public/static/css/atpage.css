@@ -108,6 +108,12 @@ form input[type='radio'], form div {display:none;}
 .hour {width:2.508%;}
 .sec {width:5.518%;}
 /*转台和ccd 之赤经赤纬输入框样式 结束*/
+/*转台 速度修正表格样式 结束*/
+#speed_alter_tb {line-height: 40px;}
+#speed_alter_tb td{width: 100px;}
+#speed_alter_tb td input {width: 50px;}
+.speed_click {font-weight: bold; color: red;}
+/*转台 速度修正表格样式 结束*/
 
 /*观测计划模式：单选钮和按钮的样式*/
 #planModes {top:8.8583333%;right:1.3333333%;width:25%;}

@@ -201,19 +201,19 @@
 	
 		  <div id='gimbalInfo' v-if='device_nav.dev_click=="gimbal"'><!--转台指令和属性-->
              <nav class='center'><!--转台指令 导航-->
-			    <span :class='{active: device_nav.gimbal_command=="trackStar"}' @click ='device_nav.gimbal_command="trackStar"'>跟踪恒星</span>
-				<span :class='{active: device_nav.gimbal_command=="setObjName"}' @click ='device_nav.gimbal_command="setObjName"'>设置目标名称</span>
-				<span>指向固定位置</span>		
-				<span>轴3指向固定位置</span>		
-				<span>轴3工作模式</span>
-				<span>恒速运动</span>				
-				<span>位置修正</span>		
-				<span>镜盖操作</span>	
-				<span>焦点切换镜</span>	
-				<span>保存同步数据</span>
+			    <span :class='{active: device_nav.gimbal_command=="trackStar"}' @click ='device_nav.gimbal_command="trackStar"' v-if='configData.gimbal.cantrackstar==1'>跟踪恒星</span>
+				<span :class='{active: device_nav.gimbal_command=="setObjName"}' @click ='device_nav.gimbal_command="setObjName"' v-if='configData.gimbal.cansetobjectname==1'>设置目标名称</span>
+				<span :class='{active: device_nav.gimbal_command=="slewAzEl"}' @click ='device_nav.gimbal_command="slewAzEl"' v-if='configData.gimbal.canslewazel==1'>指向固定位置</span>	
+				<span :class='{active: device_nav.gimbal_command=="slewDerotator"}' @click ='device_nav.gimbal_command="slewDerotator"' v-if='configData.gimbal.canslewderotator==1'>轴3指向固定位置</span>
+				<span :class='{active: device_nav.gimbal_command=="axis3Mode"}' @click ='device_nav.gimbal_command="axis3Mode"' v-if='configData.gimbal.canconfigderotator==1'>轴3工作模式</span>
+				<span :class='{active: device_nav.gimbal_command=="speed_alter"}' @click ='device_nav.gimbal_command="speed_alter"' v-if='configData.gimbal.cansettrackspeed==1'>速度修正</span>
+				<span :class='{active: device_nav.gimbal_command=="speed_fixed"}' @click ='device_nav.gimbal_command="speed_fixed"' v-if='configData.gimbal.canfixedmove==1'>恒速运动</span>
+				<span :class='{active: device_nav.gimbal_command=="position_alter"}' @click ='device_nav.gimbal_command="position_alter"' v-if='configData.gimbal.canpositioncorrect==1'>位置修正</span>	
+				<span :class='{active: device_nav.gimbal_command=="cover_op"}' @click ='device_nav.gimbal_command="cover_op"' v-if='configData.gimbal.cancoveroperation==1'>镜盖操作</span>
+				<span :class='{active: device_nav.gimbal_command=="setFocusType"}' @click ='device_nav.gimbal_command="setFocusType"' v-if='configData.gimbal.canfocusoperation==1'>焦点切换镜</span>
+				<span :class='{active: device_nav.gimbal_command=="saveSyncData"}' @click ='device_nav.gimbal_command="saveSyncData"' v-if='configData.gimbal.cansavesyncdata==1'>保存同步数据</span>
 				<span>跟踪卫星</span>
 				<span>属性设置</span>
-				<!-- <span>速度修正</span> 似乎无此指令 -->
 			 </nav>
 			 <div class='border2'><!--转台指令和可变属性-->
 				<div id='btnsGimbal' class='center_mrg center BtnsDiv'>
@@ -226,15 +226,15 @@
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
 				<form class='center' v-if='device_nav.gimbal_command == "trackStar"'><!--跟踪恒星-->
-					赤经:<input type="text" class='hour' ref='trackstar_asc1' v-model.trim='gimbal_form.trackStar.rightAscension1' @blur='gimbal_track_star_Asc1(true)' @keyup='gimbal_Asc1_up' >:
-					<input type="text" class='hour' ref='trackstar_asc2' v-model.trim='gimbal_form.trackStar.rightAscension2' @blur='gimbal_track_star_Asc2(true)' @keyup='gimbal_Asc2_up' >:
-					<input type="text" class='sec' ref='trackstar_asc3' v-model.trim='gimbal_form.trackStar.rightAscension3' @blur='gimbal_track_star_Asc3(true)' >
+					赤经：<input type="text" class='hour' ref='trackstar_asc1' v-model.trim='gimbal_form.trackStar.rightAscension1' @blur='gimbal_track_star_Asc1(true)' @keyup='gimbal_Asc1_up'>:
+					<input type="text" class='hour' ref='trackstar_asc2' v-model.trim='gimbal_form.trackStar.rightAscension2' @blur='gimbal_track_star_Asc2(true)' @keyup='gimbal_Asc2_up'>:
+					<input type="text" class='sec' ref='trackstar_asc3' v-model.trim='gimbal_form.trackStar.rightAscension3' @blur='gimbal_track_star_Asc3(true)'>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					赤纬:<input type="text" class='hour' v-model.trim='gimbal_form.trackStar.declination1' @blur='gimbal_track_star_Dsc1' @keyup='' >:
-					<input type="text" class='hour' v-model.trim='gimbal_form.trackStar.declination2' @blur='gimbal_track_star_Dsc2' @keyup='' >:
-					<input type="text" class='sec' v-model.trim='gimbal_form.trackStar.declination3' @blur='gimbal_track_star_Dsc3' >
+					赤纬：<input type="text" class='hour' ref='trackstar_dec1' v-model.trim='gimbal_form.trackStar.declination1' @blur='gimbal_track_star_Dec1(true)' @keyup='gimbal_dec1_up'>:
+					<input type="text" class='hour' ref='trackstar_dec2' v-model.trim='gimbal_form.trackStar.declination2' @blur='gimbal_track_star_Dec2(true)' @keyup='gimbal_dec2_up'>:
+					<input type="text" class='sec' ref='trackstar_dec3' v-model.trim='gimbal_form.trackStar.declination3' @blur='gimbal_track_star_Dec3(true)'>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					历元:<select v-model="gimbal_form.trackStar.epoch">
+					历元：<select v-model="gimbal_form.trackStar.epoch">
 						<option value="-1">请选择</option>
 						<option value="0">real</option>
 						<option value="1">J2000</option>
@@ -242,7 +242,7 @@
 						<option value="3">J2050</option>
 					</select>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					跟踪速度:
+					跟踪速度：
 					<select v-model="gimbal_form.trackStar.speed">
 						<option value="-1">请选择</option>
 						<option value="0">恒星</option>
@@ -253,9 +253,136 @@
 					<br><input type="button" class='margin_10' value="提交指令" @click='trackStar_sbmt' >
 				</form>
 				<form class='center' v-if='device_nav.gimbal_command == "setObjName"'><!--设置目标名称-->
-					
-					<br><input type="button" class='margin_10' value="提交目标名称" @click='trackStar_sbmt' >
-				</form>
+					目标名称：<input type="text" ref='objName' v-model.trim='gimbal_form.objName.objectName' @blur='obj_name_check(true)' placeholder='不能有汉字及空格'>
+					目标类型：<select style='width:6.6%;' v-model='gimbal_form.objName.objectType'>
+								<option value="-1">请选择</option>
+								<option value="0">恒星</option>
+								<option value="1">太阳</option>
+								<option value="2">月亮</option>
+								<option value="3">彗星</option>
+								<option value="4">行星</option>
+								<option value="5">卫星</option>
+								<option value="6">固定位置</option>
+						</select>
+					<br><input type="button" class='margin_10' value="提交目标名称" @click='obj_name_sbmt' >
+			    </form><!--设置目标名称 结束-->
+				<form class='center' v-if='device_nav.gimbal_command == "slewAzEl"'><!--指向固定位置-->
+					方位：<input type="text" ref='azimuth' v-model.trim='gimbal_form.slewAzEl.azimuth' @blur='azimuth_check(true)' placeholder='0-360'>
+            		俯仰：<input id='elevationV' type="text" ref='elevation' v-model.trim='gimbal_form.slewAzEl.elevation' @blur='elevation_check(true)' :placeholder='configData.gimbal.minelevation+"~360"'>
+					<br><input type="button" class='margin_10' value="提交指令" @click='slewAzEl_sbmt' >
+				</form><!--指向固定位置 结束-->
+				<form class='center' v-if='device_nav.gimbal_command == "slewDerotator"'><!--轴3指向固定位置-->
+					轴3指向固定位置：<input id='slewDerotatorV' type="text" ref='slewDerotator' v-model.trim='gimbal_form.slewDerotator.slewDerotator' @blur='slewDerotator_check(true)' placeholder='0~360'>
+					<br><input type="button" class='margin_10' value="提交指令" @click='slewDerotator_sbmt' >
+				</form><!--轴3指向固定位置 结束-->
+				<form class='center' v-if='device_nav.gimbal_command == "axis3Mode"'><!--轴3工作模式-->
+					模式：<select id='at60Axis3' name="mode" style='width:11%;' v-model='gimbal_form.axis3_mode.mode' >
+					<option value="-1">请选择</option>
+                    <option value="0">不消旋</option>
+                    <option value="1">偏差消旋</option>
+                    <option value="2">始终指向同一角度</option>
+					</select>
+					<span v-if='gimbal_form.axis3_mode.mode==2'>起偏角：<input  type="text" name='polarizingAngle' ref='polar_Angle' v-model.trim='gimbal_form.axis3_mode.polarizingAngle' placeholder='0~360' @blur='polar_Angle_check(true)' ></span>
+					<br><input type="button" class='margin_10' value="提交指令" @click='axis3Mode_sbmt' >
+				</form><!--轴3工作模式 结束-->
+				<form class='center' v-if='device_nav.gimbal_command == "speed_alter"'><!--速度修正-->
+					<table class='center center_mrg' id='speed_alter_tb'>
+						<tr>
+							<td><input type="button" value="西北" :class='{speed_click: device_nav.speed_alter_btn=="n_w"}' @click='speed_alter_sbmt("n_w")' ></td>
+							<td><input type="button" value="北" :class='{speed_click: device_nav.speed_alter_btn=="n"}' @click='speed_alter_sbmt("n")' ></td>
+							<td><input type="button" value="东北" :class='{speed_click: device_nav.speed_alter_btn=="n_e"}' @click='speed_alter_sbmt("n_e")' ></td>
+						</tr>
+						<tr>
+							<td><input type="button" value="西" :class='{speed_click: device_nav.speed_alter_btn=="w"}' @click='speed_alter_sbmt("w")' ></td>
+							<td>
+								<select width='91%' v-model='gimbal_form.speed_alter.correction'>
+									<option value="-1">选择速度</option>
+									<option value="0.000013889">0.05角秒/s</option>
+									<option value="0.000027778">0.1角秒/s</option>
+									<option value="0.000138889">0.5角秒/s</option>
+									<option value="0.000277778">1角秒/s</option>
+									<option value="0.001388889">5角秒/s</option>
+									<option value="0.002777778">10角秒/s</option>
+									<option value="0.008333333">30角秒/s</option>
+									<option value="0.016666667">1角分/s</option>
+									<option value="0.083333333">5角分/s</option>
+									<option value="0.166666667">10角分/s</option>
+									<option value="0.5">30角分/s</option>
+									<option value="1.0">1度/s</option>
+								</select>
+							</td>
+							<td><input type="button" value="东" :class='{speed_click: device_nav.speed_alter_btn=="e"}' @click='speed_alter_sbmt("e")' ></td>
+						</tr>
+						<tr>
+							<td><input type="button" value="西南" :class='{speed_click: device_nav.speed_alter_btn=="s_w"}' @click='speed_alter_sbmt("s_w")' ></td>
+							<td><input type="button" value="南" :class='{speed_click: device_nav.speed_alter_btn=="s"}' @click='speed_alter_sbmt("s")' ></td>
+							<td><input type="button" value="东南" :class='{speed_click: device_nav.speed_alter_btn=="s_e"}' @click='speed_alter_sbmt("s_e")' ></td>
+						</tr>
+					</table>
+			    </form><!--速度修正 结束-->
+				<form class='center' v-if='device_nav.gimbal_command == "speed_fixed"'><!--恒速运动-->
+					轴：<select style='width:6%;' v-model='gimbal_form.speed_fixed.axis'>
+					<option value="1">轴1</option>
+					<option value="2">轴2</option>
+					<option value="3" v-if='configData.gimbal.haveaxis3==1' >轴3</option>
+					</select>
+					速度：<input type="text" ref='speed_fixed' v-model.trim='gimbal_form.speed_fixed.speed' :placeholder="'<='+configData.gimbal['maxaxis'+gimbal_form.speed_fixed.axis+'speed']" @blur='speed_fixed_check(true)' >
+					<br><input type="button" class='margin_10' value="提交指令" @click='speed_fixed_sbmt' >
+				</form><!--恒速运动 结束-->
+				<form class='center' v-if='device_nav.gimbal_command == "position_alter"'><!--位置修正-->
+					<table class='center center_mrg' id='speed_alter_tb'>
+						<tr>
+							<td><input type="button" value="西北" :class='{speed_click: device_nav.pos_alter_btn=="n_w"}' @click='position_alter_sbmt("n_w")' ></td>
+							<td><input type="button" value="北" :class='{speed_click: device_nav.pos_alter_btn=="n"}' @click='position_alter_sbmt("n")' ></td>
+							<td><input type="button" value="东北" :class='{speed_click: device_nav.pos_alter_btn=="n_e"}' @click='position_alter_sbmt("n_e")' ></td>
+						</tr>
+						<tr>
+							<td><input type="button" value="西" :class='{speed_click: device_nav.pos_alter_btn=="w"}' @click='position_alter_sbmt("w")' ></td>
+							<td>
+								<select width='91%' v-model='gimbal_form.position_alter.correction'>
+									<option value="-1">选择偏移量</option>
+									<option value="0.000013889">0.05角秒</option>
+									<option value="0.000027778">0.1角秒</option>
+									<option value="0.000138889">0.5角秒</option>
+									<option value="0.000277778">1角秒</option>
+									<option value="0.001388889">5角秒</option>
+									<option value="0.002777778">10角秒</option>
+									<option value="0.008333333">30角秒</option>
+									<option value="0.016666667">1角分</option>
+									<option value="0.083333333">5角分</option>
+									<option value="0.166666667">10角分</option>
+									<option value="0.5">30角分</option>
+									<option value="1.0">1度</option>
+								</select>
+							</td>
+							<td><input type="button" value="东" :class='{speed_click: device_nav.pos_alter_btn=="e"}' @click='position_alter_sbmt("e")' ></td>
+						</tr>
+						<tr>
+							<td><input type="button" value="西南" :class='{speed_click: device_nav.pos_alter_btn=="s_w"}' @click='position_alter_sbmt("s_w")' ></td>
+							<td><input type="button" value="南" :class='{speed_click: device_nav.pos_alter_btn=="s"}' @click='position_alter_sbmt("s")' ></td>
+							<td><input type="button" value="东南" :class='{speed_click: device_nav.pos_alter_btn=="s_e"}' @click='position_alter_sbmt("s_e")' ></td>
+						</tr>
+					</table>
+				</form><!--位置修正 结束-->
+				<form class='center' v-if='device_nav.gimbal_command == "cover_op"'><!--镜盖操作-->
+					<input type='button' value="打 开" :class='{speed_click: device_nav.cover_btn=="open"}' @click='cover_sbmt("open")' >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type='button' value="关 闭" :class='{speed_click: device_nav.cover_btn=="close"}' @click='cover_sbmt("close")' >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type='button' value="停 止" :class='{speed_click: device_nav.cover_btn=="stop"}' @click='cover_sbmt("stop")' ><br><br>
+				</form><!--镜盖操作 结束-->
+				<form class='center' v-if='device_nav.gimbal_command == "setFocusType"'><!--焦点切换镜-->
+					焦点切换镜：<select name="setFocusType" style='width:6%;' v-model='gimbal_form.setFocusType.focusType' >
+						<option value="-2">请选择</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="-1">停</option>
+					</select>
+					<br><input type="button" class='margin_10' value="提交指令" @click='setFocusType_sbmt' >
+				</form><!--焦点切换镜 结束-->
+				<form class='center' v-if='device_nav.gimbal_command == "saveSyncData"'><!--保存同步数据-->
+					<input type="button" value="是" style="width:5%;" :class='{speed_click: device_nav.save_data_btn=="1"}' @click='save_data_sbmt(1)' >
+					<br><br>
+				</form><!--保存同步数据 结束-->
 			  <hr style='width:98%;' class='center_mrg'><br>
 			  <div><!--转台可变属性-->
                 <span class='propT'>转台可变属性:</span><br><br>
