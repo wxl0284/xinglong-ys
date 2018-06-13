@@ -30,12 +30,14 @@
 			device_nav: {//此对象中的数据用以区分是否给各子设备加上蓝色底框
 				dev_click: 'gimbal',  //区分各自设备
 				gimbal_command: '',   //区分转台各指令
+				ccd_command: '',   //区分ccd-1各指令
 				gimbal_btn: '',   //区分转台各按钮型指令
 				polarizingAngle: '',   //轴3工作模式之 是否显示起偏角
 				speed_alter_btn: '',   //速度修正 标记8个按钮是否被点击
 				pos_alter_btn: '',   //位置修正 标记8个按钮是否被点击
 				cover_btn: '',   //镜盖操作 标记3个按钮是否被点击
-				save_data_btn: '',   //保存同步数据 标记3个按钮是否被点击
+				save_data_btn: '',   //保存同步数据 标记按钮是否被点击
+				ccd1_btn: '',   //区分ccd1各按钮型指令
 			},
 			gimbal_form: {//转台表单指令的参数
 				trackStar: {
@@ -73,6 +75,23 @@
 					command:'save_sync_data', at:at
 				},
 			},/**转台 表单 结束**/
+			ccd1_form: {//ccd1表单指令的参数
+				coolTemp: {//ccdNo为ccd序号
+					temp: '', command:'set_cool', ccdNo: '1', at:at
+				},
+				exposeParam: {
+					validFlag: '', startTime: '', duration:'', delay: '', objName: '', objType: '-1',
+					objectRightAscension1: '',objectRightAscension2: '', objectRightAscension3: '',
+					objectDeclination1: '', objectDeclination2: '', objectDeclination3: '',
+					objectEpoch: '-1', objectBand: '', objectFilter: '-1',isSaveImage: '-1',
+					weatherGatherTime: '', temperature1: '', humidity: '', windSpeed: '',
+					pressure: '', skyGatherTime: '', skyState: '', clouds: '', seeingGatherTime: '',
+					seeing: '', dustGatherTime:'', dust: '', AMS: '', extinctionGatherTime: '',
+					rightAscension: '', declination: '', band:'', extinctionFactor1: '', extinctionFactor2: '',
+					extinctionFactor3: '',telescopeRightAscension: '', telescopeDeclination: '',
+					focusLength:'', frameNum: '', command:'expose_param', ccdNo: '1', at:at
+				},
+			},/**ccd1 表单 结束**/
 		},/********vue data属性对象 结束********/
 		methods: {
 			plan_click: function () {
@@ -200,7 +219,7 @@
 				var msg = '';
 				var patn = /^\d{2}$/;
 				var v = this.gimbal_form.trackStar.rightAscension2;
-				if ( !patn.test(v) || v > 59 || v < 0 )
+				if ( !patn.test(v) || v > 59 || v < 1 )
 				{
 					msg = '赤经分钟参数超限';
 				}
@@ -249,7 +268,7 @@
 				var msg = '';
 				var patn = /^\d{2}$/;
 				var v = this.gimbal_form.trackStar.declination2;
-				if ( !patn.test(v) || v > 59 || v < 0 )
+				if ( !patn.test(v) || v > 59 || v < 1 )
 				{
 					msg = '赤纬分钟参数超限';
 				}
@@ -288,6 +307,16 @@
 				msg += this.gimbal_track_star_Dec1(false);
 				msg += this.gimbal_track_star_Dec2(false);
 				msg += this.gimbal_track_star_Dec3(false);
+				var asc1 = Math.abs(this.gimbal_form.trackStar.rightAscension1);
+				var asc2 = Math.abs(this.gimbal_form.trackStar.rightAscension2);
+				var asc3 = Math.abs(this.gimbal_form.trackStar.rightAscension3);
+				var dec1 = Math.abs(this.gimbal_form.trackStar.declination1);
+				var dec2 = Math.abs(this.gimbal_form.trackStar.declination2);
+				var dec3 = Math.abs(this.gimbal_form.trackStar.declination3);
+				var asc = asc1 + asc2/60 + asc3/3600;  //赤经换算为数值
+				var dec = dec1 + dec2/60 + dec3/3600;  //赤经换算为数值
+				if ( asc > 24 ) msg += '赤经值超限!<br>';
+				if ( dec > 90 ) msg += '赤纬值超限!';
 				if ( this.gimbal_form.trackStar.epoch == -1 )
 				{
 					msg += '历元未选择<br>';
@@ -327,7 +356,7 @@
 				var msg = '';
 				var v = this.gimbal_form.objName.objectName;
 				var patn = /([\u4e00-\u9fa5]| )+/;
-				if ( patn.test(v) || v == '' )
+				if ( patn.test(v) || v == '' || v.length > 48)
 				{
 					msg = '名称不能有汉字或空格!';
 				}
@@ -387,7 +416,7 @@
 			elevation_check:function (tip) {
 				var msg = '';
 				var v = this.gimbal_form.slewAzEl.elevation;
-				if ( !$.isNumeric(v) || v > 90 || v < configData.gimbal.minelevation )
+				if ( !$.isNumeric(v) || v > 90 || v < configData.gimbal.minelevation*1 )
 				{
 					msg = '俯仰参数超限!';
 				}
@@ -575,7 +604,7 @@
 						break;
 				}
 
-				if ( v == 0 || v > v_max || v < v_max*-1)
+				if ( v == 0 || v > v_max*1 || v < v_max*-1)
 				{
 					msg = '参数超限!';
 				}
@@ -727,6 +756,199 @@
 					},
 				})/*ajax 结束*/
 			},/**save_data_sbmt 结束**/
+			ccd_btn_command:function (n) {/*ccd 按钮型指令*/
+				var that = this; //存储vue实例化的对象
+				var btn_str = ''; //控制按钮的样式
+				var btn_text = '';
+				var data = {at: at, command: ''}; //提交的数据
+
+				switch (n) {
+					case 1:
+						btn_str = 'connect';
+						btn_text = '连接';
+						data.command = 'connect';
+						break;
+					case 2:
+						btn_str = 'disConnect';
+						btn_text = '断开';
+						data.command = 'disConnect';
+						break;
+					case 3:
+						btn_str = 'stop_expose';
+						btn_text = '停止曝光';
+						data.command = 'stop_expose';
+						break;
+					case 4:
+						btn_str = 'abort_expose';
+						btn_text = '终止曝光';
+						data.command = 'abort_expose';
+						break;
+				}
+				//执行ajax
+				$.ajax({
+					type : 'post',
+					url : '/ccd',
+					data : data,             
+		            success: function (info) {
+						that.device_nav.ccd1_btn = btn_str;  //更改按钮样式
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});
+		            },
+		            error: function () {
+			        	layer.alert('网络异常,请再次' + btn_text, {shade:false, closeBtn:0});
+		            },
+				});
+			},/**ccd_btn_command 结束**/
+			ccd1_cool:function (tip) {
+				var msg = '';
+				var v = this.ccd1_form.coolTemp.temp;
+				//console.log(configData.ccd[0].lowcoolert);return;
+				if ( !$.isNumeric(v)|| v > 20 || v < configData.ccd[0].lowcoolert*1 )
+				{
+					msg = '制冷温度参数超限!';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.ccd1_cool, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},/**ccd1_cool 结束**/
+			ccd1_cool_sbmt:function (){
+				var msg = this.ccd1_cool(false);
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:false,closeBtn:0});return;
+				}else{//表单参数无错误
+					$.ajax({
+						url: '/ccd',
+						type: 'post',
+						data: this.ccd1_form.coolTemp,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error:function (){
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					})/*ajax 结束*/
+				}	
+			},/******ccd1_cool_sbmt 结束******/
+			ccd1_asc1:function (tip){ //拍摄目标赤经之 小时
+				var msg = '';
+				var patn = /^\d{2}$/;
+				var v = this.ccd1_form.exposeParam.objectRightAscension1;
+				if ( !patn.test(v) || v > 24 || v < 0 )
+				{
+					msg = '目标赤经小时参数超限';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.ccd1_objAsc1, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},/******ccd1_asc1 结束******/
+			ccd1_asc2:function (tip){ //拍摄目标赤经之 分钟
+				var msg = '';
+				var patn = /^\d{2}$/;
+				var v = this.ccd1_form.exposeParam.objectRightAscension2;
+				if ( !patn.test(v) || v > 59 || v < 1 )
+				{
+					msg = '目标赤经分钟参数超限';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.ccd1_objAsc2, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},/******ccd1_asc1 结束******/
+			ccd1_asc3:function (tip){ //拍摄目标赤经之 分钟
+				var msg = '';
+				var v = this.ccd1_form.exposeParam.objectRightAscension3;
+				if ( !$.isNumeric(v) || v >= 60 || v < 0 )
+				{
+					msg = '目标赤经秒参数超限';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.ccd1_objAsc3, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},/******ccd1_asc1 结束******/
+			ccd1_asc1_up:function () {
+				var res = this.ccd1_asc1(false);
+				if ( res === '' ) this.$refs.ccd1_objAsc2.focus();
+			},
+			ccd1_asc2_up:function () {
+				var res = this.ccd1_asc2(false);
+				if ( res === '' ) this.$refs.ccd1_objAsc3.focus();
+			},
+			ccd1_dec1:function (tip){ //拍摄目标赤纬之 小时
+				var msg = '';
+				var patn = /^\d{2}$/;
+				var v = this.ccd1_form.exposeParam.objectRightAscension1;
+				if ( !patn.test(v) || v > 24 || v < 0 )
+				{
+					msg = '目标赤纬小时参数超限';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.ccd1_objAsc1, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},/******ccd1_dec1 结束******/
+			ccd1_dec2:function (tip){ //拍摄目标赤纬之 分钟
+				var msg = '';
+				var patn = /^\d{2}$/;
+				var v = this.ccd1_form.exposeParam.objectRightAscension2;
+				if ( !patn.test(v) || v > 59 || v < 1 )
+				{
+					msg = '目标赤纬分钟参数超限';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.ccd1_objAsc2, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},/******ccd1_dec2 结束******/
+			ccd1_dec3:function (tip){ //拍摄目标赤纬之 秒
+				var msg = '';
+				var v = this.ccd1_form.exposeParam.objectRightAscension3;
+				if ( !$.isNumeric(v) || v >= 60 || v < 0 )
+				{
+					msg = '目标赤经秒参数超限';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.ccd1_objAsc3, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},/******ccd1_dec3 结束******/
+			ccd1_dec1_up:function () {
+				var res = this.ccd1_asc1(false);
+				if ( res === '' ) this.$refs.ccd1_objAsc2.focus();
+			},
+			ccd1_dec2_up:function () {
+				var res = this.ccd1_asc2(false);
+				if ( res === '' ) this.$refs.ccd1_objAsc3.focus();
+			},
 		},/******methods 结束******/
 	});/***************vue js结束*****************/
 
@@ -1015,126 +1237,6 @@
      
     });//////////////////////////////////////////////////////////*/
    
-   //CCD 连接按钮 js事件///////////////////////////////////
-   $('#ccdConnect').click(function (){
-	   $(this).addClass('btnClick');
-	   $('#btnsCCD input').not($(this)).removeClass('btnClick');
-       $.ajax({
-            type : 'post',
-            url : '/ccd',
-            data : {
-				ccdConnect:1,
-				at: at,
-			},             
-            success:  function (info) {
-	            layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次连接ccd!', {shade:false, closeBtn:0});
-            },
-        });
-   });
-   
-   //CCD 断开按钮 js事件///////////////////////////////////
-   $('#ccdDisConnect').click(function (){
-	   $(this).addClass('btnClick');
-	   $('#btnsCCD input').not($(this)).removeClass('btnClick');
-       $.ajax({
-            type : 'post',
-            url : '/ccd',
-            data : {
-				ccdConnect:2,
-				at: at,
-			},             
-            success:  function (info) {
-	             layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次断开ccd!', {shade:false, closeBtn:0});
-            },
-        });
-   });
-   
-   //CCD 停止曝光 js事件/////////////////////////////////////
-   $('#ccdStopExpose').click(function (){
-	   $(this).addClass('btnClick');
-	   $('#btnsCCD input').not($(this)).removeClass('btnClick');
-       $.ajax({
-            type : 'post',
-            url : '/ccd',
-			data : {
-				StopExpose:1,
-				at: at,
-			},             
-            success:  function (info) {
-	            layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次停止曝光!', {shade:false, closeBtn:0});
-            },
-        });
-   });
-   
-   //CCD 终止曝光 js事件/////////////////////////////////////
-   $('#ccdAbortExpose').click(function (){
-	   $(this).addClass('btnClick');
-	   $('#btnsCCD input').not($(this)).removeClass('btnClick');
-       $.ajax({
-            type : 'post',
-            url : '/ccd',
-            data : {
-				AbortExpose:1,
-				at: at,
-			},             
-            success:  function (info) {
-	            layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次终止曝光!', {shade:false, closeBtn:0});
-            },
-        });
-   });
-   
 //CCD 带参数指令  js事件//////////////////////////////////////////////
 	var ccdForm = $('#at60Ccd');
     var ccdSelect = ccdForm.find('div');
@@ -1146,20 +1248,7 @@
          $(this).removeClass('notCheck');
      });
 	
-//ccd 表单数据验证////////////////////////////////////////////
-	//验证制冷温度
-	$('#ccdTemperature').blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		
-		// if ((!$.isNumeric(v)) || v > 20 || v < -80)
-		// {
-		// 	err = 1;
-		// 	layer.tips('制冷温度值有误!', $(this), {tipsMore: true});
-		// }		
-		// $(this).data('err', err);
-	});
-	
+//ccd 表单数据验证////////////////////////////////////////////	
 	//验证曝光时间
 	$('#durationInput').blur(function () {
 		// var v = $.trim($(this).val());

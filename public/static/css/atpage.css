@@ -48,6 +48,8 @@ ul.properUl li span {color:#00B5EE;}
 .border_b {border:0}
 
 #exposStratic span {width:320px;display:inline-block;text-align:right;margin-bottom:10px;}/*曝光策略指令样式*/
+#exposStratic .hour1 {width:9.3%}
+#exposStratic .sec1 {width:20.7%}/*曝光策略指令样式 结束*/
 
 footer {background-color:#656565;height:41px;}
 

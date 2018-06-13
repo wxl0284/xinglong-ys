@@ -3,7 +3,7 @@ namespace app\xinglong\controller;
 
 use app\xinglong\controller\Base;
 use think\Cookie;
-//use think\Db;
+use think\Db;
 
 /*此控制器 负责各望远镜的ccd指令发送*/
 class Ccd extends Base
@@ -19,6 +19,43 @@ class Ccd extends Base
     protected $user = 0;  //操作者
     protected $ip = '';  //中控通信 ip
     protected $port = '';  //中控通信 port
+    protected $command_length = [//各指令长度
+        'connect' => 50,
+        'stop_expose' => 48,
+        'abort_expose' => 48,
+        'set_cool' => 56,
+        // 'stop' => 48,
+        // 'emergstop' => 48,
+        // 'trackStar' => 68,
+        // 'set_obj_name' => 98,
+        // 'slewAzEl' => 64,
+        // 'slewDerotator' => 56,
+        // 'axis3Mode' => 58,
+        // 'speed_alter' => 58,
+        // 'speed_fixed' => 58,
+        // 'position_alter' => 58,
+        // 'cover_op' => 50,
+        // 'setFocusType' => 50,
+        // 'save_sync_data' => 48,
+    ];
+    protected $operation = [//各指令之编号
+        'connect' => 1,
+        'stop_expose' => 5,
+        'abort_expose' => 6,
+        'set_cool' => 2,
+        // 'emergstop' => 15,
+        // 'trackStar' => 3,
+        // 'set_obj_name' => 4,
+        // 'slewAzEl' => 5,
+        // 'slewDerotator' => 6,
+        // 'axis3Mode' => 7,
+        // 'speed_alter' => 9,
+        // 'speed_fixed' => 11,
+        // 'position_alter' => 12,
+        // 'cover_op' => 13,
+        // 'setFocusType' => 14,
+        // 'save_sync_data' => 16,
+    ];
     
     //接收参数，根据不同参数，向不同望远镜的CCD指令
     public function sendCommand ()
@@ -70,59 +107,63 @@ class Ccd extends Base
             $this->at = 39;
         }
 
-        $command = input('command'); //获取提交的指令
+        $command = $postData['command']; //要执行的指令
         //根据不同参数 调用相应方法发送指令
-        if ( ($ccdConnect=input('ccdConnect')) !== null ) //连接或断开指令
-        {
-            if (!($ccdConnect == 1 || $ccdConnect == 2))
-			{
-                return 'ccd连接指令无效!';
-			}
-         
-            return $this->connect($ccdConnect);   //执行发送
-        }else if( input('StopExpose') == 1){//停止曝光       
-            return $this->stop_expose(); //执行发送
-        }else if( input('AbortExpose') == 1){//终止曝光       
-            return $this->abort_expose(); //执行发送
-        }else if( $command == 1 ){//设置制冷温度       
-            return $this->set_cool(); //执行发送
-        }else if( $command == 2 ){//设置曝光策略       
-            return $this->expose_strategy(); //执行发送
-        }else if( $command == 3 ){//开始曝光       
-            return $this->start_expose(); //执行发送
-        }else if( $command == 4 ){//设置增益     
-            return $this->set_gain(); //执行发送
-        }else if( $command == 5 ){////设置 读出速度模式值     
-            return $this->set_readSpeedMode(); //执行发送
-        }else if( $command == 6 ){////设置 转移速度模式值     
-            return $this->set_transferSpeed(); //执行发送
-        }else if( $command == 7 ){//设置BIN     
-            return $this->set_bin(); //执行发送
-        }else if( $command == 8 ){//设置ROI 指令    
-            return $this->set_roi(); //执行发送
-        }else if( $command == 9 ){//设置快门指令 指令    
-            return $this->set_shutter(); //执行发送
-        }else if( $command == 10 ){//设置帧转移 指令    
-            return $this->set_isFullFrame(); //执行发送
-        }else if( $command == 11 ){//SetEM 指令    
-            return $this->set_em(); //执行发送
-        }else if( $command == 12 ){//isNoiseFilter 指令    
-            return $this->set_isNoiseFilter(); //执行发送
-        }else if( $command == 13 ){//SetBaseline 指令    
-            return $this->set_baseLine(); //执行发送
-        }else if( $command == 14 ){//set over scan 指令    
-            return $this->set_overScan(); //执行发送
+        switch ($command) {
+            case 'connect':
+                return $this->connect (1, 'connect');
+                break;
+            case 'disConnect':
+                return $this->connect (2, 'connect');
+                break;
+            case 'stop_expose':
+                return $this->button_command ('stop_expose');
+                break;
+            case 'abort_expose':
+                return $this->button_command ('abort_expose');
+                break;
+            case 'set_cool':
+                return $this->set_cool ($postData, 'set_cool');
+                break;
+            default:
+                break;
         }
+
+        // }else if( $command == 2 ){//设置曝光策略       
+        //     return $this->expose_strategy(); //执行发送
+        // }else if( $command == 3 ){//开始曝光       
+        //     return $this->start_expose(); //执行发送
+        // }else if( $command == 4 ){//设置增益     
+        //     return $this->set_gain(); //执行发送
+        // }else if( $command == 5 ){////设置 读出速度模式值     
+        //     return $this->set_readSpeedMode(); //执行发送
+        // }else if( $command == 6 ){////设置 转移速度模式值     
+        //     return $this->set_transferSpeed(); //执行发送
+        // }else if( $command == 7 ){//设置BIN     
+        //     return $this->set_bin(); //执行发送
+        // }else if( $command == 8 ){//设置ROI 指令    
+        //     return $this->set_roi(); //执行发送
+        // }else if( $command == 9 ){//设置快门指令 指令    
+        //     return $this->set_shutter(); //执行发送
+        // }else if( $command == 10 ){//设置帧转移 指令    
+        //     return $this->set_isFullFrame(); //执行发送
+        // }else if( $command == 11 ){//SetEM 指令    
+        //     return $this->set_em(); //执行发送
+        // }else if( $command == 12 ){//isNoiseFilter 指令    
+        //     return $this->set_isNoiseFilter(); //执行发送
+        // }else if( $command == 13 ){//SetBaseline 指令    
+        //     return $this->set_baseLine(); //执行发送
+        // }else if( $command == 14 ){//set over scan 指令    
+        //     return $this->set_overScan(); //执行发送
+        // }
     }//接收参数，根据不同参数，向不同望远镜的CCD指令 结束////////
 
     /*ccd连接或断开*/
-    protected function connect ($connect)
+    protected function connect ($connect, $param)
     {
-        $length = 48 + 2;     //该结构体总长度
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
-
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=1);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
         $sendMsg = pack('S', $connect);  //unsigned short
         //socket发送数据
@@ -132,54 +173,43 @@ class Ccd extends Base
             return 'ccd连接指令：' .udpSend($sendMsg, $this->ip, $this->port); 
         }elseif ($connect == 2)
         {
-            return '断开ccd指令：' .udpSend($sendMsg, $this->ip, $this->port); 
+            return 'ccd断开指令：' .udpSend($sendMsg, $this->ip, $this->port); 
         }
     }/*ccd连接或断开 结束*/
 
-    /*停止曝光*/
-    protected function stop_expose ()
+    
+    protected function button_command ($param) /*停止曝光和终止曝光*/
     {
-        $length = 48;     //该结构体总长度
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
-
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=5);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
         //socket发送数据
         $sendMsg = $headInfo;
-        return '停止曝光：' .udpSend($sendMsg, $this->ip, $this->port); 
-    }/*停止曝光 结束*/
+        if ( $param == 'stop_expose' )
+        {
+            return '停止曝光：'. udpSend($sendMsg, $this->ip, $this->port);
+        }else if ( $param == 'abort_expose' ){
+            return '终止曝光：'. udpSend($sendMsg, $this->ip, $this->port);
+        }
+    }/*停止曝光和终止曝光 结束*/
 
-     /*终止曝光*/
-     protected function abort_expose ()
+     
+     protected function set_cool ($postData, $param)  /*设置制冷温度*/
      {
-         $length = 48;     //该结构体总长度
- 
-         $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
- 
-         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=6);
- 
-         //socket发送数据
-         $sendMsg = $headInfo;
-         return '终止曝光：' .udpSend($sendMsg, $this->ip, $this->port); 
-     }/*终止曝光 结束*/
+        $at_id = Db::table('atlist')->where('atid', $postData['at'])->field('id')->find(); //获取望远镜的id
+        $res = Db::table('ccdconf')->where('teleid', $at_id['id'])->where('ccdno', $postData['ccdNo'])->field('lowcoolert')->find(); //获取该望远镜的ccdconf表中的:最低制冷温度
 
-     /*设置制冷温度*/
-     protected function set_cool ()
-     {
-        $length = 48 +8;      //该结构体总长度
- 
-        //socket发送数据
-        $temperature = input('temperature');
-        if (!is_numeric($temperature) || $temperature >20 || $temperature < -80)
+        if( !is_numeric($postData['temp']) || $postData['temp'] > 20 || $postData['temp'] < $res['lowcoolert'])
         {
             return '制冷温度参数超限！';
         }
-        $sendMsg = pack('d', $temperature);     //double64
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
- 
-        $headInfo .= packHead2($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=2);
+        $sendMsg = pack('d', $postData['temp']);     //double64
+
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
+
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
         //socket发送数据
         $sendMsg = $headInfo . $sendMsg;
         return '制冷温度指令：' .udpSend($sendMsg, $this->ip, $this->port);	 

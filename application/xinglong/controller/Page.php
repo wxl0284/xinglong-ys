@@ -226,7 +226,7 @@ class Page extends Base
 
             //据此$id去各自设备的固定属性表中获取数据
             /*查ccd配置数据*/
-            $ccd_data = Db::table('ccdconf')->where('teleid', $id)->select();
+            $ccd_data = Db::table('ccdconf')->where('teleid', $id)->order('ccdno asc')->select();
             $ccd_num = count ($ccd_data);  //已配置的ccd数量
             
             $ccd_data['ccd_num'] = $ccd_num;
@@ -928,10 +928,38 @@ class Page extends Base
         }
 
         //查ccd-No1配置数据
-        $ccd = Db::table('ccdconf')->where('teleid', $at)->find();
+        $ccd = Db::table('ccdconf')->where('teleid', $at)->order('ccdno asc')->select();
+        $ccd_num = count($ccd);
+        //halt($ccd);
         if ( $ccd )
         {
-            if ( $ccd['gainmode'] )  //处理增益模式，处理后直接在页面显示
+            foreach ($ccd as $k => $v) 
+            {
+                if ( $ccd[$k]['gainmode'] ) //处理增益模式，处理后直接在页面显示
+                {
+                    $ccd[$k]['gainmode'] = str_replace ('#', ', ', $ccd[$k]['gainmode']);
+                }
+                if ( $ccd[$k]['readoutmode'] ) //处理读出模式，处理后直接在页面显示
+                {
+                    $ccd[$k]['readoutmode'] = str_replace ('#', ', ', $ccd[$k]['readoutmode']);
+                }
+                if ( $ccd[$k]['shuttermode'] ) //处理快门模式，处理后直接在页面显示
+                {
+                    $ccd[$k]['shuttermode'] = str_replace ('#', ', ', $ccd[$k]['shuttermode']);
+                }
+                if ( $ccd[$k]['interfacetype'] ) //处理接口类型，处理后直接在页面显示
+                {
+                    $ccd[$k]['interfacetype'] = str_replace ('#', ', ', $ccd[$k]['interfacetype']);
+                }
+                if ( $ccd[$k]['exposetriggermode'] ) //处理曝光触发模式，处理后直接在页面显示
+                {
+                    $ccd[$k]['exposetriggermode'] = str_replace ('#', ', ', $ccd[$k]['exposetriggermode']);
+                }
+            }
+            
+            $result['ccd'] = $ccd;
+            $result['ccd_num'] = $ccd_num;
+            /*if ( $ccd['gainmode'] )  //处理增益模式，处理后直接在页面显示
             {
                 $ccd['gainmode'] = str_replace ('#', ', ', $ccd['gainmode']);
             }
@@ -960,7 +988,7 @@ class Page extends Base
             }
 
             $result['ccd'] = $ccd;
-            $result['has_ccd'] = 1; //表示有ccd的配置数据
+            $result['has_ccd'] = 1; //表示有ccd的配置数据*/
         }//查ccd-No1配置数据 结束
         
         //查滤光片配置数据
