@@ -27,17 +27,20 @@
 		el: '#all',
 		data: {
 			configData: configData, //configData是后端返回的json数据
+			ccd_name:'CCD1',
 			device_nav: {//此对象中的数据用以区分是否给各子设备加上蓝色底框
 				dev_click: 'gimbal',  //区分各自设备
 				gimbal_command: '',   //区分转台各指令
-				ccd_command: '',   //区分ccd-1各指令
+				ccd_command: '',   //区分ccd各指令
 				gimbal_btn: '',   //区分转台各按钮型指令
 				polarizingAngle: '',   //轴3工作模式之 是否显示起偏角
 				speed_alter_btn: '',   //速度修正 标记8个按钮是否被点击
 				pos_alter_btn: '',   //位置修正 标记8个按钮是否被点击
 				cover_btn: '',   //镜盖操作 标记3个按钮是否被点击
 				save_data_btn: '',   //保存同步数据 标记按钮是否被点击
-				ccd1_btn: '',   //区分ccd1各按钮型指令
+				ccd_btn: '',   //区分ccd各按钮型指令
+				select_ccd: '', //是否显示ccd下拉框
+				ccdNo: '-1', //ccd序号
 			},
 			gimbal_form: {//转台表单指令的参数
 				trackStar: {
@@ -75,7 +78,7 @@
 					command:'save_sync_data', at:at
 				},
 			},/**转台 表单 结束**/
-			ccd1_form: {//ccd1表单指令的参数
+			ccd_form: {//ccd1表单指令的参数
 				coolTemp: {//ccdNo为ccd序号
 					temp: '', command:'set_cool', ccdNo: '1', at:at
 				},
@@ -168,6 +171,38 @@
 			ccd_click: function () {
 				this.device_nav.dev_click = 'ccd';
 				planInfo.addClass('displayNo');
+			},
+			select_ccd:function (){//通过下拉选择获取各ccd配置数据
+				var v = this.device_nav.ccdNo;
+				var postData = {}; //要提交的数据
+				postData.ccdNo = v;
+				postData.teleId = this.configData.ccd.teleid;
+	
+				if ( v != -1) //如果下拉框不是 -1 执行Ajax 请求相应ccd的配置数据
+				{
+					$.ajax({
+						type : 'post',
+						url : '/get_ccd_data',
+						data : postData,             
+			            success: function (info) {
+							that.device_nav.gimbal_btn = btn_str;  //更改按钮样式
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});
+			            },
+			            error: function () {
+				        	layer.alert('网络异常,请再次' + btn_text, {shade:false, closeBtn:0});
+			            },
+					})//ajax 结束/
+				}
 			},
 			filter_click: function () {
 				this.device_nav.dev_click = 'filter';
@@ -316,7 +351,7 @@
 				var asc = asc1 + asc2/60 + asc3/3600;  //赤经换算为数值
 				var dec = dec1 + dec2/60 + dec3/3600;  //赤经换算为数值
 				if ( asc > 24 ) msg += '赤经值超限!<br>';
-				if ( dec > 90 ) msg += '赤纬值超限!';
+				if ( dec > 90 ) msg += '赤纬值超限!<br>';
 				if ( this.gimbal_form.trackStar.epoch == -1 )
 				{
 					msg += '历元未选择<br>';
@@ -790,7 +825,7 @@
 					url : '/ccd',
 					data : data,             
 		            success: function (info) {
-						that.device_nav.ccd1_btn = btn_str;  //更改按钮样式
+						that.device_nav.ccd_btn = btn_str;  //更改按钮样式
 						layer.alert(info, {
 							shade:false,
 							closeBtn:0,
@@ -808,22 +843,22 @@
 		            },
 				});
 			},/**ccd_btn_command 结束**/
-			ccd1_cool:function (tip) {
+			ccd_cool:function (tip) {
 				var msg = '';
-				var v = this.ccd1_form.coolTemp.temp;
-				//console.log(configData.ccd[0].lowcoolert);return;
-				if ( !$.isNumeric(v)|| v > 20 || v < configData.ccd[0].lowcoolert*1 )
+				var v = this.ccd_form.coolTemp.temp;
+				//console.log(configData.ccd.lowcoolert);return;
+				if ( !$.isNumeric(v)|| v > 20 || v < configData.ccd.lowcoolert*1 )
 				{
 					msg = '制冷温度参数超限!';
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.ccd1_cool, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.ccd_cool, {shade:false,closeBtn:0})
 				}
 				return msg !== '' ? msg + '<br>' : '';
-			},/**ccd1_cool 结束**/
-			ccd1_cool_sbmt:function (){
-				var msg = this.ccd1_cool(false);
+			},/**ccd_cool 结束**/
+			ccd_cool_sbmt:function (){
+				var msg = this.ccd_cool(false);
 				if ( msg !== '' )
 				{
 					layer.alert(msg, {shade:false,closeBtn:0});return;
@@ -831,7 +866,7 @@
 					$.ajax({
 						url: '/ccd',
 						type: 'post',
-						data: this.ccd1_form.coolTemp,
+						data: this.ccd_form.coolTemp,
 						success: function (info) {
 							layer.alert(info, {
 								shade:false,
@@ -850,105 +885,157 @@
 						},
 					})/*ajax 结束*/
 				}	
-			},/******ccd1_cool_sbmt 结束******/
-			ccd1_asc1:function (tip){ //拍摄目标赤经之 小时
+			},/******ccd_cool_sbmt 结束******/
+			ccd_asc1:function (tip){ //拍摄目标赤经之 小时
 				var msg = '';
 				var patn = /^\d{2}$/;
-				var v = this.ccd1_form.exposeParam.objectRightAscension1;
+				var v = this.ccd_form.exposeParam.objectRightAscension1;
 				if ( !patn.test(v) || v > 24 || v < 0 )
 				{
 					msg = '目标赤经小时参数超限';
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.ccd1_objAsc1, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.ccd_objAsc1, {shade:false,closeBtn:0})
 				}
 				return msg !== '' ? msg + '<br>' : '';
-			},/******ccd1_asc1 结束******/
-			ccd1_asc2:function (tip){ //拍摄目标赤经之 分钟
+			},/******ccd_asc1 结束******/
+			ccd_asc2:function (tip){ //拍摄目标赤经之 分钟
 				var msg = '';
 				var patn = /^\d{2}$/;
-				var v = this.ccd1_form.exposeParam.objectRightAscension2;
+				var v = this.ccd_form.exposeParam.objectRightAscension2;
 				if ( !patn.test(v) || v > 59 || v < 1 )
 				{
 					msg = '目标赤经分钟参数超限';
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.ccd1_objAsc2, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.ccd_objAsc2, {shade:false,closeBtn:0})
 				}
 				return msg !== '' ? msg + '<br>' : '';
-			},/******ccd1_asc1 结束******/
-			ccd1_asc3:function (tip){ //拍摄目标赤经之 分钟
+			},/******ccd_asc1 结束******/
+			ccd_asc3:function (tip){ //拍摄目标赤经之 分钟
 				var msg = '';
-				var v = this.ccd1_form.exposeParam.objectRightAscension3;
+				var v = this.ccd_form.exposeParam.objectRightAscension3;
 				if ( !$.isNumeric(v) || v >= 60 || v < 0 )
 				{
 					msg = '目标赤经秒参数超限';
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.ccd1_objAsc3, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.ccd_objAsc3, {shade:false,closeBtn:0})
 				}
 				return msg !== '' ? msg + '<br>' : '';
-			},/******ccd1_asc1 结束******/
-			ccd1_asc1_up:function () {
-				var res = this.ccd1_asc1(false);
-				if ( res === '' ) this.$refs.ccd1_objAsc2.focus();
+			},/******ccd_asc1 结束******/
+			ccd_asc1_up:function () {
+				var res = this.ccd_asc1(false);
+				if ( res === '' ) this.$refs.ccd_objAsc2.focus();
 			},
-			ccd1_asc2_up:function () {
-				var res = this.ccd1_asc2(false);
-				if ( res === '' ) this.$refs.ccd1_objAsc3.focus();
+			ccd_asc2_up:function () {
+				var res = this.ccd_asc2(false);
+				if ( res === '' ) this.$refs.ccd_objAsc3.focus();
 			},
-			ccd1_dec1:function (tip){ //拍摄目标赤纬之 小时
+			ccd_dec1:function (tip){ //拍摄目标赤纬之 小时
 				var msg = '';
-				var patn = /^\d{2}$/;
-				var v = this.ccd1_form.exposeParam.objectRightAscension1;
-				if ( !patn.test(v) || v > 24 || v < 0 )
+				var patn = /^-?\d{2}$/;
+				var v = this.ccd_form.exposeParam.objectDeclination1;
+				if ( !patn.test(v) || v > 90 || v < -90 )
 				{
 					msg = '目标赤纬小时参数超限';
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.ccd1_objAsc1, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.ccd_objDec1, {shade:false,closeBtn:0})
 				}
 				return msg !== '' ? msg + '<br>' : '';
-			},/******ccd1_dec1 结束******/
-			ccd1_dec2:function (tip){ //拍摄目标赤纬之 分钟
+			},/******ccd_dec1 结束******/
+			ccd_dec2:function (tip){ //拍摄目标赤纬之 分钟
 				var msg = '';
 				var patn = /^\d{2}$/;
-				var v = this.ccd1_form.exposeParam.objectRightAscension2;
+				var v = this.ccd_form.exposeParam.objectDeclination2;
 				if ( !patn.test(v) || v > 59 || v < 1 )
 				{
 					msg = '目标赤纬分钟参数超限';
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.ccd1_objAsc2, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.ccd_objDec2, {shade:false,closeBtn:0})
 				}
 				return msg !== '' ? msg + '<br>' : '';
-			},/******ccd1_dec2 结束******/
-			ccd1_dec3:function (tip){ //拍摄目标赤纬之 秒
+			},/******ccd_dec2 结束******/
+			ccd_dec3:function (tip){ //拍摄目标赤纬之 秒
 				var msg = '';
-				var v = this.ccd1_form.exposeParam.objectRightAscension3;
+				var v = this.ccd_form.exposeParam.objectDeclination3;
 				if ( !$.isNumeric(v) || v >= 60 || v < 0 )
 				{
-					msg = '目标赤经秒参数超限';
+					msg = '目标赤纬秒参数超限';
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.ccd1_objAsc3, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.ccd_objDec3, {shade:false,closeBtn:0})
 				}
 				return msg !== '' ? msg + '<br>' : '';
-			},/******ccd1_dec3 结束******/
-			ccd1_dec1_up:function () {
-				var res = this.ccd1_asc1(false);
-				if ( res === '' ) this.$refs.ccd1_objAsc2.focus();
+			},/******ccd_dec3 结束******/
+			ccd_dec1_up:function () {
+				var res = this.ccd_dec1(false);
+				if ( res === '' ) this.$refs.ccd_objDec2.focus();
 			},
-			ccd1_dec2_up:function () {
-				var res = this.ccd1_asc2(false);
-				if ( res === '' ) this.$refs.ccd1_objAsc3.focus();
+			ccd_dec2_up:function () {
+				var res = this.ccd_dec2(false);
+				if ( res === '' ) this.$refs.ccd_objDec3.focus();
 			},
+			ccd_duration:function (tip) {
+				var msg = '';
+				var v = this.ccd_form.exposeParam.duration;
+				if ( !$.isNumeric(v) || v > configData.ccd.maxexposuretime || v<configData.ccd.maxexposuretime )
+				{
+					msg += '曝光时间参数超限!';
+				}
+				
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.duration, {shade:false,closeBtn:0})
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},
+			ccd_exposeParam_sbmt:function (){
+				var msg = '';
+				msg += this.ccd_asc1(false);
+				msg += this.ccd_asc2(false);
+				msg += this.ccd_asc3(false);
+				msg += this.ccd_dec1(false);
+				msg += this.ccd_dec2(false);
+				msg += this.ccd_dec3(false);
+				msg += this.ccd_duration(false);
+				var asc1 = Math.abs(this.ccd_form.exposeParam.objectRightAscension1);
+				var asc2 = Math.abs(this.ccd_form.exposeParam.objectRightAscension2);
+				var asc3 = Math.abs(this.ccd_form.exposeParam.objectRightAscension3);
+				var dec1 = Math.abs(this.ccd_form.exposeParam.objectDeclination1);
+				var dec2 = Math.abs(this.ccd_form.exposeParam.objectDeclination2);
+				var dec3 = Math.abs(this.ccd_form.exposeParam.objectDeclination3);
+				var asc = asc1 + asc2/60 + asc3/3600;  //赤经换算为数值
+				var dec = dec1 + dec2/60 + dec3/3600;  //赤经换算为数值
+				if ( asc > 24 ) msg += '赤经值超限!<br>';
+				if ( dec > 90 ) msg += '赤纬值超限!<br>';
+				if ( this.ccd_form.exposeParam.objectFilter == -1 )
+				{
+					msg += '拍摄波段滤光片系统未选择<br>';
+				}
+				if ( this.ccd_form.exposeParam.isSaveImage == -1 )
+				{
+					msg += '是否保存图像未选择<br>';
+				}
+				if ( this.ccd_form.exposeParam.objType == -1 )
+				{
+					msg += '拍摄目标类型未选择<br>';
+				}
+				if ( msg !== '' )//ccd_form.exposeParam.objType
+				{
+					layer.alert(msg, {shade:false,closeBtn:0});return;
+				}//else{
+
+				//}
+			},/*ccd_exposeParam_sbmt 结束*/
 		},/******methods 结束******/
 	});/***************vue js结束*****************/
 

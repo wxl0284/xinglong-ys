@@ -603,6 +603,16 @@ class Page extends Base
 
     }//删除望远镜  结束
 
+    public function get_ccd_data() //ajax获取不同ccd数据
+    {
+        //首先判断是否有权限执行
+       /* if ($this->ajaxAuthErr == 1)
+        {//无权执行
+            return '您无权限执行此操作!';
+        }*/
+        //$res = Db::table('ccdconf')->
+    }
+
     //显示首页
     public function front ()
     {
@@ -919,47 +929,49 @@ class Page extends Base
     {
         $result = []; //定义存储数据的数组
 
+        $atData = Db::table('atlist')->where('id', $at)->find();
+        //halt($atData);
         //查转台配置数据
         $gimbal = Db::table('gimbalconf')->where('teleid', $at)->find();
+        $gimbal['longitude'] = $atData['longitude']; //经度
+        $gimbal['latitude'] = $atData['latitude']; //纬度
+        $gimbal['aperture'] = $atData['aperture']; //口径
         if ( $gimbal )
         {
             $result['gimbal'] = $gimbal;
             $result['has_gimbal'] = 1; //表示有转台的配置数据
         }
 
-        //查ccd-No1配置数据
-        $ccd = Db::table('ccdconf')->where('teleid', $at)->order('ccdno asc')->select();
-        $ccd_num = count($ccd);
-        //halt($ccd);
+        $ccd_num = Db::table('ccdconf')->where('teleid', $at)->count('ccdno'); //查ccd数量
+        //查第一个ccd配置数据
+        $ccd = Db::table('ccdconf')->where('teleid', $at)->where('ccdno', 1)->find();
         if ( $ccd )
         {
-            foreach ($ccd as $k => $v) 
-            {
-                if ( $ccd[$k]['gainmode'] ) //处理增益模式，处理后直接在页面显示
-                {
-                    $ccd[$k]['gainmode'] = str_replace ('#', ', ', $ccd[$k]['gainmode']);
-                }
-                if ( $ccd[$k]['readoutmode'] ) //处理读出模式，处理后直接在页面显示
-                {
-                    $ccd[$k]['readoutmode'] = str_replace ('#', ', ', $ccd[$k]['readoutmode']);
-                }
-                if ( $ccd[$k]['shuttermode'] ) //处理快门模式，处理后直接在页面显示
-                {
-                    $ccd[$k]['shuttermode'] = str_replace ('#', ', ', $ccd[$k]['shuttermode']);
-                }
-                if ( $ccd[$k]['interfacetype'] ) //处理接口类型，处理后直接在页面显示
-                {
-                    $ccd[$k]['interfacetype'] = str_replace ('#', ', ', $ccd[$k]['interfacetype']);
-                }
-                if ( $ccd[$k]['exposetriggermode'] ) //处理曝光触发模式，处理后直接在页面显示
-                {
-                    $ccd[$k]['exposetriggermode'] = str_replace ('#', ', ', $ccd[$k]['exposetriggermode']);
-                }
-            }
+            // foreach ($ccd as $k => $v) 
+            // {
+            //     if ( $ccd[$k]['gainmode'] ) //处理增益模式，处理后直接在页面显示
+            //     {
+            //         $ccd[$k]['gainmode'] = str_replace ('#', ', ', $ccd[$k]['gainmode']);
+            //     }
+            //     if ( $ccd[$k]['readoutmode'] ) //处理读出模式，处理后直接在页面显示
+            //     {
+            //         $ccd[$k]['readoutmode'] = str_replace ('#', ', ', $ccd[$k]['readoutmode']);
+            //     }
+            //     if ( $ccd[$k]['shuttermode'] ) //处理快门模式，处理后直接在页面显示
+            //     {
+            //         $ccd[$k]['shuttermode'] = str_replace ('#', ', ', $ccd[$k]['shuttermode']);
+            //     }
+            //     if ( $ccd[$k]['interfacetype'] ) //处理接口类型，处理后直接在页面显示
+            //     {
+            //         $ccd[$k]['interfacetype'] = str_replace ('#', ', ', $ccd[$k]['interfacetype']);
+            //     }
+            //     if ( $ccd[$k]['exposetriggermode'] ) //处理曝光触发模式，处理后直接在页面显示
+            //     {
+            //         $ccd[$k]['exposetriggermode'] = str_replace ('#', ', ', $ccd[$k]['exposetriggermode']);
+            //     }
+            // }
             
-            $result['ccd'] = $ccd;
-            $result['ccd_num'] = $ccd_num;
-            /*if ( $ccd['gainmode'] )  //处理增益模式，处理后直接在页面显示
+            if ( $ccd['gainmode'] )  //处理增益模式，处理后直接在页面显示
             {
                 $ccd['gainmode'] = str_replace ('#', ', ', $ccd['gainmode']);
             }
@@ -988,8 +1000,8 @@ class Page extends Base
             }
 
             $result['ccd'] = $ccd;
-            $result['has_ccd'] = 1; //表示有ccd的配置数据*/
-        }//查ccd-No1配置数据 结束
+            $result['ccd_num'] = $ccd_num; //表示有ccd的配置数据*/
+        }//查ccd配置数据 结束
         
         //查滤光片配置数据
         $filter = Db::table('filterconf')->where('teleid', $at)->find();

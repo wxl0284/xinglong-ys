@@ -15,7 +15,7 @@
 	 <script>
 		var at = "{$at_id[$data['at_id']]}"; //用一个唯一不变的值来确定一个望远镜
 		var configData =  {$data['configData']}; //各子设备的配置数据
-		console.log(configData.ccd[0].type);
+		console.log(configData.gimbal.longitude);
 	</script>
 	 {load href='/static/js/atpage.js'}
 </head>
@@ -186,7 +186,12 @@
 				  <td><a :class='{borderBtm: device_nav.dev_click=="plan"}' @click='plan_click' >观测计划</a></td>
 				  <td><a :class='{borderBtm: device_nav.dev_click=="pic"}' @click='pic_click' >观测图像</a></td>
 				  <td v-if='configData.has_gimbal'><a :class='{borderBtm: device_nav.dev_click=="gimbal"}' @click='gimbal_click' >转台</a></td>
-				  <td v-if='configData.ccd_num > 0'><a :class='{borderBtm: device_nav.dev_click=="ccd"}' @click='ccd_click' >CCD</a></td>
+				  <td class='pos_r' v-if='configData.ccd_num>0' @mouseover='device_nav.select_ccd="show"' ><a :class='{borderBtm: device_nav.dev_click=="ccd"}' @click='ccd_click' >{{ccd_name}}</a>
+					<select id="" v-model='device_nav.ccdNo' v-if='device_nav.select_ccd=="show" && configData.ccd_num > 1' class='pos_a' style="top:86%;left:15%;" @change='select_ccd' >
+						<option value='-1'>选择ccd</option>
+						<option v-for="ccd_i in configData.ccd_num" :value="ccd_i">ccd{{ccd_i}}</option>
+					</select>
+				 </td>
 				  <td v-if='configData.has_filter'><a :class='{borderBtm: device_nav.dev_click=="filter"}' @click='filter_click' >滤光片</a></td>
 				  <td v-if='configData.has_sDome'><a :class='{borderBtm: device_nav.dev_click=="sDome"}' @click='sDome_click' >随动圆顶</a></td>
 				  <td v-if='configData.has_oDome'><a :class='{borderBtm: device_nav.dev_click=="oDome"}' @click='oDome_click' >全开圆顶</a></td>
@@ -408,33 +413,33 @@
 		 <div class='border2'><!--转台固定属性-->
 			<br><span class='propT'>转台固定属性:</span><br><br>
                 <ul class='properUl'>
-                    <li class='li fl'>经度:<span></span></li>
-                    <li class='li fl'>纬度:<span></span></li>
-                    <li class='li fl'>口径:<span></span> </li>
-                    <li class='li fl'>类型:<span></span></li>
-                    <li class='li fl'> 焦点类型:<span></span></li>
-                    <li class='li fl'>焦比:<span></span></li>
-                    <li class='li fl'>焦距:<span></span></li>
-                    <li class='li fl'>轴1最大速度:<span></span></li>
-                    <li class='li fl'> 轴2最大速度:<span></span></li>
-                    <li class='li fl'> 轴3最大速度:<span></span></li>
-					<li class='li fl'>轴1最大加速度:<span></span></li>
-                    <li class='li fl'> 轴2最大加速度:<span></span></li>
-                    <li class='li fl'> 轴3最大加速度:<span></span></li>
-                    <li class='li fl'> 轴1复位位置:<span></span></li>
-                    <li class='li fl'> 轴2复位位置:<span></span></li>
-                    <li class='li fl'> 轴3复位位置:<span></span></li>
-                    <li class='li fl'> 是否有第3轴:	<span></span></li>
-                    <li class='li fl'> 是否有镜盖:<span></span></li>
-                    <li class='li fl'> 支持恒速运动:<span></span></li>
+                    <li class='li fl'>经度:<span>{{configData.gimbal.longitude}}</span></li>
+                    <li class='li fl'>纬度:<span>{{configData.gimbal.latitude}}</span></li>
+                    <li class='li fl'>口径:<span>{{configData.gimbal.aperture}}</span> </li>
+                    <li class='li fl'>类型:<span>{{configData.gimbal.type}}</span></li>
+                    <li class='li fl'>焦点类型:<span>{{configData.gimbal.focustype}}</span></li>
+                    <li class='li fl'>焦比:<span>{{configData.gimbal.focusratio}}</span></li>
+                    <li class='li fl'>焦距:<span>{{configData.gimbal.focuslength}}</span></li>
+                    <li class='li fl'>轴1最大速度:<span>{{configData.gimbal.maxaxis1speed}}</span></li>
+                    <li class='li fl'> 轴2最大速度:<span>{{configData.gimbal.maxaxis2speed}}</span></li>
+                    <li class='li fl'> 轴3最大速度:<span>{{configData.gimbal.maxaxis3speed}}</span></li>
+					<li class='li fl'>轴1最大加速度:<span>{{configData.gimbal.maxaxis1acceleration}}</span></li>
+                    <li class='li fl'> 轴2最大加速度:<span>{{configData.gimbal.maxaxis2acceleration}}</span></li>
+                    <li class='li fl'> 轴3最大加速度:<span>{{configData.gimbal.maxaxis3acceleration}}</span></li>
+                    <li class='li fl'> 轴1复位位置:<span>{{configData.gimbal.axis1parkposition}}</span></li>
+                    <li class='li fl'> 轴2复位位置:<span>{{configData.gimbal.axis2parkposition}}</span></li>
+                    <li class='li fl'> 轴3复位位置:<span>{{configData.gimbal.axis3parkposition}}</span></li>
+                    <li class='li fl'> 是否有第3轴:	<span>{{configData.gimbal.haveaxis3 ? '有' : '无'}}</span></li>
+                    <li class='li fl'> 是否有镜盖:<span>{{configData.gimbal.haveaxis5 ? '有' : '无'}}</span></li>
+                    <li class='li fl'> 支持恒速运动:<span>{{configData.gimbal.canfixedmove ? '是' : '否'}}</span></li>
                 </ul><div class='clear'></div>
 		 </div><!--固定属性 结束-->
 	  </div><!--转台 结束-->
 	   
 	   <div id='ccdInfo' v-if='device_nav.dev_click=="ccd"'><!--ccd 指令和属性-->	   
 			<nav class='center'><!--ccd指令 导航-->
-			    <span name='coolTemp' :class='{active: device_nav.ccd_command=="coolTemp"}' @click ='device_nav.ccd_command="coolTemp"' v-if='configData.ccd[0].cansetcoolert==1' >制冷温度</span>
-				<span name='exposStratic' :class='{active: device_nav.ccd_command=="exposeParam"}' @click ='device_nav.ccd_command="exposeParam"' v-if='configData.ccd[0].cansetexposureparam==1' >曝光策略</span>
+			    <span name='coolTemp' :class='{active: device_nav.ccd_command=="coolTemp"}' @click ='device_nav.ccd_command="coolTemp"' v-if='configData.ccd.cansetcoolert==1' >制冷温度</span>
+				<span name='exposStratic' :class='{active: device_nav.ccd_command=="exposeParam"}' @click ='device_nav.ccd_command="exposeParam"' v-if='configData.ccd.cansetexposureparam==1' >曝光策略</span>
 				<span name='startExp'>开始曝光</span>			
 				<span name='setGear'>设置增益</span>			
 				<span name='readOut'>读出速度模式</span>			
@@ -450,23 +455,23 @@
 			</nav>
 			<div class='border2'><!--ccd 指令和可变属性-->
 				<div id='btnsCCD' class='center_mrg center BtnsDiv'>
-					<input id='ccdConnect' v-if='configData.ccd[0].canconnect==1' :class='{btnClick: device_nav.ccd1_btn=="connect"}' class='border1 btnCommand' type='button' value='连接CCD' @click='ccd_btn_command(1)' >
-					<input id='ccdDisConnect' v-if='configData.ccd[0].canconnect==1' :class='{btnClick: device_nav.ccd1_btn=="disConnect"}' class='border1 btnCommand' type='button' value='断开CCD' @click='ccd_btn_command(2)' >					
-					<input id='ccdStopExpose' v-if='configData.ccd[0].canstopexposure==1' :class='{btnClick: device_nav.ccd1_btn=="stop_expose"}' class='border1 btnCommand' type='button' value='停止曝光' @click='ccd_btn_command(3)' >					
-					<input id='ccdAbortExpose' v-if='configData.ccd[0].canabortexposure==1' :class='{btnClick: device_nav.ccd1_btn=="abort_expose"}' class='border1 btnCommand' type='button' value='终止曝光' @click='ccd_btn_command(4)' >
+					<input id='ccdConnect' v-if='configData.ccd.canconnect==1' :class='{btnClick: device_nav.ccd_btn=="connect"}' class='border1 btnCommand' type='button' value='连接CCD' @click='ccd_btn_command(1)' >
+					<input id='ccdDisConnect' v-if='configData.ccd.canconnect==1' :class='{btnClick: device_nav.ccd_btn=="disConnect"}' class='border1 btnCommand' type='button' value='断开CCD' @click='ccd_btn_command(2)' >					
+					<input id='ccdStopExpose' v-if='configData.ccd.canstopexposure==1' :class='{btnClick: device_nav.ccd_btn=="stop_expose"}' class='border1 btnCommand' type='button' value='停止曝光' @click='ccd_btn_command(3)' >					
+					<input id='ccdAbortExpose' v-if='configData.ccd.canabortexposure==1' :class='{btnClick: device_nav.ccd_btn=="abort_expose"}' class='border1 btnCommand' type='button' value='终止曝光' @click='ccd_btn_command(4)' >
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
 				<form class='center' v-if='device_nav.ccd_command == "coolTemp"' ><!--设置制冷温度-->
-					<input id='ccdTemperature' type="text" name='temperature' ref='ccd1_cool' :placeholder='configData.ccd[0].lowcoolert +"~20"' v-model.trim='ccd1_form.coolTemp.temp' @blur='ccd1_cool(true)' >
-					<br><input type="button" class='margin_10' value="提交指令" @click='ccd1_cool_sbmt' >
+					<input id='ccdTemperature' type="text" name='temperature' ref='ccd_cool' :placeholder='configData.ccd.lowcoolert +"~20"' v-model.trim='ccd_form.coolTemp.temp' @blur='ccd_cool(true)' >
+					<br><input type="button" class='margin_10' value="提交指令" @click='ccd_cool_sbmt' >
 				</form><!--设置制冷温度 结束-->
 				<form id='exposStratic' class='center' v-if='device_nav.ccd_command == "exposeParam"' ><!--曝光策略-->
-					<span>数据有效标志位：<input type="text" ref='validFlag' v-model.trim='ccd1_form.exposeParam.validFlag' placeholder='整数' @blur='ccd1_validFlag(true)' ></span>
-					<span>起始时刻：<input type="text" ref='startTime' :placeholder='">"+new Date().getTime()' v-model.trim='ccd1_form.exposeParam.startTime' @blur='ccd1_startTime(true)' ></span>
-					<span>曝光时间：<input id='durationInput' type="text" ref='duration' placeholder='数字' v-model.trim='ccd1_form.exposeParam.duration' @blur='ccd1_duration(true)' ></span>
-					<span>延迟时间：<input id='delayInput' type="text" ref='delay' placeholder='数字' v-model.trim='ccd1_form.exposeParam.delay' @blur='ccd1_delay(true)' ></span>
-					<span>拍摄目标名称：<input id='ccdObjectName' type="text" ref='ccd1_objName' placeholder='48位字符' v-model.trim='ccd1_form.exposeParam.objName' @blur='ccd1_objName(true)' ></span>
-					<span>拍摄目标类型：<select ref="ccd1_objType" style='width:75px;' v-model='ccd1_form.exposeParam.objType'>
+					<span>数据有效标志位：<input type="text" ref='validFlag' v-model.trim='ccd_form.exposeParam.validFlag' placeholder='整数' @blur='ccd_validFlag(true)' ></span>
+					<span>起始时刻：<input type="text" ref='startTime' :placeholder='">"+new Date().getTime()' v-model.trim='ccd_form.exposeParam.startTime' @blur='ccd_startTime(true)' ></span>
+					<span>曝光时间：<input id='durationInput' type="text" ref='duration' :placeholder='configData.ccd.minexposuretime + "~" + configData.ccd.maxexposuretime' v-model.trim='ccd_form.exposeParam.duration' @blur='ccd_duration(true)' ></span>
+					<span>延迟时间：<input id='delayInput' type="text" ref='delay' placeholder='数字' v-model.trim='ccd_form.exposeParam.delay' @blur='ccd_delay(true)' ></span>
+					<span>拍摄目标名称：<input id='ccdObjectName' type="text" ref='ccd_objName' placeholder='48位字符' v-model.trim='ccd_form.exposeParam.objName' @blur='ccd_objName(true)' ></span>
+					<span>拍摄目标类型：<select ref="ccd_objType" style='width:75px;' v-model='ccd_form.exposeParam.objType'>
 										<option value="-1">请选择</option>
 										<option value="0">恒星</option>
 										<option value="1">太阳</option>
@@ -479,59 +484,59 @@
 										<option value="8">暗流</option>
 										<option value="9">平场</option>
 									</select></span>
-					<span>目标赤经：<input id='inputIn3' class='hour1' type="text" ref='ccd1_objAsc1' v-model.trim='ccd1_form.exposeParam.objectRightAscension1' @blur='ccd1_asc1(true)' @keyup='ccd1_asc1_up()'>:
-					<input id='inputIn3_1' class='hour1' type="text" ref='ccd1_objAsc2' v-model.trim='ccd1_form.exposeParam.objectRightAscension2' @blur='ccd1_asc2(true)' @keyup='ccd1_asc2_up()'>:
-					<input id='inputIn3_2' class='sec1' type="text" ref='ccd1_objAsc3' v-model.trim='ccd1_form.exposeParam.objectRightAscension3' @blur='ccd1_asc3(true)' >
+					<span>目标赤经：<input id='inputIn3' class='hour1' type="text" ref='ccd_objAsc1' v-model.trim='ccd_form.exposeParam.objectRightAscension1' @blur='ccd_asc1(true)' @keyup='ccd_asc1_up()'>:
+					<input id='inputIn3_1' class='hour1' type="text" ref='ccd_objAsc2' v-model.trim='ccd_form.exposeParam.objectRightAscension2' @blur='ccd_asc2(true)' @keyup='ccd_asc2_up()'>:
+					<input id='inputIn3_2' class='sec1' type="text" ref='ccd_objAsc3' v-model.trim='ccd_form.exposeParam.objectRightAscension3' @blur='ccd_asc3(true)' >
 					</span>
-					<span>目标赤纬：<input id='inputIn4' class='hour1' type="text" ref='ccd1_objDec1' v-model.trim='ccd1_form.exposeParam.objectDeclination1' @blur='ccd1_dec1(true)' @keyup='ccd1_dec1_up()'>:
-					<input id='inputIn4_1' class='hour1' type="text" ref='ccd1_objDec2' v-model.trim='ccd1_form.exposeParam.objectDeclination2' @blur='ccd1_dec2(true)' @keyup='ccd1_dec2_up()'>:
-					<input id='inputIn4_2' class='sec1' type="text" ref='ccd1_objDec3' v-model.trim='ccd1_form.exposeParam.objectDeclination3' @blur='ccd1_dec3(true)' >
+					<span>目标赤纬：<input id='inputIn4' class='hour1' type="text" ref='ccd_objDec1' v-model.trim='ccd_form.exposeParam.objectDeclination1' @blur='ccd_dec1(true)' @keyup='ccd_dec1_up()'>:
+					<input id='inputIn4_1' class='hour1' type="text" ref='ccd_objDec2' v-model.trim='ccd_form.exposeParam.objectDeclination2' @blur='ccd_dec2(true)' @keyup='ccd_dec2_up()'>:
+					<input id='inputIn4_2' class='sec1' type="text" ref='ccd_objDec3' v-model.trim='ccd_form.exposeParam.objectDeclination3' @blur='ccd_dec3(true)' >
 					</span>
-					<span>拍摄目标历元：<select style='width:69px;' v-model.trim='ccd1_form.exposeParam.objectEpoch' >
+					<span>拍摄目标历元：<select style='width:69px;' v-model.trim='ccd_form.exposeParam.objectEpoch' >
 									<option value="-1">请选择</option>
 									<option value="0">real</option>
 									<option value="1">J2000</option>
 									<option value="2">B1950</option>
 									<option value="3">J2050</option>
 								</select></span>
-					<span>当前拍摄波段：<input id='objectBandInput' type="text" name='objectBand' placeholder='8位字符' v-model.trim='ccd1_form.exposeParam.objectBand' @click='ccd1_objBand(true)' ></span>
-					<span>拍摄波段滤光片系统：<select style='width:110px;' v-model='ccd1_form.exposeParam.objectFilter' >
+					<span>当前拍摄波段：<input id='objectBandInput' type="text" name='objectBand' placeholder='8位字符' v-model.trim='ccd_form.exposeParam.objectBand' ></span>
+					<span>拍摄波段滤光片系统：<select style='width:110px;' v-model='ccd_form.exposeParam.objectFilter' >
 									<option value="-1">请选择</option>
 									<option value="0">Johnshon-Bessel</option>
 									<option value="1">Sloan</option>
 									<option value="2">Strömgrem</option>
 									<option value="3">其它</option>
 								</select></span>
-					<span>是否保存图像：<select style='width:69px;' v-model='ccd1_form.exposeParam.isSaveImage' >
+					<span>是否保存图像：<select style='width:69px;' v-model='ccd_form.exposeParam.isSaveImage' >
 									<option value="-1">请选择</option>
 									<option value="1">是</option>
 									<option value="2">否</option>
 								</select></span>
-					<span>气象数据采集时间：<input type="text" v-model.trim='ccd1_form.exposeParam.weatherGatherTime' readonly='readonly' placeholder='整数'></span>
-					<span>温度：<input type="text" placeholder='小数' v-model.trim='ccd1_form.exposeParam.temperature1' readonly='readonly' ></span>
-					<span>湿度：<input type="text" placeholder='小数' v-model.trim='ccd1_form.exposeParam.humidity' readonly='readonly'></span>
-					<span>风速：<input type="text" placeholder='小数' v-model.trim='ccd1_form.exposeParam.windSpeed' readonly='readonly' ></span>
-					<span>气压：<input type="text" placeholder='小数' v-model.trim='ccd1_form.exposeParam.pressure' readonly='readonly'></span>
-					<span>天气状态采集时间：<input type="text" placeholder='整数' v-model.trim='ccd1_form.exposeParam.skyGatherTime' readonly='readonly'></span>
-					<span>天气状态：<input type="text" placeholder='整数' v-model.trim='ccd1_form.exposeParam.skyState' readonly='readonly'></span>
-					<span>云量：<input type="text" placeholder='整数' v-model.trim='ccd1_form.exposeParam.clouds' readonly='readonly'></span>
-					<span>视宁度采集时间：<input type="text" placeholder='整数' v-model.trim='ccd1_form.exposeParam.seeingGatherTime' readonly='readonly'></span>
-					<span>视宁度：<input type="text" placeholder='小数' v-model.trim='ccd1_form.exposeParam.seeing' readonly='readonly'></span>
-					<span>粉尘采集时间：<input type="text" placeholder='小数' v-model.trim='ccd1_form.exposeParam.dustGatherTime' readonly='readonly'></span>
-					<span>粉尘：<input type="text" placeholder='小数' v-model.trim='ccd1_form.exposeParam.dust' readonly='readonly'></span>
-					<span>AMS：<input type="text" placeholder='小数' v-model.trim='ccd1_form.exposeParam.AMS' readonly='readonly'></span>
-					<span>消光系数采集时间：<input type="text" placeholder='整数' v-model.trim='ccd1_form.exposeParam.extinctionGatherTime' readonly='readonly'></span>
-					<span>赤经：<input type="text" placeholder='小数' v-model.trim='ccd1_form.exposeParam.rightAscension' readonly='readonly'></span>
-					<span>赤纬：<input type="text" placeholder='小数' v-model.trim='ccd1_form.exposeParam.declination' readonly='readonly'></span>
-					<span>波段：<input type="text" placeholder='字母数字' v-model.trim='ccd1_form.exposeParam.band' readonly='readonly'></span>
-					<span>消光系数1：<input type="text" placeholder='小数' v-model.trim='ccd1_form.exposeParam.extinctionFactor1' readonly='readonly'></span>
-					<span>消光系数2：<input type="text" placeholder='小数' v-model.trim='ccd1_form.exposeParam.extinctionFactor2' readonly='readonly'></span>
-					<span>消光系数3：<input type="text" placeholder='小数' v-model.trim='ccd1_form.exposeParam.extinctionFactor3' readonly='readonly'></span>
-					<span>望远镜赤经：<input type="text" placeholder='小数' v-model.trim='ccd1_form.exposeParam.telescopeRightAscension' readonly='readonly'></span>
-					<span>望远镜赤纬：<input type="text" placeholder='小数' v-model.trim='ccd1_form.exposeParam.telescopeDeclination' readonly='readonly'></span>
-					<span>焦距：<input type="text" placeholder='小数' v-model.trim='ccd1_form.exposeParam.focusLength' ></span>
-					<span>帧数：<input type="text" name='frameNum' placeholder='整数' v-model.trim='ccd1_form.exposeParam.frameNum' ></span>
-					<br><input type="button" class='margin_10' value="提交指令" @click='ccd1_exposeParam_sbmt' >
+					<span>气象数据采集时间：<input type="text" v-model.trim='ccd_form.exposeParam.weatherGatherTime' readonly='readonly' placeholder='整数'></span>
+					<span>温度：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.temperature1' readonly='readonly' ></span>
+					<span>湿度：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.humidity' readonly='readonly'></span>
+					<span>风速：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.windSpeed' readonly='readonly' ></span>
+					<span>气压：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.pressure' readonly='readonly'></span>
+					<span>天气状态采集时间：<input type="text" placeholder='整数' v-model.trim='ccd_form.exposeParam.skyGatherTime' readonly='readonly'></span>
+					<span>天气状态：<input type="text" placeholder='整数' v-model.trim='ccd_form.exposeParam.skyState' readonly='readonly'></span>
+					<span>云量：<input type="text" placeholder='整数' v-model.trim='ccd_form.exposeParam.clouds' readonly='readonly'></span>
+					<span>视宁度采集时间：<input type="text" placeholder='整数' v-model.trim='ccd_form.exposeParam.seeingGatherTime' readonly='readonly'></span>
+					<span>视宁度：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.seeing' readonly='readonly'></span>
+					<span>粉尘采集时间：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.dustGatherTime' readonly='readonly'></span>
+					<span>粉尘：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.dust' readonly='readonly'></span>
+					<span>AMS：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.AMS' readonly='readonly'></span>
+					<span>消光系数采集时间：<input type="text" placeholder='整数' v-model.trim='ccd_form.exposeParam.extinctionGatherTime' readonly='readonly'></span>
+					<span>赤经：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.rightAscension' readonly='readonly'></span>
+					<span>赤纬：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.declination' readonly='readonly'></span>
+					<span>波段：<input type="text" placeholder='字母数字' v-model.trim='ccd_form.exposeParam.band' readonly='readonly'></span>
+					<span>消光系数1：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.extinctionFactor1' readonly='readonly'></span>
+					<span>消光系数2：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.extinctionFactor2' readonly='readonly'></span>
+					<span>消光系数3：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.extinctionFactor3' readonly='readonly'></span>
+					<span>望远镜赤经：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.telescopeRightAscension' readonly='readonly'></span>
+					<span>望远镜赤纬：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.telescopeDeclination' readonly='readonly'></span>
+					<span>焦距：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.focusLength' ></span>
+					<span>帧数：<input type="text" name='frameNum' placeholder='整数' v-model.trim='ccd_form.exposeParam.frameNum' ></span>
+					<br><input type="button" class='margin_10' value="提交指令" @click='ccd_exposeParam_sbmt' >
 			    </form><!--曝光策略 结束-->
 			  <hr style='width:98%;' class='center_mrg'><br>
 			  <div><!--CCD可变属性-->
@@ -550,19 +555,19 @@
 		 <div class='border2'><!--ccd 固定属性-->
 			<br><span class='propT'>CCD固定属性:</span><br><br>
 			<ul class='properUl'>
-				<li class='li fl'>探测器类型:<span></span></li>
-				<li class='li fl'>传感器名称:<span></span></li>
-				<li class='li fl'>图像位数:<span></span></li>
-				<li class='li fl'>制冷方式:<span></span></li>
-				<li class='li fl'>最低制冷温度:<span></span></li>
-				<li class='li fl'>最大曝光时间:<span></span></li>
-				<li class='li fl'>最小曝光时间:<span></span></li>
-				<li class='li fl'>快门类型:<span></span></li>
-				<li class='li fl' style='width:578px;'>快门模式:<span></span></li>
-				<li class='li fl' style='width:578px;'>读出模式:<span></span></li>
-				<li class='li fl' style='width:578px;'>增益模式:<span></span></li>
-				<li class='li fl' style='width:578px;'>接口类型:<span></span></li>
-				<li class='li fl' style='width:578px;'>曝光触发模式:<span></span></li>
+				<li class='li fl'>探测器类型:<span>{{configData.ccd.type}}</span></li>
+				<li class='li fl'>传感器名称:<span>{{configData.ccd.sensorname}}</span></li>
+				<li class='li fl'>图像位数:<span>{{configData.ccd.imagebits}}</span></li>
+				<li class='li fl'>制冷方式:<span>{{configData.ccd.coolermode}}</span></li>
+				<li class='li fl'>最低制冷温度:<span>{{configData.ccd.lowcoolert}}</span></li>
+				<li class='li fl'>最大曝光时间:<span>{{configData.ccd.maxexposuretime}}</span></li>
+				<li class='li fl'>最小曝光时间:<span>{{configData.ccd.minexposuretime}}</span></li>
+				<li class='li fl'>快门类型:<span>{{configData.ccd.shuttertype}}</span></li>
+				<li class='li fl' style='width:578px;'>快门模式:<span>{{configData.ccd.shuttermode}}</span></li>
+				<li class='li fl' style='width:578px;'>读出模式:<span>{{configData.ccd.readoutmode}}</span></li>
+				<li class='li fl' style='width:578px;'>增益模式:<span>{{configData.ccd.gainmode}}</span></li>
+				<li class='li fl' style='width:578px;'>接口类型:<span>{{configData.ccd.interfacetype}}</span></li>
+				<li class='li fl' style='width:578px;'>曝光触发模式:<span>{{configData.ccd.exposetriggermode}}</span></li>
              </ul>
            <div class='clear'></div>
 		 </div><!--ccd固定属性 结束-->
