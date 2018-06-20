@@ -50,24 +50,29 @@ class Filter extends Base
         $this->ip = config('ip');
         $this->port = config('port');
 
-        //根据望远镜编号，给 $this->$at赋值
-        if ( $postData['at'] == md5 ('60cm望远镜') )
-        {
-            $this->at = 37;
-        }else if ( $postData['at'] == md5 ('80cm望远镜') ){
-            $this->at = 36;
-        }else if ( $postData['at'] == md5 ('50cm望远镜')  ){
-            $this->at = 38;
-        }else if ( $postData['at'] == md5 ('85cm望远镜')  ){
-            $this->at = 35;
-        }else if ( $postData['at'] == md5 ('100cm望远镜')  ){
-            $this->at = 34;
-        }else if ( $postData['at'] == md5 ('126cm望远镜')  ){
-            $this->at = 33;
-        }else if ( $postData['at'] == md5 ('216cm望远镜')  ){
-            $this->at = 32;
-        }else if ( $postData['at'] == md5 ('大气消光望远镜')  ){
-            $this->at = 39;
+        switch ($postData['at_aperture']) { //根据望远镜口径，给 $this->$at赋值
+            case '50cm':
+                $this->at = 38;
+                break;
+            case '60cm':
+                $this->at = 37;
+                break;
+            case '80cm':
+                $this->at = 36;
+            case '85cm':
+                $this->at = 35;
+                break;
+            case '100cm':
+                $this->at = 34;
+                break;
+            case '126cm':
+                $this->at = 33;
+                break;
+            case '216cm':
+                $this->at = 32;
+                break;
+            default:
+                return '提交的望远镜参数有误!';
         }
 
         $command = input('command'); //获取提交的指令

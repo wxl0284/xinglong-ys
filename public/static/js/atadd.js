@@ -28,12 +28,12 @@ $(function () {
     //提交新增望远镜的数据
     var atForm = $('#form');
     //var atId = atForm.find('input[name="atid"]'); //望远镜id
-    var atName = atForm.find('select[name="atname"]'); //望远镜名称
+    var atName = atForm.find('input[name="atname"]'); //望远镜名称
     var address = atForm.find('input[name="address"]'); //望远镜地址
     var longitude = atForm.find('input[name="longitude"]'); //经度
     var latitude = atForm.find('input[name="latitude"]'); //纬度
     var altitude = atForm.find('input[name="altitude"]'); //海拔
-    var aperture = atForm.find('input[name="aperture"]'); //口径
+    //var aperture = atForm.find('input[name="aperture"]'); //口径
 
     //各input框的blur
     //验证望远镜id 之blur
@@ -50,19 +50,21 @@ $(function () {
 		$(this).data('err', err);
     });//验证望远镜id 之blur 结束
 
+    *///验证望远镜名 之blur 结束
+
     //验证望远镜名 之blur
     atName.blur(function () {
         var v = $.trim($(this).val());
-		var patn = /^\d(\d|\.)*m望远镜+$/;
+		//var patn = /^\d(\d|\.)*m望远镜+$/;
 		var err = 0;
 		
-		if ( !patn.test(v) )
+		if ( v.length < 2 )
 		{
 			err = 1;
 			layer.tips('望远镜名格式错误!', $(this), {tipsMore: true});
 		}		
 		$(this).data('err', err);
-    });*///验证望远镜名 之blur 结束
+    });
 
      //验证望远镜地址 之blur
      address.blur(function () {
@@ -120,18 +122,18 @@ $(function () {
     });//验证望远镜海拔 之blur 结束
 
     //验证望远镜口径 之blur
-    aperture.blur(function () {
-        var v = $.trim($(this).val());
-        //v1 = v.replace('cm', ''); //将字符m 替换为空串
-		var err = 0;
+    // aperture.blur(function () {
+    //     var v = $.trim($(this).val());
+    //     //v1 = v.replace('cm', ''); //将字符m 替换为空串
+	// 	var err = 0;
 		
-		if ( !$.isNumeric(v) )
-		{
-			err = 1;
-			layer.tips('口径格式错误!', $(this), {tipsMore: true});
-		}		
-		$(this).data('err', err);
-    });//验证望远镜口径 之blur 结束
+	// 	if ( !$.isNumeric(v) )
+	// 	{
+	// 		err = 1;
+	// 		layer.tips('口径格式错误!', $(this), {tipsMore: true});
+	// 	}		
+	// 	$(this).data('err', err);
+    // });//验证望远镜口径 之blur 结束
 
     //提交按钮 点击事件
     atForm.find('input[type="button"]').click(function () {

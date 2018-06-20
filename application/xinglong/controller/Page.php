@@ -417,7 +417,8 @@ class Page extends Base
         }
 
         //生成一个唯一标识此望远镜的id, 此望远镜名称的md5值
-        $postData['atid'] = md5 ($postData['atname']);
+        //$postData['atid'] = md5 ($postData['atname']);
+        $postData['atid'] = '';
 
         /*验证望远镜添加表单的数据*/
         $errMsg = ''; //存储错误提示信息
@@ -429,10 +430,10 @@ class Page extends Base
         // }
 
         //验证望远镜名
-        // if ( !$this->check_name( $postData['atname']) )
-        // {
-        //     $errMsg .=  '望远镜名格式错误!<br>';
-        // }
+        if ( !$this->check_name( $postData['atname']) )
+        {
+            $errMsg .=  '望远镜名格式错误!<br>';
+        }
 
         //验证望远镜观测站
         if ( !$this->check_address( $postData['address']) )
@@ -526,10 +527,10 @@ class Page extends Base
         // }
 
         //验证望远镜名
-        // if ( !$this->check_name( $postData['atname']) )
-        // {
-        //     $errMsg .=  '望远镜名格式错误!<br>';
-        // }
+        if ( !$this->check_name( $postData['atname']) )
+        {
+            $errMsg .=  '望远镜名格式错误!<br>';
+        }
 
         //验证望远镜观测站
         if ( !$this->check_address( $postData['address']) )
@@ -556,15 +557,23 @@ class Page extends Base
         }
 
         //验证望远镜观 口径
-        if ( !$this->check_aperture( $postData['aperture']) )
-        {
-            $errMsg .= '望远镜口径格式错误!<br>';
-        }
+        // if ( !$this->check_aperture( $postData['aperture']) )
+        // {
+        //     $errMsg .= '望远镜口径格式错误!<br>';
+        // }
 
         if ($errMsg != '')
         {
             return $errMsg;
         }/*验证望远镜添加表单的数据 结束*/
+
+        //查询新提交的望远镜id或望远镜名 是否在数据表中唯一
+        $old = Db::table('atlist')->where('atname', $postData['atname'])->find();
+        
+        if ($old)
+        {
+            return '望远镜名称重复,请重新选择!';
+        }
 
         //执行更新
         $res = Db::table('atlist')->where('id', $postData['id'])->update($postData);
@@ -830,16 +839,16 @@ class Page extends Base
     }/*验证望远镜id格式 结束*/
 
     /*验证望远镜名格式*/
-    // protected function check_name ($name)
-    // {
-    //     //合法格式：0.6m望远镜
-    //     if ( !preg_match('/^\d(\d|\.)*m望远镜+$/', $name) )
-    //     {
-    //         return false;
-    //     }else{
-    //         return true;
-    //     }
-    // }/*验证望远镜名格式 结束*/
+    protected function check_name ($name)
+    {
+        //合法格式：0.6m望远镜
+        if ( strlen($name) < 2 )
+        {
+            return false;
+        }else{
+            return true;
+        }
+    }/*验证望远镜名格式 结束*/
 
     /*验证望远镜地址格式*/
     protected function check_address ($address)
@@ -933,8 +942,8 @@ class Page extends Base
         }
 
         $ccd_num = Db::table('ccdconf')->where('teleid', $at)->count('ccdno'); //查ccd数量
-        //查第一个ccd配置数据
-        $ccd = Db::table('ccdconf')->where('teleid', $at)->select();
+        //查第ccd配置数据
+        $ccd = Db::table('ccdconf')->where('teleid', $at)->order('ccdno', 'asc')->select();
         if ( $ccd )
         {
             foreach ($ccd as $k => $v) 

@@ -19,13 +19,14 @@ class Ccd extends Base
     protected $user = 0;  //操作者
     protected $ip = '';  //中控通信 ip
     protected $port = '';  //中控通信 port
+    protected $ccdNo = '';  //ccd 序号
     protected $command_length = [//各指令长度
         'connect' => 50,
         'stop_expose' => 48,
         'abort_expose' => 48,
         'set_cool' => 56,
-        // 'stop' => 48,
-        // 'emergstop' => 48,
+        'start_expose' => 54,
+        'expose_param' => 48,
         // 'trackStar' => 68,
         // 'set_obj_name' => 98,
         // 'slewAzEl' => 64,
@@ -43,8 +44,8 @@ class Ccd extends Base
         'stop_expose' => 5,
         'abort_expose' => 6,
         'set_cool' => 2,
-        // 'emergstop' => 15,
-        // 'trackStar' => 3,
+        'start_expose' => 4,
+        'expose_param' => 3,
         // 'set_obj_name' => 4,
         // 'slewAzEl' => 5,
         // 'slewDerotator' => 6,
@@ -87,26 +88,31 @@ class Ccd extends Base
         $this->ip = config('ip');
         $this->port = config('port');
 
-        //根据望远镜编号，给 $this->$at赋值
-        if ( $postData['at'] == md5 ('60cm望远镜') )
-        {
-            $this->at = 37;
-        }else if ( $postData['at'] == md5 ('80cm望远镜') ){
-            $this->at = 36;
-        }else if ( $postData['at'] == md5 ('50cm望远镜')  ){
-            $this->at = 38;
-        }else if ( $postData['at'] == md5 ('85cm望远镜')  ){
-            $this->at = 35;
-        }else if ( $postData['at'] == md5 ('100cm望远镜')  ){
-            $this->at = 34;
-        }else if ( $postData['at'] == md5 ('126cm望远镜')  ){
-            $this->at = 33;
-        }else if ( $postData['at'] == md5 ('216cm望远镜')  ){
-            $this->at = 32;
-        }else if ( $postData['at'] == md5 ('大气消光望远镜')  ){
-            $this->at = 39;
+        switch ($postData['at_aperture']) { //根据望远镜口径，给 $this->$at赋值
+            case '50cm':
+                $this->at = 38;
+                break;
+            case '60cm':
+                $this->at = 37;
+                break;
+            case '80cm':
+                $this->at = 36;
+            case '85cm':
+                $this->at = 35;
+                break;
+            case '100cm':
+                $this->at = 34;
+                break;
+            case '126cm':
+                $this->at = 33;
+                break;
+            case '216cm':
+                $this->at = 32;
+                break;
+            default:
+                return '提交的望远镜参数有误!';
         }
-
+        $postData['ccdNo'] == '-1' ? $this->ccdNo = 1 : $this->ccdNo = $postData['ccdNo'];
         $command = $postData['command']; //要执行的指令
         //根据不同参数 调用相应方法发送指令
         switch ($command) {
@@ -125,14 +131,16 @@ class Ccd extends Base
             case 'set_cool':
                 return $this->set_cool ($postData, 'set_cool');
                 break;
+            case 'start_expose':
+                return $this->start_expose ($postData, 'start_expose');
+                break;
+            case 'expose_param':
+                return $this->expose_strategy ($postData, 'expose_param');
+                break;
             default:
                 break;
         }
 
-        // }else if( $command == 2 ){//设置曝光策略       
-        //     return $this->expose_strategy(); //执行发送
-        // }else if( $command == 3 ){//开始曝光       
-        //     return $this->start_expose(); //执行发送
         // }else if( $command == 4 ){//设置增益     
         //     return $this->set_gain(); //执行发送
         // }else if( $command == 5 ){////设置 读出速度模式值     
@@ -197,8 +205,7 @@ class Ccd extends Base
      
      protected function set_cool ($postData, $param)  /*设置制冷温度*/
      {
-        $at_id = Db::table('atlist')->where('atid', $postData['at'])->field('id')->find(); //获取望远镜的id
-        $res = Db::table('ccdconf')->where('teleid', $at_id['id'])->where('ccdno', $postData['ccdNo'])->field('lowcoolert')->find(); //获取该望远镜的ccdconf表中的:最低制冷温度
+        $res = Db::table('ccdconf')->where('teleid', $postData['at'])->where('ccdno', $this->ccdNo)->field('lowcoolert')->find(); //获取该望远镜的ccdconf表中的:最低制冷温度
 
         if( !is_numeric($postData['temp']) || $postData['temp'] > 20 || $postData['temp'] < $res['lowcoolert'])
         {
@@ -216,97 +223,80 @@ class Ccd extends Base
      }/*设置制冷温度 结束*/
 
     /*设置曝光策略*/
-    protected function expose_strategy ()
-    {
-        $length = 48 + 264;      //该结构体总长度
-        
-        if (($validFlag=input('validFlag')) !== '')    //数据有效标志位
+    protected function expose_strategy ($postData, $param) /*设置曝光策略*/
+    {        
+        if ( $postData['validFlag'] !== '' )   //数据有效标志位
         {
-            if (!preg_match('/^\d{1,5}$/', $validFlag))
+            if (!preg_match('/^\d{1,5}$/', $postData['validFlag']))
             {
-                echo '数据有效标志位只能是数字！'; return;
+                return '数据有效标志位只能是数字！';
             }
-            $sendMsg = pack('d', $validFlag); //原来为Q格式
+            $sendMsg = pack('d', $postData['validFlag']); //原来为Q格式
         }else{
             $sendMsg = pack('d', 0); //unsigned long long
         }
         
-        if (($startTime=input('startTime')) !== '')      //起始时刻
+        if ( $postData['startTime'] !== '' )      //起始时刻
         {
-            if (!preg_match('/^\d{1,10}$/', $startTime))
+            if (!preg_match('/^\d{1,30}$/', $postData['startTime']))
             {
-                echo '起始时刻只能是数字！'; return;
+                return '起始时刻只能是数字！';
             }
-            $sendMsg .= pack('L', $startTime);     
+            $sendMsg .= pack('L', $postData['startTime']);     
         }else{
             $sendMsg .= pack('L', 0);   //unsigned int
         }
         
-        if (($duration=input('duration')) !== '')   //曝光时间
+        $res = Db::table('ccdconf')->where('ccdno', $this->ccdNo)->where('teleid', $postData['at'])->field('maxexposuretime, minexposuretime')->find();
+        if ( !is_numeric($postData['duration']) || $postData['duration'] > $res['maxexposuretime'] || $postData['duration'] < $res['minexposuretime'])
         {
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $duration))
+            return '曝光时间参数超限!';
+        }
+
+        $sendMsg .= pack('d', $postData['duration']);     //double64
+
+        if ( $postData['delay'] !== '' )   //延迟时间
+        {
+            if ( !preg_match('/^-?\d+(\.\d{0,15})?$/', $postData['delay']) )
             {
-                echo '曝光时间只能是数字！'; return;
+                return '延迟时间参数超限！';
             }
-            $sendMsg .= pack('d', $duration);     //double64
+            $sendMsg .= pack('d', $postData['delay']);     //double64
         }else{
             $sendMsg .= pack('d', 0);
         }
         
-        if (($delay=input('delay')) !== '')   //延迟时间
+        if ( $postData['objName'] !== '' )  //拍摄目标
         {
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $delay))
-            {
-                echo '延迟时间只能是数字！'; return;
-            }
-            $sendMsg .= pack('d', $delay);     //double64
-        }else{
-            $sendMsg .= pack('d', 0);
-        }
-        
-        if ( ($postData['objectName']=input('objectName')) !== '')  //拍摄目标
-        {
-            if (preg_match('/[\x{4e00}-\x{9af5} ]/u', $postData['objectName']))
+            if (preg_match('/[\x{4e00}-\x{9af5} ]/u', $postData['objName']))
             {
                 return '目标名称不能含汉字或空格！';
             }
-            $sendMsg .= pack('a48', $postData['objectName']);  //objectName uint8-48
+            $sendMsg .= pack('a48', $postData['objName']);  //objectName uint8-48
         }else{
             $sendMsg .= pack('a48', '0');
         }
         
-        if ( ($postData['objectType']=input('objectType')) !== '')    //拍摄目标类型
-        {
-            if (!preg_match('/^\d{1}$/', $postData['objectType']))
-            {
-                return '目标类型参数超限！';
-            }
-            $sendMsg .= pack('S', $postData['objectType']); 
-        }else{
-            $sendMsg .= pack('S', 0);  //unsigned short
-        }
-        
-        //接收表单数据
-        $postData = input();
-        //处理赤经数据			
+        $sendMsg .= pack('S', $postData['objType']);  //目标类型
+			
         $objectRightAscension = $postData['objectRightAscension1'].':'.$postData['objectRightAscension2'].':'.$postData['objectRightAscension3'];
         
-        if ($objectRightAscension !== '::')  
+        if ($objectRightAscension !== '::')
         {//拍摄目标赤经
-            // if (!preg_match('/^\d{1,2}$/', $postData['objectRightAscension1']) || $postData['objectRightAscension1'] > 24 || $postData['objectRightAscension1'] < 0)
-            // {
-            // 	return '曝光策略:赤经之小时参数超限!';
-            // }
+            if (!preg_match('/^\d{2}$/', $postData['objectRightAscension1']) || $postData['objectRightAscension1'] > 24 || $postData['objectRightAscension1'] < 0)
+            {
+            	return '曝光策略:赤经之小时参数超限!';
+            }
             
-            // if (!preg_match('/^\d{1,2}$/', $postData['objectRightAscension2']) || $postData['objectRightAscension2'] > 59 || $postData['objectRightAscension2'] < 0)
-            // {
-            // 	return '曝光策略:赤经之分钟参数超限!';
-            // }
+            if (!preg_match('/^\d{2}$/', $postData['objectRightAscension2']) || $postData['objectRightAscension2'] > 59 || $postData['objectRightAscension2'] < 0)
+            {
+            	return '曝光策略:赤经之分钟参数超限!';
+            }
             
-            // if (!is_numeric($postData['objectRightAscension3']) || $postData['objectRightAscension3'] >= 60 || $postData['objectRightAscension3'] < 0)
-            // {
-            // 	return '曝光策略:赤经之秒参数超限!';
-            // }
+            if (!is_numeric($postData['objectRightAscension3']) || $postData['objectRightAscension3'] >= 60 || $postData['objectRightAscension3'] < 0)
+            {
+            	return '曝光策略:赤经之秒参数超限!';
+            }
             
             $objectRightAscension = time2Data($objectRightAscension);
             
@@ -324,22 +314,22 @@ class Ccd extends Base
         //处理赤纬数据
         $objectDeclination = $postData['objectDeclination1'].':'.$postData['objectDeclination2'].':'.$postData['objectDeclination3'];
         
-        if ($objectDeclination !== '::')    
+        if ($objectDeclination !== '::')   
         {//当前拍摄目标赤纬
-            // if (!preg_match('/^\d{1,2}$/', $postData['objectDeclination1']) || $postData['objectDeclination1'] > 90 || $postData['objectDeclination1'] < -90)
-            // {
-            // 	return '曝光策略:赤纬之小时参数超限!';
-            // }
+            if (!preg_match('/^\d{2}$/', $postData['objectDeclination1']) || $postData['objectDeclination1'] > 90 || $postData['objectDeclination1'] < -90)
+            {
+            	return '曝光策略:赤纬之小时参数超限!';
+            }
             
-            // if (!preg_match('/^\d{1,2}$/', $postData['objectDeclination2']) || $postData['objectDeclination2'] > 59 || $postData['objectDeclination2'] < 0)
-            // {
-            // 	return '曝光策略:赤纬之分钟参数超限!';
-            // }
+            if (!preg_match('/^\d{2}$/', $postData['objectDeclination2']) || $postData['objectDeclination2'] > 59 || $postData['objectDeclination2'] < 0)
+            {
+            	return '曝光策略:赤纬之分钟参数超限!';
+            }
             
-            // if (!is_numeric($postData['objectDeclination3']) || $postData['objectDeclination3'] >= 60 || $postData['objectDeclination3'] < 0)
-            // {
-            // 	return '曝光策略:赤纬之秒参数超限!';
-            // }
+            if (!is_numeric($postData['objectDeclination3']) || $postData['objectDeclination3'] >= 60 || $postData['objectDeclination3'] < 0)
+            {
+            	return '曝光策略:赤纬之秒参数超限!';
+            }
 
             $objectDeclination = time2Data($objectDeclination);
             if ($objectDeclination > 90 || $objectDeclination < -90)
@@ -672,36 +662,22 @@ class Ccd extends Base
         return '设置曝光策略指令：' .udpSend($sendMsg, $this->ip, $this->port);	 
     }/*设置曝光策略 结束*/
 
-    /*开始曝光*/
-    protected function start_expose ()
+    protected function start_expose ($postData, $param)  /*开始曝光*/
     {
-        $length = 48 +6;
+       
+        $sendMsg = pack('S', $postData['isReadFrameSeq']);
 
-        if ( ($isReadFrameSeq = input('isReadFrameSeq')) !== '' )      //是否读取帧序号
-        {
-            if (!preg_match('/^\d{1}$/', $isReadFrameSeq))
-            {
-                return '是否读取帧序号只能是数字！';
-            }
-            $sendMsg = pack('S', $isReadFrameSeq);    //unsigned short
-        }else{
-            $sendMsg = pack('S', 0);
-        }
         
-        if ( ($frameSequence = input('frameSequence')) !== '' )      //帧序号
+        if ( $postData['frameSequence'] !== '' )    //帧序号
         {
-            if (!preg_match('/^\d{1,10}$/', $frameSequence))
-            {
-                return '起始时间只能是数字！';
-            }
-            $sendMsg .= pack('L', $frameSequence);    //unsigned int
+            $sendMsg .= pack('L', $postData['frameSequence']);    //unsigned int
         }else{
             $sendMsg .= pack('L', 0);
         }
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
- 
-        $headInfo .= packHead2($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=4);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
+
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
         //socket发送数据        
         $sendMsg = $headInfo . $sendMsg;
         return '开始曝光指令：'. udpSend($sendMsg, $this->ip, $this->port);	

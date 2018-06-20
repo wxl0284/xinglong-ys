@@ -13,7 +13,8 @@
 	 {load href='/static/css/common-1.css'}
 	 {load href='/static/css/atpage.css'}
 	 <script>
-		var at = "{$at_id[$data['at_id']]}"; //用一个唯一不变的值来确定一个望远镜
+		var at = "{$data['at_id']}"; //atlist表中的主键id
+		var aperture = "{$at_aperture[$data['at_id']]}"; //即添加望远镜时的口径值
 		var configData =  {$data['configData']}; //各子设备的配置数据
 		console.log(configData.gimbal.longitude);
 	</script>
@@ -440,7 +441,7 @@
 			<nav class='center'><!--ccd指令 导航-->
 			    <span name='coolTemp' :class='{active: device_nav.ccd_command=="coolTemp"}' @click ='device_nav.ccd_command="coolTemp"' v-if='ccd_config.cansetcoolert==1' >制冷温度</span>
 				<span name='exposStratic' :class='{active: device_nav.ccd_command=="exposeParam"}' @click ='device_nav.ccd_command="exposeParam"' v-if='ccd_config.cansetexposureparam==1' >曝光策略</span>
-				<span name='startExp'>开始曝光</span>			
+				<span name='startExp' :class='{active: device_nav.ccd_command=="start_expose"}' @click ='device_nav.ccd_command="start_expose"' v-if='ccd_config.canstartexposure==1' >开始曝光</span>			
 				<span name='setGear'>设置增益</span>			
 				<span name='readOut'>读出速度模式</span>			
 				<span name='transSpeed'>转移速度模式</span>			
@@ -537,7 +538,17 @@
 					<span>焦距：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.focusLength' ></span>
 					<span>帧数：<input type="text" name='frameNum' placeholder='整数' v-model.trim='ccd_form.exposeParam.frameNum' ></span>
 					<br><input type="button" class='margin_10' value="提交指令" @click='ccd_exposeParam_sbmt' >
-			    </form><!--曝光策略 结束-->
+				</form><!--曝光策略 结束-->
+				<form class='center' v-if='device_nav.ccd_command == "start_expose"'><!--开始曝光-->
+					是否读取帧序号：<label>是
+						<input type="radio" value="1" v-model='ccd_form.start_expose.isReadFrameSeq' >
+						</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<label>否
+						<input type="radio" value="0" v-model='ccd_form.start_expose.isReadFrameSeq' >
+					</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					帧序号：<input type="text">
+					<br><input type="button" class='margin_10' value="提交指令" @click='ccd_startExpose_sbmt' >
+				</form><!--开始曝光 结束-->
 			  <hr style='width:98%;' class='center_mrg'><br>
 			  <div><!--CCD可变属性-->
                 <span class='propT'>CCD可变属性:</span><br><br>

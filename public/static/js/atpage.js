@@ -46,42 +46,43 @@
 			gimbal_form: {//转台表单指令的参数
 				trackStar: {
 					rightAscension1: '', rightAscension2: '', rightAscension3: '',
-					epoch: '-1', speed: '-1', command:'trackStar', at:at
+					declination1: '', declination2: '', declination3: '',
+					epoch: '-1', speed: '-1', command:'trackStar', at:at, at_aperture: aperture
 				},
 				objName: {
-					objectName: '', objectType: '-1', command:'set_obj_name', at:at
+					objectName: '', objectType: '-1', command:'set_obj_name', at:at, at_aperture: aperture
 				},
 				slewAzEl: {
-					azimuth: '', elevation: '', command:'slewAzEl', at:at
+					azimuth: '', elevation: '', command:'slewAzEl', at:at, at_aperture: aperture
 				},
 				slewDerotator: {
-					slewDerotator: '', command:'slewDerotator', at:at
+					slewDerotator: '', command:'slewDerotator', at:at, at_aperture: aperture
 				},
 				axis3_mode: {
-					mode: '-1', polarizingAngle: '', command:'axis3Mode', at:at
+					mode: '-1', polarizingAngle: '', command:'axis3Mode', at:at, at_aperture: aperture
 				},
 				speed_alter: {//速度修正指令
-					axis: '', correction: '-1', command:'speed_alter', at:at
+					axis: '', correction: '-1', command:'speed_alter', at:at, at_aperture: aperture
 				},
 				speed_fixed: {//恒速运动
-					axis: '1', speed: '', command:'speed_fixed', at:at
+					axis: '1', speed: '', command:'speed_fixed', at:at, at_aperture: aperture
 				},
 				position_alter: {//恒速运动
-					axis: '', correction: '-1', command:'position_alter', at:at
+					axis: '', correction: '-1', command:'position_alter', at:at, at_aperture: aperture
 				},
 				cover_op: {//镜盖操作
-					operation: '', command:'cover_op', at:at
+					operation: '', command:'cover_op', at:at, at_aperture: aperture
 				},
 				setFocusType: {//焦点切换镜
-					focusType: '-2', command:'setFocusType', at:at
+					focusType: '-2', command:'setFocusType', at:at, at_aperture: aperture
 				},
 				save_data: {//保存同步数据
-					command:'save_sync_data', at:at
+					command:'save_sync_data', at:at, at_aperture: aperture
 				},
 			},/**转台 表单 结束**/
 			ccd_form: {//ccd1表单指令的参数
 				coolTemp: {//ccdNo为ccd序号
-					temp: '', command:'set_cool', ccdNo: '1', at:at
+					temp: '', command:'set_cool', at:at, at_aperture: aperture
 				},
 				exposeParam: {
 					validFlag: '', startTime: '', duration:'', delay: '', objName: '', objType: '-1',
@@ -93,7 +94,10 @@
 					seeing: '', dustGatherTime:'', dust: '', AMS: '', extinctionGatherTime: '',
 					rightAscension: '', declination: '', band:'', extinctionFactor1: '', extinctionFactor2: '',
 					extinctionFactor3: '',telescopeRightAscension: '', telescopeDeclination: '',
-					focusLength:'', frameNum: '', command:'expose_param', ccdNo: '1', at:at
+					focusLength:'', frameNum: '', command:'expose_param', at:at, at_aperture: aperture
+				},
+				start_expose: {
+					isReadFrameSeq:'1', frameSequence: '', command:'start_expose', at:at, at_aperture: aperture
 				},
 			},/**ccd1 表单 结束**/
 		},/********vue data属性对象 结束********/
@@ -778,6 +782,8 @@
 				var btn_str = ''; //控制按钮的样式
 				var btn_text = '';
 				var data = {at: at, command: ''}; //提交的数据
+				data.at_aperture = aperture; //提交数据加上 口径
+				data.ccdNo = this.device_nav.ccdNo; //提交数据加上 口径
 
 				switch (n) {
 					case 1:
@@ -829,7 +835,7 @@
 				var msg = '';
 				var v = this.ccd_form.coolTemp.temp;
 				//console.log(ccd_config.lowcoolert);return;
-				if ( !$.isNumeric(v)|| v > 20 || v < ccd_config.lowcoolert*1 )
+				if ( !$.isNumeric(v)|| v > 20 || v < this.ccd_config.lowcoolert*1 )
 				{
 					msg = '制冷温度参数超限!';
 				}
@@ -845,6 +851,7 @@
 				{
 					layer.alert(msg, {shade:false,closeBtn:0});return;
 				}else{//表单参数无错误
+					this.ccd_form.coolTemp.ccdNo = this.device_nav.ccdNo;
 					$.ajax({
 						url: '/ccd',
 						type: 'post',
@@ -969,7 +976,7 @@
 			ccd_duration:function (tip) {
 				var msg = '';
 				var v = this.ccd_form.exposeParam.duration;
-				if ( !$.isNumeric(v) || v > ccd_config.maxexposuretime || v<ccd_config.maxexposuretime )
+				if ( !$.isNumeric(v) || v > this.ccd_config.maxexposuretime || v<this.ccd_config.maxexposuretime )
 				{
 					msg += '曝光时间参数超限!';
 				}
@@ -1014,9 +1021,33 @@
 				if ( msg !== '' )//ccd_form.exposeParam.objType
 				{
 					layer.alert(msg, {shade:false,closeBtn:0});return;
-				}//else{
-
-				//}
+				}else{
+					this.ccd_form.exposeParam.ccdNo = this.device_nav.ccdNo;
+					$.ajax({
+						url: '/ccd',
+						type: 'post',
+						data: this.ccd_form.exposeParam,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error:function (){
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					})/*ajax 结束*/
+				}
+			},/*ccd_exposeParam_sbmt 结束*/
+			ccd_startExpose_sbmt:function () {
+				console.log(this.ccd_form.start_expose.isReadFrameSeq);
 			},/*ccd_exposeParam_sbmt 结束*/
 		},/******methods 结束******/
 	});/***************vue js结束*****************/
@@ -1305,230 +1336,8 @@
         });
      
     });//////////////////////////////////////////////////////////*/
-   
-//CCD 带参数指令  js事件//////////////////////////////////////////////
-	var ccdForm = $('#at60Ccd');
-    var ccdSelect = ccdForm.find('div');
-
-    ccdSelect.click(function () {
-         $(this).find('input[name="command"]').prop('checked', true);
-         var notcheck = ccdSelect.not($(this));
-         notcheck.addClass('notCheck');
-         $(this).removeClass('notCheck');
-     });
 	
-//ccd 表单数据验证////////////////////////////////////////////	
-	//验证曝光时间
-	$('#durationInput').blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		
-		// if ((!$.isNumeric(v)) || v < 0)
-		// {
-		// 	err = 1;
-		// 	layer.tips('曝光时间值有误!', $(this), {tipsMore: true});
-		// }		
-		// $(this).data('err', err);
-	});
-	
-	//验证delay-延迟时间
-	$('#delayInput').blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		
-		// if ((!$.isNumeric(v)) || v < 0)
-		// {
-		// 	err = 1;
-		// 	layer.tips('延迟时间值有误!', $(this), {tipsMore: true});
-		// }		
-		// $(this).data('err', err);
-	});
-	
-	//验证 目标名称
-	$('#ccdObjectName').blur(function () {
-		// var v = $.trim($(this).val());
-		// var patn = /([\u4e00-\u9fa5]| )+/;
-		// var err = 0;
-		
-		// if (patn.test(v) || v == '')
-		// {
-		// 	err = 1;
-		// 	layer.tips('名称不能有汉字或空格空格!', $(this), {tipsMore: true});
-		// }		
-		// $(this).data('err', err);
-	});
-	
-	//验证 曝光策略之赤经 赤纬///////////////////////////////
-	//验证 赤经之小时
-	var inputIn3 = $('#inputIn3');
-	var inputIn3_1 = $('#inputIn3_1');
-	var inputIn3_2 = $('#inputIn3_2');
-	
-	//赤经之小时 keyup事件
-	inputIn3.keyup(function () {
-		var patn = /^\d{2}$/;
-		var v = $.trim($(this).val());
-		if (patn.test(v))
-		{
-			$(this).blur();
-		}
-	});
-	
-	//赤经之小时 blur事件
-	inputIn3.blur(function () {
-		// var patn = /^\d{1,2}$/;
-		// var v = $.trim($(this).val());
-		// var err = 0; //错误标识
-		// if (!patn.test(v) || v > 24 || v < 0)
-		// {
-		// 	err = 1;
-		// 	layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		// }else{
-		// 	inputIn3_1.focus();
-		// }
-		
-		// $(this).data('err', err);
-	});
-	
-	//赤经之分钟 js事件
-	inputIn3_1.keyup(function () {
-		var patn = /^\d{2}$/;
-		var v = $.trim($(this).val());
-		if (patn.test(v))
-		{
-			$(this).blur();
-		}
-	})
-	
-	//赤经之分钟 blur事件
-	inputIn3_1.blur(function () {
-		// var patn = /^\d{1,2}$/;
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		// if (!patn.test(v) || v < 0 || v >= 60)
-		// {
-		// 	err = 1;
-		// 	layer.tips('参数超限', $(this), {tips: 1, tipsMore: true});
-		// }else{
-		// 	inputIn3_2.focus();
-		// }
-	
-		// $(this).data('err', err);
-	})
-	
-	//赤经之秒 js事件
-	inputIn3_2.blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		// if (!$.isNumeric(v) || v >= 60 || v < 0)
-		// {
-		// 	err = 1;
-		// 	layer.tips('秒参数超限', $(this), {tips : 1,tipsMore: true});
-		// }		
-		// $(this).data('err', err);
-	})
-	//验证 赤经 结束//////////////////////////
-	
-	//验证 -赤纬之小时
-	var inputIn4 = $('#inputIn4');
-	var inputIn4_1 = $('#inputIn4_1');
-	var inputIn4_2 = $('#inputIn4_2');
-	
-	//赤纬之小时 keyup事件
-	inputIn4.keyup(function () {
-		var v = $.trim($(this).val());
-		v_R = v.replace(/-/, ''); //将-替换为空字符
-		if (v_R.length == 2)
-		{
-			$(this).blur();
-		}
-	
-	});
-	
-	//赤纬之小时 blur事件
-	inputIn4.blur(function () {
-		// var v = $.trim($(this).val());
-		// var patn = /^-?\d{1,2}$/;
-		// var err = 0;
-		
-		// if (!patn.test(v) || v > 90 || v < -90)
-		// {
-		// 	err = 1;
-		// 	layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		// }else{
-		// 	inputIn4_1.focus();
-		// }
-	
-		// $(this).data('err', err);
-	});
-	
-	//赤纬之分钟 js事件
-	inputIn4_1.keyup(function () {
-		var patn = /^\d{2}$/;
-		var v = $.trim($(this).val());
-		if (patn.test(v))
-		{
-			$(this).blur();
-		}
-	
-	})
-	
-	//赤纬之分钟 blur事件
-	inputIn4_1.blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		// var patn = /^\d{1,2}$/;
-		
-		// if (!patn.test(v) || v > 59 || v < 0)
-		// {
-		// 	err = 1;
-		// 	layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		// }else{
-		// 	inputIn4_2.focus();
-		// }
-		
-		// $(this).data('err', err);
-	});
-	
-	//赤纬之秒 js事件
-	inputIn4_2.blur(function () {
-		// var err = 0;
-		// var v = $.trim($(this).val());
-		
-		// if (!$.isNumeric(v) || v >= 60 || v < 0)
-		// {
-		// 	err = 1;
-		// 	layer.tips('参数超限', $(this), {tips : 1,tipsMore: true});
-		// }		
-		// $(this).data('err', err);
-	})
-	//验证 曝光策略之赤经 赤纬 结束//////////////////////////
-	
-	//验证 拍摄波段
-	$('#objectBandInput').blur(function () {
-		// var v = $.trim($(this).val());
-		// var err = 0;
-		
-		// /* if (v1 == '' || v1 < 90 || v1 > 90 || !$.isNumeric(v1))
-		// {
-		// 	layer.tips('小时之数据输入有误!', $(this), {tipsMore: true});
-		// } */
-
-		// $(this).data('err', err);
-	});
-	
-	//验证 帧序号
-	$('#frameSequenceIn').blur(function () {
-		/* var v = $.trim($(this).val());
-		var err = 0;
-		
-		if (v1 == '' || v1 < 90 || v1 > 90 || !$.isNumeric(v1))
-		{
-			layer.tips('小时之数据输入有误!', $(this), {tipsMore: true});
-		} 
-
-		$(this).data('err', err);*/
-	});
+//ccd 表单数据验证////////////////////////////////////////////		
 	
 	//验证 读出速度模式值
 	$('#ReadSpeedModeIn').blur(function () {

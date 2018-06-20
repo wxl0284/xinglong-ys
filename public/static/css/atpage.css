@@ -95,8 +95,6 @@ nav span {background-color:#ECEEE6;}/*指令按钮导航栏 未点击 样式*/
 
 .btnClick {background-color:#64B2E0;color:#fff;}/*按钮型不带参数指令 点击后样式*/
 
-form input[type='radio'], form div {display:none;}
-
 .command input, .command select {margin-right:16px;}/*每个带参数指令的样式*/
 
 .propT {font-weight:bold;}

@@ -21,24 +21,22 @@
             <span>添加望远镜</span><br><br>
             <form id='form' style="width:500px;" class='center_mrg'>
                 <!-- 望远镜ID:&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='atid' placeholder="0X000（X号望远镜）"><br> 程序生成一个id来标识望远镜 -->
-                望远镜名称:
-                <select name="atname">
-                    <option value="0">请选择望远镜</option>
-                    <option value="216cm望远镜">216cm望远镜</option>
-                    <option value="126cm望远镜">126cm望远镜</option>
-                    <option value="100cm望远镜">100cm望远镜</option>
-                    <option value="85cm望远镜">85cm望远镜</option>
-                    <option value="80cm望远镜">80cm望远镜</option>
-                    <option value="60cm望远镜">60cm望远镜</option>
-                    <option value="50cm望远镜">50cm望远镜</option>
-                    <option value="大气消光望远镜">大气消光望远镜</option>
-                </select>
-                <br>
+                望远镜名称:<input type='text' name='atname'><br>
                 隶属观测站:<input type='text' name='address' placeholder="国家天文台兴隆观测基地"><br>
                 经度:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='longitude' placeholder="-180.0~+180.0"><br>
                 纬度:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='latitude' placeholder="-90.0~+90.0"><br>
                 海拔高度:&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='altitude' placeholder="-1000~6000"><br>
-                口径:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='aperture' placeholder="216.0">
+                口径:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <select name="aperture">
+                    <option value="0">请选择</option> 
+                    <option value="50cm">50cm</option>
+                    <option value="60cm">60cm</option>
+                    <option value="80cm">80cm</option>
+                    <option value="85cm">85cm</option>
+                    <option value="100cm">100cm</option>
+                    <option value="126cm">126cm</option>
+                    <option value="216cm">216cm</option>
+                </select>
                 <input type='button' value="确认提交">
             </form>
         </div>

@@ -86,24 +86,29 @@ class Gimbal extends Base
         $this->ip = config('ip');
         $this->port = config('port');
 
-        //根据望远镜编号，给 $this->$at赋值
-        if ( $postData['at'] == md5 ('60cm望远镜') )
-        {
-            $this->at = 37;
-        }else if ( $postData['at'] == md5 ('80cm望远镜') ){
-            $this->at = 36;
-        }else if ( $postData['at'] == md5 ('50cm望远镜')  ){
-            $this->at = 38;
-        }else if ( $postData['at'] == md5 ('85cm望远镜')  ){
-            $this->at = 35;
-        }else if ( $postData['at'] == md5 ('100cm望远镜')  ){
-            $this->at = 34;
-        }else if ( $postData['at'] == md5 ('126cm望远镜')  ){
-            $this->at = 33;
-        }else if ( $postData['at'] == md5 ('216cm望远镜')  ){
-            $this->at = 32;
-        }else if ( $postData['at'] == md5 ('大气消光望远镜')  ){
-            $this->at = 39;
+        switch ($postData['at_aperture']) { //根据望远镜口径，给 $this->$at赋值
+            case '50cm':
+                $this->at = 38;
+                break;
+            case '60cm':
+                $this->at = 37;
+                break;
+            case '80cm':
+                $this->at = 36;
+            case '85cm':
+                $this->at = 35;
+                break;
+            case '100cm':
+                $this->at = 34;
+                break;
+            case '126cm':
+                $this->at = 33;
+                break;
+            case '216cm':
+                $this->at = 32;
+                break;
+            default:
+                return '提交的望远镜参数有误!';
         }
 
         $command = $postData['command']; //要执行的指令
@@ -224,23 +229,23 @@ class Gimbal extends Base
         
     }//复位 停止 急停 指令 结束
 
-    //跟踪恒星 指令
-    protected function trackStar ($postData, $param)
+    protected function trackStar ($postData, $param) //跟踪恒星 指令
     {          
-        // if (!is_numeric($postData['rightAscension1']) || $postData['rightAscension1'] > 24 || $postData['rightAscension1'] < 0)
-        // {
-        // 	return '赤经之小时参数超限!';
-        // }
+        if ( !preg_match('/^\d{2}$/', $postData['rightAscension1']) || $postData['rightAscension1'] > 24 || $postData['rightAscension1'] < 0)
+        {
+        	return '赤经之小时参数超限!';
+        }
         
-        // if (!preg_match('/^\d{1,2}$/', $postData['rightAscension2']) || $postData['rightAscension2'] > 59 || $postData['rightAscension2'] < 0)
-        // {
-        // 	return '赤经之分钟参数超限!';
-        // }
+        if ( !preg_match('/^\d{2}$/', $postData['rightAscension2']) || $postData['rightAscension2'] > 59 || $postData['rightAscension2'] < 0)
+        {
+        	return '赤经之分钟参数超限!';
+        }
         
-        // if (!is_numeric($postData['rightAscension3']) || $postData['rightAscension3'] >= 60 || $postData['rightAscension3'] < 0)
-        // {
-        // 	return '赤经之秒参数超限!';
-        // }
+        if (!is_numeric($postData['rightAscension3']) || $postData['rightAscension3'] >= 60 || $postData['rightAscension3'] < 0)
+        {
+        	return '赤经之秒参数超限!';
+        }
+
         $rightAscension = $postData['rightAscension1'].':'.$postData['rightAscension2'].':'.$postData['rightAscension3'];
         
         $rightAscension = time2Data($rightAscension);
@@ -253,20 +258,20 @@ class Gimbal extends Base
         }
         
         //处理赤纬数据
-        // if (!is_numeric($postData['declination1']) || $postData['declination1'] > 90 || $postData['declination1'] < -90)
-        // {
-        // 	return '赤纬之小时参数超限!';
-        // }
+        if ( !preg_match('/^\d{2}$/', $postData['declination1']) || $postData['declination1'] > 90 || $postData['declination1'] < -90)
+        {
+        	return '赤纬之小时参数超限!';
+        }
         
-        // if (!preg_match('/^\d{1,2}$/', $postData['declination2']) || $postData['declination2'] > 59 || $postData['declination2'] < 0)
-        // {
-        // 	return '赤纬之分钟参数超限!';
-        // }
+        if ( !preg_match('/^\d{2}$/', $postData['declination2']) || $postData['declination2'] > 59 || $postData['declination2'] < 0)
+        {
+        	return '赤纬之分钟参数超限!';
+        }
         
-        // if (!is_numeric($postData['declination3']) || $postData['declination3'] >= 60 || $postData['declination3'] < 0)
-        // {
-        // 	return '赤纬之秒参数超限!';
-        // }
+        if (!is_numeric($postData['declination3']) || $postData['declination3'] >= 60 || $postData['declination3'] < 0)
+        {
+        	return '赤纬之秒参数超限!';
+        }
         
         $declination = $postData['declination1'].':'.$postData['declination2'].':'.$postData['declination3'];
         
@@ -330,8 +335,7 @@ class Gimbal extends Base
         }
         $sendMsg = pack('d', $postData['azimuth']);     //double64
 
-        $at_id = Db::table('atlist')->where('atid', $postData['at'])->field('id')->find(); //获取望远镜的id
-        $elevation = Db::table('gimbalconf')->where('teleid', $at_id['id'])->field('minelevation')->find(); //获取该望远镜的gimbalconf表中的:俯仰最低值
+        $elevation = Db::table('gimbalconf')->where('teleid', $postData['at'])->field('minelevation')->find(); //获取该望远镜的gimbalconf表中的:俯仰最低值
  
         if ( !is_numeric($postData['elevation']) ||  $postData['elevation'] > 90 || $postData['elevation'] < $elevation['minelevation'] )
         {
@@ -467,8 +471,8 @@ class Gimbal extends Base
         {
             return '速度参数超限!';
         }
-        $at_id = Db::table('atlist')->where('atid', $postData['at'])->field('id')->find(); //获取望远镜的id
-        $max_speed = Db::table('gimbalconf')->where('teleid', $at_id['id'])->field('maxaxis1speed, maxaxis2speed, maxaxis3speed')->find(); //获取该望远镜的gimbalconf表中的:3个轴的最大速度
+       
+        $max_speed = Db::table('gimbalconf')->where('teleid', $postData['at'])->field('maxaxis1speed, maxaxis2speed, maxaxis3speed')->find(); //获取该望远镜的gimbalconf表中的:3个轴的最大速度
 
         switch ($postData['axis']) {
             case '1':
