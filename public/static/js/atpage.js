@@ -27,6 +27,7 @@
 		el: '#all',
 		data: {
 			configData: configData, //configData是后端返回的json数据
+			ccd_config:configData.ccd[0], //此对象存储ccd的配置数据
 			ccd_name:'CCD1',
 			device_nav: {//此对象中的数据用以区分是否给各子设备加上蓝色底框
 				dev_click: 'gimbal',  //区分各自设备
@@ -174,34 +175,15 @@
 			},
 			select_ccd:function (){//通过下拉选择获取各ccd配置数据
 				var v = this.device_nav.ccdNo;
-				var postData = {}; //要提交的数据
-				postData.ccdNo = v;
-				postData.teleId = this.configData.ccd.teleid;
 	
-				if ( v != -1) //如果下拉框不是 -1 执行Ajax 请求相应ccd的配置数据
+				if ( v != -1) //如果下拉框不是 -1 将configData中相应的ccd配置数据赋值给ccd_config
 				{
-					$.ajax({
-						type : 'post',
-						url : '/get_ccd_data',
-						data : postData,             
-			            success: function (info) {
-							that.device_nav.gimbal_btn = btn_str;  //更改按钮样式
-							layer.alert(info, {
-								shade:false,
-								closeBtn:0,
-								yes:function (n){
-									layer.close(n);
-									if (info.indexOf('登录') !== -1)
-									{
-										location.href = '/';
-									}
-								},
-							});
-			            },
-			            error: function () {
-				        	layer.alert('网络异常,请再次' + btn_text, {shade:false, closeBtn:0});
-			            },
-					})//ajax 结束/
+					this.ccd_config = this.configData.ccd[v-1];
+					this.ccd_name = 'CCD' + v;//将ccd1换为ccd2、ccd3...
+					//将下拉选择框隐藏
+					this.device_nav.select_ccd = ''; //将下拉选择框隐藏
+					//执行CCD元素点击事件
+					this.ccd_click();
 				}
 			},
 			filter_click: function () {
@@ -846,8 +828,8 @@
 			ccd_cool:function (tip) {
 				var msg = '';
 				var v = this.ccd_form.coolTemp.temp;
-				//console.log(configData.ccd.lowcoolert);return;
-				if ( !$.isNumeric(v)|| v > 20 || v < configData.ccd.lowcoolert*1 )
+				//console.log(ccd_config.lowcoolert);return;
+				if ( !$.isNumeric(v)|| v > 20 || v < ccd_config.lowcoolert*1 )
 				{
 					msg = '制冷温度参数超限!';
 				}
@@ -987,7 +969,7 @@
 			ccd_duration:function (tip) {
 				var msg = '';
 				var v = this.ccd_form.exposeParam.duration;
-				if ( !$.isNumeric(v) || v > configData.ccd.maxexposuretime || v<configData.ccd.maxexposuretime )
+				if ( !$.isNumeric(v) || v > ccd_config.maxexposuretime || v<ccd_config.maxexposuretime )
 				{
 					msg += '曝光时间参数超限!';
 				}

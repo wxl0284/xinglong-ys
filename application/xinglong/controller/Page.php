@@ -603,16 +603,6 @@ class Page extends Base
 
     }//删除望远镜  结束
 
-    public function get_ccd_data() //ajax获取不同ccd数据
-    {
-        //首先判断是否有权限执行
-       /* if ($this->ajaxAuthErr == 1)
-        {//无权执行
-            return '您无权限执行此操作!';
-        }*/
-        //$res = Db::table('ccdconf')->
-    }
-
     //显示首页
     public function front ()
     {
@@ -944,60 +934,60 @@ class Page extends Base
 
         $ccd_num = Db::table('ccdconf')->where('teleid', $at)->count('ccdno'); //查ccd数量
         //查第一个ccd配置数据
-        $ccd = Db::table('ccdconf')->where('teleid', $at)->where('ccdno', 1)->find();
+        $ccd = Db::table('ccdconf')->where('teleid', $at)->select();
         if ( $ccd )
         {
-            // foreach ($ccd as $k => $v) 
-            // {
-            //     if ( $ccd[$k]['gainmode'] ) //处理增益模式，处理后直接在页面显示
-            //     {
-            //         $ccd[$k]['gainmode'] = str_replace ('#', ', ', $ccd[$k]['gainmode']);
-            //     }
-            //     if ( $ccd[$k]['readoutmode'] ) //处理读出模式，处理后直接在页面显示
-            //     {
-            //         $ccd[$k]['readoutmode'] = str_replace ('#', ', ', $ccd[$k]['readoutmode']);
-            //     }
-            //     if ( $ccd[$k]['shuttermode'] ) //处理快门模式，处理后直接在页面显示
-            //     {
-            //         $ccd[$k]['shuttermode'] = str_replace ('#', ', ', $ccd[$k]['shuttermode']);
-            //     }
-            //     if ( $ccd[$k]['interfacetype'] ) //处理接口类型，处理后直接在页面显示
-            //     {
-            //         $ccd[$k]['interfacetype'] = str_replace ('#', ', ', $ccd[$k]['interfacetype']);
-            //     }
-            //     if ( $ccd[$k]['exposetriggermode'] ) //处理曝光触发模式，处理后直接在页面显示
-            //     {
-            //         $ccd[$k]['exposetriggermode'] = str_replace ('#', ', ', $ccd[$k]['exposetriggermode']);
-            //     }
-            // }
+            foreach ($ccd as $k => $v) 
+            {
+                if ( $ccd[$k]['gainmode'] ) //处理增益模式，处理后直接在页面显示
+                {
+                    $ccd[$k]['gainmode'] = str_replace ('#', ', ', $ccd[$k]['gainmode']);
+                }
+                if ( $ccd[$k]['readoutmode'] ) //处理读出模式，处理后直接在页面显示
+                {
+                    $ccd[$k]['readoutmode'] = str_replace ('#', ', ', $ccd[$k]['readoutmode']);
+                }
+                if ( $ccd[$k]['shuttermode'] ) //处理快门模式，处理后直接在页面显示
+                {
+                    $ccd[$k]['shuttermode'] = str_replace ('#', ', ', $ccd[$k]['shuttermode']);
+                }
+                if ( $ccd[$k]['interfacetype'] ) //处理接口类型，处理后直接在页面显示
+                {
+                    $ccd[$k]['interfacetype'] = str_replace ('#', ', ', $ccd[$k]['interfacetype']);
+                }
+                if ( $ccd[$k]['exposetriggermode'] ) //处理曝光触发模式，处理后直接在页面显示
+                {
+                    $ccd[$k]['exposetriggermode'] = str_replace ('#', ', ', $ccd[$k]['exposetriggermode']);
+                }
+            }
             
-            if ( $ccd['gainmode'] )  //处理增益模式，处理后直接在页面显示
-            {
-                $ccd['gainmode'] = str_replace ('#', ', ', $ccd['gainmode']);
-            }
+            // if ( $ccd['gainmode'] )  //处理增益模式，处理后直接在页面显示
+            // {
+            //     $ccd['gainmode'] = str_replace ('#', ', ', $ccd['gainmode']);
+            // }
 
-            if ( $ccd['readoutmode'] )  //处理读出模式，处理后直接在页面显示
-            {
-                $ccd['readoutmode'] = str_replace ('#', ', ', $ccd['readoutmode']);
-            }
+            // if ( $ccd['readoutmode'] )  //处理读出模式，处理后直接在页面显示
+            // {
+            //     $ccd['readoutmode'] = str_replace ('#', ', ', $ccd['readoutmode']);
+            // }
 
-            //处理快门模式
-            if ( $ccd['shuttermode'] )  //处理快门模式，处理后直接在页面显示
-            {
-                $ccd['shuttermode'] = str_replace ('#', ', ', $ccd['shuttermode']);
-            }
+            // //处理快门模式
+            // if ( $ccd['shuttermode'] )  //处理快门模式，处理后直接在页面显示
+            // {
+            //     $ccd['shuttermode'] = str_replace ('#', ', ', $ccd['shuttermode']);
+            // }
 
-            //处理接口类型
-            if ( $ccd['interfacetype'] )  //处理接口类型，处理后直接在页面显示
-            {
-                $ccd['interfacetype'] = str_replace ('#', ', ', $ccd['interfacetype']);
-            }
+            // //处理接口类型
+            // if ( $ccd['interfacetype'] )  //处理接口类型，处理后直接在页面显示
+            // {
+            //     $ccd['interfacetype'] = str_replace ('#', ', ', $ccd['interfacetype']);
+            // }
 
-            //处理曝光触发模式
-            if ( $ccd['exposetriggermode'] )  //处理曝光触发模式，处理后直接在页面显示
-            {
-                $ccd['exposetriggermode'] = str_replace ('#', ', ', $ccd['exposetriggermode']);
-            }
+            // //处理曝光触发模式
+            // if ( $ccd['exposetriggermode'] )  //处理曝光触发模式，处理后直接在页面显示
+            // {
+            //     $ccd['exposetriggermode'] = str_replace ('#', ', ', $ccd['exposetriggermode']);
+            // }
 
             $result['ccd'] = $ccd;
             $result['ccd_num'] = $ccd_num; //表示有ccd的配置数据*/

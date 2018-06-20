@@ -137,9 +137,9 @@ class Status extends Base
             case 21:
                 $status['curstatus'] = '异常';
                 break;
-            default:
-                $status['curstatus'] = '未获取到';
-                break;
+			default:
+				$status['curstatus'] = '未获取到';
+                break;	
         }//转台当前状态结束///////////////////////////////////////
 
         $status['trackError'] = 2.11; //位置信息：跟踪误差（？咋获取）
@@ -189,9 +189,9 @@ class Status extends Base
             case 6:
                 $status['trackType'] = '固定位置';
                 break;
-            default:
-                $status['trackType'] = '未获取到';
-                break;
+			default:
+				$status['trackType'] = '未获取到';
+                break;	
         }
         
         if (is_numeric($gimbalStatus['targetRightAscension']))
@@ -213,7 +213,7 @@ class Status extends Base
         $status['elevation'] = round($gimbalStatus['elevation'],5); //当前俯仰
         $status['RightAscensionSpeed'] = round($gimbalStatus['axis1Speed'],2); //赤经速度 ?
         $status['declinationSpeed'] = round($gimbalStatus['axis2Speed'], 2); //赤纬速度 ?
-        $status['derotatorPositon'] = round($gimbalStatus['derotatorPositon'], 4);; //当前消旋位置
+        $status['derotatorPositon'] = round($gimbalStatus['derotatorPositon'], 4); //当前消旋位置
         $status['targetDerotatorPosition'] = round($gimbalStatus['targetDerotatorPosition'], 4); //目标消旋位置
         $status['axis1TrackError'] = round($gimbalStatus['axis1TrackError'], 5); //轴1跟踪误差
         $status['axis2TrackError'] = round($gimbalStatus['axis2TrackError'], 5); //轴2跟踪误差
@@ -300,8 +300,8 @@ class Status extends Base
             case 9:
                 $status['ccdCurStatus'] = '空闲';
                 break;
-            default:
-                $status['ccdCurStatus'] = '未获取到';
+			default:
+				$status['ccdCurStatus'] = '未获取到';
                 break;
         }
 
@@ -370,8 +370,8 @@ class Status extends Base
             case 11:
                 $status['focusCurStatus'] = '急停';
                 break;
-            default:
-                $status['focusCurStatus'] = '未获取到';
+			default:
+				$status['focusCurStatus'] = '未获取到';
                 break;
         }
         //调焦器当前状态 结束/////////////////////////////////////////
@@ -379,7 +379,7 @@ class Status extends Base
         $status['focusPosition'] = $focusStatus['position'];  //当前位置
         $status['focusTargetPos'] = $focusStatus['targetPosition'];  //目标位置
         $status['focusIsHomed'] = $focusStatus['isHomed'];  //找零状态
-        $status['focusIsTCompensation'] = $focusStatus['isTCompensation'] : '是' ? '否';  //是否进行温度补偿
+        $status['focusIsTCompensation'] = $focusStatus['isTCompensation'] ? '是' : '否';  //是否进行温度补偿
         $status['focusTCompenensation'] = $focusStatus['TCompenensation']; //温度补偿系数
 
         //返回数据
@@ -430,42 +430,43 @@ class Status extends Base
             case 12:
                 $status['slaveDomeCurstatus'] = '异常';
                 break;
-            default:
-                $status['slaveDomeCurstatus'] = '未获取到';
+			default:
+				$status['slaveDomeCurstatus'] = '未获取到';
                 break;
         }//圆顶当前状态结束////////////////////////////////////////
-        
-        switch ($slaveDomeStatus['scuttleStatus']) //天窗状态
+		
+		switch ($slaveDomeStatus['scuttleStatus']) //天窗状态
 		{
-			case: 1:
+			case 1:
 				$status['slaveDomeScuttleStatus'] = '开';
 				break;
-			case: 2:
+			case 2:
 				$status['slaveDomeScuttleStatus'] = '关';
 				break;
-			case: 3:
+			case 3:
 				$status['slaveDomeScuttleStatus'] = '正在开';
 				break;
-			case: 4:
+			case 4:
 				$status['slaveDomeScuttleStatus'] = '正在关';
 				break;
 			default:
 				$status['slaveDomeScuttleStatus'] = '未获取到';
 				break;
-        }
-        
-        switch ($slaveDomeStatus['shadeStatus']) //风帘状态
+		}
+		
+		switch ($slaveDomeStatus['shadeStatus']) //风帘状态
 		{
-			case: 1:
+			case 1:
 				$status['slaveDomeShadeStatus'] = '运动中';
 				break;
-			case: 2:
+			case 2:
 				$status['slaveDomeShadeStatus'] = '到位';
 				break;
 			default:
 				$status['slaveDomeShadeStatus'] = '未获取到';
 				break;
 		}
+		
         $status['slaveDomeErrorStatus'] = $slaveDomeStatus['errorString']; //错误标识
 
         return $status;
@@ -513,12 +514,12 @@ class Status extends Base
             case 11:
                 $status['filterCurstatus'] = '急停';
                 break;
-            default:
-                $status['filterCurstatus'] = '未获取到';
+			default:
+				$status['filterCurstatus'] = '未获取到';
                 break;
         }
         //滤光片当前状态 结束 /////////////////////////////////////
-        $status['filterIsHomed'] = $filterStatus['isHomed'] ==1 : '是' ? '否'; //是否找零 //是否找零
+        $status['filterIsHomed'] = $filterStatus['isHomed'] ==1 ? '是' : '否'; //是否找零
         //错误标识
         $status['filterErrorStatus'] = $filterStatus['errorString']; 
 

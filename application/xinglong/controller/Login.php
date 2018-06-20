@@ -108,7 +108,9 @@ class Login extends Controller
     //测试之方法
     public function Test()
     {
-        return view ('a');
+        //$res = Db::table('ccdconf')->where('ccdno', '>', 1)->delete();
+        $res = Db::table('focusconf')->select();
+        halt($res);
     }
 
      //测试之方法

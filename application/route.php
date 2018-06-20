@@ -9,8 +9,6 @@ Route::post('login$', 'xinglong/login/dologin');
 Route::get('logout$', 'xinglong/login/logout');
 //显示各望远镜操控页面 路由
 Route::get('atpage/:at$', 'xinglong/page/at_page', [], ['at'=>'\d{1,}']);
-//ajax请求不同ccd的配置数据 路由
-Route::post('get_ccd_data/$', 'xinglong/page/get_ccd_data');
 //首页 路由
 Route::get('front$', 'xinglong/page/front');
 //用户管理及用户查询 路由

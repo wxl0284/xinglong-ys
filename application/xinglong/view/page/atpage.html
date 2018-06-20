@@ -186,10 +186,10 @@
 				  <td><a :class='{borderBtm: device_nav.dev_click=="plan"}' @click='plan_click' >观测计划</a></td>
 				  <td><a :class='{borderBtm: device_nav.dev_click=="pic"}' @click='pic_click' >观测图像</a></td>
 				  <td v-if='configData.has_gimbal'><a :class='{borderBtm: device_nav.dev_click=="gimbal"}' @click='gimbal_click' >转台</a></td>
-				  <td class='pos_r' v-if='configData.ccd_num>0' @mouseover='device_nav.select_ccd="show"' ><a :class='{borderBtm: device_nav.dev_click=="ccd"}' @click='ccd_click' >{{ccd_name}}</a>
-					<select id="" v-model='device_nav.ccdNo' v-if='device_nav.select_ccd=="show" && configData.ccd_num > 1' class='pos_a' style="top:86%;left:15%;" @change='select_ccd' >
-						<option value='-1'>选择ccd</option>
-						<option v-for="ccd_i in configData.ccd_num" :value="ccd_i">ccd{{ccd_i}}</option>
+				  <td class='pos_r' v-if='configData.ccd_num>0' ><a :class='{borderBtm: device_nav.dev_click=="ccd"}' @click='ccd_click' >{{ccd_name}}</a>
+					<select id="" v-model='device_nav.ccdNo' v-if='configData.ccd_num>1' class='pos_a' style="top:86%;left:15%;z-index:9999;" @change='select_ccd' >
+						<option value='-1' >选择ccd</option>
+						<option v-for="ccd_i in configData.ccd_num" :value="ccd_i" >ccd{{ccd_i}}</option>
 					</select>
 				 </td>
 				  <td v-if='configData.has_filter'><a :class='{borderBtm: device_nav.dev_click=="filter"}' @click='filter_click' >滤光片</a></td>
@@ -438,8 +438,8 @@
 	   
 	   <div id='ccdInfo' v-if='device_nav.dev_click=="ccd"'><!--ccd 指令和属性-->	   
 			<nav class='center'><!--ccd指令 导航-->
-			    <span name='coolTemp' :class='{active: device_nav.ccd_command=="coolTemp"}' @click ='device_nav.ccd_command="coolTemp"' v-if='configData.ccd.cansetcoolert==1' >制冷温度</span>
-				<span name='exposStratic' :class='{active: device_nav.ccd_command=="exposeParam"}' @click ='device_nav.ccd_command="exposeParam"' v-if='configData.ccd.cansetexposureparam==1' >曝光策略</span>
+			    <span name='coolTemp' :class='{active: device_nav.ccd_command=="coolTemp"}' @click ='device_nav.ccd_command="coolTemp"' v-if='ccd_config.cansetcoolert==1' >制冷温度</span>
+				<span name='exposStratic' :class='{active: device_nav.ccd_command=="exposeParam"}' @click ='device_nav.ccd_command="exposeParam"' v-if='ccd_config.cansetexposureparam==1' >曝光策略</span>
 				<span name='startExp'>开始曝光</span>			
 				<span name='setGear'>设置增益</span>			
 				<span name='readOut'>读出速度模式</span>			
@@ -455,20 +455,20 @@
 			</nav>
 			<div class='border2'><!--ccd 指令和可变属性-->
 				<div id='btnsCCD' class='center_mrg center BtnsDiv'>
-					<input id='ccdConnect' v-if='configData.ccd.canconnect==1' :class='{btnClick: device_nav.ccd_btn=="connect"}' class='border1 btnCommand' type='button' value='连接CCD' @click='ccd_btn_command(1)' >
-					<input id='ccdDisConnect' v-if='configData.ccd.canconnect==1' :class='{btnClick: device_nav.ccd_btn=="disConnect"}' class='border1 btnCommand' type='button' value='断开CCD' @click='ccd_btn_command(2)' >					
-					<input id='ccdStopExpose' v-if='configData.ccd.canstopexposure==1' :class='{btnClick: device_nav.ccd_btn=="stop_expose"}' class='border1 btnCommand' type='button' value='停止曝光' @click='ccd_btn_command(3)' >					
-					<input id='ccdAbortExpose' v-if='configData.ccd.canabortexposure==1' :class='{btnClick: device_nav.ccd_btn=="abort_expose"}' class='border1 btnCommand' type='button' value='终止曝光' @click='ccd_btn_command(4)' >
+					<input id='ccdConnect' v-if='ccd_config.canconnect==1' :class='{btnClick: device_nav.ccd_btn=="connect"}' class='border1 btnCommand' type='button' value='连接CCD' @click='ccd_btn_command(1)' >
+					<input id='ccdDisConnect' v-if='ccd_config.canconnect==1' :class='{btnClick: device_nav.ccd_btn=="disConnect"}' class='border1 btnCommand' type='button' value='断开CCD' @click='ccd_btn_command(2)' >					
+					<input id='ccdStopExpose' v-if='ccd_config.canstopexposure==1' :class='{btnClick: device_nav.ccd_btn=="stop_expose"}' class='border1 btnCommand' type='button' value='停止曝光' @click='ccd_btn_command(3)' >					
+					<input id='ccdAbortExpose' v-if='ccd_config.canabortexposure==1' :class='{btnClick: device_nav.ccd_btn=="abort_expose"}' class='border1 btnCommand' type='button' value='终止曝光' @click='ccd_btn_command(4)' >
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
 				<form class='center' v-if='device_nav.ccd_command == "coolTemp"' ><!--设置制冷温度-->
-					<input id='ccdTemperature' type="text" name='temperature' ref='ccd_cool' :placeholder='configData.ccd.lowcoolert +"~20"' v-model.trim='ccd_form.coolTemp.temp' @blur='ccd_cool(true)' >
+					<input id='ccdTemperature' type="text" ref='ccd_cool' :placeholder='ccd_config.lowcoolert +"~20"' v-model.trim='ccd_form.coolTemp.temp' @blur='ccd_cool(true)' >
 					<br><input type="button" class='margin_10' value="提交指令" @click='ccd_cool_sbmt' >
 				</form><!--设置制冷温度 结束-->
 				<form id='exposStratic' class='center' v-if='device_nav.ccd_command == "exposeParam"' ><!--曝光策略-->
 					<span>数据有效标志位：<input type="text" ref='validFlag' v-model.trim='ccd_form.exposeParam.validFlag' placeholder='整数' @blur='ccd_validFlag(true)' ></span>
 					<span>起始时刻：<input type="text" ref='startTime' :placeholder='">"+new Date().getTime()' v-model.trim='ccd_form.exposeParam.startTime' @blur='ccd_startTime(true)' ></span>
-					<span>曝光时间：<input id='durationInput' type="text" ref='duration' :placeholder='configData.ccd.minexposuretime + "~" + configData.ccd.maxexposuretime' v-model.trim='ccd_form.exposeParam.duration' @blur='ccd_duration(true)' ></span>
+					<span>曝光时间：<input id='durationInput' type="text" ref='duration' :placeholder='ccd_config.minexposuretime + "~" + ccd_config.maxexposuretime' v-model.trim='ccd_form.exposeParam.duration' @blur='ccd_duration(true)' ></span>
 					<span>延迟时间：<input id='delayInput' type="text" ref='delay' placeholder='数字' v-model.trim='ccd_form.exposeParam.delay' @blur='ccd_delay(true)' ></span>
 					<span>拍摄目标名称：<input id='ccdObjectName' type="text" ref='ccd_objName' placeholder='48位字符' v-model.trim='ccd_form.exposeParam.objName' @blur='ccd_objName(true)' ></span>
 					<span>拍摄目标类型：<select ref="ccd_objType" style='width:75px;' v-model='ccd_form.exposeParam.objType'>
@@ -555,19 +555,19 @@
 		 <div class='border2'><!--ccd 固定属性-->
 			<br><span class='propT'>CCD固定属性:</span><br><br>
 			<ul class='properUl'>
-				<li class='li fl'>探测器类型:<span>{{configData.ccd.type}}</span></li>
-				<li class='li fl'>传感器名称:<span>{{configData.ccd.sensorname}}</span></li>
-				<li class='li fl'>图像位数:<span>{{configData.ccd.imagebits}}</span></li>
-				<li class='li fl'>制冷方式:<span>{{configData.ccd.coolermode}}</span></li>
-				<li class='li fl'>最低制冷温度:<span>{{configData.ccd.lowcoolert}}</span></li>
-				<li class='li fl'>最大曝光时间:<span>{{configData.ccd.maxexposuretime}}</span></li>
-				<li class='li fl'>最小曝光时间:<span>{{configData.ccd.minexposuretime}}</span></li>
-				<li class='li fl'>快门类型:<span>{{configData.ccd.shuttertype}}</span></li>
-				<li class='li fl' style='width:578px;'>快门模式:<span>{{configData.ccd.shuttermode}}</span></li>
-				<li class='li fl' style='width:578px;'>读出模式:<span>{{configData.ccd.readoutmode}}</span></li>
-				<li class='li fl' style='width:578px;'>增益模式:<span>{{configData.ccd.gainmode}}</span></li>
-				<li class='li fl' style='width:578px;'>接口类型:<span>{{configData.ccd.interfacetype}}</span></li>
-				<li class='li fl' style='width:578px;'>曝光触发模式:<span>{{configData.ccd.exposetriggermode}}</span></li>
+				<li class='li fl'>探测器类型:<span>{{ccd_config.type}}</span></li>
+				<li class='li fl'>传感器名称:<span>{{ccd_config.sensorname}}</span></li>
+				<li class='li fl'>图像位数:<span>{{ccd_config.imagebits}}</span></li>
+				<li class='li fl'>制冷方式:<span>{{ccd_config.coolermode}}</span></li>
+				<li class='li fl'>最低制冷温度:<span>{{ccd_config.lowcoolert}}</span></li>
+				<li class='li fl'>最大曝光时间:<span>{{ccd_config.maxexposuretime}}</span></li>
+				<li class='li fl'>最小曝光时间:<span>{{ccd_config.minexposuretime}}</span></li>
+				<li class='li fl'>快门类型:<span>{{ccd_config.shuttertype}}</span></li>
+				<li class='li fl' style='width:578px;'>快门模式:<span>{{ccd_config.shuttermode}}</span></li>
+				<li class='li fl' style='width:578px;'>读出模式:<span>{{ccd_config.readoutmode}}</span></li>
+				<li class='li fl' style='width:578px;'>增益模式:<span>{{ccd_config.gainmode}}</span></li>
+				<li class='li fl' style='width:578px;'>接口类型:<span>{{ccd_config.interfacetype}}</span></li>
+				<li class='li fl' style='width:578px;'>曝光触发模式:<span>{{ccd_config.exposetriggermode}}</span></li>
              </ul>
            <div class='clear'></div>
 		 </div><!--ccd固定属性 结束-->
