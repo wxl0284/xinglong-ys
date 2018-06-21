@@ -26,8 +26,8 @@ class Ccd extends Base
         'abort_expose' => 48,
         'set_cool' => 56,
         'start_expose' => 54,
-        'expose_param' => 48,
-        // 'trackStar' => 68,
+        'expose_param' => 312,
+        'set_gain' => 52,
         // 'set_obj_name' => 98,
         // 'slewAzEl' => 64,
         // 'slewDerotator' => 56,
@@ -46,7 +46,7 @@ class Ccd extends Base
         'set_cool' => 2,
         'start_expose' => 4,
         'expose_param' => 3,
-        // 'set_obj_name' => 4,
+        'set_gain' => 7,
         // 'slewAzEl' => 5,
         // 'slewDerotator' => 6,
         // 'axis3Mode' => 7,
@@ -137,12 +137,13 @@ class Ccd extends Base
             case 'expose_param':
                 return $this->expose_strategy ($postData, 'expose_param');
                 break;
+            case 'set_gain':
+                return $this->set_gain ($postData, 'set_gain');
+                break;
             default:
                 break;
         }
 
-        // }else if( $command == 4 ){//设置增益     
-        //     return $this->set_gain(); //执行发送
         // }else if( $command == 5 ){////设置 读出速度模式值     
         //     return $this->set_readSpeedMode(); //执行发送
         // }else if( $command == 6 ){////设置 转移速度模式值     
@@ -222,7 +223,6 @@ class Ccd extends Base
         return '制冷温度指令：' .udpSend($sendMsg, $this->ip, $this->port);	 
      }/*设置制冷温度 结束*/
 
-    /*设置曝光策略*/
     protected function expose_strategy ($postData, $param) /*设置曝光策略*/
     {        
         if ( $postData['validFlag'] !== '' )   //数据有效标志位
@@ -267,8 +267,8 @@ class Ccd extends Base
         }
         
         if ( $postData['objName'] !== '' )  //拍摄目标
-        {
-            if (preg_match('/[\x{4e00}-\x{9af5} ]/u', $postData['objName']))
+        { $leng = strlen($postData['objName']);
+            if ( preg_match('/[\x{4e00}-\x{9af5} ]/u', $postData['objName']) || $leng > 48 || $leng < 1)
             {
                 return '目标名称不能含汉字或空格！';
             }
@@ -316,7 +316,7 @@ class Ccd extends Base
         
         if ($objectDeclination !== '::')   
         {//当前拍摄目标赤纬
-            if (!preg_match('/^\d{2}$/', $postData['objectDeclination1']) || $postData['objectDeclination1'] > 90 || $postData['objectDeclination1'] < -90)
+            if (!preg_match('/^-?\d{2}$/', $postData['objectDeclination1']) || $postData['objectDeclination1'] > 90 || $postData['objectDeclination1'] < -90)
             {
             	return '曝光策略:赤纬之小时参数超限!';
             }
@@ -343,320 +343,309 @@ class Ccd extends Base
             $sendMsg .= pack('d', 0);
         }
         
-        if (($objectEpoch=input('objectEpoch')) !== '')    //拍摄目标历元
+        if ( $postData['objectEpoch'] !== '' )    //拍摄目标历元
         {
-            if (!preg_match('/^\d{1}$/', $objectEpoch))
+            if ( !preg_match('/^\d{1}$/', $postData['objectEpoch'] ))
             {
-                return '目标历元只能是数字！';
+                return '目标历元参数有误！';
             }
-            $sendMsg .= pack('S', $objectEpoch);   
+            $sendMsg .= pack('S', $postData['objectEpoch']);   
         }else{
             $sendMsg .= pack('S', 0);   //unsigned short
         }
         
-        if (($objectBand = input('objectBand')) !== '')      //拍摄波段
-        {  
-            if (!preg_match('/^[a-zA-Z0-9_-]{1,8}$/', $objectBand))
+        if ( $postData['objectBand'] !== '' )   //拍摄波段
+        { 
+            $length = strlen($postData['objectBand']);
+
+            if ( preg_match('/[\x{4e00}-\x{9af5}]/u', $postData['objectBand']) || $length > 8 || $length < 1 )
             {
-                return '当前拍摄波段只能是8位字母数字！';
+                return '拍摄波段须最多8字符不能有汉字！';
             }
-            $sendMsg .= pack('a8', $objectBand);     //uint8-8
+
+            $sendMsg .= pack('a8', $postData['objectBand']);     //uint8-8
         }else{
             $sendMsg .= pack('a8', '0');
         }
         
-        if (($objectFilter=input('objectFilter')) !== '')  //拍摄波段滤光片系统
+        if ( $postData['objectFilter'] !== '' )  //拍摄波段滤光片系统
         {
-            if (!preg_match('/^\d{1,5}$/', $objectFilter))
+            if (!preg_match('/^[0-3]$/', $postData['objectFilter']))
             {
-                return '当前拍摄波段只能是数字！';
+                return '当前拍摄波段输入有误！';
             }
-            $sendMsg .= pack('S', $objectFilter);     //uint16
+            $sendMsg .= pack('S', $postData['objectFilter']);     //uint16
         }else{
             $sendMsg .= pack('S', 0);
         }
-        
-        if (($isSaveImage=input('isSaveImage')) !== '')  //是否保存图像
+
+        if ( $postData['isSaveImage'] !== '' )  //是否保存图像
         {
-            if (!preg_match('/^\d{1,5}$/', $isSaveImage))
+            if ( !($postData['isSaveImage'] == 1 || $postData['isSaveImage'] == 2) )
             {
-                return '是否保存图像只能是数字！';
+                return '是否保存图像输入有误！';
             }
-            $sendMsg .= pack('S', $isSaveImage);     
+            $sendMsg .= pack('S', $postData['isSaveImage']);     
         }else{
             $sendMsg .= pack('S', 0);   //uint16
         }
         
-        if (($weatherGatherTime=input('weatherGatherTime')) !== '')   
+        if ( $postData['weatherGatherTime'] !== '' )   
         {//气象数据采集时间
-            if (!preg_match('/^\d{1,10}$/', $weatherGatherTime))
-            {
-                return '象数据采集时间只能是数字！';
-            }
-            $sendMsg .= pack('L', $weatherGatherTime);     //uint32
+            // if (!preg_match('/^\d{1,10}$/', $weatherGatherTime))
+            // {
+            //     return '象数据采集时间只能是数字！';
+            // }
+            $sendMsg .= pack('L', $postData['weatherGatherTime']);     //uint32
         }else{
             $sendMsg .= pack('L', 0); //unsigned int
         }
         
-        if (($temperature1=input('temperature1')) !== '')    //温度
+        if ( $postData['weatherGatherTime'] !== '' )    //温度
         {
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $temperature1))
-            {
-                return '温度只能是数字！';
-            }
-            $sendMsg .= pack('d', $temperature1);     //double64
+            // if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $postData['weatherGatherTime']))
+            // {
+            //     return '温度只能是数字！';
+            // }
+            $sendMsg .= pack('d', $postData['weatherGatherTime']);     //double64
         }else{
             $sendMsg .= pack('d', 0);
         }
         
-        if (($humidity=input('humidity')) !== '')    //湿度
+        if ( $postData['humidity'] !== '' )    //湿度
         {
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $humidity))
-            {
-                return '湿度只能是数字！';
-            }
-            $sendMsg .= pack('d', $humidity);     //double64
+            // if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $humidity))
+            // {
+            //     return '湿度只能是数字！';
+            // }
+            $sendMsg .= pack('d', $postData['humidity']);     //double64
         }else{
             $sendMsg .= pack('d', 0);
         }
         
-        if (($windSpeed=input('windSpeed')) !== '')  //风速
+        if ( $postData['windSpeed'] !== '' )  //风速
         {
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $windSpeed))
-            {
-                return '风速只能是数字！';
-            }
-            $sendMsg .= pack('d', $windSpeed);     //double64
+            // if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $postData['windSpeed'])
+            // {
+            //     return '风速只能是数字！';
+            // }
+            $sendMsg .= pack('d', $postData['windSpeed']);     //double64
         }else{
             $sendMsg .= pack('d', 0);
         }
         
-        if (($pressure=input('pressure')) !== '')      //气压
+        if ( $postData['pressure'] !== '' )      //气压
         {
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $pressure))
-            {
-                return '气压只能是数字！';
-            }
-            $sendMsg .= pack('d', $pressure);     //double64
+            // if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $pressure))
+            // {
+            //     return '气压只能是数字！';
+            // }
+            $sendMsg .= pack('d', $postData['pressure']);     //double64
         }else{
             $sendMsg .= pack('d', 0);
         }
         
-        if (($skyGatherTime=input('skyGatherTime')) !== '')   //天气状态采集时间
+        if ( $postData['skyGatherTime'] !== '')   //天气状态采集时间
         {
-            if (!preg_match('/^\d{1,10}$/', $skyGatherTime))
-            {
-                return '气象数据采集时间只能是数字！';
-            }
-            $sendMsg .= pack('L', $skyGatherTime);     //uint32
+            // if (!preg_match('/^\d{1,10}$/', $skyGatherTime))
+            // {
+            //     return '气象数据采集时间只能是数字！';
+            // }
+            $sendMsg .= pack('L', $postData['skyGatherTime']);     //uint32
         }else{
             $sendMsg .= pack('L', 0);   //unsigned int
         }
         
-        if (($skyState=input('skyState')) !== '')  //天气状态
+        if ( $postData['skyState'] !== '' )  //天气状态
         {
-            if (!preg_match('/^\d{1,5}$/', $skyState))
-            {
-                return '天气状态只能是数字！';
-            }
-            $sendMsg .= pack('S', $skyState);     
+            // if (!preg_match('/^\d{1,5}$/', $skyState))
+            // {
+            //     return '天气状态只能是数字！';
+            // }
+            $sendMsg .= pack('S', $postData['skyState']);     
         }else{
             $sendMsg .= pack('S', 0);   //unsigned short
         }
         
-        if (($clouds=input('clouds')) !== '')      //云量
+        if ( $postData['clouds'] !== '' )      //云量
         {
-            if (!preg_match('/^\d{1,5}$/', $clouds))
-            {
-                return '云量只能是数字！';
-            }
-            $sendMsg .= pack('S', $clouds);  
+            // if (!preg_match('/^\d{1,5}$/', $clouds))
+            // {
+            //     return '云量只能是数字！';
+            // }
+            $sendMsg .= pack('S', $postData['clouds']);  
         }else{
             $sendMsg .= pack('S', 0); //unsigned short
         }
         
-        if (($seeingGatherTime=input('seeingGatherTime')) !== '')   //视宁度采集时间
+        if ( $postData['seeingGatherTime'] !== '' )   //视宁度采集时间
         {
-            if (!preg_match('/^\d{1,10}$/', $seeingGatherTime))
-            {
-                return '视宁度采集时间只能是数字！';
-            }
-            $sendMsg .= pack('L', $seeingGatherTime);     //uint32
+            // if (!preg_match('/^\d{1,10}$/', $seeingGatherTime))
+            // {
+            //     return '视宁度采集时间只能是数字！';
+            // }
+            $sendMsg .= pack('L', $postData['seeingGatherTime']);     //uint32
         }else{
             $sendMsg .= pack('L', 0); //unsigned int
         }
         
-        if (($seeing=input('seeing')) !== '')   //视宁度
+        if ( $postData['seeing'] !== '' )   //视宁度
         {
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $seeing))
-            {
-                return '视宁度只能是数字！';
-            }
-            $sendMsg .= pack('d', $seeing);     //double
+            // if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $seeing))
+            // {
+            //     return '视宁度只能是数字！';
+            // }
+            $sendMsg .= pack('d', $postData['seeing']);     //double
         }else{
             $sendMsg .= pack('d', 0);
         }
         
-        if (input('dustGatherTime') !== '')      //粉尘采集时间
+        if ( $postData['dustGatherTime'] !== '' )      //粉尘采集时间
         {
-            $dustGatherTime = input('dustGatherTime');
-            if (!preg_match('/^\d{1,10}$/', $dustGatherTime))
-            {
-                return '粉尘采集时间只能是数字！';
-            }
-            $sendMsg .= pack('L', $dustGatherTime);     //uint32
+            // $dustGatherTime = input('dustGatherTime');
+            // if (!preg_match('/^\d{1,10}$/', $dustGatherTime))
+            // {
+            //     return '粉尘采集时间只能是数字！';
+            // }
+            $sendMsg .= pack('L', $postData['dustGatherTime']);     //uint32
         }else{
             $sendMsg .= pack('L', 0);
         }
         
-        if (input('dust') !== '')      //粉尘
+        if ( $postData['dust'] !== '')      //粉尘
         {
-            $dust = input('dust');
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $dust))
-            {
-                return '粉尘数据只能是数字！';
-            }
-            $sendMsg .= pack('d', $dust);     //double64
+            // if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $dust))
+            // {
+            //     return '粉尘数据只能是数字！';
+            // }
+            $sendMsg .= pack('d', $postData['dust']);     //double64
         }else{
             $sendMsg .= pack('d', 0);
         }
         
-        if (input('AMS') !== '')      //AMS
+        if ( $postData['AMS'] !== '')      //AMS
         {
-            $AMS = input('AMS');
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $AMS))
-            {
-                return 'AMS数据只能是数字！';
-            }
-            $sendMsg .= pack('d', $AMS);     //double64
+            // if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $AMS))
+            // {
+            //     return 'AMS数据只能是数字！';
+            // }
+            $sendMsg .= pack('d',  $postData['AMS']);     //double64
         }else{
             $sendMsg .= pack('d', 0);
         }
         
-        if (($extinctionGatherTime=input('extinctionGatherTime')) !== '')    //消光系数采集时间
+        if ( $postData['extinctionGatherTime'] !== '' )    //消光系数采集时间
         {
-            if (!preg_match('/^\d{1,10}$/', $extinctionGatherTime))
-            {
-                return '消光系数采集时间只能是数字！';
-            }
-            $sendMsg .= pack('L', $extinctionGatherTime);     
+            // if (!preg_match('/^\d{1,10}$/', $extinctionGatherTime))
+            // {
+            //     return '消光系数采集时间只能是数字！';
+            // }
+            $sendMsg .= pack('L', $postData['extinctionGatherTime']);    
         }else{
             $sendMsg .= pack('L', 0); //unsigned int
         }
         
-        if (($rightAscension=input('rightAscension')) !== '')    //赤经
+        if ( $postData['rightAscension'] !== '')    //赤经
         {
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $rightAscension))
-            {
-                return '赤经只能是数字！';
-            }
-            $sendMsg .= pack('d', $rightAscension);     
+            // if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $rightAscension))
+            // {
+            //     return '赤经只能是数字！';
+            // }
+            $sendMsg .= pack('d', $postData['rightAscension']);     
         }else{
             $sendMsg .= pack('d', 0); //double64
         }
         
-        if (($declination = input('declination')) !== '')      //赤纬
+        if ( $postData['declination'] !== '')      //赤纬
         {
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $declination))
-            {
-                return '赤纬只能是数字！';
-            }
-            $sendMsg .= pack('d', $declination);     
+            // if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $declination))
+            // {
+            //     return '赤纬只能是数字！';
+            // }
+            $sendMsg .= pack('d', $postData['declination']);     
         }else{
             $sendMsg .= pack('d', 0); //double64
         }
         
-         if (($band = input('band')) !== '')      //波段
+         if ( $postData['band'] !== '' )      //波段
         {
-            if (!preg_match('/^[a-zA-Z0-9]{1,8}$/', $band))
-            {
-                return '波段只能是数字！';
-            }
-            $sendMsg .= pack('a8', $band);     //band  uint8-8
+            // if (!preg_match('/^[a-zA-Z0-9]{1,8}$/', $band))
+            // {
+            //     return '波段只能是数字！';
+            // }
+            $sendMsg .= pack('a8', $postData['band']);     //band  uint8-8
         }else{
             $sendMsg .= pack('a8', '0');
         }
         
-        if (($extinctionFactor1 = input('extinctionFactor1')) !== '')      
+        if ( $postData['extinctionFactor1'] !== '')      
         {//消光系数1
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $extinctionFactor1))
-            {
-                return '消光系数1只能是数字！';
-            }
-            $sendMsg .= pack('d', $extinctionFactor1);     
+            // if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $postData['extinctionFactor1']))
+            // {
+            //     return '消光系数1只能是数字！';
+            // }
+            $sendMsg .= pack('d', $postData['extinctionFactor1']);     
         }else{
             $sendMsg .= pack('d', 0); //double64
         }
         
-        if (($extinctionFactor2 = input('extinctionFactor2')) !== '')      //消光系数2
+        if ( $postData['extinctionFactor2'] !== '')      //消光系数2
         {
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $extinctionFactor2))
-            {
-                return '消光系数2只能是数字！';
-            }
-            $sendMsg .= pack('d', $extinctionFactor2);     
+            $sendMsg .= pack('d', $postData['extinctionFactor2']);     
         }else{
             $sendMsg .= pack('d', 0);//double64
         }
         
-        if ( ($extinctionFactor3 = input('extinctionFactor3')) !== '')      //消光系数3
+        if ( $postData['extinctionFactor3'] !== '')      //消光系数3
         {
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $extinctionFactor3))
-            {
-                return '消光系数3只能是数字！';
-            }
-            $sendMsg .= pack('d', $extinctionFactor3);     //double64
+            $sendMsg .= pack('d', $postData['extinctionFactor3']);     //double64
         }else{
             $sendMsg .= pack('d', 0);
         }
         
-        if (($telescopeRightAscension = input('telescopeRightAscension')) !== '')      //望远镜赤经
+        if ( $postData['telescopeRightAscension'] !== '')      //望远镜赤经
         {
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $telescopeRightAscension))
-            {
-                return '望远镜赤经只能是数字！';
-            }
-            $sendMsg .= pack('d', $telescopeRightAscension);     //double64
+            // if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $telescopeRightAscension))
+            // {
+            //     return '望远镜赤经只能是数字！';
+            // }
+            $sendMsg .= pack('d', $postData['telescopeRightAscension']);     //double64
         }else{
             $sendMsg .= pack('d', 0);
         }
         
-        if (($telescopeDeclination = input('telescopeDeclination')) !== '')      //望远镜赤纬
+        if ( $postData['telescopeDeclination'] !== '')      //望远镜赤纬
         {
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $telescopeDeclination))
-            {
-                return '望远镜赤纬只能是数字！';
-            }
-            $sendMsg .= pack('d', $telescopeDeclination);     //double64
+            $sendMsg .= pack('d', $postData['telescopeDeclination']);     //double64
         }else{
             $sendMsg .= pack('d', 0);
         }
         
-        if ( ($focusLength = input('focusLength')) !== '' )      //焦距
+        if ( $postData['focusLength'] !== '' )      //焦距
         {
-            if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $focusLength))
-            {
-                return '焦距数据只能是数字！';
-            }
-            $sendMsg .= pack('d', $focusLength);     //double64
+            // if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $focusLength))
+            // {
+            //     return '焦距数据只能是数字！';
+            // }
+            $sendMsg .= pack('d', $postData['focusLength']);     //double64
         }else{
             $sendMsg .= pack('d', 0);
         }
         
-        if ( ($frameNum = input('frameNum')) !== '' )      //帧数
+        if ( $postData['frameNum'] !== '' )      //帧数
         {
-            if (!preg_match('/^\d{1,10}$/', $frameNum))
-            {
-                return '帧数只能是数字！';
-            }
-            $sendMsg .= pack('L', $frameNum);     //uint32
+            // if (!preg_match('/^\d{1,10}$/', $frameNum))
+            // {
+            //     return '帧数只能是数字！';
+            // }
+            $sendMsg .= pack('L', $postData['frameNum']);     //uint32
         }else{
             $sendMsg .= pack('L', 0);
         }
         
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
- 
-        $headInfo .= packHead2($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=3);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
+
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
         //socket发送数据        
         $sendMsg = $headInfo . $sendMsg;
         return '设置曝光策略指令：' .udpSend($sendMsg, $this->ip, $this->port);	 
@@ -684,42 +673,27 @@ class Ccd extends Base
     }/*开始曝光 结束*/
 
     /*设置增益*/
-    protected function set_gain ()
+    protected function set_gain ($postData, $param)  /*设置增益*/
     {
-        $length = 48 +4;
+        $res = Db::table('ccdconf')->where('ccdno', $this->ccdNo)->where('teleid', $postData['at'])->field('gainmode, gainnumber')->find();
 
-        if ( ($mode = input('mode')) !== '' )      //增益模式
+        if ( $postData['gear'] < 1 || $postData['gear'] > $res['gainnumber'] )
         {
-            if (!preg_match('/^\d{1,5}$/', $mode))
-            {
-                return '增益模式只能是数字！';
-            }
-            $sendMsg = pack('S', $mode);     //unsigned short
-        }else{
-            $sendMsg = pack('S', 0);
+            return '增益档位参数超限!';
         }
-        
-        if ( ($gear = input('gear')) !== '' )      //增益档位
-        {
-            if (!preg_match('/^\d{1,5}$/', $gear))
-            {
-                return '增益模式只能是数字！';
-            }
-            $sendMsg .= pack('S', $gear);     //unsigned short
-        }else{
-            $sendMsg .= pack('S', 0);
-        }
+        $sendMsg = pack('S', $postData['mode']);
+        $sendMsg = pack('S', $postData['gear']);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
- 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=7);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
+
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
         //socket发送数据        
         $sendMsg = $headInfo . $sendMsg;
         return '设置增益指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }/*设置增益 结束*/
 
-    /*设置 读出速度模式值*/
-    protected function set_readSpeedMode ()
+    
+    protected function set_readSpeedMode ()  /*设置 读出速度模式值*/
     {
         $length = 48 + 2;      //该结构体总长度
         $ReadSpeedMode = input('ReadSpeedMode');

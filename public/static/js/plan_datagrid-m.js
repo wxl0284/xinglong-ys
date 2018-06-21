@@ -603,7 +603,8 @@
 					mode : modeVal,
 					start : index +1,
 					command : 2, //标识 plan.php控制器中用以区别要执行的函数
-					at : at,	
+					at : at,
+					at_aperture: aperture	
 				},             
 	            success:  function (info) {
 		            planErr = 0;
@@ -722,6 +723,7 @@
 					planData: plans,
 					command : 1,  //标识 plan.php控制器中用以区别要执行的函数
 					at : at,
+					at_aperture:aperture,
 					plan_filter_option : plan_filter_option, //将该望远镜filter的['u','v','b']提交
 				},
 				success: function (info){
@@ -782,7 +784,7 @@ function get_plan () {
 	$.ajax({
 		url: '/plan',
 		type: 'post',
-		data: {at: at, command: 'get_plan'},
+		data: {at: at, command: 'get_plan', at_aperture:aperture},
 		success: function (info) {
 			if ( info.indexOf("{") === -1 )
 			{//非json数据

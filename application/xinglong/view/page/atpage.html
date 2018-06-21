@@ -16,7 +16,7 @@
 		var at = "{$data['at_id']}"; //atlist表中的主键id
 		var aperture = "{$at_aperture[$data['at_id']]}"; //即添加望远镜时的口径值
 		var configData =  {$data['configData']}; //各子设备的配置数据
-		console.log(configData.gimbal.longitude);
+		//console.log(ccd_config.gainmode);
 	</script>
 	 {load href='/static/js/atpage.js'}
 </head>
@@ -442,7 +442,7 @@
 			    <span name='coolTemp' :class='{active: device_nav.ccd_command=="coolTemp"}' @click ='device_nav.ccd_command="coolTemp"' v-if='ccd_config.cansetcoolert==1' >制冷温度</span>
 				<span name='exposStratic' :class='{active: device_nav.ccd_command=="exposeParam"}' @click ='device_nav.ccd_command="exposeParam"' v-if='ccd_config.cansetexposureparam==1' >曝光策略</span>
 				<span name='startExp' :class='{active: device_nav.ccd_command=="start_expose"}' @click ='device_nav.ccd_command="start_expose"' v-if='ccd_config.canstartexposure==1' >开始曝光</span>			
-				<span name='setGear'>设置增益</span>			
+				<span name='setGear' :class='{active: device_nav.ccd_command=="set_gain"}' @click ='device_nav.ccd_command="set_gain"' v-if='ccd_config.cansetgain==1' >设置增益</span>			
 				<span name='readOut'>读出速度模式</span>			
 				<span name='transSpeed'>转移速度模式</span>			
 				<span name='setBin'>设置Bin</span>	
@@ -549,6 +549,18 @@
 					帧序号：<input type="text">
 					<br><input type="button" class='margin_10' value="提交指令" @click='ccd_startExpose_sbmt' >
 				</form><!--开始曝光 结束-->
+				<form class='center' v-if='device_nav.ccd_command == "set_gain"'><!--设置增益-->
+					增益模式：<select name="mode" style='width:auto;' v-model='ccd_form.set_gain.mode'> 
+						<option value="-1">请选择</option>
+						<option v-if="ccd_gainMode.High_Capacity" value="1" >{{ccd_gainMode.High_Capacity}}</option>
+						<option v-if="ccd_gainMode.High_Sensitivity" value="2" >{{ccd_gainMode.High_Sensitivity}}</option>
+					</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					增益档位：<select name="gear" style='width:60px;' v-model='ccd_form.set_gain.gear' >	
+						<option value="-1">请选择</option>
+						<option :value="v" v-for="v in ccd_config.gainnumber*1" >{{v}}x</option>
+					</select>
+					<br><input type="button" class='margin_10' value="提交指令" @click='ccd_gain_sbmt' >
+				</form><!--设置增益 结束-->
 			  <hr style='width:98%;' class='center_mrg'><br>
 			  <div><!--CCD可变属性-->
                 <span class='propT'>CCD可变属性:</span><br><br>

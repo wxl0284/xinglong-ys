@@ -29,6 +29,9 @@
 			configData: configData, //configData是后端返回的json数据
 			ccd_config:configData.ccd[0], //此对象存储ccd的配置数据
 			ccd_name:'CCD1',
+			// final_gainMode:{
+			// 	High_Sensitivity: null, High_Capacity: null
+			// },
 			device_nav: {//此对象中的数据用以区分是否给各子设备加上蓝色底框
 				dev_click: 'gimbal',  //区分各自设备
 				gimbal_command: '',   //区分转台各指令
@@ -99,8 +102,32 @@
 				start_expose: {
 					isReadFrameSeq:'1', frameSequence: '', command:'start_expose', at:at, at_aperture: aperture
 				},
+				set_gain: {
+					mode:'-1', gear: '-1', command:'set_gain', at:at, at_aperture: aperture
+				},
 			},/**ccd1 表单 结束**/
 		},/********vue data属性对象 结束********/
+		computed: {//计算属性
+			ccd_gainMode: function (){
+				var gainMode = this.ccd_config.gainmode.split(', ');
+				var final_gainMode = {
+					High_Sensitivity: null, High_Capacity: null
+				};
+				gainMode.filter(
+					function (e) {
+						if ( e.indexOf('ensitiv') !== -1 )
+						{
+							final_gainMode.High_Sensitivity = e;
+						}
+						if ( e.indexOf('apaci') !== -1 )
+						{
+							final_gainMode.High_Capacity = e;
+						}
+					}
+				);
+				return final_gainMode;
+			}, /*ccd_gainMode 结束*/
+		},/*computed 结束*/
 		methods: {
 			plan_click: function () {
 				this.device_nav.dev_click = 'plan';
@@ -115,7 +142,7 @@
 				var that = this; //存储vue实例化的对象
 				var btn_str = ''; //控制按钮的样式
 				var btn_text = '';
-				var data = {at: at, command: ''}; //提交的数据
+				var data = {at: at, command: '',at_aperture:aperture}; //提交的数据
 
 				switch (connect) {
 					case 1:
@@ -289,7 +316,7 @@
 				var msg = '';
 				var patn = /^\d{2}$/;
 				var v = this.gimbal_form.trackStar.declination2;
-				if ( !patn.test(v) || v > 59 || v < 1 )
+				if ( !patn.test(v) || v > 59 || v < 0 )
 				{
 					msg = '赤纬分钟参数超限';
 				}
@@ -893,7 +920,7 @@
 				var msg = '';
 				var patn = /^\d{2}$/;
 				var v = this.ccd_form.exposeParam.objectRightAscension2;
-				if ( !patn.test(v) || v > 59 || v < 1 )
+				if ( !patn.test(v) || v > 59 || v < 0 )
 				{
 					msg = '目标赤经分钟参数超限';
 				}
@@ -942,7 +969,7 @@
 				var msg = '';
 				var patn = /^\d{2}$/;
 				var v = this.ccd_form.exposeParam.objectDeclination2;
-				if ( !patn.test(v) || v > 59 || v < 1 )
+				if ( !patn.test(v) || v > 59 || v < 0 )
 				{
 					msg = '目标赤纬分钟参数超限';
 				}
@@ -1047,8 +1074,68 @@
 				}
 			},/*ccd_exposeParam_sbmt 结束*/
 			ccd_startExpose_sbmt:function () {
-				console.log(this.ccd_form.start_expose.isReadFrameSeq);
-			},/*ccd_exposeParam_sbmt 结束*/
+				this.ccd_form.start_expose.ccdNo = this.device_nav.ccdNo;
+				$.ajax({
+					url: '/ccd',
+					type: 'post',
+					data: this.ccd_form.start_expose,
+					success: function (info) {
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});/*layer.alert 结束*/
+					},/*success方法 结束*/
+					error:function (){
+						layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+					},
+				})/*ajax 结束*/
+			},/*ccd_startExpose_sbmt 结束*/
+			ccd_gain_sbmt:function () {
+				var msg = '';
+				if ( this.ccd_form.set_gain.mode == -1 )
+				{
+					msg += '增益模式未选择<br>';
+				}
+				if ( this.ccd_form.set_gain.gear == -1 )
+				{
+					msg += '增益档位未选择<br>';
+				}
+
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:false,closeBtn:0});return;
+				}else{
+					this.ccd_form.set_gain.ccdNo = this.device_nav.ccdNo;
+					$.ajax({
+						url: '/ccd',
+						type: 'post',
+						data: this.ccd_form.set_gain,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error:function (){
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					})/*ajax 结束*/
+				}
+			}
 		},/******methods 结束******/
 	});/***************vue js结束*****************/
 
