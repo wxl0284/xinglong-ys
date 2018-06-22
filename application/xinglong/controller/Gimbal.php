@@ -116,55 +116,38 @@ class Gimbal extends Base
         switch ($command) {
             case 'connect':
                 return $this->connect (1, 'connect');
-                break;
             case 'disConnect':
                 return $this->connect (2, 'connect');
-                break;
             case 'findhome':
                 return $this->findHome ('findhome');
-                break;
             case 'park':
                 return $this->button_command ('park');
-                break;
             case 'stop':
                 return $this->button_command ('stop');
-                break;
             case 'emergstop':
                 return $this->button_command ('emergstop');
-                break;
             case 'trackStar':
                 return $this->trackStar ($postData, 'trackStar');
-                break;
             case 'set_obj_name':
                 return $this->set_obj_name ($postData, 'set_obj_name');
-                break;
             case 'slewAzEl':
                 return $this->direct ($postData, 'slewAzEl');
-                break;
             case 'slewDerotator':
                 return $this->axis3_direct ($postData, 'slewDerotator');
-                break;
             case 'axis3Mode':
                 return $this->axis3_mode ($postData, 'axis3Mode');
-                break;
             case 'speed_alter': //速度修正
                 return $this->speed_alter ($postData, 'speed_alter');
-                break;
             case 'speed_fixed': //恒速运动
                 return $this->fixed_move ($postData, 'speed_fixed');
-                break;
             case 'position_alter': //位置修正
                 return $this->pos_correct ($postData, 'position_alter');
-                break;
             case 'cover_op': //镜盖操作
                 return $this->cover_op ($postData, 'cover_op');
-                break;
             case 'setFocusType': //切换镜操作
                 return $this->setFocusType ($postData, 'setFocusType');
-                break;
             case 'save_sync_data': //保存同步数据
                 return $this->saveSynchData ('save_sync_data');
-                break;
             default:
                 break;
         }

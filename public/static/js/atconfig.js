@@ -210,7 +210,7 @@ $(function () {
                                         ccdAttrModifyTime.html(info.ccd_data[ccd_num_i-1].attrmodifytime); //显示属性更新时间
                                         show_ccd1_data (info.ccd_data[ccd_num_i-1]);
                                 
-                                        if (info.ccd_file)
+                                        if (info.ccd_file[ccd_num_i] !== 0)
                                         {
                                             show_file (ccdFile, info.ccd_file[ccd_num_i]);
                                         }else{
@@ -222,7 +222,7 @@ $(function () {
                                         ccd_2AttrModifyTime.html(info.ccd_data[ccd_num_i-1].attrmodifytime); //显示属性更新时间
                                         show_ccd2_data (info.ccd_data[ccd_num_i-1]);
 
-                                        if (info.ccd_file[ccd_num_i])
+                                        if (info.ccd_file[ccd_num_i] !== 0)
                                         {
                                             show_file (ccd_2_File, info.ccd_file[ccd_num_i]);
                                         }else{
@@ -234,7 +234,7 @@ $(function () {
                                         ccd_3AttrModifyTime.html(info.ccd_data[ccd_num_i-1].attrmodifytime); //显示属性更新时间
                                         show_ccd3_data (info.ccd_data[ccd_num_i-1]);
 
-                                        if (info.ccd_file[ccd_num_i])
+                                        if (info.ccd_file[ccd_num_i] !== 0)
                                         {
                                             show_file (ccd_3_File, info.ccd_file[ccd_num_i]);
                                         }else{
@@ -246,7 +246,7 @@ $(function () {
                                         ccd_4AttrModifyTime.html(info.ccd_data[ccd_num_i-1].attrmodifytime); //显示属性更新时间
                                         show_ccd4_data (info.ccd_data[ccd_num_i-1]);
 
-                                        if (info.ccd_file[ccd_num_i])
+                                        if (info.ccd_file[ccd_num_i] !== 0)
                                         {
                                             show_file (ccd_4_File, info.ccd_file[ccd_num_i]);
                                         }else{
@@ -258,7 +258,7 @@ $(function () {
                                         ccd_5AttrModifyTime.html(info.ccd_data[ccd_num_i-1].attrmodifytime); //显示属性更新时间
                                         show_ccd5_data (info.ccd_data[ccd_num_i-1]);
 
-                                        if (info.ccd_file[ccd_num_i])
+                                        if (info.ccd_file[ccd_num_i] !== 0)
                                         {
                                             show_file (ccd_5_File, info.ccd_file[ccd_num_i]);
                                         }else{
@@ -474,12 +474,19 @@ $(function () {
         //显示ccd-No1 及其他ccd之制冷方式 结束
 
         //显示ccd-No1 及其他ccd之读出速度模式
-        showData = data.readoutSpeed;
+        /*showData = data.readoutSpeed;
         resHtml = '<option value="0">请选择</option>';
         var n = showData.length;
         for (var i=0; i < n; i++)
         {
             resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
+        }*/
+        showData = data.readoutSpeed;
+        resHtml = '';
+        var n = showData.length;
+        for (var i=0; i < n; i++)
+        {
+            resHtml += showData[i] + "<input type='checkbox' name='readoutspeed[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
         }
         ccdReadoutSpeed.html(resHtml);
         ccd_2ReadoutSpeed.html(resHtml);
@@ -505,12 +512,13 @@ $(function () {
 
         //显示ccd-No1 及其他ccd之转移速度模式
         showData = data.transferSpeed;
-        resHtml = '<option value="0">请选择</option>';
+        resHtml = '';
         var n = showData.length;
         for (var i=0; i < n; i++)
         {
-            resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
+            resHtml += showData[i] + "<input type='checkbox' name='transferspeed[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
         }
+
         ccdTransferSpeed.html(resHtml);
         ccd_2TransferSpeed.html(resHtml);
         ccd_3TransferSpeed.html(resHtml);
@@ -1790,7 +1798,18 @@ $(function () {
         ccdMinExposureTime.val(data.minexposuretime);
         ccdExposureTimeRation.val(data.exposuretimeration);
         ccdFullWellDepth.val(data.fullwelldepth);
-        data.readoutspeed === undefined ? ccdReadoutSpeed.val('0') : ccdReadoutSpeed.val(data.readoutspeed);
+
+        /*读出速度模式*/
+        if ( data.readoutspeed )
+        {
+            data.readoutspeed = data.readoutspeed.split('#');
+            var readoutspeed_mode_n = data.readoutspeed.length;
+            for (var read_out_speed_i = 0; read_out_speed_i < readoutspeed_mode_n; read_out_speed_i++)
+            {//将对应的选项设为checked
+                ccdReadoutSpeed.find('input[value="' + data.readoutspeed[read_out_speed_i] + '"]').prop('checked', true);
+            }
+        }/*读出速度模式 结束*/
+
         /*读出模式*/
         if ( data.readoutmode )
         {
@@ -1801,7 +1820,18 @@ $(function () {
                 ccdreadoutMode.find('input[value="' + data.readoutmode[read_out_i] + '"]').prop('checked', true);
             }
         }/*读出模式 结束*/
-        data.transferspeed === undefined ? ccdTransferSpeed.val('0') : ccdTransferSpeed.val(data.transferspeed);
+
+        /*转移速度模式*/
+        if ( data.transferspeed )
+        {
+            data.transferspeed = data.transferspeed.split('#');
+            var transferspeed_mode_n = data.transferspeed.length;
+            for (var transfer_speed_i = 0; transfer_speed_i < transferspeed_mode_n; transfer_speed_i++)
+            {//将对应的选项设为checked
+                ccdTransferSpeed.find('input[value="' + data.transferspeed[transfer_speed_i] + '"]').prop('checked', true);
+            }
+        }/*转移速度模式 结束*/
+
         /*增益模式*/
         if ( data.gainmode )
         {
@@ -1895,7 +1925,18 @@ $(function () {
         $('#ccd_2MinExposureTime').val(data.minexposuretime);
         $('#ccd_2ExposureTimeRation').val(data.exposuretimeration);
         $('#ccd_2FullWellDepth').val(data.fullwelldepth);
-        data.readoutspeed === undefined ? ccd_2ReadoutSpeed.val('0') : ccd_2ReadoutSpeed.val(data.readoutspeed);
+
+        /*读出速度模式*/
+        if ( data.readoutspeed )
+        {
+            data.readoutspeed = data.readoutspeed.split('#');
+            var readoutspeed_mode_n = data.readoutspeed.length;
+            for (var read_out_speed_i = 0; read_out_speed_i < readoutspeed_mode_n; read_out_speed_i++)
+            {//将对应的选项设为checked
+                ccd_2ReadoutSpeed.find('input[value="' + data.readoutspeed[read_out_speed_i] + '"]').prop('checked', true);
+            }
+        }/*读出速度模式 结束*/
+
         /*读出模式*/
         if ( data.readoutmode )
         {
@@ -1906,7 +1947,17 @@ $(function () {
                 ccd_2readoutMode.find('input[value="' + data.readoutmode[read_out_i] + '"]').prop('checked', true);
             }
         }/*读出模式 结束*/
-        data.transferspeed === undefined ? ccd_2TransferSpeed.val('0') : ccd_2TransferSpeed.val(data.transferspeed);
+        /*转移速度模式*/
+        if ( data.transferspeed )
+        {
+            data.transferspeed = data.transferspeed.split('#');
+            var transferspeed_mode_n = data.transferspeed.length;
+            for (var transfer_speed_i = 0; transfer_speed_i < transferspeed_mode_n; transfer_speed_i++)
+            {//将对应的选项设为checked
+                ccd_2TransferSpeed.find('input[value="' + data.transferspeed[transfer_speed_i] + '"]').prop('checked', true);
+            }
+        }/*转移速度模式 结束*/
+       
         /*增益模式*/
         if ( data.gainmode )
         {
@@ -2000,7 +2051,18 @@ $(function () {
         $('#ccd_3MinExposureTime').val(data.minexposuretime);
         $('#ccd_3ExposureTimeRation').val(data.exposuretimeration);
         $('#ccd_3FullWellDepth').val(data.fullwelldepth);
-        data.readoutspeed === undefined ? ccd_3ReadoutSpeed.val('0') : ccd_3ReadoutSpeed.val(data.readoutspeed);
+
+        /*读出速度模式*/
+        if ( data.readoutspeed )
+        {
+            data.readoutspeed = data.readoutspeed.split('#');
+            var readoutspeed_mode_n = data.readoutspeed.length;
+            for (var read_out_speed_i = 0; read_out_speed_i < readoutspeed_mode_n; read_out_speed_i++)
+            {//将对应的选项设为checked
+                ccd_3ReadoutSpeed.find('input[value="' + data.readoutspeed[read_out_speed_i] + '"]').prop('checked', true);
+            }
+        }/*读出速度模式 结束*/
+       
         /*读出模式*/
         if ( data.readoutmode )
         {
@@ -2011,8 +2073,17 @@ $(function () {
                 ccd_3readoutMode.find('input[value="' + data.readoutmode[read_out_i] + '"]').prop('checked', true);
             }
         }/*读出模式 结束*/
-        data.transferspeed === undefined ? ccd_3TransferSpeed.val('0') : ccd_3TransferSpeed.val(data.transferspeed);
-        /*增益模式*/
+        /*转移速度模式*/
+        if ( data.transferspeed )
+        {
+            data.transferspeed = data.transferspeed.split('#');
+            var transferspeed_mode_n = data.transferspeed.length;
+            for (var transfer_speed_i = 0; transfer_speed_i < transferspeed_mode_n; transfer_speed_i++)
+            {//将对应的选项设为checked
+                ccd_3TransferSpeed.find('input[value="' + data.transferspeed[transfer_speed_i] + '"]').prop('checked', true);
+            }
+        }/*转移速度模式 结束*/
+        
         if ( data.gainmode )
         {
             data.gainmode = data.gainmode.split('#');
@@ -2105,7 +2176,18 @@ $(function () {
         $('#ccd_4MinExposureTime').val(data.minexposuretime);
         $('#ccd_4ExposureTimeRation').val(data.exposuretimeration);
         $('#ccd_4FullWellDepth').val(data.fullwelldepth);
-        data.readoutspeed === undefined ? ccd_4ReadoutSpeed.val('0') : ccd_4ReadoutSpeed.val(data.readoutspeed);
+
+        /*读出速度模式*/
+        if ( data.readoutspeed )
+        {
+            data.readoutspeed = data.readoutspeed.split('#');
+            var readoutspeed_mode_n = data.readoutspeed.length;
+            for (var read_out_speed_i = 0; read_out_speed_i < readoutspeed_mode_n; read_out_speed_i++)
+            {//将对应的选项设为checked
+                ccd_4ReadoutSpeed.find('input[value="' + data.readoutspeed[read_out_speed_i] + '"]').prop('checked', true);
+            }
+        }/*读出速度模式 结束*/
+
         /*读出模式*/
         if ( data.readoutmode )
         {
@@ -2116,7 +2198,17 @@ $(function () {
                 ccd_4readoutMode.find('input[value="' + data.readoutmode[read_out_i] + '"]').prop('checked', true);
             }
         }/*读出模式 结束*/
-        data.transferspeed === undefined ? ccd_4TransferSpeed.val('0') : ccd_4TransferSpeed.val(data.transferspeed);
+        /*转移速度模式*/
+        if ( data.transferspeed )
+        {
+            data.transferspeed = data.transferspeed.split('#');
+            var transferspeed_mode_n = data.transferspeed.length;
+            for (var transfer_speed_i = 0; transfer_speed_i < transferspeed_mode_n; transfer_speed_i++)
+            {//将对应的选项设为checked
+                ccd_4TransferSpeed.find('input[value="' + data.transferspeed[transfer_speed_i] + '"]').prop('checked', true);
+            }
+        }/*转移速度模式 结束*/
+        
         /*增益模式*/
         if ( data.gainmode )
         {
@@ -2210,7 +2302,18 @@ $(function () {
         $('#ccd_5MinExposureTime').val(data.minexposuretime);
         $('#ccd_5ExposureTimeRation').val(data.exposuretimeration);
         $('#ccd_5FullWellDepth').val(data.fullwelldepth);
-        data.readoutspeed === undefined ? ccd_5ReadoutSpeed.val('0') : ccd_5ReadoutSpeed.val(data.readoutspeed);
+
+        /*读出速度模式*/
+        if ( data.readoutspeed )
+        {
+            data.readoutspeed = data.readoutspeed.split('#');
+            var readoutspeed_mode_n = data.readoutspeed.length;
+            for (var read_out_speed_i = 0; read_out_speed_i < readoutspeed_mode_n; read_out_speed_i++)
+            {//将对应的选项设为checked
+                ccd_5ReadoutSpeed.find('input[value="' + data.readoutspeed[read_out_speed_i] + '"]').prop('checked', true);
+            }
+        }/*读出速度模式 结束*/
+        
         /*读出模式*/
         if ( data.readoutmode )
         {
@@ -2221,7 +2324,17 @@ $(function () {
                 ccd_5readoutMode.find('input[value="' + data.readoutmode[read_out_i] + '"]').prop('checked', true);
             }
         }/*读出模式 结束*/
-        data.transferspeed === undefined ? ccd_5TransferSpeed.val('0') : ccd_5TransferSpeed.val(data.transferspeed);
+        /*转移速度模式*/
+        if ( data.transferspeed )
+        {
+            data.transferspeed = data.transferspeed.split('#');
+            var transferspeed_mode_n = data.transferspeed.length;
+            for (var transfer_speed_i = 0; transfer_speed_i < transferspeed_mode_n; transfer_speed_i++)
+            {//将对应的选项设为checked
+                ccd_5TransferSpeed.find('input[value="' + data.transferspeed[transfer_speed_i] + '"]').prop('checked', true);
+            }
+        }/*转移速度模式 结束*/
+        
         /*增益模式*/
         if ( data.gainmode )
         {
@@ -2333,12 +2446,14 @@ $(function () {
             ccd_errMsg += '制冷方式未选择!<br>';
         }
 
-        if ( ccdReadoutSpeed.val() == 0 ) //验证 读出速度模式
+        var ccd_1ReadoutSpeed_check_num = ccdReadoutSpeed.children('input:checkbox:checked').length; //读出速度模式 被选中的数量
+        if ( ccd_1ReadoutSpeed_check_num < 1)
         {
             ccd_errMsg += '读出速度模式未选择!<br>';
         }
 
-        if ( ccdTransferSpeed.val() == 0 ) //验证 转移速度模式
+        var ccd_1TransferSpeed_check_num = ccdTransferSpeed.children('input:checkbox:checked').length; //转移速度模式 被选中的数量
+        if ( ccd_1TransferSpeed_check_num < 1)
         {
             ccd_errMsg += '转移速度模式未选择!<br>';
         }
@@ -2774,12 +2889,14 @@ $(function () {
             ccd2_errMsg += '制冷方式未选择!<br>';
         }
 
-        if ( ccd_2ReadoutSpeed.val() == 0 ) //验证 读出速度模式
+        var ccd_2ReadoutSpeed_check_num = ccd_2ReadoutSpeed.children('input:checkbox:checked').length; //读出速度模式 被选中的数量
+        if ( ccd_2ReadoutSpeed_check_num < 1)
         {
             ccd2_errMsg += '读出速度模式未选择!<br>';
         }
 
-        if ( ccd_2TransferSpeed.val() == 0 ) //验证 转移速度模式
+        var ccd_2TransferSpeed_check_num = ccd_2TransferSpeed.children('input:checkbox:checked').length; //转移速度模式 被选中的数量
+        if ( ccd_2TransferSpeed_check_num < 1)
         {
             ccd2_errMsg += '转移速度模式未选择!<br>';
         }
@@ -3216,12 +3333,14 @@ $(function () {
             ccd3_errMsg += '制冷方式未选择!<br>';
         }
 
-        if ( ccd_3ReadoutSpeed.val() == 0 ) //验证 读出速度模式
+        var ccd_3ReadoutSpeed_check_num = ccd_3ReadoutSpeed.children('input:checkbox:checked').length; //读出速度模式 被选中的数量
+        if ( ccd_3ReadoutSpeed_check_num < 1)
         {
             ccd3_errMsg += '读出速度模式未选择!<br>';
         }
 
-        if ( ccd_3TransferSpeed.val() == 0 ) //验证 转移速度模式
+        var ccd_3TransferSpeed_check_num = ccd_3TransferSpeed.children('input:checkbox:checked').length; //转移速度模式 被选中的数量
+        if ( ccd_3TransferSpeed_check_num < 1)
         {
             ccd3_errMsg += '转移速度模式未选择!<br>';
         }
@@ -3658,12 +3777,14 @@ $(function () {
             ccd4_errMsg += '制冷方式未选择!<br>';
         }
 
-        if ( ccd_4ReadoutSpeed.val() == 0 ) //验证 读出速度模式
+        var ccd_4ReadoutSpeed_check_num = ccd_4ReadoutSpeed.children('input:checkbox:checked').length; //读出速度模式 被选中的数量
+        if ( ccd_4ReadoutSpeed_check_num < 1)
         {
             ccd4_errMsg += '读出速度模式未选择!<br>';
         }
 
-        if ( ccd_4TransferSpeed.val() == 0 ) //验证 转移速度模式
+        var ccd_4TransferSpeed_check_num = ccd_4TransferSpeed.children('input:checkbox:checked').length; //转移速度模式 被选中的数量
+        if ( ccd_4TransferSpeed_check_num < 1)
         {
             ccd4_errMsg += '转移速度模式未选择!<br>';
         }
@@ -4100,12 +4221,14 @@ $(function () {
             ccd5_errMsg += '制冷方式未选择!<br>';
         }
 
-        if ( ccd_5ReadoutSpeed.val() == 0 ) //验证 读出速度模式
+        var ccd_5ReadoutSpeed_check_num = ccd_5ReadoutSpeed.children('input:checkbox:checked').length; //读出速度模式 被选中的数量
+        if ( ccd_5ReadoutSpeed_check_num < 1)
         {
             ccd5_errMsg += '读出速度模式未选择!<br>';
         }
 
-        if ( ccd_5TransferSpeed.val() == 0 ) //验证 转移速度模式
+        var ccd_5TransferSpeed_check_num = ccd_5TransferSpeed.children('input:checkbox:checked').length; //转移速度模式 被选中的数量
+        if ( ccd_5TransferSpeed_check_num < 1)
         {
             ccd5_errMsg += '转移速度模式未选择!<br>';
         }

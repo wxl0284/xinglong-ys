@@ -28,9 +28,9 @@ class Ccd extends Base
         'start_expose' => 54,
         'expose_param' => 312,
         'set_gain' => 52,
-        // 'set_obj_name' => 98,
-        // 'slewAzEl' => 64,
-        // 'slewDerotator' => 56,
+        'readout_speed' => 50,
+        'transfer_speed' => 50,
+        'set_bin' => 56,
         // 'axis3Mode' => 58,
         // 'speed_alter' => 58,
         // 'speed_fixed' => 58,
@@ -47,9 +47,9 @@ class Ccd extends Base
         'start_expose' => 4,
         'expose_param' => 3,
         'set_gain' => 7,
-        // 'slewAzEl' => 5,
-        // 'slewDerotator' => 6,
-        // 'axis3Mode' => 7,
+        'readout_speed' => 8,
+        'transfer_speed' => 9,
+        'set_bin' => 10,
         // 'speed_alter' => 9,
         // 'speed_fixed' => 11,
         // 'position_alter' => 12,
@@ -68,7 +68,7 @@ class Ccd extends Base
         }*/
 
         //接受表单数据
-        $postData = input ();
+        $postData = input ();   //halt($postData);
         //验证数据
         if (!$postData['at'])
         {//未接收到望远镜编号
@@ -118,38 +118,30 @@ class Ccd extends Base
         switch ($command) {
             case 'connect':
                 return $this->connect (1, 'connect');
-                break;
             case 'disConnect':
                 return $this->connect (2, 'connect');
-                break;
             case 'stop_expose':
                 return $this->button_command ('stop_expose');
-                break;
             case 'abort_expose':
                 return $this->button_command ('abort_expose');
-                break;
             case 'set_cool':
                 return $this->set_cool ($postData, 'set_cool');
-                break;
             case 'start_expose':
                 return $this->start_expose ($postData, 'start_expose');
-                break;
             case 'expose_param':
                 return $this->expose_strategy ($postData, 'expose_param');
-                break;
             case 'set_gain':
                 return $this->set_gain ($postData, 'set_gain');
-                break;
+            case 'readout_speed':
+                return $this->set_readSpeedMode ($postData, 'readout_speed');
+            case 'transfer_speed':
+                return $this->set_transferSpeed ($postData, 'transfer_speed');
+            case 'set_bin':
+                return $this->set_bin ($postData, 'set_bin');
             default:
                 break;
         }
 
-        // }else if( $command == 5 ){////设置 读出速度模式值     
-        //     return $this->set_readSpeedMode(); //执行发送
-        // }else if( $command == 6 ){////设置 转移速度模式值     
-        //     return $this->set_transferSpeed(); //执行发送
-        // }else if( $command == 7 ){//设置BIN     
-        //     return $this->set_bin(); //执行发送
         // }else if( $command == 8 ){//设置ROI 指令    
         //     return $this->set_roi(); //执行发送
         // }else if( $command == 9 ){//设置快门指令 指令    
@@ -692,78 +684,44 @@ class Ccd extends Base
         return '设置增益指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }/*设置增益 结束*/
 
-    
-    protected function set_readSpeedMode ()  /*设置 读出速度模式值*/
+    protected function set_readSpeedMode ($postData, $param)  /*设置 读出速度模式值*/
     {
-        $length = 48 + 2;      //该结构体总长度
-        $ReadSpeedMode = input('ReadSpeedMode');
-        if (!preg_match('/^\d{1,10}$/', $ReadSpeedMode))
-        {
-            return '读出速度模式值只能是数字！';
-        }
-        $sendMsg = pack('S', $ReadSpeedMode);     //unsigned short
+        $sendMsg = pack('S', $postData['readout_mode']);     //unsigned short
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
- 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=8);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
         //socket发送数据        
         $sendMsg = $headInfo . $sendMsg;
-        return '设置读出速度模式指令：' .udpSend($sendMsg, $this->ip, $this->port);	
+        return '设置读出速度模式指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }/*设置 读出速度模式值  结束*/
 
-    /*设置 转移速度模式值*/
-    protected function set_transferSpeed ()
+    
+    protected function set_transferSpeed ($postData, $param) /*设置 转移速度模式值*/
     {
-        $length = 48 + 2;      //该结构体总长度
-        $SetTransferSpeed = input('SetTransferSpeed');
-        if (!preg_match('/^\d{1,10}$/', $SetTransferSpeed))
-        {
-            return '转移速度模式值只能是数字！';
-        }
-        $sendMsg = pack('S', $SetTransferSpeed);     //unsigned short
+        $sendMsg = pack('S', $postData['transfer_mode']);     //unsigned short
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
- 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=9);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
         //socket发送数据        
         $sendMsg = $headInfo . $sendMsg;
-        return  '转移速度模式指令：' .udpSend($sendMsg, $this->ip, $this->port);	
+        return '设置转移速度模式指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }/*设置 转移速度模式值  结束*/
 
-    /*设置Bin*/
-    protected function set_bin ()
+    protected function set_bin ($postData, $param)  /*设置Bin*/
     {
-        $length = 48 + 8;      //该结构体总长度
+        $res = Db::table('ccdconf')->where('teleid', $postData['at'])->where('ccdno', $this->ccdNo)->field('binarray')->find(); //获取该望远镜的ccdconf表中的:bin值
 
-        if (input('BinX') !== '')      //binx
+        if ( $postData['binX'] > $res['binarray'] || $postData['binY'] > $res['binarray'])
         {
-            $BinX = input('BinX');
-            if (!preg_match('/^\d{1,10}$/', $BinX))
-            {
-                return 'BinX值只能是数字！';
-            }
-            $sendMsg = pack('L', $BinX);     //uint32
-        }else{
-            $sendMsg = pack('L', 0);
+            return 'bin值参数超限!';
         }
         
-        if (input('BinY') !== '')      //BinY
-        {
-            $BinY = input('BinY');
-            if (!preg_match('/^\d{1,10}$/', $BinY))
-            {
-                return 'BinY值只能是数字！';
-            }
-            $sendMsg .= pack('L', $BinY);     //uint32
-        }else{
-            $sendMsg .= pack('L', 0);
-        }
+        $sendMsg = pack ('L2', $postData['binX'], $postData['binY']);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
- 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=10);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
         //socket发送数据        
         $sendMsg = $headInfo . $sendMsg;

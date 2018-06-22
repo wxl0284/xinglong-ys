@@ -244,12 +244,14 @@ class Page extends Base
                     $res = scandir ($file_path . "/$dir" . '_' . $ccd_dir_i);
 
                     if ( $res !== false && count($res) > 2 )
-                    {
+                    {//有上传文件
                         unset ($res[0], $res[1]); //删除前2个数据
                         foreach ( $res as $k)
                         {
                             $result['ccd_file'][$ccd_dir_i][] = iconv('GBK', 'UTF-8', $k);  //将文件名转为utf-8
                         }
+                    }else{//没有上传文件
+                        $result['ccd_file'][$ccd_dir_i] = 0;
                     }
                 }
             }/*查ccd-No1相关文件 结束*/

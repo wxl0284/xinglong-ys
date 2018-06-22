@@ -105,6 +105,18 @@
 				set_gain: {
 					mode:'-1', gear: '-1', command:'set_gain', at:at, at_aperture: aperture
 				},
+				readout_speed_form: {
+					readout_mode:'-1', command:'readout_speed', at:at, at_aperture: aperture
+				},
+				transfer_speed_form: {
+					transfer_mode:'-1', command:'transfer_speed', at:at, at_aperture: aperture
+				},
+				set_bin_form: {
+					binX:'-1', binY: '-1', command:'set_bin', at:at, at_aperture: aperture
+				},
+				set_roi_form: {
+					startX:'', startY: '', imageW:'', imageH:'', command:'set_roi', at:at, at_aperture: aperture
+				},
 			},/**ccd1 表单 结束**/
 		},/********vue data属性对象 结束********/
 		computed: {//计算属性
@@ -118,8 +130,7 @@
 						if ( e.indexOf('ensitiv') !== -1 )
 						{
 							final_gainMode.High_Sensitivity = e;
-						}
-						if ( e.indexOf('apaci') !== -1 )
+						}else if ( e.indexOf('apaci') !== -1 )
 						{
 							final_gainMode.High_Capacity = e;
 						}
@@ -127,6 +138,44 @@
 				);
 				return final_gainMode;
 			}, /*ccd_gainMode 结束*/
+			readout_speed_Mode: function (){
+				var readout_speed_mode = this.ccd_config.readoutspeed.split('#');
+				var final_readout_speed_mode = {
+					A: null, B: null, C:null
+				};
+				readout_speed_mode.filter(
+					function (e) {
+						if ( e == 'A' )
+						{
+							final_readout_speed_mode.A = e;
+						}else if ( e == 'B' )
+						{
+							final_readout_speed_mode.B = e;
+						}else if ( e == 'C' )
+						{
+							final_readout_speed_mode.C = e;
+						}
+					}
+				);
+				return final_readout_speed_mode;
+			}, /*readout_speed_Mode 结束*/
+			transfer_speed_Mode: function (){
+				var transfer_speed_mode = this.ccd_config.transferspeed.split('#');
+				var final_transfer_speed_mode = {
+					a: null, b: null };
+				transfer_speed_mode.filter(
+					function (e) {
+						if ( e == 'a' )
+						{
+							final_transfer_speed_mode.a = e;
+						}else if ( e == 'b' )
+						{
+							final_transfer_speed_mode.b = e;
+						}
+					}
+				);
+				return final_transfer_speed_mode;
+			}, /*transfer_speed_Mode 结束*/
 		},/*computed 结束*/
 		methods: {
 			plan_click: function () {
@@ -1135,7 +1184,120 @@
 						},
 					})/*ajax 结束*/
 				}
-			}
+			},/*ccd_gain_sbmt 结束*/
+			readout_speed_sbmt:function () {
+				if ( this.ccd_form.readout_speed_form.readout_mode == -1 )
+				{
+					layer.alert('读出速度模式未选择!', {shade:false,closeBtn:0});return;
+				}else{
+					this.ccd_form.readout_speed_form.ccdNo = this.device_nav.ccdNo;
+					$.ajax({
+						url: '/ccd',
+						type: 'post',
+						data: this.ccd_form.readout_speed_form,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error:function (){
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					})/*ajax 结束*/
+				}
+			},/*readout_speed_sbmt 结束*/
+			transfer_speed_sbmt:function () {
+				if ( this.ccd_form.transfer_speed_form.transfer_mode == -1 )
+				{
+					layer.alert('转移速度模式未选择!', {shade:false,closeBtn:0});return;
+				}else{
+					this.ccd_form.transfer_speed_form.ccdNo = this.device_nav.ccdNo;
+					$.ajax({
+						url: '/ccd',
+						type: 'post',
+						data: this.ccd_form.transfer_speed_form,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error:function (){
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					})/*ajax 结束*/
+				}
+			},/*transfer_speed_sbmt 结束*/
+			set_bin_sbmt:function () {
+				var msg = '';
+				if ( this.ccd_form.set_bin_form.binX == -1 )
+				{
+					msg += 'binX未选择!<br>';
+				}
+
+				if ( this.ccd_form.set_bin_form.binY == -1 )
+				{
+					msg += 'binY未选择!';
+				}
+				
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:false,closeBtn:0});return;
+				}else{
+					this.ccd_form.set_bin_form.ccdNo = this.device_nav.ccdNo;
+					$.ajax({
+						url: '/ccd',
+						type: 'post',
+						data: this.ccd_form.set_bin_form,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error:function (){
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					})/*ajax 结束*/
+				}
+			},/*set_bin_sbmt 结束*/
+			ccd_roi_x:function (tip) {
+
+			},/*ccd_roi_x 结束*/
+			ccd_roi_y:function (tip) {
+
+			},/*ccd_roi_y 结束*/
+			ccd_roi_w:function (tip) {
+
+			},/*ccd_roi_w 结束*/
+			ccd_roi_h:function (tip) {
+
+			},/*ccd_roi_h 结束*/
+			set_roi_sbmt:function () {
+
+			},/*set_roi_sbmt 结束*/
 		},/******methods 结束******/
 	});/***************vue js结束*****************/
 
@@ -1380,23 +1542,6 @@
 		});
 	});
 	//接管 弹窗代码 结束////////////////////////////////////////////////
-	
-    //望远镜 子设备导航栏 js事件 ////////////////////////////
-   /* $('#devsNav table').on('click', 'a', function (){
-        var btm = $('#devsNav a.borderBtm').not($(this));  //排除自己被多次点击时的情况
-        var dev = $(this).attr('name');
-        var display = $('div.display');
-        
-        $(this).addClass('borderBtm');
-		btm.removeClass('borderBtm');
-        //将对应子设备的信息显示出来
-        dev = '#' + dev;
-        dev = $(dev);
-        display.removeClass('display');
-        display.addClass('displayNo');
-        dev.removeClass('displayNo');
-        dev.addClass('display');
-    }); *///////////////////////////////////////////////////////
     
 /*//接管望远镜按钮 js事件 ///////////////////////////////////////
      $('#takeOver').click(function () {
@@ -1424,36 +1569,7 @@
      
     });//////////////////////////////////////////////////////////*/
 	
-//ccd 表单数据验证////////////////////////////////////////////		
-	
-	//验证 读出速度模式值
-	$('#ReadSpeedModeIn').blur(function () {
-		/*var v = $.trim($(this).val());
-		var patn = /^[1-9]$/;
-		var err = 0;
-		
-		if (!patn.test(v))
-		{
-			err = 1;
-			layer.tips('模式输入有误!', $(this), {tipsMore: true});
-		}
-		$(this).data('err', err);*/
-	});
-	
-	//验证 转移速度值
-	$('#TransferSpeedIn').blur(function () {
-		/*var v = $.trim($(this).val());
-		var patn = /^[1-9]$/;
-		var err = 0;
-		
-		if (!patn.test(v))
-		{
-			err = 1;
-			layer.tips('转移速度输入有误!', $(this), {tipsMore: true});
-		}
-		$(this).data('err', err);*/
-	});
-	
+//ccd 表单数据验证////////////////////////////////////////////			
 	//验证 设置Roi //////////////////////////////////////
 	$('#startX').blur(function () {
 		/*var v = $.trim($(this).val());		
@@ -1576,16 +1692,6 @@
             },
           })    
     });
-	
-//ccd 表单提交按钮 hover //////////////////////////////////
-   $('#ccdSbmt').hover(
-        function (){
-            $(this).addClass("hover");
-        }, 
-        function (){
-            $(this).removeClass("hover");
-        }
-   );
    
 //调焦器 带参数指令  js事件///////////////////////////////////////
 	var focusForm = $('#at60Focus');

@@ -239,6 +239,18 @@ class Atconfig extends Base
            $postData['readoutmode'] = implode ('#', $postData['readoutmode']);
        }/*处理 读出模式 结束*/
 
+       /*处理 读出速度模式*/
+       if ( isset($postData['readoutspeed']) ) //有此数据
+       {
+           $postData['readoutspeed'] = implode ('#', $postData['readoutspeed']);
+       }/*处理 读出速度模式 结束*/
+
+       /*处理 转移速度模式*/
+       if ( isset($postData['transferspeed']) ) //有此数据
+       {
+           $postData['transferspeed'] = implode ('#', $postData['transferspeed']);
+       }/*处理 转移速度模式 结束*/
+
        /*处理 增益模式*/
        if ( isset($postData['gainmode']) ) //有此数据
        {
