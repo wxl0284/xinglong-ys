@@ -447,12 +447,12 @@
 				<span :class='{active: device_nav.ccd_command=="transfer_speed"}' @click ='device_nav.ccd_command="transfer_speed"' v-if='ccd_config.cansettransferspeedmode==1'>转移速度模式</span>
 				<span :class='{active: device_nav.ccd_command=="set_bin"}' @click ='device_nav.ccd_command="set_bin"' v-if='ccd_config.cansetbin==1' >设置Bin</span>
 				<span :class='{active: device_nav.ccd_command=="set_roi"}' @click ='device_nav.ccd_command="set_roi"' v-if='ccd_config.cansetroi==1'>设置Roi</span>
-				<span name='setShutter'>设置快门</span>
-				<span name='setFrame'>设置帧转移</span>	
-				<span name='setEm'>设置EM</span>
-				<span name='setCmos'>CMOS noise</span>		
-				<span name='setBase'>Base line</span>		
-				<span name='setOverScan'>Over Scan</span>
+				<span :class='{active: device_nav.ccd_command=="set_shutter"}' @click ='device_nav.ccd_command="set_shutter"' v-if='ccd_config.cansetshutter==1'>设置快门</span>
+				<span :class='{active: device_nav.ccd_command=="set_frame"}' @click ='device_nav.ccd_command="set_frame"' v-if='ccd_config.cansetfullframe==1' >设置帧转移</span>	
+				<span :class='{active: device_nav.ccd_command=="set_em"}' @click ='device_nav.ccd_command="set_em"' v-if='ccd_config.cansetem==1' >设置EM</span>
+				<span :class='{active: device_nav.ccd_command=="set_cmos"}' @click ='device_nav.ccd_command="set_cmos"' v-if='ccd_config.cannoisefilter==1' >CMOS noise</span>		
+				<span :class='{active: device_nav.ccd_command=="set_baseLine"}' @click ='device_nav.ccd_command="set_baseLine"' v-if='ccd_config.cansetbaseline==1' >Base line</span>		
+				<span :class='{active: device_nav.ccd_command=="over_scan"}' @click ='device_nav.ccd_command="over_scan"' v-if='ccd_config.cansetoverscan==1'>Over Scan</span>
 			</nav>
 			<div class='border2'><!--ccd 指令和可变属性-->
 				<div id='btnsCCD' class='center_mrg center BtnsDiv'>
@@ -486,13 +486,13 @@
 										<option value="9">平场</option>
 									</select>
 						</span>
-					<span>目标赤经：<input id='inputIn3' class='hour1' type="text" ref='ccd_objAsc1' v-model.trim='ccd_form.exposeParam.objectRightAscension1' @blur='ccd_asc1(true)' @keyup='ccd_asc1_up()'>:
-					<input id='inputIn3_1' class='hour1' type="text" ref='ccd_objAsc2' v-model.trim='ccd_form.exposeParam.objectRightAscension2' @blur='ccd_asc2(true)' @keyup='ccd_asc2_up()'>:
-					<input id='inputIn3_2' class='sec1' type="text" ref='ccd_objAsc3' v-model.trim='ccd_form.exposeParam.objectRightAscension3' @blur='ccd_asc3(true)' >
+					<span>目标赤经：<input class='hour1' type="text" ref='ccd_objAsc1' v-model.trim='ccd_form.exposeParam.objectRightAscension1' @blur='ccd_asc1(true)' @keyup='ccd_asc1_up()'>:
+					<input class='hour1' type="text" ref='ccd_objAsc2' v-model.trim='ccd_form.exposeParam.objectRightAscension2' @blur='ccd_asc2(true)' @keyup='ccd_asc2_up()'>:
+					<input class='sec1' type="text" ref='ccd_objAsc3' v-model.trim='ccd_form.exposeParam.objectRightAscension3' @blur='ccd_asc3(true)' >
 					</span>
-					<span>目标赤纬：<input id='inputIn4' class='hour1' type="text" ref='ccd_objDec1' v-model.trim='ccd_form.exposeParam.objectDeclination1' @blur='ccd_dec1(true)' @keyup='ccd_dec1_up()'>:
-					<input id='inputIn4_1' class='hour1' type="text" ref='ccd_objDec2' v-model.trim='ccd_form.exposeParam.objectDeclination2' @blur='ccd_dec2(true)' @keyup='ccd_dec2_up()'>:
-					<input id='inputIn4_2' class='sec1' type="text" ref='ccd_objDec3' v-model.trim='ccd_form.exposeParam.objectDeclination3' @blur='ccd_dec3(true)' >
+					<span>目标赤纬：<input class='hour1' type="text" ref='ccd_objDec1' v-model.trim='ccd_form.exposeParam.objectDeclination1' @blur='ccd_dec1(true)' @keyup='ccd_dec1_up()'>:
+					<input class='hour1' type="text" ref='ccd_objDec2' v-model.trim='ccd_form.exposeParam.objectDeclination2' @blur='ccd_dec2(true)' @keyup='ccd_dec2_up()'>:
+					<input class='sec1' type="text" ref='ccd_objDec3' v-model.trim='ccd_form.exposeParam.objectDeclination3' @blur='ccd_dec3(true)' >
 					</span>
 					<span>拍摄目标历元：<select style='width:69px;' v-model.trim='ccd_form.exposeParam.objectEpoch' >
 									<option value="-1">请选择</option>
@@ -590,13 +590,48 @@
 						</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<input type="button" class='margin_10' value="提交指令" @click='set_bin_sbmt' ><br>
 				</form><!--设置bin 结束-->
-				<form class='center' v-if='device_nav.ccd_command == "set_roi"'>
-					X：<input type="text" v-model.trim='ccd_form.set_roi_form.startX' :placeholder='"整数:"+"0~"+ccd_config.xpixel' @blur='ccd_roi_x(true)' >
-					Y：<input type="text" v-model.trim='ccd_form.set_roi_form.startY' :placeholder='"整数:"+"0~"+ccd_config.ypixel' @blur='ccd_roi_y(true)' >
-					Width：<input type="text" v-model.trim='ccd_form.set_roi_form.imageW' :placeholder='"整数:"+"与X之和<="+ccd_config.xpixel' @blur='ccd_roi_w(true)' >
-					Height：<input type="text" v-model.trim='ccd_form.set_roi_form.imageH' :placeholder='"整数:"+"与Y之和<="+ccd_config.ypixel' @blur='ccd_roi_h(true)' >
+				<form class='center' v-if='device_nav.ccd_command == "set_roi"'><!--set_roi-->
+					X：<input type="text" ref='x' v-model.trim='ccd_form.set_roi_form.startX' :placeholder='"整数:"+"0~"+ccd_config.xpixel' @blur='ccd_roi_x(true)' >
+					Y：<input type="text" ref='y' v-model.trim='ccd_form.set_roi_form.startY' :placeholder='"整数:"+"0~"+ccd_config.ypixel' @blur='ccd_roi_y(true)' >
+					Width：<input type="text" ref='w' v-model.trim='ccd_form.set_roi_form.imageW' :placeholder='"整数:"+"与X之和<="+ccd_config.xpixel' @blur='ccd_roi_w(true)' >
+					Height：<input type="text" ref='h' v-model.trim='ccd_form.set_roi_form.imageH' :placeholder='"整数:"+"与Y之和<="+ccd_config.ypixel' @blur='ccd_roi_h(true)' >
 					<br><input type="button" class='margin_10' value="提交指令" @click='set_roi_sbmt' >
-				</form>
+				</form><!--set_roi 结束-->
+				<form class='center' v-if='device_nav.ccd_command == "set_shutter"'><!--设置快门-->
+					快门模式：<select style='width:118px;' v-model='ccd_form.set_shutter_form.shutter' >			
+						<option value="-1">请选择</option>
+						<option value="0" v-if='shutter_Mode.GlobalShutter' >GlobalShutter</option>
+						<option value="1" v-if='shutter_Mode.RollingShutter' >RollingShutter</option>
+					</select>
+					<br><input type="button" class='margin_10' value="提交指令" @click='set_shutter_sbmt' >
+				</form><!--设置快门 结束-->
+				<form class='center' v-if='device_nav.ccd_command == "set_frame"'><!--设置帧转移-->
+					帧转移：<label>是：<input type="radio" value="1" v-model='ccd_form.set_frame_form.frame' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<label>否：<input type="radio" value="0" v-model='ccd_form.set_frame_form.frame' ></label>
+					<br><input type="button" class='margin_10' value="提交指令" @click='set_frame_sbmt' >
+				</form><!--设置帧转移 结束-->
+				<form class='center' v-if='device_nav.ccd_command == "set_em"'><!--设置EM-->
+					EM：<label>是：<input type="radio" value="1" v-model='ccd_form.set_em_form.em' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<label>否：<input type="radio" value="0" v-model='ccd_form.set_em_form.em' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<span v-if='ccd_form.set_em_form.em == 1' >Em值：<input type="text" ref='em' v-model.trim='ccd_form.set_em_form.emV' :placeholder="'整数:'+ccd_config.emminvalue+'~'+ccd_config.emmaxvalue" @blur='ccd_em_check(true)' ></span>
+					<br><input type="button" class='margin_10' value="提交指令" @click='set_em_sbmt' >
+				</form><!--设置EM 结束-->
+				<form class='center' v-if='device_nav.ccd_command == "set_cmos"'><!--cmos-->
+					CMOS noise filter：<label>是：<input type="radio" value="1" v-model='ccd_form.set_cmos_form.isNoiseFilter' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<label>否：<input type="radio" value="0" v-model='ccd_form.set_cmos_form.isNoiseFilter' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="button" class='margin_10' value="提交指令" @click='set_cmos_sbmt' ><br>
+				</form><!--cmos 结束-->
+				<form class='center' v-if='device_nav.ccd_command == "set_baseLine"'><!--设置base line-->
+					BaseLine：<label>是：<input type="radio" value="1" v-model='ccd_form.set_baseLine_form.isBaseLine' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<label>否：<input type="radio" value="0" v-model='ccd_form.set_baseLine_form.isBaseLine' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<span v-if='ccd_form.set_baseLine_form.isBaseLine == 1' >baseLine值：<input type="text" ref='base' v-model.trim='ccd_form.set_baseLine_form.baseLineV' placeholder="整数" @blur='ccd_baseLine_check(true)' ></span>
+					<br><input type="button" class='margin_10' value="提交指令" @click='set_baseLine_sbmt' >
+				</form><!--设置base line 结束-->
+				<form class='center' v-if='device_nav.ccd_command == "over_scan"'><!--over scan-->
+					OverScan：<label>是：<input type="radio" value="1" v-model='ccd_form.overScan_form.over_scan' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<label>否：<input type="radio" value="0" v-model='ccd_form.overScan_form.over_scan' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="button" class='margin_10' value="提交指令" @click='overScan_sbmt' >
+				</form><!--over scan 结束-->
 			  <hr style='width:98%;' class='center_mrg'><br>
 			  <div><!--CCD可变属性-->
                 <span class='propT'>CCD可变属性:</span><br><br>
@@ -631,56 +666,38 @@
            <div class='clear'></div>
 		 </div><!--ccd固定属性 结束-->
 	   </div><!--ccd 结束-->
-	   
-	   <div id='focusInfo' class='displayNo'><!--调焦器指令和属性 -->
+	   <div id='focusInfo' v-if='device_nav.dev_click=="focus"' ><!--调焦器指令和属性 -->
 			<nav class='center'><!--调焦器指令 导航-->
-			
-			    <span name='targetPos'>设置目标位置</span>&nbsp;&nbsp;&nbsp;&nbsp;
-		
-				<span name='fixedSpeed'>设置恒速转动</span>&nbsp;&nbsp;&nbsp;&nbsp;
-			
-				<span name='temperaEnable'>使能温度补偿</span>&nbsp;&nbsp;&nbsp;&nbsp;
-		
-				<span name='temperaCoeficnt'>温度补偿系数</span>
+			    <span v-if='configData.focus.cansetposition==1' :class='{active: device_nav.focus_command=="objPos"}' @click='device_nav.focus_command="objPos"' >设置目标位置</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span v-if='configData.focus.cansetspeed==1' :class='{active: device_nav.focus_command=="focus_speed"}' @click='device_nav.focus_command="focus_speed"' >设置恒速转动</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span v-if='configData.focus.canenabletemperturecompensate==1' :class='{active: device_nav.focus_command=="focus_tempa"}'  @click='device_nav.focus_command="focus_tempa"' >使能温度补偿</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span v-if='configData.focus.cansettemperturecompensatecoefficient==1' :class='{active: device_nav.focus_command=="temperature_e"}'  @click='device_nav.focus_command="temperature_e"' >温度补偿系数</span>
 			</nav>
 			<div class='border2'><!--调焦器 指令和可变属性-->
 				<div id='btnsFocus' class='center_mrg center BtnsDiv'>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-			
-					<input id='focusConnect' class='border1 btnCommand' type='button' value='连接调焦器'>
-					<input id='focusDisConnect' class='border1 btnCommand' type='button' value='断开调焦器'>
-	
-					<input id='focusFindHome' class='border1 btnCommand' type='button' value='找 零'>
-
-					<input id='focusStop' class='border1 btnCommand' type='button' value='停止运动'>
+					<input v-if='configData.focus.canconnect==1' :class='{btnClick: device_nav.focus_btn=="connect"}' class='border1 btnCommand' type='button' value='连接调焦器' @click='focus_btn_command(1)' >
+					<input v-if='configData.focus.canconnect==1' :class='{btnClick: device_nav.focus_btn=="disConnect"}' class='border1 btnCommand' type='button' value='断开调焦器' @click='focus_btn_command(2)' >
+					<input v-if='configData.focus.canfindhome==1' :class='{btnClick: device_nav.focus_btn=="findhome"}' class='border1 btnCommand' type='button' value='找 零' @click='focus_btn_command(3)' >
+					<input v-if='configData.focus.canstop==1' :class='{btnClick: device_nav.focus_btn=="stop"}' class='border1 btnCommand' type='button' value='停止运动' @click='focus_btn_command(4)' >
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
-				<form id='at60Focus' class='center command'>
-					<div id='targetPos'>
-					   <input type='radio' name='command' value='1'>目标位置：
-					   <input type="text" id='setPositionIn' name='setPosition' placeholder='数字' class='blur'>
-					</div>
-					<div id='fixedSpeed'>
-					   <input type='radio' name='command' value='2'>设置恒速转动：
-					  <input type="text" id='speedIn' name='speed' placeholder='数字' class='blur'>
-					</div>
-					<div id='temperaEnable'>
-					   <input type='radio' name='command' value='3'>使能温度补偿：
-					   <!-- <select name="enable" style='width:66px;'>
-						           <option value="0">否</option>
-								   <option value="1">是</option>
-							</select> -->
-							<label for='enable1'>是</label>
-							<input id='enable1' type="radio" name='enable' value="1" style='display:inline;'>
-							&nbsp;&nbsp;&nbsp;&nbsp;<label for='enable2'>否</label>
-							<input id='enable2' type="radio" name='enable' value="0" style='display:inline;'>
-					</div>
-					<div id='temperaCoeficnt'>
-					   <input type='radio' name='command' value='4'>温度补偿系数：
-					   <input type="text" id='coefficientIn' name='coefficient' class='blur'>
-					</div>
-					<br><input id='focusSbmt' class='border submitBtn' type="button" value="确认提交指令">
-				</form>
+				<form class='center' v-if='device_nav.focus_command=="objPos"'><!--调焦器 设置目标位置-->
+					目标位置：<input type="text" ref='focus_pos' v-model.trim='focus_form.objPos_form.pos' :placeholder='configData.focus.minvalue+"~"+configData.focus.maxvalue' @blur='focus_objPos_check(true)' >&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="button" class='margin_10' value="提交指令" @click='focus_objPos_sbmt' >
+				</form><!--调焦器 设置目标位置 结束-->
+				<form class='center' v-if='device_nav.focus_command=="focus_speed"'><!--调焦器恒速转动-->
+					转动速度：<input type="text" ref='focus_speed' v-model.trim='focus_form.fixSpeed_form.speed' :placeholder='"<="+configData.focus.maxspeed' @blur='focus_speed_check(true)' >&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="button" class='margin_10' value="提交指令" @click='focus_speed_sbmt' >
+				</form><!--调焦器恒速转动  结束-->
+				<form class='center' v-if='device_nav.focus_command=="focus_tempa"'><!--使能温度补偿-->
+					温度补偿：<label>是：<input type="radio" value="1" v-model='focus_form.tempera_form.enable' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<label>否：<input type="radio" value="0" v-model='focus_form.tempera_form.enable' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="button" class='margin_10' value="提交指令" @click='tempera_enable_sbmt' >
+				</form><!--	使能温度补偿  结束-->
+				<form class='center' v-if='device_nav.focus_command=="temperature_e"'><!--温度补偿系数-->
+					补偿系数：<input type="text" ref='coefficient' v-model.trim='focus_form.temperatureE_form.coefficient' @blur='temperature_coef_check(true)' >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="button" class='margin_10' value="提交指令" @click='temperature_e_sbmt' >
+				</form><!--	温度补偿系数  结束-->
 				<br><hr style='width:98%;' class='center_mrg'><br>
 			<div><!--调焦器 可变属性-->
                 <span class='propT'>调焦器可变属性:</span><br><br>
@@ -695,76 +712,62 @@
              </div><!--调焦器 可变属性结束-->
 		 </div><!--调焦器 指令和可变属性 结束-->
 		 <div class='border2'><!--调焦器 固定属性-->
-			<br><span class='propT'>调焦器固定属性:</span><br><br>
+			<br><span class='propT'>调焦器固定属性:</span>{{ccd_config.gainmode}}<br><br>
 			<ul class='properUl'>
-			   <li class='li fl'>最大速度:&nbsp;&nbsp;<span>
-		</span></li>
-			   <li class='li fl'>分辨率:&nbsp;&nbsp;<span>
-			  </span></li>        
-			   <li class='li fl'>最大值:&nbsp;&nbsp;<span>
-			  </span></li>
-			   <li class='li fl'>最小值:&nbsp;&nbsp;<span>
-			</span></li>
-			   <li class='li fl'>可否找零:&nbsp;&nbsp;<span>
-		
-				是
-				
-			   </span></li>    
-			   <li class='li fl'>可否温度补偿:&nbsp;&nbsp;<span>
-				是
-				
-			   </span></li>
+			   <li class='li fl'>最大速度:&nbsp;&nbsp;<span>{{configData.focus.maxspeed}}</span></li>
+			   <li class='li fl'>分辨率:&nbsp;&nbsp;<span>{{configData.focus.increment}} </span></li>        
+			   <li class='li fl'>最大值:&nbsp;&nbsp;<span>{{configData.focus.maxvalue}}</span></li>
+			   <li class='li fl'>最小值:&nbsp;&nbsp;<span>{{configData.focus.minvalue}}</span></li>
+			   <li class='li fl'>支持找零:&nbsp;&nbsp;
+				 <span v-if='configData.focus.canfindhome==1' >是</span>
+				 <span v-else >否</span>
+				</li>    
+			   <li class='li fl'>可否温度补偿:&nbsp;&nbsp;
+				<span v-if='configData.focus.canenabletemperturecompensate==1' >是</span>
+				<span v-else >否</span>
+			   </li>
              </ul>
            <div class='clear'></div>
 		 </div><!--调焦器 固定属性 结束-->
 	   </div><!--调焦器 结束-->
-	   <div id='domeInfo' class='displayNo'><!--随动圆顶指令和属性-->
+	   <div v-if='device_nav.dev_click=="sDome"' ><!--随动圆顶指令和属性-->
 			<nav class='center'><!--随动圆顶指令 导航-->
-			
-			    <span name='setPos'>设置目标方位</span>&nbsp;&nbsp;&nbsp;&nbsp;
-			
-				<span name='rotateSpd'>设置转动速度</span>&nbsp;&nbsp;&nbsp;&nbsp;
-			
-				<span name='shadePos'>设置风帘位置</span>&nbsp;&nbsp;&nbsp;&nbsp;
-			
-				<span name='shadeAct'>控制风帘运动</span>
+			    <span v-if='configData.sDome.cansetdomepositin==1' :class='{active: device_nav.sDome_command=="objPos"}' @click='device_nav.sDome_command="objPos"' >设置目标方位</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span v-if='configData.sDome.cansetrotatespeed==1' :class='{active: device_nav.sDome_command=="rotate"}' @click='device_nav.sDome_command="rotate"' >设置转动速度</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span v-if='configData.sDome.cansetshadeposition==1' :class='{active: device_nav.sDome_command=="shadePos"}' @click='device_nav.sDome_command="shadePos"' >设置风帘位置</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span v-if='configData.sDome.cansetshadeposition==1' :class='{active: device_nav.sDome_command=="shadeAction"}' @click='device_nav.sDome_command="shadeAction"' >控制风帘运动</span>
 			</nav>
 			<div class='border2'><!--随动圆顶 指令和可变属性-->
 				<div id='btnsSlaveD' class='center_mrg center BtnsDiv'>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				
-				   <input id='sDomeConnect' class='border1 btnCommand' type='button' value='连接圆顶'>
-				   <input id='sDomeDisConnect' class='border1 btnCommand' type='button' value='断开圆顶'>
-				
-				   <input id='sDomeStop' class='border1 btnCommand' type='button' value='停止运动'>
-				
-				   <input id='sDomeScuttle' class='border1 btnCommand' type='button' value='打开天窗'>
-				   <input id='sDomeScuttleClose' class='border1 btnCommand' type='button' value='关闭天窗'>
+				   <input class='border1 btnCommand' type='button' value='连接圆顶' v-if='configData.sDome.canconnect==1' :class='{btnClick: device_nav.sDome_btn=="connect"}' @click='sDome_btn_command(1)' >
+				   <input class='border1 btnCommand' type='button' value='断开圆顶' v-if='configData.sDome.canconnect==1' :class='{btnClick: device_nav.sDome_btn=="disConnect"}' @click='sDome_btn_command(2)' >
+				   <input class='border1 btnCommand' type='button' value='停止运动' v-if='configData.sDome.canstop==1' :class='{btnClick: device_nav.sDome_btn=="stop"}' @click='sDome_btn_command(3)' >
+				   <input class='border1 btnCommand' type='button' value='打开天窗' v-if='configData.sDome.canopenshutter==1' :class='{btnClick: device_nav.sDome_btn=="open"}' @click='sDome_btn_command(4)' >
+				   <input class='border1 btnCommand' type='button' value='关闭天窗' v-if='configData.sDome.canopenshutter==1' :class='{btnClick: device_nav.sDome_btn=="close"}' @click='sDome_btn_command(5)' >
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
-				<form id='at60Dome' class='center command'>
-					<div id='setPos'>
-					   <input type='radio' name='command' value='1'>设置目标方位:
-					   <input type="text" id='domePositionIn' name='domePosition' placeholder='0-360' class='blur'>
-					</div>
-					<div id='rotateSpd'>
-					    <input type='radio' name='command' value='2'>设置转动速度：
-						<input type="text" id='RotateSpeedIn' name='RotateSpeed' placeholder='数字' class='blur'>
-					</div>
-					<div id='shadePos'>
-					   <input type='radio' name='command' value='3'>设置风帘位置：
-					   <input type="text" id='shadePositionIn' name='shadePosition' placeholder='0-90' class='blur'>
-					</div>
-					<div id='shadeAct'>
-					   <input type='radio' name='command' value='4'>控制风帘运动：
-					   <select name="shadeAction" style='width:90px;'>
-						   <option value="1">向上</option>
-						   <option value="2">向下</option>
-						   <option value="3">停止</option>
-						 </select>
-					  </div>
-					<br><input id='domeSbmt' class='border submitBtn' type="button" value="确认提交指令">
-				</form>
+				<form  class='center' v-if='device_nav.sDome_command=="objPos"' ><!--目标方位-->
+					目标方位：<input type="text" ref='objPos' v-model.trim='sDome_form.objPos_form.position' placeholder='[0, 360)' @blur='sDome_objPos_check(true)' >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="button" class='margin_10' value="提交指令" @click='sDome_objPos_sbmt' >
+				</form><!--目标方位 结束-->
+				<form  class='center' v-if='device_nav.sDome_command=="rotate"' ><!--转动速度-->
+					转动速度：<input type="text" ref='rotate' v-model.trim='sDome_form.rotateSpeed_form.speed' :placeholder='"<="+configData.sDome.maxspeed' @blur='sDome_rotate_check(true)' >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="button" class='margin_10' value="提交指令" @click='sDome_rotate_sbmt' >
+				</form><!--转动速度 结束-->
+				<form  class='center' v-if='device_nav.sDome_command=="shadePos"' ><!--风帘位置-->
+					风帘位置：<input type="text" ref='shade' v-model.trim='sDome_form.shadePos_form.position' placeholder='[0-90]' @blur='sDome_shade_check(true)' >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="button" class='margin_10' value="提交指令" @click='sDome_shade_sbmt' >
+				</form><!--风帘位置 结束-->
+				<form  class='center' v-if='device_nav.sDome_command=="shadeAction"' ><!--风帘运动-->
+					运动方向：<select style='width:90px;' v-model='sDome_form.shadeAction_form.action' >
+								<option value="-1">请选择</option>
+								<option value="1">向上</option>
+								<option value="2">向下</option>
+								<option value="3">停止</option>
+						</select>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="button" class='margin_10' value="提交指令" @click='sDome_action_sbmt' >
+				</form><!--风帘运动 结束-->
 				<br><hr style='width:98%;' class='center_mrg'><br>
 			<div><!--随动圆顶 可变属性-->
                 <span class='propT'>随动圆顶可变属性:</span><br><br>
@@ -780,20 +783,20 @@
 		<div class='border2'><!--随动圆顶 固定属性-->
 			<br><span class='propT'>随动圆顶固定属性:</span><br><br>
 			<ul class='properUl'>
-			   <li class='li fl'>类型:&nbsp;&nbsp;<span></span></li>
-			   <li class='li fl'>最大转动速度:&nbsp;&nbsp;<span></span></li>
-               <li class='li fl'>具备风帘:&nbsp;&nbsp;<span>
-				是
-		
-			   </span></li>
-               <li class='li fl'>控制风帘运动:&nbsp;&nbsp;<span>
-				否
-	
-			   </span></li>
-               <li class='li fl'>可否连接:&nbsp;&nbsp;<span>
-				否
-	
-			   </span></li>
+			   <li class='li fl'>类型:&nbsp;&nbsp;<span>{{configData.sDome.dometype}}</span></li>
+			   <li class='li fl'>最大转动速度:&nbsp;&nbsp;<span>{{configData.sDome.maxspeed}}</span></li>
+			   <li class='li fl'>具备风帘:&nbsp;&nbsp;
+				<span v-if='configData.sDome.hasshade==1'>有</span>
+				<span v-else>无</span>
+				</li>
+			   <li class='li fl'>控制风帘运动:&nbsp;&nbsp;
+				<span v-if='configData.sDome.cansetshadespeed==1'>是</span>
+				<span v-else>否</span>
+				</li>
+			   <li class='li fl'>可否连接:&nbsp;&nbsp;
+				<span v-if='configData.sDome.canconnect==1'>是</span>
+				<span v-else>否</span>
+				</li>
              </ul>
            <div class='clear'></div>
 		 </div><!--随动圆顶 固定属性 结束-->
@@ -841,25 +844,19 @@
 		 </div><!--全开圆顶 固定属性 结束-->
 	   </div><!--全开圆顶 结束-->
 
-
-	   <div id='filterInfo' class='displayNo'><!--滤光片指令和属性-->
+	   <div id='filterInfo' v-if='device_nav.dev_click=="filter"' ><!--滤光片指令和属性-->
 			<div class='border2'><!--滤光片 指令和可变属性-->
 				<div id='btnsFilter' class='center_mrg center BtnsDiv' style='width:850px;'>
-				
-					<input id='filterConnect' class='border1 btnCommand' type='button' value='连接滤光片'>&nbsp;&nbsp;&nbsp;&nbsp;
-					<input id='filterDisConnect' class='border1 btnCommand' type='button' value='断开滤光片'>&nbsp;&nbsp;&nbsp;&nbsp;
-				
-					<input id='filterFindHome' class='border1 btnCommand' type='button' value='找 零'>&nbsp;&nbsp;&nbsp;&nbsp;
-
-					滤光片位置：<select id='filterPosi' class='border1 btnCommand' name="filterPos" style='width:90px;color:#000;border:1px solid #7a7a7a;'>
-							    <option value="">请选择</option>
-							    <option value="0">0</option>
-							    <option value="1">1</option>
-							    <option value="2">2</option>
-								<option value="3">3</option>
-			
-						 </select>&nbsp;&nbsp;
-					<input id='filterPosBtn' class='border submitBtn' type='button' value='提交滤光片位置'>
+					<input v-if='configData.filter.canconnect==1' :class='{btnClick: device_nav.filter_btn=="connect"}' class='border1 btnCommand' type='button' value='连接滤光片' @click='filter_btn_command(1)' >&nbsp;&nbsp;&nbsp;&nbsp;
+					<input v-if='configData.filter.canconnect==1' :class='{btnClick: device_nav.filter_btn=="disConnect"}' class='border1 btnCommand' type='button' value='断开滤光片' @click='filter_btn_command(2)' >&nbsp;&nbsp;&nbsp;&nbsp;
+					<input v-if='configData.filter.canfindhome==1' :class='{btnClick: device_nav.filter_btn=="findhome"}' class='border1 btnCommand' type='button' value='找 零' @click='filter_btn_command(3)' >&nbsp;&nbsp;&nbsp;&nbsp;
+					<span v-if='configData.filter.cansetfilterposition==1'>
+						滤光片位置：<select id='filterPosi' v-model='filter_form.filter_position.filter_pos' class='border1 btnCommand' name="filterPos" style='width:90px;color:#000;border:1px solid #7a7a7a;' >
+							    <option value="-1">请选择</option>
+							    <option v-for='n in filter_pos_list.length' :value='n-1' >{{filter_pos_list[n-1]}}</option>
+						</select>&nbsp;&nbsp;
+					    <input :class='{hover: device_nav.filterPos_btn=="hover"}' class='border submitBtn' type='button' value='提交滤光片位置' @click='filterPos_sbmt' @mouseover='device_nav.filterPos_btn="hover"' @mouseleave='device_nav.filterPos_btn=""' >
+					</span>
 				</div><br>
 			<hr style='width:98%;' class='center_mrg'><br>
 			<div><!--滤光片 可变属性-->
@@ -875,16 +872,18 @@
 		<div class='border2'><!--滤光片 固定属性-->
 			<br><span class='propT'>滤光片固定属性:</span><br><br>
 			<ul class='properUl'>
-			    <li class='li fl'>插槽数目:&nbsp;&nbsp;<span></span></li>
-			   <li class='li fl'>滤光片类型:&nbsp;&nbsp;<span>
-				Johnshon-Bessel  
-			   </span></li>
-			   <li class='li fl'>可否设置滤光片位置:&nbsp;&nbsp;<span>
-				否
-		
-			   </span></li>
-			   <li class='li fl' style='width:1180px;'>滤光片焦距偏差值:&nbsp;&nbsp;<span></span></li>
-             </ul>
+			    <li class='li fl'>插槽数目:&nbsp;&nbsp;<span>{{configData.filter.numberoffilter}}</span></li>
+			   <li class='li fl'>可否设置滤光片位置:&nbsp;&nbsp;
+				<span v-if='configData.filter.cansetfilterposition==1' >是</span>
+				<span v-else>否</span>
+				</li>
+			   <li class='li fl' style='width:40%;'>滤光片焦距偏差值:&nbsp;&nbsp;<span>{{configData.filter.filterfocuslengthcompensate}}</span></li>
+			   <li class='li fl' style='width:100%;'>滤光片类型:&nbsp;&nbsp;
+				<span>
+				{{configData.filter.filtersystem.replace(/#/g,'')}}
+			   </span>
+			   </li>
+			</ul>
            <div class='clear'></div>
 		 </div><!--滤光片 固定属性 结束-->
 	   </div><!--滤光片 结束-->	

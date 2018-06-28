@@ -5676,9 +5676,10 @@ $(function () {
     focusMinValue.blur(function () {//验证 最小值
         var that = $(this);
         var v = $.trim(that.val());
+        var v1 = $.trim(focusMaxValue.val());
         var err = 0;
 
-        if ( !$.isNumeric(v) || v <= 0 )
+        if ( !$.isNumeric(v) || v <= 0 || v >= v1*1 )
         {
             err = 1;
             that.data('info', '调焦器最小值输入有误!');

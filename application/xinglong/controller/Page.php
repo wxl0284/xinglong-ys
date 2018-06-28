@@ -1015,7 +1015,7 @@ class Page extends Base
                 $filter['filter_name_json'] = json_encode ($temp_filtername);
             }
             $result['filter'] = $filter;
-            $result['has_filter'] = 1; //表示有ccd的配置数据
+            $result['has_filter'] = 1; //表示有filter的配置数据
         }
 
         //查随动圆顶配置数据

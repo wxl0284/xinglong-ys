@@ -45,6 +45,12 @@
 				ccd_btn: '',   //区分ccd各按钮型指令
 				select_ccd: '', //是否显示ccd下拉框
 				ccdNo: '-1', //ccd序号
+				filter_btn: '',   //区分filter各按钮型指令
+				filterPos_btn: '', //滤光片位置提交 按钮
+				focus_btn: '',  //区分调焦器各按钮
+				focus_command: '', //调焦器指令是否点击
+				sDome_btn: '', //随动圆顶各按钮指令
+				sDome_command: '', //随动圆顶各指令
 			},
 			gimbal_form: {//转台表单指令的参数
 				trackStar: {
@@ -61,7 +67,7 @@
 				slewDerotator: {
 					slewDerotator: '', command:'slewDerotator', at:at, at_aperture: aperture
 				},
-				axis3_mode: {
+				axis3_mode: {//设置轴3工作模式
 					mode: '-1', polarizingAngle: '', command:'axis3Mode', at:at, at_aperture: aperture
 				},
 				speed_alter: {//速度修正指令
@@ -115,9 +121,60 @@
 					binX:'-1', binY: '-1', command:'set_bin', at:at, at_aperture: aperture
 				},
 				set_roi_form: {
-					startX:'', startY: '', imageW:'', imageH:'', command:'set_roi', at:at, at_aperture: aperture
+					startX:0, startY: 0, imageW:0, imageH:0, command:'set_roi', at:at, at_aperture: aperture
 				},
-			},/**ccd1 表单 结束**/
+				set_shutter_form: {
+					shutter:'-1', command:'set_shutter', at:at, at_aperture: aperture
+				},
+				set_frame_form: {
+					frame:'1', command:'set_frame', at:at, at_aperture: aperture
+				},
+				set_em_form: {
+					em:'1', emV:'', command:'set_em', at:at, at_aperture: aperture
+				},
+				set_cmos_form: {
+					isNoiseFilter:'1', command:'set_cmos', at:at, at_aperture: aperture
+				},
+				set_baseLine_form: {
+					isBaseLine:'1', baseLineV:'', command:'set_baseLine', at:at, at_aperture: aperture
+				},
+				overScan_form: {
+					over_scan:'1', command:'over_scan', at:at, at_aperture: aperture
+				},
+			},/**ccd 表单 结束**/
+			filter_form: {//滤光片表单
+				filter_position: {
+					filter_pos: '-1', command:'set_filterPos', at:at, at_aperture: aperture
+				},
+			},/** 滤光片表单 结束**/
+			focus_form: {
+				objPos_form: {
+					pos: '',  command:'set_objPos', at:at, at_aperture: aperture
+				},
+				fixSpeed_form: {
+					speed: '',  command:'fix_speed', at:at, at_aperture: aperture
+				},
+				tempera_form: {
+					enable: '1',  command:'tempera_enable', at:at, at_aperture: aperture
+				},
+				temperatureE_form: {
+					coefficient: '',  command:'temperature_coef', at:at, at_aperture: aperture
+				},
+			},/** 调焦器表单 结束**/
+			sDome_form: {
+				objPos_form: {
+					position: '',  command:'set_objPos', at:at, at_aperture: aperture
+				},
+				rotateSpeed_form: {
+					speed: '',  command:'set_speed', at:at, at_aperture: aperture
+				},
+				shadePos_form: {
+					position: '',  command:'set_shade', at:at, at_aperture: aperture
+				},
+				shadeAction_form: {
+					action: '-1',  command:'set_action', at:at, at_aperture: aperture
+				},
+			},/** 随动圆顶表单 结束**/
 		},/********vue data属性对象 结束********/
 		computed: {//计算属性
 			ccd_gainMode: function (){
@@ -176,6 +233,27 @@
 				);
 				return final_transfer_speed_mode;
 			}, /*transfer_speed_Mode 结束*/
+			shutter_Mode: function (){
+				var shutter_mode = this.ccd_config.shuttermode.split(', ');
+				var final_shutter_mode = {
+					GlobalShutter: null, RollingShutter: null
+				};
+				shutter_mode.filter(
+					function (e) {
+						if ( (e.toLowerCase()).indexOf('global') !== -1 )
+						{
+							final_shutter_mode.GlobalShutter = e;
+						}else if ( (e.toLowerCase()).indexOf('roll') !== -1 )
+						{
+							final_shutter_mode.RollingShutter = e;
+						}
+					}
+				);
+				return final_shutter_mode;
+			}, /*readout_speed_Mode 结束*/
+			filter_pos_list: function (){
+				return this.configData.filter.filtername.split('/');
+			}, /*filter_pos_list 结束*/
 		},/*computed 结束*/
 		methods: {
 			plan_click: function () {
@@ -308,7 +386,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.trackstar_asc1, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.trackstar_asc1);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},
@@ -316,13 +394,13 @@
 				var msg = '';
 				var patn = /^\d{2}$/;
 				var v = this.gimbal_form.trackStar.rightAscension2;
-				if ( !patn.test(v) || v > 59 || v < 1 )
+				if ( !patn.test(v) || v > 59 || v < 0 )
 				{
 					msg = '赤经分钟参数超限';
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.trackstar_asc2, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.trackstar_asc2);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},
@@ -335,7 +413,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.trackstar_asc3, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.trackstar_asc3);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},
@@ -357,7 +435,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.trackstar_dec1, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.trackstar_dec1);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},
@@ -371,7 +449,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.trackstar_dec2, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.trackstar_dec2);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},
@@ -384,7 +462,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.trackstar_dec3, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.trackstar_dec3);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},
@@ -459,7 +537,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.objName, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.objName);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},
@@ -506,7 +584,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.azimuth, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.azimuth);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},
@@ -519,7 +597,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.elevation, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.elevation);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},
@@ -563,7 +641,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.slewDerotator, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.slewDerotator);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},
@@ -605,7 +683,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.polar_Angle, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.polar_Angle);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},
@@ -708,7 +786,7 @@
 
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.speed_fixed, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.speed_fixed);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},
@@ -917,7 +995,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.ccd_cool, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.ccd_cool);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},/**ccd_cool 结束**/
@@ -961,7 +1039,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.ccd_objAsc1, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.ccd_objAsc1);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},/******ccd_asc1 结束******/
@@ -975,7 +1053,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.ccd_objAsc2, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.ccd_objAsc2);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},/******ccd_asc1 结束******/
@@ -988,7 +1066,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.ccd_objAsc3, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.ccd_objAsc3);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},/******ccd_asc1 结束******/
@@ -1010,7 +1088,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.ccd_objDec1, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.ccd_objDec1);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},/******ccd_dec1 结束******/
@@ -1024,7 +1102,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.ccd_objDec2, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.ccd_objDec2);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},/******ccd_dec2 结束******/
@@ -1037,7 +1115,7 @@
 				}
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.ccd_objDec3, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.ccd_objDec3);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},/******ccd_dec3 结束******/
@@ -1059,7 +1137,7 @@
 				
 				if ( tip===true && msg !== '' )
 				{
-					layer.tips(msg, this.$refs.duration, {shade:false,closeBtn:0})
+					layer.tips(msg, this.$refs.duration);
 				}
 				return msg !== '' ? msg + '<br>' : '';
 			},
@@ -1284,20 +1362,792 @@
 				}
 			},/*set_bin_sbmt 结束*/
 			ccd_roi_x:function (tip) {
-
+				var msg = '';
+				var v = this.ccd_form.set_roi_form.startX;
+				var patn = /^\d+$/;
+				if ( !patn.test(v) || v > this.ccd_config.xpixel-1 || v < 0 )
+				{
+					msg = 'X坐标参数超限!';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.x);
+				}
+				return msg !== '' ? msg + '<br>' : '';
 			},/*ccd_roi_x 结束*/
 			ccd_roi_y:function (tip) {
-
+				var msg = '';
+				var v = this.ccd_form.set_roi_form.startY;
+				var patn = /^\d+$/;
+				if ( !patn.test(v) || v > this.ccd_config.ypixel-1 || v < 0 )
+				{
+					msg = 'Y坐标参数超限!';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.y);
+				}
+				return msg !== '' ? msg + '<br>' : '';
 			},/*ccd_roi_y 结束*/
 			ccd_roi_w:function (tip) {
-
+				var msg = '';
+				var v = this.ccd_form.set_roi_form.imageW;
+				var x = this.ccd_form.set_roi_form.startX;
+				var patn = /^\d+$/;
+				if ( !patn.test(v) || (v+x) > this.ccd_config.xpixel*1 || v < 1 )
+				{
+					msg = 'width参数超限!';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.w);
+				}
+				return msg !== '' ? msg + '<br>' : '';
 			},/*ccd_roi_w 结束*/
 			ccd_roi_h:function (tip) {
-
+				var msg = '';
+				var v = this.ccd_form.set_roi_form.imageH;
+				var y = this.ccd_form.set_roi_form.startY;
+				var patn = /^\d+$/;
+				if ( !patn.test(v) || (v+y) > this.ccd_config.ypixel*1 || v < 1 )
+				{
+					msg = 'height参数超限!';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.h);
+				}
+				return msg !== '' ? msg + '<br>' : '';
 			},/*ccd_roi_h 结束*/
 			set_roi_sbmt:function () {
+				var msg = '';
+				msg += this.ccd_roi_x(false);
+				msg += this.ccd_roi_y(false);
+				msg += this.ccd_roi_w(false);
+				msg += this.ccd_roi_h(false);
 
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:false, closeBtn:0});
+				}else{
+					this.ccd_form.set_roi_form.ccdNo = this.device_nav.ccdNo;
+					$.ajax({
+						url: '/ccd',
+						type: 'post',
+						data: this.ccd_form.set_roi_form,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error:function (){
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					})/*ajax 结束*/
+				}
 			},/*set_roi_sbmt 结束*/
+			set_shutter_sbmt:function (){
+				if ( this.ccd_form.set_shutter_form.shutter == -1 )
+				{
+					layer.alert('快门模式未选择!', {shade:false, closeBtn:0});
+				}else{
+					this.ccd_form.set_shutter_form.ccdNo = this.device_nav.ccdNo;
+					$.ajax({
+						url: '/ccd',
+						type: 'post',
+						data: this.ccd_form.set_shutter_form,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error:function (){
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					})/*ajax 结束*/
+				}
+			},/*set_shutter_sbmt 结束*/
+			set_frame_sbmt:function (){
+				this.ccd_form.set_frame_form.ccdNo = this.device_nav.ccdNo;
+					$.ajax({
+						url: '/ccd',
+						type: 'post',
+						data: this.ccd_form.set_frame_form,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error:function (){
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					})/*ajax 结束*/
+			},/*set_frame_sbmt 结束*/
+			ccd_em_check:function (tip) {
+				var msg = '';
+				var v = this.ccd_form.set_em_form.emV;
+				var patn = /^\d+$/;
+				if ( !patn.test(v) || v > this.ccd_config.emmaxvalue*1 || v < this.ccd_config.emminvalue*1)
+				{
+					msg = 'em值超限!';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.em);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},/*ccd_em_check 结束*/
+			set_em_sbmt:function (){
+				var msg = '';
+				if (this.ccd_form.set_em_form.em == 1)
+				{
+					msg = this.ccd_em_check(false);
+				}
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:0,closeBtn:0});
+				}else{
+					this.ccd_form.set_em_form.ccdNo = this.device_nav.ccdNo;
+					$.ajax({
+						url: '/ccd',
+						type: 'post',
+						data: this.ccd_form.set_em_form,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error:function (){
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					})/*ajax 结束*/
+				}
+			},/*set_em_sbmt 结束*/
+			set_cmos_sbmt:function (){
+				this.ccd_form.set_cmos_form.ccdNo = this.device_nav.ccdNo;
+					$.ajax({
+						url: '/ccd',
+						type: 'post',
+						data: this.ccd_form.set_cmos_form,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error:function (){
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					})/*ajax 结束*/
+			},/*set_cmos_sbmt 结束*/
+			ccd_baseLine_check:function (tip){
+				var msg = '';
+				var v = this.ccd_form.set_baseLine_form.baseLineV;
+				var patn = /^\d+$/;
+				if ( !patn.test(v) )
+				{
+					msg = 'baseLine值超限!';
+				}
+
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.base);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},/*ccd_baseLine_check 结束*/
+			set_baseLine_sbmt:function (){
+				var msg = '';
+				if (this.ccd_form.set_baseLine_form.isBaseLine == 1)
+				{
+					msg = this.ccd_baseLine_check(false);
+				}
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:0,closeBtn:0});
+				}else{
+					this.ccd_form.set_baseLine_form.ccdNo = this.device_nav.ccdNo;
+					$.ajax({
+						url: '/ccd',
+						type: 'post',
+						data: this.ccd_form.set_baseLine_form,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error:function (){
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					})/*ajax 结束*/
+				}
+			},/*set_baseLine_sbmt 结束*/
+			overScan_sbmt:function (){
+				this.ccd_form.overScan_form.ccdNo = this.device_nav.ccdNo;
+					$.ajax({
+						url: '/ccd',
+						type: 'post',
+						data: this.ccd_form.overScan_form,
+						success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						},/*success方法 结束*/
+						error:function (){
+							layer.alert('网络异常,请重新提交!', {shade:false, closeBtn:0});
+						},
+					})/*ajax 结束*/
+			},/*set_baseLine_sbmt 结束*/
+			filter_btn_command:function (n){
+				var that = this; //存储vue实例化的对象
+				var btn_str = ''; //控制按钮的样式
+				var btn_text = '';
+				var data = {at: at, command: '', at_aperture:aperture}; //提交的数据
+
+				switch (n) {
+					case 1:
+						btn_str = 'connect';
+						btn_text = '连接';
+						data.command = 'connect';
+						break;
+					case 2:
+						btn_str = 'disConnect';
+						btn_text = '断开';
+						data.command = 'disConnect';
+						break;
+					case 3:
+						btn_str = 'findhome';
+						btn_text = '找零';
+						data.command = 'findhome';
+						break;
+				}
+				$.ajax({//执行ajax
+					type : 'post',
+					url : '/filter',
+					data : data,             
+				    success: function (info) {
+						that.device_nav.filter_btn = btn_str;  //更改按钮样式
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});
+				    },
+		            error: function () {
+		        		layer.alert('网络异常,请再次' + btn_text, {shade:false, closeBtn:0});
+		            },
+				});
+			},/*filter_btn_command 结束*/
+			filterPos_sbmt:function (){
+				var msg = '';
+				if ( this.filter_form.filter_position.filter_pos == -1 )
+				{
+					layer.alert('您未选择滤光片!', {shade:false, closeBtn:0});return;
+				}
+				$.ajax({//执行ajax
+					type : 'post',
+					url : '/filter',
+					data : this.filter_form.filter_position,             
+				    success: function (info) {
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});
+				    },
+		            error: function () {
+		        		layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
+		            },
+				});
+			},/*filterPos_sbmt 结束*/
+			focus_btn_command:function (n) {
+				var that = this; //存储vue实例化的对象
+				var btn_str = ''; //控制按钮的样式
+				var btn_text = '';
+				var data = {at: at, command: '', at_aperture:aperture}; //提交的数据
+
+				switch (n) {
+					case 1:
+						btn_str = 'connect';
+						btn_text = '连接';
+						data.command = 'connect';
+						break;
+					case 2:
+						btn_str = 'disConnect';
+						btn_text = '断开';
+						data.command = 'disConnect';
+						break;
+					case 3:
+						btn_str = 'findhome';
+						btn_text = '找零';
+						data.command = 'findhome';
+						break;
+					case 4:
+						btn_str = 'stop';
+						btn_text = '停止';
+						data.command = 'stop';
+						break;
+				}
+				$.ajax({//执行ajax
+					type : 'post',
+					url : '/focus',
+					data : data,             
+				    success: function (info) {
+						that.device_nav.focus_btn = btn_str;  //更改按钮样式
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});
+				    },
+		            error: function () {
+		        		layer.alert('网络异常,请再次' + btn_text, {shade:false, closeBtn:0});
+		            },
+				});
+			},/*focus_btn_command 结束*/
+			focus_objPos_check:function (tip) {
+				var msg = '';
+				var v = this.focus_form.objPos_form.pos;
+				if ( !$.isNumeric(v) || v > this.configData.focus.maxvalue*1 || v < this.configData.focus.minvalue*1 )
+				{
+					msg = '目标位置值超限!';
+				}
+
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.focus_pos);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},/*focus_objPos_check 结束*/
+			focus_objPos_sbmt:function (tip) {
+				var msg = '';
+				msg = this.focus_objPos_check(false);
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:false, closeBtn:0}); return;
+				}else{
+					$.ajax({//执行ajax
+						type : 'post',
+						url : '/focus',
+						data : this.focus_form.objPos_form,             
+					    success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});
+					    },
+			            error: function () {
+			        		layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
+			            },
+					});
+				}
+			},/*focus_objPos_sbmt 结束*/
+			focus_speed_check:function (tip) {
+				var msg = '';
+				var v = this.focus_form.fixSpeed_form.speed;
+				if ( !$.isNumeric(v) || v > this.configData.focus.maxspeed*1 || v <= 0 )
+				{
+					msg = '速度值超限!';
+				}
+
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.focus_speed);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},/*focus_speed_check 结束*/
+			focus_speed_sbmt:function () {
+				var msg = '';
+				msg = this.focus_speed_check(false);
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:false, closeBtn:0}); return;
+				}else{
+					$.ajax({//执行ajax
+						type : 'post',
+						url : '/focus',
+						data : this.focus_form.fixSpeed_form,             
+					    success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});
+					    },
+			            error: function () {
+			        		layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
+			            },
+					});
+				}
+			},/*focus_speed_sbmt 结束*/
+			tempera_enable_sbmt:function (){
+				$.ajax({//执行ajax
+					type : 'post',
+					url : '/focus',
+					data : this.focus_form.tempera_form,             
+				    success: function (info) {
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});
+				    },
+		            error: function () {
+		        		layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
+		            },
+				});
+			},/*tempera_enable_sbmt 结束*/
+			temperature_coef_check:function (tip) {
+				var msg = '';
+				var v = this.focus_form.temperatureE_form.coefficient;
+				if ( !$.isNumeric(v) || v <= 0 )
+				{
+					msg = '补偿系数超限!';
+				}
+
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.coefficient);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},/*temperature_coef_check 结束*/
+			temperature_e_sbmt:function () {
+				var msg = '';
+				msg = this.temperature_coef_check(false);
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:false, closeBtn:0}); return;
+				}else{
+					$.ajax({//执行ajax
+						type : 'post',
+						url : '/focus',
+						data : this.focus_form.temperatureE_form,             
+					    success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});
+					    },
+			            error: function () {
+			        		layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
+			            },
+					});
+				}
+			},/*temperature_e_sbmt 结束*/
+			sDome_btn_command:function (n) {
+				var that = this; //存储vue实例化的对象
+				var btn_str = ''; //控制按钮的样式
+				var btn_text = '';
+				var data = {at: at, command: '', at_aperture:aperture}; //提交的数据
+
+				switch (n) {
+					case 1:
+						btn_str = 'connect';
+						btn_text = '连接';
+						data.command = 'connect';
+						break;
+					case 2:
+						btn_str = 'disConnect';
+						btn_text = '断开';
+						data.command = 'disConnect';
+						break;
+					case 3:
+						btn_str = 'stop';
+						btn_text = '停止运动';
+						data.command = 'stop';
+						break;
+					case 4:
+						btn_str = 'open';
+						btn_text = '打开';
+						data.command = 'open';
+						break;
+					case 5:
+						btn_str = 'close';
+						btn_text = '关闭';
+						data.command = 'close';
+						break;
+				}
+				$.ajax({//执行ajax
+					type : 'post',
+					url : '/slavedome',
+					data : data,             
+				    success: function (info) {
+						that.device_nav.sDome_btn = btn_str;  //更改按钮样式
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});
+				    },
+		            error: function () {
+		        		layer.alert('网络异常,请再次' + btn_text, {shade:false, closeBtn:0});
+		            },
+				});
+			},/*sDome_btn_command 结束*/
+			sDome_objPos_check:function (tip) {
+				var msg = '';
+				var v = this.sDome_form.objPos_form.position;
+				if ( !$.isNumeric(v) || v < 0 || v >= 360 )
+				{
+					msg = '目标方位值超限!';
+				}
+
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.objPos);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},/*sDome_objPos_check 结束*/
+			sDome_objPos_sbmt:function () {
+				var msg = '';
+				msg = this.sDome_objPos_check(false);
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:false, closeBtn:0}); return;
+				}else{
+					$.ajax({//执行ajax
+						type : 'post',
+						url : '/slavedome',
+						data : this.sDome_form.objPos_form,             
+					    success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});
+					    },
+			            error: function () {
+			        		layer.alert('网络异常,请再次提交', {shade:false, closeBtn:0});
+			            },
+					});
+				}
+			},/*sDome_objPos_sbmt 结束*/
+			sDome_rotate_check:function (tip) {
+				var msg = '';
+				var v = this.sDome_form.rotateSpeed_form.speed;
+				if ( !$.isNumeric(v) || v <= 0 || v > this.configData.sDome.maxspeed*1 )
+				{
+					msg = '转动速度值超限!';
+				}
+
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.rotate);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},/*sDome_rotate_check 结束*/
+			sDome_rotate_sbmt:function () {
+				var msg = '';
+				msg = this.sDome_rotate_check(false);
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:false, closeBtn:0}); return;
+				}else{
+					$.ajax({//执行ajax
+						type : 'post',
+						url : '/slavedome',
+						data : this.sDome_form.rotateSpeed_form,             
+					    success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});
+					    },
+			            error: function () {
+			        		layer.alert('网络异常,请再次提交', {shade:false, closeBtn:0});
+			            },
+					});
+				}
+			},/*sDome_rotate_sbmt 结束*/
+			sDome_shade_check:function (tip){
+				var msg = '';
+				var v = this.sDome_form.shadePos_form.position;
+				if ( !$.isNumeric(v) || v < 0 || v > 90 )
+				{
+					msg = '风帘位置值超限!';
+				}
+
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.shade);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},/*sDome_shade_check 结束*/
+			sDome_shade_sbmt:function () {
+				var msg = '';
+				msg = this.sDome_shade_check(false);
+				if ( msg !== '' )
+				{
+					layer.alert(msg, {shade:false, closeBtn:0}); return;
+				}else{
+					$.ajax({//执行ajax
+						type : 'post',
+						url : '/slavedome',
+						data : this.sDome_form.shadePos_form,             
+					    success: function (info) {
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});
+					    },
+			            error: function () {
+			        		layer.alert('网络异常,请再次提交', {shade:false, closeBtn:0});
+			            },
+					});
+				}
+			},/*sDome_shade_sbmt 结束*/
+			sDome_action_sbmt:function (){
+				if ( this.sDome_form.shadeAction_form.action == -1 )
+				{
+					layer.alert('请选择风帘运动方向!');return;
+				}
+
+				$.ajax({//执行ajax
+					type : 'post',
+					url : '/slavedome',
+					data : this.sDome_form.shadeAction_form,             
+				    success: function (info) {
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});
+				    },
+		            error: function () {
+		        		layer.alert('网络异常,请再次提交', {shade:false, closeBtn:0});
+		            },
+				});
+			},/*sDome_action_sbmt 结束*/
 		},/******methods 结束******/
 	});/***************vue js结束*****************/
 
@@ -1526,7 +2376,7 @@
 			},
 		});
 	}
-	//setInterval (getStatus, 1800);  //实时显示各设备状态信息
+    //setInterval (getStatus, 1800);  //实时显示各设备状态信息
 
 //接管 弹窗代码////////////////////////////////////////////////
 	$('#takeOverBtn').click(function () {
@@ -1568,608 +2418,7 @@
         });
      
     });//////////////////////////////////////////////////////////*/
-	
-//ccd 表单数据验证////////////////////////////////////////////			
-	//验证 设置Roi //////////////////////////////////////
-	$('#startX').blur(function () {
-		/*var v = $.trim($(this).val());		
-		var patn = /^\d+$/; //必须为>=0的整数
-		var err = 0;
-		
-		if (!patn.test(v))
-		{
-			err = 1;
-			layer.tips('startX输入有误!', $(this), {tipsMore: true});
-		}
 
-		$(this).data('err', err);*/
-	});
-	
-	$('#startY').blur(function () {
-		/*var v = $.trim($(this).val());		
-		var patn = /^\d+$/; //必须为>=0的整数
-		var err = 0;
-		
-		if (!patn.test(v))
-		{
-			err = 1;
-			layer.tips('startY输入有误!', $(this), {tipsMore: true});
-		}			
-		$(this).data('err', err);*/
-	});
-	
-	$('#imageWidth').blur(function () {
-		/*var v = $.trim($(this).val());		
-		var patn = /^\d+$/; //必须为>=0的整数
-		var err = 0;
-		
-		if (!patn.test(v))
-		{
-			err = 1;
-			layer.tips('imageWidth输入有误!', $(this), {tipsMore: true});
-		}			
-		$(this).data('err', err);*/
-	});
-	
-	$('#imageHeight').blur(function () {
-		/*var v = $.trim($(this).val());		
-		var patn = /^\d+$/; //必须为>=0的整数
-		var err = 0;
-		
-		if (!patn.test(v))
-		{
-			err = 1;
-			layer.tips('imageHeight输入有误!', $(this), {tipsMore: true});
-		}			
-		$(this).data('err', err);*/
-	});
-	//验证 设置Roi 结束////////////////////////////////////
-	
-	//验证 EmValue
-	$('#eMValueIn').blur(function () {
-		/*var v = $.trim($(this).val());		
-		var patn = /^\d+$/; //必须为>=0的整数
-		var err = 0;
-		if (!patn.test(v))
-		{
-			err = 1;
-			layer.tips('EmValue输入有误!', $(this), {tipsMore: true});
-		}
-		$(this).data('err', err);*/
-	});
-	
-	//验证 baselineValue
-	$('#baselineValueIn').blur(function () {
-		/*var v = $.trim($(this).val());		
-		var patn = /^\d+$/; //必须为>=0的整数
-		var err = 0;
-		
-		if (!patn.test(v))
-		{
-			err = 1;
-			layer.tips('此值输入有误!', $(this), {tipsMore: true});
-		}
-		$(this).data('err', err);*/
-	});
-//ccd 表单数据验证 结束/////////////////////////////////////////
-	var ccd_form = $('#at60Ccd');    //获取ccd表单元素
-//CCD 带参数指令 表单提交 JS事件///////////////////////////////
-    $('#ccdSbmt').click(function () {
-		var err = 0; //错误标识
-		var textE = ccd_form.children('div:not(.notCheck)').find('input.blur');
-		textE.each(function () {
-			$(this).blur();
-			err += $(this).data('err');
-		});
-		if (err > 0){
-			return;  //指令输入有误 不提交
-		}
-		
-		var ccd_formData = new FormData(ccd_form[0]);
-		ccd_formData.append('at', at);
-        //执行ajax
-			$.ajax ({
-              type: 'post',
-              url : '/ccd',
-              data : ccd_formData,
-              processData : false,
-              contentType : false,  
-              success:  function (info) {
-				layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-             },
-             error:  function () {
-	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
-            },
-          })    
-    });
-   
-//调焦器 带参数指令  js事件///////////////////////////////////////
-	var focusForm = $('#at60Focus');
-    var focusSelect = focusForm.find('div');
-
-    focusSelect.click(function () {
-         $(this).find('input[name="command"]').prop('checked', true);
-         var notcheck = focusSelect.not($(this));
-         notcheck.addClass('notCheck');
-         $(this).removeClass('notCheck');
-     });
-   
-//调焦器 连接按钮 js事件///////////////////////////////////
-   $('#focusConnect').click(function (){
-	   $(this).addClass('btnClick');
-	   $('#btnsFocus input').not($(this)).removeClass('btnClick');
-       $.ajax({
-            type : 'post',
-            url : '/focus',
-            data : {
-				focusConnect:1,
-				at: at,
-			},             
-            success:  function (info) {
-	             layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次连接调焦器!', {shade:false, closeBtn:0});
-            },
-      });
-   });
-   
-//调焦器 断开按钮 js事件///////////////////////////////////
-   $('#focusDisConnect').click(function (){
-	   $(this).addClass('btnClick');
-	   $('#btnsFocus input').not($(this)).removeClass('btnClick');
-       $.ajax({
-            type : 'post',
-            url : '/focus',
-            data : {
-				focusConnect:2,
-				at: at,
-			},             
-            success:  function (info) {
-	              layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次断开调焦器!', {shade:false, closeBtn:0});
-            },
-        });
-   });
-   
-//调焦器 停止运动按钮 js事件///////////////////////////////////
-   $('#focusStop').click(function (){
-	   $(this).addClass('btnClick');
-	   $('#btnsFocus input').not($(this)).removeClass('btnClick');
-	   $.ajax({
-            type : 'post',
-            url : '/focus',
-            data : {
-				focusStop:1,
-				at: at,
-			},             
-            success:  function (info) {
-	            layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次点击停止按钮!', {shade:false, closeBtn:0});
-            },
-        });
-   });
-   
-//调焦器 找零按钮 js事件///////////////////////////////////
-   $('#focusFindHome').click(function (){
-	   $(this).addClass('btnClick');
-	   $('#btnsFocus input').not($(this)).removeClass('btnClick');
-	   $.ajax({
-            type : 'post',
-            url : '/focus',
-            data : {
-				findHome:1,
-				at: at,
-			},             
-            success:  function (info) {
-	           layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次点击找零按钮!', {shade:false, closeBtn:0});
-            },
-        });
-   }); 
-   
-//调焦器 表单提交按钮 hover //////////////////////////////////
-   $('#focusSbmt').hover(
-        function (){
-            $(this).addClass("hover");
-        }, 
-        function (){
-            $(this).removeClass("hover");
-        }
-   );
-   
-//调焦器 表单数据验证////////////////////////////////////////////
-	//验证 目标位置
-	$('#setPositionIn').blur(function () {
-		/*var v = $.trim($(this).val());	
-		var err = 0;
-		
-		if (!$.isNumeric(v) || v < 0)
-		{
-			err = 1;
-			layer.tips('此值输入有误!', $(this), {tipsMore: true});
-		}
-		$(this).data('err', err);*/
-	});
-	
-	//验证 恒速运动
-	$('#speedIn').blur(function () {
-		/*var v = $.trim($(this).val());	
-		var err = 0;
-		
-		if (!$.isNumeric(v) || v <= 0)
-		{
-			err = 1;
-			layer.tips('此值输入有误!', $(this), {tipsMore: true});
-		}
-		$(this).data('err', err);*/
-	});
-	
-	//验证 温度补偿系数
-	$('#coefficientIn').blur(function () {
-		/*var v = $.trim($(this).val());	
-		var err = 0;
-		
-		if (!$.isNumeric(v) || v == 0)
-		{
-			err = 1;
-			layer.tips('此值输入有误!', $(this), {tipsMore: true});
-		}
-		$(this).data('err', err);*/
-	});
-//调焦器 表单数据验证 结束/////////////////////////////////////////
-var focus_form = $('#at60Focus');    //获取focus表单元素  
-//调焦器 带参数指令 表单提交 JS事件///////////////////////////////
-    $('#focusSbmt').click(function () {
-		var err = 0;
-        //var form = $('#at60Focus');    //获取focus表单元素
-        var textE = focus_form.children('div:not(.notCheck)').find('input.blur');
-		textE.each(function () {
-			$(this).blur();
-			err += $(this).data('err');
-		});
-		
-		if (err > 0){
-			return;  //指令输入有误 不提交
-		}
-		
-		var focus_formData = new FormData(focus_form[0]);
-		focus_formData.append('at',at);
-		$.ajax ({
-             type: 'post',
-             url : '/focus',
-             data : focus_formData,
-             processData : false,
-             contentType : false,  
-             success:  function (info) {
-	                layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-             },
-             error:  function () {
-	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
-            },
-         })        
-    });
-	
-//随动圆顶 连接按钮 js事件///////////////////////////////////
-   $('#sDomeConnect').click(function (){
-	   $(this).addClass('btnClick');
-	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
-       $.ajax({
-            type : 'post',
-            url : '/slavedome',
-            data : {
-				sDomeConnect:1,
-				at : at,
-			},             
-            success:  function (info) {
-			       layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	             layer.alert('网络异常,请再次连接圆顶!', {shade:false, closeBtn:0});
-            },
-        });
-   });
-   
-//随动圆顶 断开按钮 js事件///////////////////////////////////
-   $('#sDomeDisConnect').click(function (){
-	   $(this).addClass('btnClick');
-	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
-       $.ajax({
-            type : 'post',
-            url : '/slavedome',
-            data : {
-				sDomeConnect:2,
-				at: at,
-			},             
-            success:  function (info) {
-	           layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次断开圆顶!', {shade:false,closeBtn:0});
-            },
-        });
-   });
-   
-//随动圆顶 停止运动按钮 js事件///////////////////////////////////
-   $('#sDomeStop').click(function (){
-	   $(this).addClass('btnClick');
-	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
-       $.ajax({
-            type : 'post',
-            url : '/slavedome',
-			data : {
-				sDomeStop:1,
-				at: at,
-			},             
-            success:  function (info) {
-	           layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次点击该按钮!', {shade:false,closeBtn:0});
-           },
-        });
-   });
-   
-//随动圆顶 打开天窗 按钮 js事件///////////////////////////////////
-   $('#sDomeScuttle').click(function (){
-	   $(this).addClass('btnClick');
-	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
-       $.ajax({
-            type : 'post',
-            url : '/slavedome',
-            data : {
-				OpenScuttle:1,
-				at: at,
-			},             
-            success:  function (info) {
-	            layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次打开天窗!', {shade:false, closeBtn:0});
-            },
-        });
-   });
-   
-//随动圆顶 关闭天窗 按钮 js事件///////////////////////////////////
-   $('#sDomeScuttleClose').click(function (){
-	   $(this).addClass('btnClick');
-	   $('#btnsSlaveD input').not($(this)).removeClass('btnClick');
-       $.ajax({
-            type : 'post',
-            url : '/slavedome',
-            data : {
-				OpenScuttle:2,
-				at: at,
-			},             
-            success:  function (info) {
-	             layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次关闭天窗!', {shade:false, closeBtn:0});
-            },
-        });
-   });
-	
-//随动圆顶 带参数指令  js事件//////////////////////////////////////
-	var domeForm = $('#at60Dome');
-    var domeSelect = domeForm.find('div');
-
-    domeSelect.click(function () {
-         $(this).find('input:radio').prop('checked', true);
-         var notcheck = domeSelect.not($(this));
-         notcheck.addClass('notCheck');
-         $(this).removeClass('notCheck');
-     });
-	 
-//随动圆顶 表单数据验证//////////////////////////////////////////
-	//验证 目标方位
-	$('#domePositionIn').blur(function () {
-		/*var v = $.trim($(this).val());	
-		var err = 0;
-		
-		if (!$.isNumeric(v) || v < 0 || v > 360)
-		{
-			err = 1;
-			layer.tips('此值输入有误!', $(this), {tipsMore: true});
-		}
-		$(this).data('err', err);*/
-	});
-	
-	//验证 转动速度
-	$('#RotateSpeedIn').blur(function () {
-		/*var v = $.trim($(this).val());	
-		var err = 0;
-		
-		if (!$.isNumeric(v) || v <= 0)
-		{
-			err = 1;
-			layer.tips('此值输入有误!', $(this), {tipsMore: true});
-		}
-		$(this).data('err', err);*/
-	});
-	
-	//验证 风帘位置
-	$('#shadePositionIn').blur(function () {
-		/*var v = $.trim($(this).val());	
-		var err = 0;
-		
-		if (!$.isNumeric(v) || v < 0 || v > 90)
-		{
-			err = 1;
-			layer.tips('此值输入有误!', $(this), {tipsMore: true});
-		}
-		$(this).data('err', err);*/
-	});
-//随动圆顶 表单数据验证 结束//////////////////////////////////////////
-var sDome_form = $('#at60Dome');    //获取圆顶表单元素
-//随动圆顶 带参数指令 表单提交 JS事件///////////////////////////////
-    $('#domeSbmt').click(function () {
-		var err = 0;
-        //var form = $('#at60Dome');    //获取ccd表单元素
-		var textE = sDome_form.children('div:not(.notCheck)').find('input.blur');
-		textE.each(function () {
-			$(this).blur();
-			err += $(this).data('err');
-		});
-		
-		if (err > 0){
-			return;  //指令输入有误 不提交
-		}
-		
-		var sDome_formData = new FormData(sDome_form[0]);
-		sDome_formData.append('at', at);
-        
-		$.ajax ({
-              type: 'post',
-              url : '/slavedome',
-              data : sDome_formData,
-              processData : false,
-              contentType : false,  
-              success:  function (info) {
-	               layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-             },
-             error:  function () {
-	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
-            },
-        })           
-    });
-	
-	//随动圆顶 表单提交按钮 hover //////////////////////////////////
-   $('#domeSbmt').hover(
-        function (){
-            $(this).addClass("hover");
-        }, 
-        function (){
-            $(this).removeClass("hover");
-        }
-   );
-   
    //全开圆顶 按钮 js 事件/////////////////////////////////////
    var oDome_command = $('#oDome_command');
    //var oDome_btn = oDome_command.children('input');
@@ -2269,125 +2518,6 @@ var sDome_form = $('#at60Dome');    //获取圆顶表单元素
 // 	   }
 		
 //    });
-   
-   //滤光片  按钮 js 事件 结束/////////////////////////////////
-   $('#filterConnect').click(function (){
-	   $(this).addClass('btnClick');
-	   $('#btnsFilter input').not($(this)).removeClass('btnClick');
-       $.ajax({
-            type : 'post',
-            url : '/filter',
-            data : {filterConnect:1,at:at,},             
-            success:  function (info) {
-	           layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次连接滤光片!', {shade:false, closeBtn:0});
-            },
-        });
-   });
-   
-   //滤光片  断开按钮 js 事件/////////////////////////////////
-   $('#filterDisConnect').click(function (){
-	   $(this).addClass('btnClick');
-	   $('#btnsFilter input').not($(this)).removeClass('btnClick');
-       $.ajax({
-            type : 'post',
-            url : '/filter',
-            data : {filterConnect:2,at:at,},             
-            success:  function (info) {
-	            layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次断开滤光片!', {shade:false, closeBtn:0});
-            },
-        });
-   });
-   
-   //滤光片 找零按钮 js事件//////////////////////////////////
-   $('#filterFindHome').click(function (){
-	   $(this).addClass('btnClick');
-	   $('#btnsFilter input').not($(this)).removeClass('btnClick');
-	   $.ajax({
-            type : 'post',
-            url : '/filter',
-            data : {filterFindHome:1,at:at,},             
-            success:  function (info) {
-	            layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	              layer.alert('网络异常,请再次进行找零!', {shade:false, closeBtn:0});
-            },
-        });
-   });
-   
-	//滤光片 提交位置指令 js事件//////////////////////////////////
-	var filterPosEle = $('#filterPosi');
-	$('#filterPosBtn').click(function () {
-		var filterPosVal = filterPosEle.val();
-		$.ajax({
-            type : 'post',
-            url : '/filter',
-            data : {filterPos:filterPosVal,at:at,},             
-            success:  function (info) {
-	            layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-	            layer.alert('网络异常,请再次提交滤光片位置!', {shade:false, closeBtn:0});
-			   	filterPosEle.val('0');
-            },
-        });
-	});
-	
-	//滤光片 表单提交按钮 hover //////////////////////////////////
-   $('#filterPosBtn').hover(
-        function (){
-            $(this).addClass("hover");
-        }, 
-        function (){
-            $(this).removeClass("hover");
-        }
-   );
 	
 //观测计划 执行模式 js /////////////////////////////////////
 	$('#modeSpan').hover(

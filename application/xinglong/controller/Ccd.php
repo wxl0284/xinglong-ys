@@ -31,13 +31,13 @@ class Ccd extends Base
         'readout_speed' => 50,
         'transfer_speed' => 50,
         'set_bin' => 56,
-        // 'axis3Mode' => 58,
-        // 'speed_alter' => 58,
-        // 'speed_fixed' => 58,
-        // 'position_alter' => 58,
-        // 'cover_op' => 50,
-        // 'setFocusType' => 50,
-        // 'save_sync_data' => 48,
+        'set_roi' => 64,
+        'set_shutter' => 50,
+        'set_frame' => 50,
+        'set_em' => 54,
+        'set_cmos' => 50,
+        'set_baseLine' => 54,
+        'over_scan' => 50,
     ];
     protected $operation = [//各指令之编号
         'connect' => 1,
@@ -50,16 +50,16 @@ class Ccd extends Base
         'readout_speed' => 8,
         'transfer_speed' => 9,
         'set_bin' => 10,
-        // 'speed_alter' => 9,
-        // 'speed_fixed' => 11,
-        // 'position_alter' => 12,
-        // 'cover_op' => 13,
-        // 'setFocusType' => 14,
-        // 'save_sync_data' => 16,
-    ];
+        'set_roi' => 11,
+        'set_shutter' => 12,
+        'set_frame' => 13,
+        'set_em' => 14,
+        'set_cmos' => 15,
+        'set_baseLine' => 16,
+        'over_scan' => 17,
+    ]; 
     
-    //接收参数，根据不同参数，向不同望远镜的CCD指令
-    public function sendCommand ()
+    public function sendCommand ()  //接收参数，根据不同参数，向不同望远镜的CCD指令
     {
         //首先判断是否有权限执行
        /* if ($this->ajaxAuthErr == 1)
@@ -138,37 +138,34 @@ class Ccd extends Base
                 return $this->set_transferSpeed ($postData, 'transfer_speed');
             case 'set_bin':
                 return $this->set_bin ($postData, 'set_bin');
+            case 'set_roi':
+                return $this->set_roi ($postData, 'set_roi');
+            case 'set_shutter':
+                return $this->set_shutter ($postData, 'set_shutter');
+            case 'set_frame':
+                return $this->set_isFullFrame ($postData, 'set_frame');
+            case 'set_em':
+                return $this->set_em ($postData, 'set_em');
+            case 'set_cmos':
+                return $this->set_isNoiseFilter ($postData, 'set_cmos');
+            case 'set_baseLine':
+                return $this->set_baseLine ($postData, 'set_baseLine');
+            case 'over_scan':
+                return $this->set_overScan ($postData, 'over_scan');
             default:
                 break;
         }
-
-        // }else if( $command == 8 ){//设置ROI 指令    
-        //     return $this->set_roi(); //执行发送
-        // }else if( $command == 9 ){//设置快门指令 指令    
-        //     return $this->set_shutter(); //执行发送
-        // }else if( $command == 10 ){//设置帧转移 指令    
-        //     return $this->set_isFullFrame(); //执行发送
-        // }else if( $command == 11 ){//SetEM 指令    
-        //     return $this->set_em(); //执行发送
-        // }else if( $command == 12 ){//isNoiseFilter 指令    
-        //     return $this->set_isNoiseFilter(); //执行发送
-        // }else if( $command == 13 ){//SetBaseline 指令    
-        //     return $this->set_baseLine(); //执行发送
-        // }else if( $command == 14 ){//set over scan 指令    
-        //     return $this->set_overScan(); //执行发送
-        // }
     }//接收参数，根据不同参数，向不同望远镜的CCD指令 结束////////
 
-    /*ccd连接或断开*/
-    protected function connect ($connect, $param)
+    protected function connect ($connect, $param)  /*ccd连接或断开*/
     {
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
         $sendMsg = pack('S', $connect);  //unsigned short
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         if ($connect == 1)
         {
             return 'ccd连接指令：' .udpSend($sendMsg, $this->ip, $this->port); 
@@ -178,15 +175,13 @@ class Ccd extends Base
         }
     }/*ccd连接或断开 结束*/
 
-    
     protected function button_command ($param) /*停止曝光和终止曝光*/
     {
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
-        //socket发送数据
-        $sendMsg = $headInfo;
+        $sendMsg = $headInfo;  //socket发送数据
         if ( $param == 'stop_expose' )
         {
             return '停止曝光：'. udpSend($sendMsg, $this->ip, $this->port);
@@ -195,9 +190,8 @@ class Ccd extends Base
         }
     }/*停止曝光和终止曝光 结束*/
 
-     
-     protected function set_cool ($postData, $param)  /*设置制冷温度*/
-     {
+    protected function set_cool ($postData, $param)  /*设置制冷温度*/
+    {
         $res = Db::table('ccdconf')->where('teleid', $postData['at'])->where('ccdno', $this->ccdNo)->field('lowcoolert')->find(); //获取该望远镜的ccdconf表中的:最低制冷温度
 
         if( !is_numeric($postData['temp']) || $postData['temp'] > 20 || $postData['temp'] < $res['lowcoolert'])
@@ -210,10 +204,10 @@ class Ccd extends Base
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return '制冷温度指令：' .udpSend($sendMsg, $this->ip, $this->port);	 
-     }/*设置制冷温度 结束*/
+    }/*设置制冷温度 结束*/
 
     protected function expose_strategy ($postData, $param) /*设置曝光策略*/
     {        
@@ -638,8 +632,8 @@ class Ccd extends Base
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-        //socket发送数据        
-        $sendMsg = $headInfo . $sendMsg;
+    
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return '设置曝光策略指令：' .udpSend($sendMsg, $this->ip, $this->port);	 
     }/*设置曝光策略 结束*/
 
@@ -659,8 +653,8 @@ class Ccd extends Base
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-        //socket发送数据        
-        $sendMsg = $headInfo . $sendMsg;
+   
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return '开始曝光指令：'. udpSend($sendMsg, $this->ip, $this->port);	
     }/*开始曝光 结束*/
 
@@ -679,8 +673,8 @@ class Ccd extends Base
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-        //socket发送数据        
-        $sendMsg = $headInfo . $sendMsg;
+   
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return '设置增益指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }/*设置增益 结束*/
 
@@ -690,9 +684,8 @@ class Ccd extends Base
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-
-        //socket发送数据        
-        $sendMsg = $headInfo . $sendMsg;
+      
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return '设置读出速度模式指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }/*设置 读出速度模式值  结束*/
 
@@ -703,9 +696,8 @@ class Ccd extends Base
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-
-        //socket发送数据        
-        $sendMsg = $headInfo . $sendMsg;
+      
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return '设置转移速度模式指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }/*设置 转移速度模式值  结束*/
 
@@ -722,223 +714,129 @@ class Ccd extends Base
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-
-        //socket发送数据        
-        $sendMsg = $headInfo . $sendMsg;
+       
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return  '设置BIN指令：' .udpSend($sendMsg, $this->ip, $this->port);	
     }/*设置Bin 结束*/
 
-    /*设置Roi*/
-    protected function set_roi ()
+    protected function set_roi ($postData, $param)  /*设置Roi*/
     {
-        $length = 48 + 16;      //该结构体总长度
+        $res = Db::table('ccdconf')->where('teleid', $postData['at'])->where('ccdno', $this->ccdNo)->field('xpixel, ypixel')->find(); //获取该望远镜的ccdconf表中的:x y像素值
 
-        if ( ( $startX=input('startX') ) !== '' )      //startX
+        if ( !preg_match('/^\d+$/', $postData['startX']) || $postData['startX'] < 0 || $postData['startX'] > $res['xpixel']-1 )
         {
-            if (!preg_match('/^\d{1,10}$/', $startX))
-            {
-                return 'startX值只能是数字！';
-            }
-            $sendMsg = pack('L', $startX);     //unsigned int
-        }else{
-            $sendMsg = pack('L', 0);
+            return 'x坐标参数超限!';
         }
-        
-        if ( ( $startY=input('startY') ) !== '' )     //unsigned int
+        if ( !preg_match('/^\d+$/', $postData['startY']) || $postData['startY'] < 0 || $postData['startY'] > $res['ypixel']-1 )
         {
-            if (!preg_match('/^\d{1,10}$/', $startY))
-            {
-                return 'startY值只能是数字！';
-            }
-            $sendMsg .= pack('L', $startY);     //unsigned int
-        }else{
-            $sendMsg .= pack('L', 0);
+            return 'y坐标参数超限!';
         }
-        
-        if ( ( $imageWidth=input('imageWidth') ) !== '' )      //imageWidth
+        if ( !preg_match('/^\d+$/', $postData['imageW']) || $postData['imageW'] < 1 || ($postData['imageW']+$postData['startX']) > $res['xpixel'] )
         {
-            if (!preg_match('/^\d{1,10}$/', $imageWidth))
-            {
-                return 'imageWidth值只能是数字！';
-            }
-            $sendMsg .= pack('L', $imageWidth);     //unsigned int
-        }else{
-            $sendMsg .= pack('L', 0);
+            return 'Width参数超限!';
         }
-        
-        if ( ( $imageHeight=input('imageHeight') ) !== '' )  //imageWidth
+        if ( !preg_match('/^\d+$/', $postData['imageH']) || $postData['imageH'] < 1 || ($postData['imageH']+$postData['startY']) > $res['ypixel'] )
         {
-            if (!preg_match('/^\d{1,10}$/', $imageHeight))
-            {
-                return 'imageHeight值只能是数字！';
-            }
-            $sendMsg .= pack('L', $imageHeight);     //unsigned int
-        }else{
-            $sendMsg .= pack('L', 0);
+            return 'Height参数超限!';
         }
+        $sendMsg = pack('L4', $postData['startX'], $postData['startY'], $postData['imageW'], $postData['imageH']);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
- 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=11);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        //socket发送数据        
-        $sendMsg = $headInfo . $sendMsg;
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
+      
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return  '设置Roi指令：' .udpSend($sendMsg, $this->ip, $this->port);	
     }/*设置Roi 结束*/
-
-    /*设置快门*/
-    protected function set_shutter ()
+    
+    protected function set_shutter ($postData, $param) /*设置快门*/
     {
-        $length = 48 + 2;      //该结构体总长度
+        $sendMsg = pack('S', $postData['shutter']);     //unsigned short
 
-        $shutter = input('shutter');
-        if (!preg_match('/^\d{1,10}$/', $shutter))
-        {
-            return 'shutter值只能是数字！';
-        }
-        $sendMsg = pack('S', $shutter);     //unsigned short
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
- 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=12);
-
-        //socket发送数据        
-        $sendMsg = $headInfo . $sendMsg;
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);  
+      
+        $sendMsg = $headInfo . $sendMsg; //socket发送数据
         return  '设置快门指令：'. udpSend($sendMsg, $this->ip, $this->port);	
     }/*设置快门 结束*/
 
-    /*设置帧转移*/
-    protected function set_isFullFrame ()
+    protected function set_isFullFrame ($postData, $param) /*设置帧转移*/
     {
-        $length = 48 + 2;      //该结构体总长度
+        $sendMsg = pack('S', $postData['frame']);     //unsigned short
 
-        $isFullFrame = input('isFullFrame');
-        if (!preg_match('/^\d{1,10}$/', $isFullFrame))
-        {
-            return 'isFullFrame值只能是数字！';
-        }
-        $sendMsg = pack('S', $isFullFrame);     //unsigned short
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
- 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=13);
-
-        //socket发送数据        
-        $sendMsg = $headInfo . $sendMsg;
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);       
+        $sendMsg = $headInfo . $sendMsg; //socket发送数据 
         return  '设置帧转移指令：'. udpSend($sendMsg, $this->ip, $this->port);	
     }/*设置帧转移 结束*/
 
-    /*SetEM*/
-    protected function set_em ()
+    protected function set_em ($postData, $param)  /*SetEM*/
     {
-        $length = 48 + 6;      //该结构体总长度
-
-        if ( ($isEM = input('isEM')) !== '' )      //isEM
+        if ( $postData['em'] == 1 )
         {
-            if (!preg_match('/^\d{1,5}$/', $isEM))
+            $res = Db::table('ccdconf')->where('teleid', $postData['at'])->where('ccdno', $this->ccdNo)->field('emmaxvalue, emminvalue')->find(); //获取该望远镜的ccdconf表中的:em 最大 最小值
+            
+            if ( !preg_match('/^\d+$/', $postData['emV']) || $postData['emV'] > $res['emmaxvalue'] || $postData['emV'] < $res['emminvalue'])
             {
-                return 'isEM值只能是数字！';
+                return 'em值超限!';
             }
-            $sendMsg = pack('S', $isEM);     //unsigned short
-        }else{
-            $sendMsg = pack('S', 0);
+            $sendMsg = pack('S', $postData['em']);
+            $sendMsg = pack('L', $postData['emV']);
+        }else if ( $postData['em'] == 0 ){//
+            $sendMsg = pack('S', $postData['em']);
+            $sendMsg = pack('L', 0);
         }
-        
-        if ( ($eMValue = input('eMValue')) !== '' )      //eMValue
-        {
-            if (!preg_match('/^\d{1,10}$/', $eMValue))
-            {
-                return 'eMValue值只能是数字！';
-            }
-            $sendMsg .= pack('L', $eMValue);     //unsigned int
-        }else{
-            $sendMsg .= pack('L', 0);
-        }
+       
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
- 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=14);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
-        //socket发送数据        
-        $sendMsg = $headInfo . $sendMsg;
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据 
         return  'SetEM指令：' .udpSend($sendMsg, $this->ip, $this->port);	
     }/*SetEM 结束*/
 
-    /*isNoiseFilter*/
-    protected function set_isNoiseFilter ()
+    protected function set_isNoiseFilter ($postData, $param) /*isNoiseFilter*/
     {
-        $length = 48 + 2;      //该结构体总长度
+        $sendMsg = pack('S', $postData['isNoiseFilter']);     //unsigned short
 
-        $isNoiseFilter = input('isNoiseFilter');
-        if (!preg_match('/^\d{1,5}$/', $isNoiseFilter))
-        {
-            return 'isNoiseFilter值只能是数字！';
-        }
-        $sendMsg = pack('S', $isNoiseFilter);     //unsigned short
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
- 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=15);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
-        //socket发送数据        
-        $sendMsg = $headInfo . $sendMsg;
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据  
         return  'CMOS noise filter指令：' .udpSend($sendMsg, $this->ip, $this->port);	
     }/*isNoiseFilter 结束*/
 
-    /*set_baseLine*/
-    protected function set_baseLine ()
+    protected function set_baseLine ($postData, $param) /*set_baseLine*/
     {
-         $length = 48 + 6;      //该结构体总长度
- 
-        if ( ($isBaseline = input('isBaseline')) !== '' )    //isBaseline
+        if ( $postData['isBaseLine'] == 1 )
         {
-            if (!preg_match('/^\d{1,5}$/', $isBaseline))
-            {
-                return 'isBaseline值只能是数字！';
-            }
-            $sendMsg = pack('S', $isBaseline);     //unsigned short
-        }else{
-            $sendMsg = pack('S', 0);
-        }
-        
-        if ( ($baselineValue = input('baselineValue')) !== '' )   //baselineValue
-        {
-            if (!preg_match('/^\d{1,10}$/', $baselineValue))
-            {
-                return 'baseline值只能是数字！';
-            }
-            $sendMsg .= pack('L', $baselineValue);     //unsigned int
-        }else{
-            $sendMsg .= pack('L', 0);
+            $sendMsg = pack('S', $postData['isBaseLine']);
+            $sendMsg = pack('L', $postData['baseLineV']);
+        }else if ( $postData['isBaseLine'] == 0 ){//
+            $sendMsg = pack('S', $postData['isBaseLine']);
+            $sendMsg = pack('L', 0);
         }
  
-         $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
-  
-         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=16);
- 
-         //socket发送数据        
-         $sendMsg = $headInfo . $sendMsg;
-         return  'Baseline指令：' .udpSend($sendMsg, $this->ip, $this->port);	
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
+
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
+         
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据 
+        return  'Baseline指令：' .udpSend($sendMsg, $this->ip, $this->port);	
     }/*set_baseLine 结束*/
 
-    /*set over scan*/
-    protected function set_overScan ()
+    protected function set_overScan ($postData, $param)  /*set over scan*/
     {
-        $length = 48 + 2;      //该结构体总长度
+        $sendMsg = pack('S', $postData['over_scan']);     //unsigned short
 
-        $isOverScan = input('isOverScan');  //isOverScan
-        if (!preg_match('/^\d{1,5}$/', $isOverScan))
-        {
-            return 'isOverScan值只能是数字！';
-        }
-        $sendMsg = pack('S', $isOverScan);     //unsigned short
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
- 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=17);
-
-        //socket发送数据        
-        $sendMsg = $headInfo . $sendMsg;
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
+             
+        $sendMsg = $headInfo . $sendMsg; //socket发送数据  
         return  'Over Scan指令：' .udpSend($sendMsg, $this->ip, $this->port);	
     }/*set over scan 结束*/
 }

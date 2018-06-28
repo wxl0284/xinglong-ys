@@ -151,7 +151,6 @@ class Gimbal extends Base
             default:
                 break;
         }
-
         // }else if( $command == 12 ){//跟踪卫星            
         //     return $this->track_satellite();    //执行发送
         // }else if( $command == 13 ){//属性设置            
@@ -159,8 +158,8 @@ class Gimbal extends Base
         // }
     }//接收参数，根据不同参数，向不同望远镜的转台指令 结束/////
 
-    //连接 断开 指令
-    protected function connect ($connect, $param)
+    
+    protected function connect ($connect, $param) //连接 断开 指令
     {
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
@@ -168,8 +167,7 @@ class Gimbal extends Base
         
         $sendMsg = pack('S', $connect);  //unsigned short
       
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         if ($connect == 1)
         {
             return '连接指令：'. udpSend($sendMsg, $this->ip, $this->port);
@@ -179,28 +177,24 @@ class Gimbal extends Base
         }
     }//连接 断开 指令 结束
 
-    //找零 指令
-    protected function findHome ($param)
+    protected function findHome ($param)  //找零 指令
     {
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
         $sendMsg = pack('S', 1);  //unsigned short
         
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+        $sendMsg = $headInfo . $sendMsg; //socket发送数据
         return '找零指令：'. udpSend($sendMsg, $this->ip, $this->port);
     }//找零 指令 结束
     
-    //复位 停止 急停 指令
-    protected function button_command ($param)
+    protected function button_command ($param) //复位 停止 急停 指令
     {
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
         
-        //socket发送数据
-        $sendMsg = $headInfo;
+        $sendMsg = $headInfo; //socket发送数据
         if ( $param == 'park' )
         {
             return '复位指令：'. udpSend($sendMsg, $this->ip, $this->port);
@@ -281,12 +275,11 @@ class Gimbal extends Base
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+       
+        $sendMsg = $headInfo . $sendMsg; //socket发送数据
         return '跟踪恒星指令：'. udpSend($sendMsg, $this->ip, $this->port);
     }//跟踪恒星 指令 结束
 
-   
     protected function set_obj_name ($postData, $param)  //设置目标名称
     {   
         $length = strlen( $postData['objectName'] );
@@ -305,8 +298,8 @@ class Gimbal extends Base
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+       
+        $sendMsg = $headInfo . $sendMsg; //socket发送数据
         return '设置目标名称指令：' . udpSend($sendMsg, $this->ip, $this->port);
     }//设置目标名称 结束
     
@@ -329,13 +322,12 @@ class Gimbal extends Base
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+       
+        $sendMsg = $headInfo . $sendMsg; //socket发送数据
         return '指向固定位置指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }//指向固定位置 结束
 
-    //轴3指向固定位置
-    protected function axis3_direct ($postData, $param)
+    protected function axis3_direct ($postData, $param) //轴3指向固定位置
     {       
         if ( !is_numeric($postData['slewDerotator']) ||  $postData['slewDerotator'] > 360 || $postData['slewDerotator'] < 0 )
         {
@@ -347,8 +339,8 @@ class Gimbal extends Base
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return '轴3指向固定位置指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }//轴3指向固定位置 结束
 
@@ -356,21 +348,26 @@ class Gimbal extends Base
     {
         if (!preg_match('/^[0-2]$/', $postData['mode']))
         {
-            return '轴三工作模式参数无效果!';
+            return '轴三工作模式参数无效!';
         }
         $sendMsg = pack('S', $postData['mode']);     //unsigned short
 
-        if ( !is_numeric($postData['polarizingAngle']) ||  $postData['polarizingAngle'] > 360 || $postData['polarizingAngle'] < 0 ) // 起偏角
+        if ( $postData['mode'] == 2 )
         {
-            return '轴三起偏角参数超限!';
+            if ( !is_numeric($postData['polarizingAngle']) ||  $postData['polarizingAngle'] > 360 || $postData['polarizingAngle'] < 0 ) // 起偏角
+            {
+                return '轴三起偏角参数超限!';
+            }
+            $sendMsg .= pack('d', $postData['polarizingAngle']);     //double64
+        }else{
+            $sendMsg .= pack('d', 0);     //double64
         }
-        $sendMsg .= pack('d', $postData['polarizingAngle']);     //double64
         
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return '轴3工作模式指令：'. udpSend($sendMsg, $this->ip, $this->port);
     }//轴3工作模式  结束
 
@@ -443,8 +440,8 @@ class Gimbal extends Base
 
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return '速度修正指令：'. udpSend($sendMsg, $this->ip, $this->port);
     }
 
@@ -482,8 +479,8 @@ class Gimbal extends Base
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return '恒速运动指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }//恒速运动 结束///////
 
@@ -547,7 +544,6 @@ class Gimbal extends Base
                 return '参数非法!';
                 break;
         }
-        
     }/*位置修正 结束**********/
 
     protected function pos_alter_sendData ($axix, $correction, $param) //发送 位置修正指令的参数
@@ -557,8 +553,8 @@ class Gimbal extends Base
 
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return '位置修正指令：'. udpSend($sendMsg, $this->ip, $this->port);
     }//发送 位置修正指令的参数 结束
 
@@ -572,8 +568,8 @@ class Gimbal extends Base
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-		//socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return '镜盖指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }/*镜盖操作 结束**********/
 
@@ -584,8 +580,8 @@ class Gimbal extends Base
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return '焦点切换镜指令：' .udpSend($sendMsg, $this->ip, $this->port);		
     }/*焦点切换镜 结束**********/
  
@@ -594,8 +590,8 @@ class Gimbal extends Base
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
-        //socket发送数据
-        $sendMsg = $headInfo;
+
+        $sendMsg = $headInfo;  //socket发送数据
         return '保存同步数据指令：' .udpSend($sendMsg, $this->ip, $this->port);		
     }/*保存同步数据 结束**********/
 

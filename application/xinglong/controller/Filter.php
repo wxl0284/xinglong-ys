@@ -19,7 +19,16 @@ class Filter extends Base
     protected $user = 0;  //操作者
     protected $ip = '';  //中控通信 ip
     protected $port = '';  //中控通信 port
-    
+    protected $command_length = [//各指令长度
+        'connect' => 50,
+        'findhome' => 48,
+        'set_filterPos' => 50,
+    ];
+    protected $operation = [//各指令之编号
+        'connect' => 1,
+        'findhome' => 3,
+        'set_filterPos' => 2,
+    ];
     //接收参数，根据不同参数，向不同望远镜的滤光片指令
     public function sendCommand ()
     {
@@ -75,36 +84,30 @@ class Filter extends Base
                 return '提交的望远镜参数有误!';
         }
 
-        $command = input('command'); //获取提交的指令
-        //根据不同参数 调用相应方法发送指令
-        if ( ($filterConnect=input('filterConnect')) !== null ) //连接或断开 指令
-        {
-            if (!($filterConnect == 1 || $filterConnect == 2))
-			{
-                return '滤光片连接/断开指令无效!';
-			}
-         
-            return $this->connect($filterConnect);   //执行发送
-        }else if( $filterFindHome = input('filterFindHome') == 1 ){//找零 指令      
-            return $this->findHome($filterFindHome); //执行发送
-        }else if( ($filterPos=input('filterPos')) !== null ){//滤光片位置 指令      
-            return $this->set_filterPos($filterPos); //执行发送
+        $command = $postData['command']; //要执行的指令
+        switch ($command) {
+            case 'connect':
+                return $this->connect (1, 'connect');
+            case 'disConnect':
+                return $this->connect (2, 'connect');
+            case 'findhome':
+                return $this->findHome (1,'findhome');
+            case 'set_filterPos':
+                return $this->set_filterPos ($postData, 'set_filterPos');
+            default:
+                break;
         }
+    }//接收参数，根据不同参数，向不同望远镜的filter指令 结束////////
 
-    }//接收参数，根据不同参数，向不同望远镜的滤光片指令 结束
-
-    /*滤光片连接/断开*/
-    protected function connect ($connect)
+    protected function connect ($connect, $param)  /*滤光片连接/断开*/
     {
-        $length = 48 +2;      //结构体长度
         $sendMsg = pack('S', $connect ); //unsigned short
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=1);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         
         if ($connect == 1)
         {
@@ -115,37 +118,32 @@ class Filter extends Base
         }
     }/*滤光片连接/断开 结束*/
 
-    /*滤光片找零*/
-    protected function findHome ($find_home)
+    protected function findHome ($find_home, $param) /*滤光片找零*/
     {
-        $length = 48;      //结构体长度
         $sendMsg = pack('S', $find_home ); //unsigned short
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=3);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
         //socket发送数据
         $sendMsg = $headInfo;
         return '滤光片找零指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }/*滤光片找零 结束*/
 
-    /*滤光片位置*/
-    protected function set_filterPos ($filterPos)
-    {
-        $length = 48 + 2;      //结构体长度
+    protected function set_filterPos ($postData, $param)  /*滤光片位置*/
+    {halt($postData);
         if (!preg_match('/^\d{1,5}$/', $filterPos))
         {
             return '滤光片位置必须是数字！';
         }
         $sendMsg = pack('S', $filterPos);  //unsigned short
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=2);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return '滤光片位置指令：'. udpSend($sendMsg, $this->ip, $this->port);
     }/*滤光片位置 结束*/
 }

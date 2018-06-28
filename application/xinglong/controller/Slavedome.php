@@ -3,7 +3,7 @@ namespace app\xinglong\controller;
 
 use app\xinglong\controller\Base;
 use think\Cookie;
-//use think\Db;
+use think\Db;
 
 /*此控制器 负责各望远镜的随动圆顶指令发送*/
 class Slavedome extends Base
@@ -19,6 +19,24 @@ class Slavedome extends Base
     protected $user = 0;  //操作者
     protected $ip = '';  //中控通信 ip
     protected $port = '';  //中控通信 port
+    protected $command_length = [//各指令长度
+        'connect' => 50,
+        'stop' => 48,
+        'open' => 50,
+        'set_objPos' => 56,
+        'set_speed' => 56,
+        'set_shade' => 56,
+        'set_action' => 50,
+    ];
+    protected $operation = [//各指令之编号
+        'connect' => 1,
+        'stop' => 5,
+        'open' => 6,
+        'set_objPos' => 2,
+        'set_speed' => 4,
+        'set_shade' => 3,
+        'set_action' => 7,
+    ];
     
     //接收参数，根据不同参数，向不同望远镜的随动圆顶发指令
     public function sendCommand ()
@@ -75,44 +93,41 @@ class Slavedome extends Base
                 return '提交的望远镜参数有误!';
         }
 
-        $command = input('command'); //获取提交的指令
+        $command = $postData['command']; //获取提交的指令
         //根据不同参数 调用相应方法发送指令
-        if ( ($sDomeConnect=input('sDomeConnect')) !== null ) //连接或断开指令
-        {
-            if (!($sDomeConnect == 1 || $sDomeConnect == 2))
-			{
-                return '随动圆顶连接指令无效!';
-			}
-         
-            return $this->connect($sDomeConnect);   //执行发送
-        }else if( input('sDomeStop') !== null){//停止运动 指令      
-            return $this->stop(); //执行发送
-        }else if( ($OpenScuttle=input('OpenScuttle')) !== null ){//开关天窗 指令      
-            return $this->scuttle($OpenScuttle); //执行发送
-        }else if( $command == 1 ){//目标方位 指令      
-            return $this->set_domePosition(); //执行发送
-        }else if( $command == 2 ){//转动速度 指令      
-            return $this->rotateSpeed(); //执行发送
-        }else if( $command == 3 ){//风帘位置 指令      
-            return $this->shadePosition(); //执行发送
-        }else if( $command == 4 ){//风帘运动 指令      
-            return $this->shadeAction(); //执行发送
+        switch ($command) {
+            case 'connect':
+                return $this->connect (1, 'connect');
+            case 'disConnect':
+                return $this->connect (2, 'connect');
+            case 'stop':
+                return $this->stop ('stop');
+            case 'open':
+                return $this->scuttle (1, 'open');
+            case 'close':
+                return $this->scuttle (2, 'open');
+            case 'set_objPos':
+                return $this->set_domePosition ($postData, 'set_objPos');
+            case 'set_speed':
+                return $this->rotateSpeed ($postData, 'set_speed');
+            case 'set_shade':
+                return $this->shadePosition ($postData, 'set_shade');
+            case 'set_action':
+                return $this->shadeAction ($postData, 'set_action');
+            default:
+                break;
         }
-
     }/*接收参数，根据不同参数，向不同望远镜的随动圆顶发指令 结束*/
 
-    /*随动圆顶 连接/断开*/
-    protected function connect ($connect)
+    protected function connect ($connect, $param) /*随动圆顶 连接/断开*/
     {
-        $length = 48 +2;      //结构体长度
         $sendMsg = pack('S', $connect); //unsigned short
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=1);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         if ($connect == 1)
         {
             return '随动圆顶连接指令：' .udpSend($sendMsg, $this->ip, $this->port);	
@@ -122,36 +137,24 @@ class Slavedome extends Base
         }
     }/*随动圆顶 连接/断开*/
 
-    /*随动圆顶 停止运动*/
-    protected function stop ()
+    protected function stop ($param) /*随动圆顶 停止运动*/
     {
-        $length = 48;      //结构体长度
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=5);
-
-        //socket发送数据
-        $sendMsg = $headInfo;
+        $sendMsg = $headInfo; //socket发送数据
         return '随动圆顶停止运动指令:' .udpSend($sendMsg, $this->ip, $this->port);
     }/*随动圆顶 停止运动 结束*/
 
-    /*随动圆顶 开/关天窗*/
-    protected function scuttle ($scuttle)
+    protected function scuttle ($scuttle, $param)  /*随动圆顶 开/关天窗*/
     {
-        $length = 48 + 2;      //结构体长度
- 
-        if (!preg_match('/^\d{1,10}$/', $scuttle))
-        {
-            return '开关天窗值必须是数字！'; 
-        }
         $sendMsg = pack('S', $scuttle); //unsinged short
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=6);
-
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
+        
+        $sendMsg = $headInfo . $sendMsg; //socket发送数据
         if ($scuttle == 1)
         {
             return '打开天窗指令：' .udpSend($sendMsg, $this->ip, $this->port);
@@ -161,88 +164,62 @@ class Slavedome extends Base
         }
     }/*随动圆顶 开/关天窗 结束*/
 
-    /*随动圆顶 目标方位*/
-    protected function set_domePosition ()
-    {
-        $length = 48 + 8;      //结构体长度
- 
-        $domePosition = input('domePosition');
-        if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $domePosition))
-        {
-            return '目标方位值必须是数字！';
-        }
-        $sendMsg = pack('d', $domePosition);    //double64
+    protected function set_domePosition ($postData, $param)  /*随动圆顶 目标方位*/
+    { 
+        $sendMsg = pack('d', $postData['position']);    //double64
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=2);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return '目标方位指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }/*随动圆顶 目标方位 结束*/
 
-     /*随动圆顶 转动速度*/
-     protected function rotateSpeed ()
-     {
-         $length = 48 + 8;      //结构体长度
-  
-         $RotateSpeed = input('RotateSpeed');
-         if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $RotateSpeed))
-         {
-            return '转动速度值必须是数字！';
-         }
-         $sendMsg = pack('d', $RotateSpeed);    //double64
+     protected function rotateSpeed ($postData, $param)    /*随动圆顶 转动速度*/
+     { 
+        $res = Db::table('sdomeconf')->where('teleid', $postData['at'])->field('maxspeed')->find();  //获取该望远镜的sdomeconf表中的:最大转动速度
+        if ( !is_numeric($postData['speed']) || $postData['speed'] <= 0 || $postData['speed'] > $res['maxspeed'] )
+        {
+            return '转动速度值超限!';
+        }
  
-         $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+        $sendMsg = pack('d', $postData['speed']);    //double64
  
-         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=4);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
+
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
  
-         //socket发送数据
-         $sendMsg = $headInfo . $sendMsg;
-         return '转动速度指令：' .udpSend($sendMsg, $this->ip, $this->port);
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
+        return '转动速度指令：' .udpSend($sendMsg, $this->ip, $this->port);
      }/*随动圆顶 转动速度 结束*/
 
-     /*随动圆顶 风帘位置*/
-     protected function shadePosition ()
-     {
-         $length = 48 + 8;      //结构体长度
-  
-         $shadePosition = input('shadePosition');
-         if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $shadePosition))
-         {
-            return '风帘位置的值必须是数字！';
-         }
-     
-         $sendMsg = pack('d', $shadePosition);  //double64
- 
-         $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
- 
-         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=3);
- 
-         //socket发送数据
-         $sendMsg = $headInfo . $sendMsg;
-         return '风帘位置指令：' .udpSend($sendMsg, $this->ip, $this->port);
-     }/*随动圆顶 风帘位置 结束*/
-
-     /*随动圆顶 风帘运动*/
-     protected function shadeAction ()
-     {
-        $length = 48 + 2;      //结构体长度
-  
-        $shadeAction = input('shadeAction');
-        if (!preg_match('/^\d{1,10}$/', $shadeAction))
+     protected function shadePosition ($postData, $param)  /*随动圆顶 风帘位置*/
+     {  
+        if ( !is_numeric($postData['position']) || $postData['position'] < 0 || $postData['position'] > 90 )
         {
-            return '风帘运动值必须是数字！'; 
+            return '风帘位置的值超限！';
         }
-        $sendMsg = pack('S', $shadeAction); //unsigned short
+     
+        $sendMsg = pack('d', $postData['position']);  //double64
  
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
+
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
+        
+        $sendMsg = $headInfo . $sendMsg;   //socket发送数据
+        return '风帘位置指令：' .udpSend($sendMsg, $this->ip, $this->port);
+     }/*随动圆顶 风帘位置 结束*/
+     
+     protected function shadeAction ($postData, $param)  /*随动圆顶 风帘运动*/
+     {  
+        $sendMsg = pack('S', $postData['action']); //unsigned short
  
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=7);
- 
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
+
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
+        
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         return '风帘运动指令：' .udpSend($sendMsg, $this->ip, $this->port);
      }/*随动圆顶 风帘运动 结束*/
 }

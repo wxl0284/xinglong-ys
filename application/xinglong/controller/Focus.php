@@ -3,7 +3,7 @@ namespace app\xinglong\controller;
 
 use app\xinglong\controller\Base;
 use think\Cookie;
-//use think\Db;
+use think\Db;
 
 /*此控制器 负责各望远镜的调焦器 指令发送*/
 class Focus extends Base
@@ -19,6 +19,24 @@ class Focus extends Base
     protected $user = 0;  //操作者
     protected $ip = '';  //中控通信 ip
     protected $port = '';  //中控通信 port
+    protected $command_length = [//各指令长度
+        'connect' => 50,
+        'findhome' => 48,
+        'stop' => 48,
+        'set_objPos' => 56,
+        'fix_speed' => 56,
+        'tempera_enable' => 50,
+        'temperature_coef' => 56,
+    ];
+    protected $operation = [//各指令之编号
+        'connect' => 1,
+        'findhome' => 7,
+        'stop' => 4,
+        'set_objPos' => 2,
+        'fix_speed' => 3,
+        'tempera_enable' => 5,
+        'temperature_coef' => 6,
+    ];
     
     /*接收参数，根据不同参数，向不同望远镜的调焦器-focus 发指令*/
     public function sendCommand ()
@@ -75,46 +93,40 @@ class Focus extends Base
                 return '提交的望远镜参数有误!';
         }
 
-        $command = input('command'); //获取提交的指令
+        $command = $postData['command']; //获取提交的指令
 
-        //根据不同参数 调用相应方法发送指令
-        if ( ($focusConnect = input('focusConnect')) !== null )
-        {
-            if ( !($focusConnect == 1 || $focusConnect == 2) )
-			{
-                return '调焦器连接/断开指令无效!';
-            }
-           
-            return $this->connect($focusConnect);   //执行发送
-        }else if( input('focusStop') == 1 ){//调焦器:停止运动 指令   
-            return $this->stop(); //执行发送
-        }else if( input('findHome') == 1 ){//调焦器:找零 指令   
-            return $this->find_home(); //执行发送
-        }else if( $command == 1 ){//调焦器:设置目标位置 指令   
-            return $this->set_position(); //执行发送
-        }else if( $command == 2 ){//调焦器:恒速转动 指令   
-            return $this->set_speed(); //执行发送
-        }else if( $command == 3 ){//调焦器:使能温度补偿 指令   
-            return $this->enable(); //执行发送
-        }else if( $command == 4 ){//调焦器:使能温度补偿系数 指令   
-            return $this->set_coefficient(); //执行发送
+        switch ($command) { //根据不同参数 调用相应方法发送指令
+            case 'connect':
+                return $this->connect (1, 'connect');
+            case 'disConnect':
+                return $this->connect (2, 'connect');
+            case 'findhome':
+                return $this->btn_command ('findhome');
+            case 'stop':
+                return $this->btn_command ('stop');
+            case 'set_objPos':
+                return $this->set_position ($postData, 'set_objPos');
+            case 'fix_speed':
+                return $this->set_speed ($postData, 'fix_speed');
+            case 'tempera_enable':
+                return $this->enable ($postData, 'tempera_enable');
+            case 'temperature_coef':
+                return $this->set_coefficient ($postData, 'temperature_coef');
+            default:
+                break;
         }
+
     } /*接收参数，根据不同参数，向不同望远镜的调焦器-focus 发指令  结束*/
 
-    /*调焦器连接-断开*/
-    protected function connect ($connect)
+    protected function connect ($connect, $param)  /*调焦器连接-断开*/
     {
-        $length = 48 + 2;     //该结构体总长度
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
-
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=1);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
         
         $sendMsg = pack('S', $connect); //unsigned short
-        //halt ($sendMsg);
+
         $sendMsg = $headInfo . $sendMsg;
-        //$sendMsg = $headInfo;
-       // halt($sendMsg);
         
         if ($connect == 1)
         {
@@ -125,115 +137,84 @@ class Focus extends Base
         } 
     }/*调焦器连接-断开 结束*/
 
-    /*调焦器 停止运动*/
-    protected function stop ()
+    protected function btn_command ($param)  /*调焦器 找零 停止运动*/
     {
-        $length = 48;     //该结构体总长度
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
-
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=4);
-
-        //socket发送数据
-        $sendMsg = $headInfo;
-        return '调焦器停止指令：' .udpSend($sendMsg, $this->ip, $this->port);
-    }/*调焦器 停止运动 结束*/
-
-    /*调焦器 找零*/
-    protected function find_home ()
-    {
-        $length = 48;     //该结构体总长度
-
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
-
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=7);
-
-        //socket发送数据
-        $sendMsg = $headInfo;
-        return '调焦器找零指令：' .udpSend($sendMsg, $this->ip, $this->port);
-    }/*调焦器 找零 结束*/
-
-    /*调焦器 设置目标位置*/
-    protected function set_position ()
-    {
-        $length = 48 + 8;     //该结构体总长度
-
-        $setPosition = input('setPosition');
-        if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $setPosition))
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
+        
+        $sendMsg = $headInfo;  //socket发送数据
+        if ( $param == 'stop' )
         {
-            return '目标位置的值必须是数字！';
+            return '调焦器停止指令：' .udpSend($sendMsg, $this->ip, $this->port);
+        }elseif ( $param == 'findhome' ){
+            return '调焦器找零指令：' .udpSend($sendMsg, $this->ip, $this->port);
         }
-        $sendMsg = pack('d', $setPosition);    //double64
+    }/*调焦器 停止运动 结束*/
+ 
+    protected function set_position ($postData, $param)  /*调焦器 设置目标位置*/
+    {
+        $res = Db::table('focusconf')->where('teleid', $postData['at'])->field('maxvalue, minvalue')->find(); //获取该望远镜的focusconf表中的:最大值 最小值   
+        if ( !is_numeric($postData['pos']) || $postData['pos'] > $res['maxvalue'] || $postData['pos'] < $res['minvalue'])
+        {
+            return '目标位置超限!';
+        }
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+        $sendMsg = pack('d', $postData['pos']);    //double64
+    
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=2);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+        
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
 		return '设置目标位置指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }/*调焦器 设置目标位置 结束*/
 
-    /*调焦器 设置恒速转动*/
-    protected function set_speed ()
+    protected function set_speed ($postData, $param)  /*调焦器 设置恒速转动*/
     {
-        $length = 48 + 8;     //该结构体总长度
-
-        $speed = input('speed');
-        if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $speed))
+        $res = Db::table('focusconf')->where('teleid', $postData['at'])->field('maxspeed')->find(); //获取该望远镜的focusconf表中的:最大速度   
+        if ( !is_numeric($postData['speed']) || $postData['speed'] > $res['maxspeed'] || $postData['speed'] <= 0)
         {
-            return '恒速转动的值必须是数字！'; 
+            return '调焦器速度值超限!';
         }
-        $sendMsg = pack('d', $speed);    //double64
+        $sendMsg = pack('d', $postData['speed']);   //double64
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=3);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
 		return '恒速转动指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }/*调焦器 设置恒速转动 结束*/
 
-    /*调焦器 使能温度补偿*/
-    protected function enable ()
+ 
+    protected function enable ($postData, $param)   /*调焦器 使能温度补偿*/
     {
-        $length = 48 + 2;     //该结构体总长度
+        $sendMsg = pack('S', $postData['enable']);      //uint16
 
-        $enable = input('enable');
-        if (!preg_match('/^\d{1,5}$/', $enable))
-        {
-            return '使能温度补偿的值必须是数字！';
-        }
-        $sendMsg = pack('S', $enable);      //uint16
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=5);
-
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
 		return '使能温度补偿指令：' .udpSend($sendMsg, $this->ip, $this->port);
     }/*调焦器 使能温度补偿 结束*/
 
-    /*调焦器 使能温度补偿系数*/
-    protected function set_coefficient ()
+    
+    protected function set_coefficient ($postData, $param) /*调焦器 使能温度补偿系数*/
     {
-        $length = 48 + 8;     //该结构体总长度
+       if (!is_numeric($postData['coefficient']) || $postData['coefficient'] <= 0 )
+       {
+           return '温度补偿系数超限!';
+       }
+        $sendMsg = pack('d', $postData['coefficient']);      //double64
 
-        $coefficient = input('coefficient');
-        if (!preg_match('/^-?\d+(\.\d{0,15})?$/', $coefficient))
-        {
-            return '温度补偿系数的值必须是数字！';
-        }
-        $sendMsg = pack('d', $coefficient);      //double64
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=6);
-
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
 		return '温度补偿系数：' .udpSend($sendMsg, $this->ip, $this->port);
     }/*调焦器 使能温度补偿系数 结束*/
 
