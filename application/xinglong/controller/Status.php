@@ -21,27 +21,31 @@ class Status extends Base
         }*/
 
        //首先 判断需要获取哪个望远镜状态信息
-       $this->at = input ('at');
-
-       if ( $this->at == md5 ('60cm望远镜') )
-        {
+       switch ( input('at_aperture') ) { //根据望远镜口径，给 $this->$at赋值
+        case '50cm':
+            $this->at = 50;
+            break;
+        case '60cm':
             $this->at = 60;
-        }else if ( $this->at == md5 ('80cm望远镜') ){
+            break;
+        case '80cm':
             $this->at = 80;
-        }else if ( $this->at == md5 ('50cm望远镜')  ){
-            $this->at = 60;
-        }else if ( $this->at == md5 ('85cm望远镜')  ){
+        case '85cm':
             $this->at = 85;
-        }else if ( $this->at == md5 ('100cm望远镜')  ){
+            break;
+        case '100cm':
             $this->at = 100;
-        }else if ( $this->at == md5 ('126cm望远镜')  ){
+            break;
+        case '126cm':
             $this->at = 126;
-        }else if ( $this->at == md5 ('216cm望远镜')  ){
+            break;
+        case '216cm':
             $this->at = 216;
-        }else if ( $this->at == md5 ('大气消光望远镜')  ){
-            $this->at = 'xxx'; //待定
-        }
-
+            break;
+        default:
+            return '提交的望远镜参数有误!';
+    }
+    
        $status = [];	//存放状态信息的数组
 
        //获取utc时间
@@ -166,33 +170,33 @@ class Status extends Base
         $status['trackObjectName'] = $gimbalStatus['trackObjectName']; //目标名
 
         //获取跟踪目标类型
-        switch ($gimbalStatus['trackType'])
-        {
-            case 0:
-                $status['trackType'] = '恒星';
-                break;
-            case 1:
-                $status['trackType'] = '太阳';
-                break;
-            case 2:
-                $status['trackType'] = '月亮';
-                break;
-            case 3:
-                $status['trackType'] = '彗星';
-                break;
-            case 4:
-                $status['trackType'] = '行星';
-                break;
-            case 5:
-                $status['trackType'] = '卫星';
-                break;
-            case 6:
-                $status['trackType'] = '固定位置';
-                break;
-			default:
-				$status['trackType'] = '未获取到';
-                break;	
-        }
+        // switch ($gimbalStatus['trackType'])
+        // {
+        //     case 0:
+        //         $status['trackType'] = '恒星';
+        //         break;
+        //     case 1:
+        //         $status['trackType'] = '太阳';
+        //         break;
+        //     case 2:
+        //         $status['trackType'] = '月亮';
+        //         break;
+        //     case 3:
+        //         $status['trackType'] = '彗星';
+        //         break;
+        //     case 4:
+        //         $status['trackType'] = '行星';
+        //         break;
+        //     case 5:
+        //         $status['trackType'] = '卫星';
+        //         break;
+        //     case 6:
+        //         $status['trackType'] = '固定位置';
+        //         break;
+		// 	default:
+		// 		$status['trackType'] = '未获取到';
+        //         break;	
+        // }
         
         if (is_numeric($gimbalStatus['targetRightAscension']))
         {
@@ -213,6 +217,7 @@ class Status extends Base
         $status['elevation'] = round($gimbalStatus['elevation'],5); //当前俯仰
         $status['RightAscensionSpeed'] = round($gimbalStatus['axis1Speed'],2); //赤经速度 ?
         $status['declinationSpeed'] = round($gimbalStatus['axis2Speed'], 2); //赤纬速度 ?
+        $status['axis3Speed'] = round($gimbalStatus['axis3Speed'], 2); //轴3速度
         $status['derotatorPositon'] = round($gimbalStatus['derotatorPositon'], 4); //当前消旋位置
         $status['targetDerotatorPosition'] = round($gimbalStatus['targetDerotatorPosition'], 4); //目标消旋位置
         $status['axis1TrackError'] = round($gimbalStatus['axis1TrackError'], 5); //轴1跟踪误差
@@ -227,7 +232,7 @@ class Status extends Base
             $status['siderealTime'] = $gimbalStatus['siderealTime'];
         }
         //接下来：转台可变属性
-        $status['timeStamp'] = time(); //时间戳
+        //$status['timeStamp'] = time(); //时间戳
                 
         if (is_numeric($gimbalStatus['J2000RightAscension']))
         {//j2000赤经
@@ -265,8 +270,7 @@ class Status extends Base
         return $status;
     }/*获取转台状态信息 结束*/
 
-    /*获取ccd状态信息*/
-    protected function ccd_status ($at)
+    protected function ccd_status ($at)  /*获取ccd状态信息*/
     {
         $ccd_table = 'at' . $at . 'ccdstatus';   //at ccd状态表
         $ccdStatus = Db::table($ccd_table)->order('id desc')->find();
@@ -305,31 +309,85 @@ class Status extends Base
                 break;
         }
 
-        $status['ccdBaseline'] = $ccdStatus['baseline'];  //ccd可变属性：baseline值
-        $status['ccdReadOutMode'] = $ccdStatus['readMode'];  //ccd可变属性：读出模式
-        $status['ccdObserveBand'] = $ccdStatus['band'];  //ccd可变属性：当前拍摄波段
-        
-        if (is_numeric($ccdStatus['J2000RightAscension']))
+        $status['errorString'] = $ccdStatus['errorString'];  //错误标识
+        switch ($ccdStatus['error']) //错误状态
         {
-            $ccdStatus['J2000RightAscension'] = floatval($ccdStatus['J2000RightAscension']);
-            $status['ccdJ2000RightAscension'] = data2Time($ccdStatus['J2000RightAscension']/15);  //ccd可变属性：当前拍摄目标赤经
-        }else{
-            $status['ccdJ2000RightAscension'] = $ccdStatus['J2000RightAscension']; 
+            case 0:
+                $status['ccdError'] = '正常';
+                break;
+            case 1:
+                $status['ccdError'] = '相机通信失败';
+                break;
+            case 2:
+                $status['ccdError'] = '曝光开始超时异常';
+                break;
+            case 4:
+                $status['ccdError'] = '曝光超时异常';
+                break;
+            case 8:
+                $status['ccdError'] = '读出超时';
+                break;
+            case 10:
+                $status['ccdError'] = '停止曝光超时';
+                break;
+            case 20:
+                $status['ccdError'] = '中止曝光超时';
+                break;
+            case 40:
+                $status['ccdError'] = '图像存储空间小于10张';
+                break;
+			default:
+				$status['ccdError'] = '未获取到';
+                break;
         }
 
-        if (is_numeric($ccdStatus['J2000Declination']))
+        switch ($ccdStatus['warning']) //警告状态
         {
-            $ccdStatus['J2000Declination'] = floatval($ccdStatus['J2000Declination']);
-            $status['ccdJ2000Declination'] = data2Time($ccdStatus['J2000Declination']);  //ccd可变属性：当前拍摄目标赤纬
-        }else{
-            $status['ccdJ2000Declination'] = $ccdStatus['J2000Declination'];
+            case 0:
+                $status['ccdWarning'] = '正常';
+                break;
+            case 1:
+                $status['ccdWarning'] = '上位机通信中断';
+                break;
+            case 2:
+                $status['ccdWarning'] = '制冷温度未达设定值';
+                break;
+            case 4:
+                $status['ccdWarning'] = '风扇停转';
+                break;
+            case 8:
+                $status['ccdWarning'] = '图像存储超时';
+                break;
+            case 10:
+                $status['ccdWarning'] = '存储空间小于100张';
+                break;
+			default:
+				$status['ccdWarning'] = '未获取到';
+                break;
         }
+        //$status['ccdReadOutMode'] = $ccdStatus['readMode'];  //ccd可变属性：读出模式
+        //$status['ccdObserveBand'] = $ccdStatus['band'];  //ccd可变属性：当前拍摄波段
+        
+        // if (is_numeric($ccdStatus['J2000RightAscension']))
+        // {
+        //     $ccdStatus['J2000RightAscension'] = floatval($ccdStatus['J2000RightAscension']);
+        //     $status['ccdJ2000RightAscension'] = data2Time($ccdStatus['J2000RightAscension']/15);  //ccd可变属性：当前拍摄目标赤经
+        // }else{
+        //     $status['ccdJ2000RightAscension'] = $ccdStatus['J2000RightAscension']; 
+        // }
+
+        // if (is_numeric($ccdStatus['J2000Declination']))
+        // {
+        //     $ccdStatus['J2000Declination'] = floatval($ccdStatus['J2000Declination']);
+        //     $status['ccdJ2000Declination'] = data2Time($ccdStatus['J2000Declination']);  //ccd可变属性：当前拍摄目标赤纬
+        // }else{
+        //     $status['ccdJ2000Declination'] = $ccdStatus['J2000Declination'];
+        // }
         //返回数据
         return $status;
     }/*获取ccd状态信息 结束*/
 
-    /*获取调焦器状态信息*/
-    protected function focus_status ($at)
+    protected function focus_status ($at) /*获取调焦器状态信息*/
     {
         $focus_table = 'at' . $at . 'focusstatus';   //at focus状态表
         $focusStatus = Db::table($focus_table)->order('id desc')->find();
@@ -376,18 +434,17 @@ class Status extends Base
         }
         //调焦器当前状态 结束/////////////////////////////////////////
         
-        $status['focusPosition'] = $focusStatus['position'];  //当前位置
-        $status['focusTargetPos'] = $focusStatus['targetPosition'];  //目标位置
-        $status['focusIsHomed'] = $focusStatus['isHomed'];  //找零状态
-        $status['focusIsTCompensation'] = $focusStatus['isTCompensation'] ? '是' : '否';  //是否进行温度补偿
-        $status['focusTCompenensation'] = $focusStatus['TCompenensation']; //温度补偿系数
+        // $status['focusPosition'] = $focusStatus['position'];  //当前位置
+        // $status['focusTargetPos'] = $focusStatus['targetPosition'];  //目标位置
+           $status['focusIsHomed'] = $focusStatus['isHomed'];  //找零状态
+        // $status['focusIsTCompensation'] = $focusStatus['isTCompensation'] ? '是' : '否';  //是否进行温度补偿
+        // $status['focusTCompenensation'] = $focusStatus['TCompenensation']; //温度补偿系数
 
         //返回数据
         return $status;
     }/*获取调焦器状态信息 结束*/
 
-    /*获取随动圆顶状态信息*/
-    protected function sDome_status ($at)
+    protected function sDome_status ($at) /*获取随动圆顶状态信息*/
     {
         $sDome_table = 'at' . $at . 'slavedomestatus';   //at slavedome状态表
         $slaveDomeStatus = Db::table($sDome_table)->order('id desc')->find();
@@ -395,79 +452,82 @@ class Status extends Base
         switch ($slaveDomeStatus['curstatus'])
         {
             case 1:
-                $status['slaveDomeCurstatus'] = '离线';
+                $status['sDomeCurstatus'] = '离线';
                 break;
             case 2:
-                $status['slaveDomeCurstatus'] = '连接中';
+                $status['sDomeCurstatus'] = '连接中';
                 break;
             case 3:
-                $status['slaveDomeCurstatus'] = '断开中';
+                $status['sDomeCurstatus'] = '断开中';
                 break;
             case 4:
-                $status['slaveDomeCurstatus'] = '停止中';
+                $status['sDomeCurstatus'] = '停止中';
                 break;
             case 5:
-                $status['slaveDomeCurstatus'] = '已停止';
+                $status['sDomeCurstatus'] = '已停止';
                 break;
             case 6:
-                $status['slaveDomeCurstatus'] = '复位中';
+                $status['sDomeCurstatus'] = '复位中';
                 break;
             case 7:
-                $status['slaveDomeCurstatus'] = '复位';
+                $status['sDomeCurstatus'] = '复位';
                 break;
             case 8:
-                $status['slaveDomeCurstatus'] = '指向中';
+                $status['sDomeCurstatus'] = '指向中';
                 break;
             case 9:
-                $status['slaveDomeCurstatus'] = '指向到位';
+                $status['sDomeCurstatus'] = '指向到位';
                 break;
             case 10:
-                $status['slaveDomeCurstatus'] = '等待随动';
+                $status['sDomeCurstatus'] = '等待随动';
                 break;
             case 11:
-                $status['slaveDomeCurstatus'] = '随动中';
+                $status['sDomeCurstatus'] = '随动中';
                 break;
             case 12:
-                $status['slaveDomeCurstatus'] = '异常';
+                $status['sDomeCurstatus'] = '异常';
                 break;
 			default:
-				$status['slaveDomeCurstatus'] = '未获取到';
+				$status['sDomeCurstatus'] = '未获取到';
                 break;
         }//圆顶当前状态结束////////////////////////////////////////
 		
 		switch ($slaveDomeStatus['scuttleStatus']) //天窗状态
 		{
 			case 1:
-				$status['slaveDomeScuttleStatus'] = '开';
+				$status['sDomeScuttleStatus'] = '开';
 				break;
 			case 2:
-				$status['slaveDomeScuttleStatus'] = '关';
+				$status['sDomeScuttleStatus'] = '关';
 				break;
 			case 3:
-				$status['slaveDomeScuttleStatus'] = '正在开';
+				$status['sDomeScuttleStatus'] = '正在开';
 				break;
 			case 4:
-				$status['slaveDomeScuttleStatus'] = '正在关';
+				$status['sDomeScuttleStatus'] = '正在关';
+                break;
+            case 5:
+				$status['sDomeScuttleStatus'] = '停止';
 				break;
 			default:
-				$status['slaveDomeScuttleStatus'] = '未获取到';
+				$status['sDomeScuttleStatus'] = '未获取到';
 				break;
 		}
 		
-		switch ($slaveDomeStatus['shadeStatus']) //风帘状态
-		{
-			case 1:
-				$status['slaveDomeShadeStatus'] = '运动中';
-				break;
-			case 2:
-				$status['slaveDomeShadeStatus'] = '到位';
-				break;
-			default:
-				$status['slaveDomeShadeStatus'] = '未获取到';
-				break;
-		}
+		// switch ($slaveDomeStatus['shadeStatus']) //风帘状态
+		// {
+		// 	case 1:
+		// 		$status['slaveDomeShadeStatus'] = '运动中';
+		// 		break;
+		// 	case 2:
+		// 		$status['slaveDomeShadeStatus'] = '到位';
+		// 		break;
+		// 	default:
+		// 		$status['slaveDomeShadeStatus'] = '未获取到';
+		// 		break;
+		// }
 		
-        $status['slaveDomeErrorStatus'] = $slaveDomeStatus['errorString']; //错误标识
+        //$status['slaveDomeErrorStatus'] = $slaveDomeStatus['errorString']; //错误标识
 
         return $status;
     }/*获取随动圆顶状态信息 结束*/

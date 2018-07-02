@@ -2,6 +2,7 @@
 //观测计划的赤经和赤纬 js事件//////////////////////////////
 	//赤经 的js事件//////////////////////////////////
 	//赤经之小时 js事件
+	//console.log(configData.ccd[0].lowcoolert);
 	$('#planInfo').on('keyup', 'td[field="rightAscension1"] input.textbox-text', function () {
 		var that = $(this);
 		var patn = /^\d{2}$/;
@@ -332,22 +333,23 @@
 	{epochId:'3',name:'J2050'},];
 	
 	//将固定属性中的滤光片名称:u/v/b，对变量filterData进行赋值
-	/*var filterData = [];
+	var filterData = [];
+	var plan_filter_option = configData.filter.filtername.split('/');
 	var filterData_num = plan_filter_option.length;
 	for (var filterData_i = 0; filterData_i < filterData_num; filterData_i++)
 	{
 		filterData[filterData_i] = {filterId:'', name:''};
 		filterData[filterData_i].filterId = plan_filter_option[filterData_i];
 		filterData[filterData_i].name = plan_filter_option[filterData_i];
-	}*/
+	}
 
-	var filterData = [
+	/*var filterData = [
 	{filterId:'U',name:'U'},
 	{filterId:'B',name:'B'},
 	{filterId:'V',name:'V'},
 	{filterId:'R',name:'R'},
 	{filterId:'I',name:'I'},
-	];
+	];*/
 	
 	$(function(){
 		var table_w = ( $(window).width() ) * 0.889546;
@@ -653,68 +655,20 @@
 			layer.alert('请先导入计划或添加计划!', {shade:false, closeBtn:0});
 		}
 		
-		//执行验证
-		if (!valid())
+		if (!valid())	//执行验证
 		{
 			planErr = 1;
 			layer.alert('请先保存计划或检查第' + (editRow+1) + '行必填数据!', {shade:false, closeBtn:0});
 		}
 
-		/*//js验证数据
-		for(var i = 0; i < n; i++)
+		var msg = plan_valid(plans, n);  //js验证数据
+
+		if ( msg !== '')
 		{
-			if ($.trim(plans[i].target) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:目标名称!');return;
-			}
-			if ($.trim(plans[i].type) === '')
-			{
-				alert('请选择第' + (i+1) + '条计划:目标类型!');return;
-			}
-			if ($.trim(plans[i].rightAscension) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:赤经!');return;
-			}
-			if ($.trim(plans[i].declination) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:赤纬!');return;
-			}
-			if ($.trim(plans[i].epoch) === '')
-			{
-				alert('请选择第' + (i+1) + '条计划:历元!');return;
-			}
-			if ($.trim(plans[i].exposureTime) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:曝光时间!');return;
-			}
-			if ($.trim(plans[i].delayTime) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:delayTime!');return;
-			}
-			if ($.trim(plans[i].exposureCount) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:曝光数量!');return;
-			}
-			if ($.trim(plans[i].filter) === '')
-			{
-				alert('请选择第' + (i+1) + '条计划:滤光片!');return;
-			}
-			if ($.trim(plans[i].gain) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:增益!');return;
-			}
-			if ($.trim(plans[i].bin) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:Bin!');return;
-			}
-			if ($.trim(plans[i].readout) === '')
-			{
-				alert('请填写第' + (i+1) + '条计划:读出速度!');return;
-			}
-		}*/
+			layer.alert(msg, {shade:false, closeBtn:0});return;
+		}
 		
-		//ajax 发送数据到后台
-		if (planErr === 0)
+		if (planErr === 0)  //ajax 发送数据到后台
 		{
 			$.ajax({
 				type: 'post',
@@ -751,8 +705,37 @@
 				},
 			});
 		}
-		
 	}//保存并提交计划  结束///////////////////////////////////
+
+	/*
+	* plan_valid() 验证计划的数据
+	* 参数： plans 各条计划数据
+	* 参数： n 计划的条数
+	* return： 错误提示
+	*/
+	function plan_valid(plans, n)
+	{
+		var msg = ''; //错误提示
+		var plan_types = []
+		for(var i = 0; i < n; i++)
+		{
+			var plan_target = $.trim( plans[i].target );
+			var patn = /([\u4e00-\u9fa5]| )+/;
+			if ( patn.test(plan_target) || plan_target == '' || plan_target.length > 48 )
+			{
+				msg += '第' + (i+1) + '条目标名格式错误!<br>';
+			}
+
+			var plan_type = $.trim( plans[i].type );
+			patn = /^[0-9]$/;
+
+			if ( !patn.test(plan_type) && ( $.inArray(plan_type, ['恒星','太阳','月亮','彗星','行星','卫星','固定位置','本底','暗流','平场']) == -1)  )
+			{
+				msg += '第' + (i+1) + '条目标类型超限!<br>';
+			}
+		}
+		return msg;
+	}/*plan_valid  结束*/
 	
 //数据验证函数 /////////////////////////////////////////////
 	function valid ()
@@ -832,5 +815,10 @@ var get_plan_i = setInterval (get_plan, 60000); //定时执行get_plan() 60秒�
  function plan_executing (){ //显示正在执行的计划
 	get_plan();
 	setInterval (get_plan, 60000);
+ }
+
+ function plan_d ()
+ {
+	console.log(configData.ccd[0].lowcoolert);
  }
 /*******实时获取 获取正在执行的计划 结束*******/

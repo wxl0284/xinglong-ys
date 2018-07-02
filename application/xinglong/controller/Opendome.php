@@ -19,6 +19,14 @@ class Opendome extends Base
     protected $user = 0;  //操作者
     protected $ip = '';  //中控通信 ip
     protected $port = '';  //中控通信 port
+    protected $command_length = [//各指令长度
+        'connect' => 50,
+        'open' => 50,
+    ];
+    protected $operation = [//各指令之编号
+        'connect' => 1,
+        'open' => 2,
+    ]; 
     
     //接收参数，根据不同参数，向不同望远镜的全开圆顶发指令
     public function sendCommand ()
@@ -76,36 +84,33 @@ class Opendome extends Base
                 return '提交的望远镜参数有误!';
         }
 
-        //根据不同参数 调用相应方法发送指令
-        if ( $postData['fDomeConnect'] !== '' ) //连接或断开指令
-        {
-            if ( !( $postData['fDomeConnect']  == 1 || $postData['fDomeConnect'] == 2) )
-			{
-                return '全开圆顶连接指令无效!';
-			}
-         
-            return $this->connect($postData['fDomeConnect'] );   //执行发送
-        }else if( $postData['openDome'] !== '' ){//打开/关闭圆顶  
-            if ( !($postData['openDome'] == 0 || $postData['openDome'] == 1 || $postData['openDome'] == 2) )
-			{
-                return '全开圆顶打开/关闭指令无效!';
-			}    
-            return $this->openDome($postData['openDome']); //执行发送
+        $command = $postData['command'];
+       
+        switch ($command) { //根据不同参数 调用相应方法发送指令
+            case 'connect':
+                return $this->connect (1, 'connect');
+            case 'disConnect':
+                return $this->connect (2, 'connect');
+            case 'open':
+                return $this->openDome (1, 'open');
+            case 'close':
+                return $this->openDome (0, 'open');
+            case 'stop':
+                return $this->openDome (2, 'open');
+            default:
+                break;
         }
     }//接收参数，根据不同参数，向不同望远镜的全开圆顶发指令 结束
 
-    /*全开圆顶 连接/断开 */
-    protected function connect ($connect)
+    protected function connect ($connect, $param)  /*全开圆顶 连接/断开 */
     {
-        $length = 48 + 2;     //该结构体总长度
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
-
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=1);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
         $sendMsg = pack('S', $connect);  //unsigned short
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+       
+        $sendMsg = $headInfo . $sendMsg;  //socket发送数据
         if ($connect == 1)
         {
             return '全开圆顶连接指令：' .udpSend($sendMsg, $this->ip, $this->port); 
@@ -115,18 +120,16 @@ class Opendome extends Base
         }
     }/*全开圆顶 连接/断开 结束*/
 
-    /*全开圆顶 连接/断开 */
-    protected function openDome ($openDome)
+    protected function openDome ($openDome, $param)  /*全开圆顶 打开/关闭  */
     {
-        $length = 48 + 2;     //该结构体总长度
+        $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo = packHead($this->magic,$this->version,$this->msg,$length,$this->sequence,$this->at,$this->device);
-
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$operation=2);
+        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
         $sendMsg = pack('S', $openDome);    //unsigned short
-        //socket发送数据
-        $sendMsg = $headInfo . $sendMsg;
+    
+        $sendMsg = $headInfo . $sendMsg;    //socket发送数据
+
         if ($openDome == 0)
         {
             return '全开圆顶关闭指令：'. udpSend($sendMsg, $this->ip, $this->port);
@@ -137,5 +140,5 @@ class Opendome extends Base
         {
             return '全开圆顶停止指令：'. udpSend($sendMsg, $this->ip, $this->port);
         }
-    }/*全开圆顶 连接/断开 结束*/
+    }/*全开圆顶 打开/关闭 结束*/
 }

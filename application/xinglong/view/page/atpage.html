@@ -16,13 +16,12 @@
 		var at = "{$data['at_id']}"; //atlist表中的主键id
 		var aperture = "{$at_aperture[$data['at_id']]}"; //即添加望远镜时的口径值
 		var configData =  {$data['configData']}; //各子设备的配置数据
-		//console.log(ccd_config.gainmode);
 	</script>
 	 {load href='/static/js/atpage.js'}
 </head>
 <body>
 	{include file="common/common"/}
-	<div id='all'>{{configData.has_gimbal}}
+	<div id='all'>
         <div class='pos_r'><!--重要信息区域 开始-->
 			<div id='atPic'>
                 <img src='/static/images-1/location_1.png'/>
@@ -71,9 +70,9 @@
 						<td>昏影终</td>
 					</tr>
 					<tr class='tdC'>
-						<td id='utcTime'></td>
+						<td id='utcTime'>{{gimbal_status.UTC}}</td>
 						<td>J2000</td>
-						<td id='siderealTime'></td>
+						<td id='siderealTime'>{{gimbal_status.siderealTime}}</td>
 						<td>{$Think.session.sunRise}</td>
 						<td>{$Think.session.sunSet}</td>
 					</tr>
@@ -82,101 +81,87 @@
 				<hr style='width:98%;' class='center_mrg'><br>
 				<table id='time_1' class='center_mrg '>
 					<tr>
-					  <td>当前状态:<span id='curstatus' style='color:red;'></span>
+					  <td>当前状态:<span style='color:red;'>{{gimbal_status.curstatus}}</span>
 					  </td>
-					  <td>跟踪误差:<span id='trackError'></span>
+					  <td>当前时角:<span id='hourAngle'>{{gimbal_status.hourAngle}}</span>
 					  </td>
-					  <td>当前时角:<span id='hourAngle'></span>
-					  </td>
-                    </tr>
-                    <tr>
-					  <td>镜盖状态:<span id='coverStatus'></span>
-					  </td>
-					  <td>当前赤经:<span id='rightAscension'></span>
-					  </td>
-					  <td>当前赤纬:<span id='declination'></span>
+					  <td>镜盖状态:<span id='coverStatus'>{{gimbal_status.coverStatus}}</span>
 					  </td>
                     </tr>
                     <tr>
-					  <td>目标名:<span id='trackObjectName'></span>
+					  <td>目标名:<span id='trackObjectName'>{{gimbal_status.trackObjectName}}</span>
 					  </td>
-					  <td>目标类型:<span id='trackType'></span>
+					  <td>当前赤经:<span id='rightAscension'>{{gimbal_status.rightAscension}}</span>
 					  </td>
-					  <td>目标赤经:<span id='targetRightAscension'></span>
+					  <td>当前赤纬:<span id='declination'>{{gimbal_status.declination}}</span>
 					  </td>
                     </tr>
                     <tr>
-					  <td>目标赤纬:<span id='targetDeclination'></span>
+					  <td>目标赤纬:<span id='targetDeclination'>{{gimbal_status.targetDeclination}}</span>
 					  </td>
-					  <td>当前方位:<span id='azmiuth'></span>
+					  <td>当前方位:<span id='azmiuth'>{{gimbal_status.azmiuth}}</span>
 					  </td>
-					  <td>当前俯仰:<span id='elevation'></span>
+					  <td>当前俯仰:<span id='elevation'>{{gimbal_status.elevation}}</span>
 					  </td>
                     </tr>
 					<tr>
-					  <td>赤经速度:<span id='RightAscensionSpeed'></span>
+					  <td>目标赤经:<span id='targetRightAscension'>{{gimbal_status.targetRightAscension}}</span>
 					  </td>
-					  <td>赤纬速度:<span id='declinationSpeed'></span>
+					  <td>赤纬速度:<span id='declinationSpeed'>{{gimbal_status.declinationSpeed}}</span>
 					  </td>
-					  <td>轴1跟踪误差:<span id='axis1TrackError'></span>
+					  <td>轴3速度:<span>{{gimbal_status.axis3Speed}}</span>
 					  </td>
-					  <!-- <td>当前消旋位置:<span id='derotatorPositon'></span>
-					  </td> -->
-                    </tr>
-					<tr>
-					  <!-- <td>目标消旋位置:<span id='targetDerotatorPosition'></span>
-					  </td> -->
-					  <td>轴2跟踪误差:<span id='axis2TrackError'></span>
-					  </td> 
 					</tr>
-					<!-- <tr>
-					  <td>轴3跟踪误差:<span id='axis3TrackError'></span>
+					<tr>
+					  <td>目标类型:<span id='trackType'>{{gimbal_status.trackType}}</span>
 					  </td>
-					</tr>			 -->
+					  <td>赤经速度:<span id='RightAscensionSpeed'>{{gimbal_status.RightAscensionSpeed}}</span>
+					  </td>
+                    </tr>
 				</table>
 			</div>
 		</div><!--重要信息区域 结束-->
         <div id='devsInfo' class='pos_r center'>
             <div class='childDev'>
                <img src='/static/images-1/focus.png' width='100px;'/>
-				<br />调焦位置
+				<br>转台
             </div>
             <div class='childDev'>
                 <img src='/static/images-1/filter.png' width='100px;'/>
-				<br />滤光片位置
+				<br>滤光片
             </div>
             <div class='childDev'>
-                <img src='/static/images-1/ccdTemp.png' width='100px;' /><br />CCD温度
+                <img src='/static/images-1/ccdTemp.png' width='100px;' /><br>CCD
             </div>
             <div class='childDev'>
-                <img src='/static/images-1/ccdExpo.png' width='100px;' /><br />CCD曝光率(%)
+                <img src='/static/images-1/ccdExpo.png' width='100px;' /><br>圆顶
             </div>
             <div class='childDev'>
 				<img src='/static/images-1/ccdExpo.png' width='100px;' />
-                <br />设备状态信息
+                <br>调焦器
             </div>
 			<img class='center_mrg' src='/static/images-1/line.png' width='970px;' style='display:block;'/>
 			<div class='pos_a' style='left:47px;top:168px;width:150px;'>
 				<!-- <img src='/static/images-1/zt.png' > -->
 				<img id='gimbPic' src='/static/images-1/ok.jpg' >
-				<p id='gimbStatus'></p>
+				<p id='gimbStatus'>转台{{gimbal_status.curstatus}}</p>
 			</div>
 			<div class='pos_a' style='left:287px;top:168px;width:150px;'>
 				<!-- <img src='/static/images-1/ccd.png' > -->
 				<img src='/static/images-1/ok.jpg' >
-				<p id='ccdStatus'></p>
+				<p id='filterStatus'>{{filter_status.filterCurstatus}}</p>
 			</div>
 			<div class='pos_a' style='left:526px;top:168px;width:150px;'>
 				<!-- <img src='/static/images-1/tjq.png' > -->
-				<img src='/static/images-1/ok.jpg' ><p id='focusStatus'></p>
+				<img src='/static/images-1/ok.jpg' ><p id='ccdStatus'>CCD{{ccd_status.ccdCurStatus}}</p>
 			</div>
 			<div class='pos_a' style='left:772px;top:168px;width:150px;'>
 				<!-- <img src='/static/images-1/yd.png' > -->
-				<img src='/static/images-1/ok.jpg' ><p id='domeStatus'></p>
+				<img src='/static/images-1/ok.jpg' ><p id='domeStatus'>圆顶{{sDome_status.sDomeCurstatus}}</p>
 			</div>
 			<div class='pos_a' style='left:1021px;top:168px;width:128px;'>
 				<!-- <img src='/static/images-1/lgp.png' > -->
-				<img src='/static/images-1/ok.jpg' ><p id='filterStatus'></p>
+				<img src='/static/images-1/ok.jpg' ><p id='focusStatus'>{{focus_status.focusCurStatus}}</p>
 			</div>
         </div><!--重要信息区域 结束-->
 		<br ><br>
@@ -393,21 +378,20 @@
 			  <div><!--转台可变属性-->
                 <span class='propT'>转台可变属性:</span><br><br>
                 <ul class='properUl'>
-                    <li class='li fl'>时间戳:<span id='stamp'></span></li>
-                    <li class='li fl'>当前恒星时:<span id='siderealTime_1'></span></li>
-                    <li class='li fl'>当前时角:<span id='hourAngle_1'></span></li>
-                    <li class='li fl'>当前赤经:<span id='rightAscension_1'></span></li>
-                    <li class='li fl'>当前赤纬:<span id='declination_1'></span></li>
-                    <li class='li fl'>当前J2000赤经:<span id='J2000RightAscension'></span></li>
-                    <li class='li fl'>当前J2000赤纬:<span id='J2000Declination'></span> </li>
-                    <li class='li fl'>当前方位:<span id='azmiuth_1'></span></li>
-                    <li class='li fl'>当前俯仰:<span id='elevation_1'></span></li>
-                    <!-- <li class='li fl'>当前消旋位置:<span id='derotatorPositon_1'></span></li> -->
-                    <li class='li fl'>目标赤经:<span id='targetRightAscension_1'></span></li>
-                    <li class='li fl'>目标赤纬:<span id='targetDeclination_1'></span></li>
-                    <li class='li fl'>目标J2000赤经:<span id='targetJ2000RightAscension'></span></li>
-                    <li class='li fl'> 目标J2000赤纬:<span id='targetJ2000Declination'></span></li>
-                    <!-- <li class='li fl'>目标消旋位置:<span id='targetDerotatorPosition_1'></span></li> -->
+                    <li class='li fl'>本地恒星时:<span id='siderealTime_1'>{{gimbal_status.siderealTime}}</span></li>
+                    <li class='li fl'>当前时角:<span id='hourAngle_1'>{{gimbal_status.hourAngle}}</span></li>
+                    <li class='li fl'>当前赤经:<span id='rightAscension_1'>{{gimbal_status.rightAscension}}</span></li>
+                    <li class='li fl'>当前赤纬:<span id='declination_1'>{{gimbal_status.declination}}</span></li>
+                    <li class='li fl'>当前J2000赤经:<span id='J2000RightAscension'>{{gimbal_status.J2000RightAscension}}</span></li>
+                    <li class='li fl'>当前J2000赤纬:<span id='J2000Declination'>{{gimbal_status.J2000Declination}}</span> </li>
+                    <li class='li fl'>当前方位:<span id='azmiuth_1'>{{gimbal_status.azmiuth}}</span></li>
+					<li class='li fl'>当前俯仰:<span id='elevation_1'>{{gimbal_status.elevation}}</span></li>
+					<li class='li fl'>目标赤经:<span id='targetRightAscension_1'>{{gimbal_status.targetRightAscension}}</span></li>
+                    <li class='li fl'>目标赤纬:<span id='targetDeclination_1'>{{gimbal_status.targetDeclination}}</span></li>
+                    <li class='li fl'>目标J2000赤经:<span id='targetJ2000RightAscension'>{{gimbal_status.targetJ2000RightAscension}}</span></li>
+                    <li class='li fl'> 目标J2000赤纬:<span id='targetJ2000Declination'>{{gimbal_status.targetJ2000Declination}}</span></li>
+                    <!-- <li class='li fl'>当前消旋位置:<span id='derotatorPositon_1'></span></li>
+                    <li class='li fl'>目标消旋位置:<span id='targetDerotatorPosition_1'></span></li> -->
                 </ul><div class='clear'></div>
              </div><!--转台 可变属性结束-->
 		  </div><!--指令和可变属性 结束-->
@@ -636,12 +620,12 @@
 			  <div><!--CCD可变属性-->
                 <span class='propT'>CCD可变属性:</span><br><br>
 				 <ul class='properUl'>
-                    <li class='li fl'>当前状态:<span id='ccdStatus_1'></span></li>
-                    <li class='li fl'>Base line值:<span id='baseLine'></span></li>
-                    <li class='li fl'>读出模式:<span id='readMode'></span></li>
-                    <li class='li fl'>当前拍摄波段:<span id='ObserveBand'></span></li>
-                    <li class='li fl'>拍摄目标赤经:<span id='TargetRightAscension'></span></li>
-                    <li class='li fl'>拍摄目标赤纬:<span id='TargetDeclination'></span></li>
+                    <li class='li fl'>当前状态:<span id='ccdStatus_1'>{{ccd_status.ccdCurStatus}}</span></li>
+                    <li class='li fl'>错误标识:<span id='baseLine'>{{ccd_status.errorString}}</span></li>
+                    <li class='li fl'>错误状态:<span id='readMode'>{{ccd_status.ccdError}}</span></li>
+                    <li class='li fl'>警告状态:<span id='ObserveBand'>{{ccd_status.ccdWarning}}</span></li>
+                    <!--<li class='li fl'>拍摄目标赤经:<span id='TargetRightAscension'></span></li>
+                    <li class='li fl'>拍摄目标赤纬:<span id='TargetDeclination'></span></li>-->
                 </ul>
                <div class='clear'></div>
              </div><!--CCD 可变属性结束-->
@@ -702,17 +686,17 @@
 			<div><!--调焦器 可变属性-->
                 <span class='propT'>调焦器可变属性:</span><br><br>
 				 <ul class='properUl'>
-                   <li class='li fl'>当前位置:&nbsp;&nbsp;<span id='curPos'></span></li>
-                   <li class='li fl'>目标位置:&nbsp;&nbsp;<span id='targetPosition'></span></li>
-                   <li class='li fl'>找零状态:&nbsp;&nbsp;<span id='focusIsHomed'></span></li>
+					<li class='li fl'>找零状态:&nbsp;&nbsp;<span id='focusIsHomed'>{{focus_status.focusIsHomed}}</span></li>
+                   <!--<li class='li fl'>当前位置:&nbsp;&nbsp;<span id='curPos'></span></li>
+                   <li class='li fl'>目标位置:&nbsp;&nbsp;<span id='targetPosition'></span></li>                   
                    <li class='li fl'>是否进行温度补偿:&nbsp;&nbsp;<span id='compens'></span></li>
-                   <li class='li fl'>温度补偿系数:&nbsp;&nbsp;<span id='compensX'></span></li>
+                   <li class='li fl'>温度补偿系数:&nbsp;&nbsp;<span id='compensX'></span></li>-->
                 </ul>
                <div class='clear'></div>
              </div><!--调焦器 可变属性结束-->
 		 </div><!--调焦器 指令和可变属性 结束-->
 		 <div class='border2'><!--调焦器 固定属性-->
-			<br><span class='propT'>调焦器固定属性:</span>{{ccd_config.gainmode}}<br><br>
+			<br><span class='propT'>调焦器固定属性:</span><br><br>
 			<ul class='properUl'>
 			   <li class='li fl'>最大速度:&nbsp;&nbsp;<span>{{configData.focus.maxspeed}}</span></li>
 			   <li class='li fl'>分辨率:&nbsp;&nbsp;<span>{{configData.focus.increment}} </span></li>        
@@ -774,8 +758,8 @@
 				 <ul class='properUl'>
                     <li class='li fl'>当前状态:&nbsp;&nbsp;<span id='domeStatus_1'></span></li>
 				   <li class='li fl'>天窗状态:&nbsp;&nbsp;<span id='scuttle'></span></li>
-                   <li class='li fl'>风帘状态:&nbsp;&nbsp;<span id='shadeStatus'></span></li>
-                   <li class='li fl'>错误标识:&nbsp;&nbsp;<span id='errorStr'></span></li>
+                   <!--<li class='li fl'>风帘状态:&nbsp;&nbsp;<span id='shadeStatus'></span></li>
+                   <li class='li fl'>错误标识:&nbsp;&nbsp;<span id='errorStr'></span></li>-->
                 </ul>
                <div class='clear'></div>
              </div><!--随动圆顶 可变属性结束-->
@@ -802,27 +786,22 @@
 		 </div><!--随动圆顶 固定属性 结束-->
 	   </div><!--随动圆顶 结束-->
 
-	   <div id='oDomeInfo' class='displayNo'><!--全开圆顶指令和属性-->
-
+	   <div v-if='device_nav.dev_click=="oDome"'><!--全开圆顶指令和属性-->
 			<div class='border2'><!--全开圆顶 指令和可变属性-->
 				<div id='oDome_command' class='center_mrg center BtnsDiv'>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				
-				   <input id='oDomeConnect' class='border1 btnCommand' type='button' value='连接圆顶'>
-				   <input id='oDomeDisConnect' class='border1 btnCommand' type='button' value='断开圆顶'>
-				
-				   <input id='oDomeOpen' class='border1 btnCommand' type='button' value='打开'>
-				   <input id='oDomeClose' class='border1 btnCommand' type='button' value='关闭'>
-				   <input id='oDomeStop' class='border1 btnCommand' type='button' value='停止运动'>
+				   <input class='border1 btnCommand' type='button' value='连接圆顶' v-if='configData.oDome.canconnect==1' :class='{btnClick: device_nav.oDome_btn=="connect"}' @click='oDome_btn_command(1)' >
+				   <input class='border1 btnCommand' type='button' value='断开圆顶' v-if='configData.oDome.canconnect==1' :class='{btnClick: device_nav.oDome_btn=="disConnect"}' @click='oDome_btn_command(2)'>
+				   <input class='border1 btnCommand' type='button' value='打开' v-if='configData.oDome.canopendome==1' :class='{btnClick: device_nav.oDome_btn=="open"}' @click='oDome_btn_command(3)' >
+				   <input class='border1 btnCommand' type='button' value='关闭' v-if='configData.oDome.canopendome==1' :class='{btnClick: device_nav.oDome_btn=="close"}' @click='oDome_btn_command(4)' >
+				   <input class='border1 btnCommand' type='button' value='停止运动' v-if='configData.oDome.canopendome==1' :class='{btnClick: device_nav.oDome_btn=="stop"}' @click='oDome_btn_command(5)' >
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
 			<div><!--全开圆顶 可变属性-->
                 <span class='propT'>全开圆顶可变属性:</span><br><br>
 				 <ul class='properUl'>
-                    <li class='li fl'>圆顶打开百分比:&nbsp;&nbsp;<span id='oDomeCurPos'></span></li>
-				   <li class='li fl'>当前状态:&nbsp;&nbsp;<span id='oDomeCurStatus'></span></li>
-                   <li class='li fl'>错误标识:&nbsp;&nbsp;<span id='oDomeErrStatus'></span></li>
-                   <li class='li fl'>错误状态:&nbsp;&nbsp;<span id='oDomeErrType'></span></li>
+                    <li class='li fl'>当前状态:&nbsp;&nbsp;<span id='oDomeCurPos'></span></li>
+                   <!--<li class='li fl'>错误标识:&nbsp;&nbsp;<span id='oDomeErrStatus'></span></li>
+                   <li class='li fl'>错误状态:&nbsp;&nbsp;<span id='oDomeErrType'></span></li>-->
                 </ul>
                <div class='clear'></div>
              </div><!--全开圆顶 可变属性结束-->
@@ -830,15 +809,15 @@
 		<div class='border2'><!--全开圆顶 固定属性-->
 			<br><span class='propT'>全开圆顶固定属性:</span><br><br>
 			<ul class='properUl'>
-			   <li class='li fl'>类型:&nbsp;&nbsp;<span id='oDomeType'></span></li>
-			   <li class='li fl'>支持打开圆顶:&nbsp;&nbsp;<span id='oDomeCanOpen'>
-				否
-	
-				</span></li>
-               <li class='li fl'>支持连接:&nbsp;&nbsp;<span id='oDomeCanConnect'>
-				否
-		
-			   </span></li>
+			   <li class='li fl'>类型:&nbsp;&nbsp;<span>{{configData.oDome.type}}</span></li>
+			   <li class='li fl'>支持打开圆顶:&nbsp;&nbsp;
+				<span v-if='configData.oDome.canopendome==1'>是</span>
+				<span v-else>否</span>
+				</li>
+			   <li class='li fl'>支持连接:&nbsp;&nbsp;
+				<span v-if='configData.oDome.canconnect==1'>是</span>
+				<span v-else>否</span>
+				</li>
              </ul>
            <div class='clear'></div>
 		 </div><!--全开圆顶 固定属性 结束-->
@@ -851,7 +830,7 @@
 					<input v-if='configData.filter.canconnect==1' :class='{btnClick: device_nav.filter_btn=="disConnect"}' class='border1 btnCommand' type='button' value='断开滤光片' @click='filter_btn_command(2)' >&nbsp;&nbsp;&nbsp;&nbsp;
 					<input v-if='configData.filter.canfindhome==1' :class='{btnClick: device_nav.filter_btn=="findhome"}' class='border1 btnCommand' type='button' value='找 零' @click='filter_btn_command(3)' >&nbsp;&nbsp;&nbsp;&nbsp;
 					<span v-if='configData.filter.cansetfilterposition==1'>
-						滤光片位置：<select id='filterPosi' v-model='filter_form.filter_position.filter_pos' class='border1 btnCommand' name="filterPos" style='width:90px;color:#000;border:1px solid #7a7a7a;' >
+						滤光片位置：<select id='filterPosi' v-model='filter_form.filter_position.filter_pos' class='border1 btnCommand' style='width:90px;color:#000;border:1px solid #7a7a7a;' >
 							    <option value="-1">请选择</option>
 							    <option v-for='n in filter_pos_list.length' :value='n-1' >{{filter_pos_list[n-1]}}</option>
 						</select>&nbsp;&nbsp;
@@ -862,9 +841,9 @@
 			<div><!--滤光片 可变属性-->
                 <span class='propT'>滤光片可变属性:</span><br><br>
 				 <ul class='properUl'>
-                   <li class='li fl'>是否找零:&nbsp;&nbsp;<span id='filterIsHomed'></span></li>
-                   <li class='li fl'>当前状态:&nbsp;&nbsp;<span id='filterStatus_1'></span></li>
-                   <li class='li fl'>错误标识:&nbsp;&nbsp;<span id='filterErrStr'></span></li>
+					<!--<li class='li fl'>是否找零:&nbsp;&nbsp;<span id='filterIsHomed'></span></li>-->
+                   <li class='li fl'>当前状态:&nbsp;&nbsp;<span id='filterStatus_1'>{{filter_status.filterCurstatus}}</span></li>
+                   <li class='li fl'>错误标识:&nbsp;&nbsp;<span id='filterErrStr'>{{filter_status.filterErrorStatus}}</span></li>
                 </ul>
                <div class='clear'></div>
              </div><!--滤光片 可变属性结束-->
@@ -881,12 +860,57 @@
 			   <li class='li fl' style='width:100%;'>滤光片类型:&nbsp;&nbsp;
 				<span>
 				{{configData.filter.filtersystem.replace(/#/g,'')}}
-			   </span>
+				</span>
 			   </li>
 			</ul>
            <div class='clear'></div>
 		 </div><!--滤光片 固定属性 结束-->
-	   </div><!--滤光片 结束-->	
+	   </div><!--滤光片 结束-->
+	   <div v-if="device_nav.dev_click=='guide'" > <!--导星镜指令和属性-->
+		    <nav class='center'><!--导星镜指令 导航-->
+				<span v-if='configData.guide.canopencover==1' :class='{active: device_nav.guide_command=="coverAction"}' @click='device_nav.guide_command="coverAction"' >镜盖操作</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span v-if='configData.guide.canenableautofocus==1' :class='{active: device_nav.guide_command=="autoFocus"}' @click='device_nav.guide_command="autoFocus"' >使能自动对焦</span>
+			</nav>
+			<div class='border2'><!--导星镜 指令和可变属性-->
+				<div id='btnsSlaveD' class='center_mrg center BtnsDiv'>
+				   <input class='border1 btnCommand' type='button' value='连接导星镜' v-if='configData.guide.canconnect==1' :class='{btnClick: device_nav.guide_btn=="connect"}' @click='guide_btn_command(1)' >
+				   <input class='border1 btnCommand' type='button' value='断开导星镜' v-if='configData.guide.canconnect==1' :class='{btnClick: device_nav.guide_btn=="disConnect"}' @click='guide_btn_command(2)' >
+				</div><br>
+				<hr style='width:98%;' class='center_mrg'><br>
+				<form  class='center' v-if='device_nav.guide_command=="coverAction"' ><!--镜盖操作-->
+					运动方向：<select style='width:90px;' v-model='guide_form.coverAction_form.action' >
+								<option value="-1">请选择</option>
+								<option value="1">向上</option>
+								<option value="2">向下</option>
+								<option value="3">停止</option>
+						</select>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="button" class='margin_10' value="提交指令" @click='guide_action_sbmt' >
+				</form><!--镜盖操作 结束-->
+				<form  class='center' v-if='device_nav.guide_command=="autoFocus"' ><!--自动对焦-->
+					自动对焦：<label>是：<input type="radio" value="1" v-model='guide_form.autoFocus_form.enable' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<label>否：<input type="radio" value="0" v-model='guide_form.autoFocus_form.enable' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="button" class='margin_10' value="提交指令" @click='guide_focus_sbmt' >
+				</form><!--自动对焦 结束-->
+				<br><hr style='width:98%;' class='center_mrg'><br>
+			</div>
+			<div class='border2'><!--导星镜 固定属性-->
+			<br><span class='propT'>导星镜固定属性:</span><br><br>
+			<ul class='properUl'>
+			    <li class='li fl'>焦点类型:&nbsp;&nbsp;<span>{{configData.guide.opticalstructure}}</span></li>
+			    <li class='li fl'>焦点类型:&nbsp;&nbsp;<span>{{configData.guide.focuslength}}</span></li>
+			   <li class='li fl'>使能自动对焦:&nbsp;&nbsp;
+				<span v-if='configData.guide.canenableautofocus==1' >是</span>
+				<span v-else>否</span>
+				</li>
+			   <li class='li fl'>支持镜盖操作:&nbsp;&nbsp;
+				<span v-if='configData.guide.canopencover==1' >是</span>
+				<span v-else>否</span>
+				</li>
+			</ul>
+           <div class='clear'></div>
+		 </div><!--导星镜 固定属性 结束-->
+	   </div>	<!--导星镜 结束-->
 		<br>
 		<div id='at60Res' class='center_mrg' style='width:92%;' v-if='device_nav.dev_click=="pic"'><!--观测图像 开始-->
 			<div id='bigPic' class='pos_r'>
@@ -913,6 +937,7 @@
 			<a class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="savePlan()">保存</a>
 			<a class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="submitPlan()">提交计划</a>
 			<a class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="plan_executing()">正执行的计划列表</a>
+			<a class="easyui-linkbutton" iconCls="icon-delete" plain="true" onclick="plan_d()">删除</a>
            </div>
 		   <!--观测计划的模式按钮-->
 		   <div id='planModes' class='pos_a'>

@@ -29,9 +29,6 @@
 			configData: configData, //configData是后端返回的json数据
 			ccd_config:configData.ccd[0], //此对象存储ccd的配置数据
 			ccd_name:'CCD1',
-			// final_gainMode:{
-			// 	High_Sensitivity: null, High_Capacity: null
-			// },
 			device_nav: {//此对象中的数据用以区分是否给各子设备加上蓝色底框
 				dev_click: 'gimbal',  //区分各自设备
 				gimbal_command: '',   //区分转台各指令
@@ -51,6 +48,9 @@
 				focus_command: '', //调焦器指令是否点击
 				sDome_btn: '', //随动圆顶各按钮指令
 				sDome_command: '', //随动圆顶各指令
+				oDome_btn: '', //全开圆顶各按钮
+				guide_command: '', //导星镜 指令
+				guide_btn: '', //导星镜 按钮
 			},
 			gimbal_form: {//转台表单指令的参数
 				trackStar: {
@@ -175,6 +175,19 @@
 					action: '-1',  command:'set_action', at:at, at_aperture: aperture
 				},
 			},/** 随动圆顶表单 结束**/
+			guide_form: {
+				coverAction_form: {
+					action: '-1',  command:'set_cover', at:at, at_aperture: aperture
+				},
+				autoFocus_form: {
+					enable: '1',  command:'auto_focus', at:at, at_aperture: aperture
+				},
+			},/** 导星镜 表单 结束**/
+			gimbal_status: {},
+			ccd_status: {},
+			sDome_status: {},
+			filter_status: {},
+			focus_status: {},
 		},/********vue data属性对象 结束********/
 		computed: {//计算属性
 			ccd_gainMode: function (){
@@ -531,7 +544,7 @@
 				var msg = '';
 				var v = this.gimbal_form.objName.objectName;
 				var patn = /([\u4e00-\u9fa5]| )+/;
-				if ( patn.test(v) || v == '' || v.length > 48)
+				if ( patn.test(v) || v == '' || v.length > 48 )
 				{
 					msg = '名称不能有汉字或空格!';
 				}
@@ -2148,12 +2161,136 @@
 		            },
 				});
 			},/*sDome_action_sbmt 结束*/
+			oDome_btn_command:function (n) {
+				var that = this; //存储vue实例化的对象
+				var btn_str = ''; //控制按钮的样式
+				var btn_text = '';
+				var data = {at: at, command: '', at_aperture: aperture}; //提交的数据
+
+				switch (n) {
+					case 1:
+						btn_str = 'connect';
+						btn_text = '连接';
+						data.command = 'connect';
+						break;
+					case 2:
+						btn_str = 'disConnect';
+						btn_text = '断开';
+						data.command = 'disConnect';
+						break;
+					case 3:
+						btn_str = 'open';
+						btn_text = '打开';
+						data.command = 'open';
+						break;
+					case 4:
+						btn_str = 'close';
+						btn_text = '关闭';
+						data.command = 'close';
+						break;
+					case 5:
+						btn_str = 'stop';
+						btn_text = '停止';
+						data.command = 'stop';
+						break;
+				}
+				
+				$.ajax({//执行ajax
+					type : 'post',
+					url : '/opendome',
+					data : data,             
+				    success: function (info) {
+						that.device_nav.oDome_btn = btn_str;  //更改按钮样式
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});
+				    },
+				    error: function () {
+				       layer.alert('网络异常,请再次' + btn_text, {shade:false, closeBtn:0});
+				    },
+				});
+			},/*oDome_btn_command 结束*/
+			guide_btn_command:function (n){
+				var that = this; //存储vue实例化的对象
+				var btn_str = ''; //控制按钮的样式
+				var btn_text = '';
+				var data = {at: at, command: '', at_aperture: aperture}; //提交的数据
+
+				switch (n) {
+					case 1:
+						btn_str = 'connect';
+						btn_text = '连接';
+						data.command = 'connect';
+						break;
+					case 2:
+						btn_str = 'disConnect';
+						btn_text = '断开';
+						data.command = 'disConnect';
+						break;
+				}
+				
+				$.ajax({//执行ajax
+					type : 'post',
+					url : '/guide',
+					data : data,             
+				    success: function (info) {
+						that.device_nav.guide_btn = btn_str;  //更改按钮样式
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});
+				    },
+				    error: function () {
+				       layer.alert('网络异常,请再次' + btn_text, {shade:false, closeBtn:0});
+				    },
+				});
+			},/*guide_btn_command 结束*/
+			guide_action_sbmt:function (){
+				$.ajax({//执行ajax
+					type : 'post',
+					url : '/guide',
+					data : this.guide_form.coverAction_form,              
+				    success: function (info) {
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});
+				    },
+				    error: function () {
+				       layer.alert('网络异常,请再次提交', {shade:false, closeBtn:0});
+				    },
+				});			
+			},/*guide_action_sbmt 结束*/
+			guide_focus_sbmt:function () {
+				console.log(this.gimbal_status.curstatus);
+			},/*guide_focus_sbmt 结束*/
 		},/******methods 结束******/
 	});/***************vue js结束*****************/
 
  	//ajax 实时更新60cm望远镜子设备状态数据///////////////////////	
-	/******************如下定义变量 存储各个需实时更新数据的元素***************/
-	var date = $('#date');
+	/******************如下定义变量 存储各个需实时更新数据的元素**************
 	var utcTime = $('#utcTime');
 	var siderealTime = $('#siderealTime');
 	var curstatus = $('#curstatus');
@@ -2214,13 +2351,13 @@
 	var filterStatus_1 = $('#filterStatus_1');
 	var filterIsHomed = $('#filterIsHomed');
 	var filterErrStr = $('#filterErrStr');
-	var planNum = $('#planNum');
+	var planNum = $('#planNum');*/
 	/******************如下定义变量 存储各个需实时更新数据的元素 结束**********/
 	/*将转台实时状态信息显示在页面*/
-	function show_gimbal_status (info)
+	/*function show_gimbal_status (info)
 	{
 		//date.html(info.date);
-		utcTime.html(info.UTC);
+		//utcTime.html(info.UTC);
 		siderealTime.html(info.siderealTime);
 		curstatus.html(info.curstatus); //转台状态
 		trackError.html(info.trackError);
@@ -2277,38 +2414,36 @@
 		}
 		gimbStatus.html('转台:' + info.curstatus);
 
-	}/*将转台实时状态信息显示在页面 结束*/
+	}*//*将转台实时状态信息显示在页面 结束*/
 
 	/*将ccd实时状态信息显示在页面*/
-	function show_ccd_status (info)
-	{
-		ccdStatus.html('CCD:' + info.ccdCurStatus);
+	//function show_ccd_status (info)
+	//{
+		/*ccdStatus.html('CCD:' + info.ccdCurStatus);
 		//如下为ccd可变属性
 		ccdStatus_1.html(info.ccdCurStatus);
 		baseLine.html(info.ccdBaseline);
 		readMode.html(info.ccdReadOutMode);
 		ObserveBand.html(info.ccdObserveBand);
 		TargetRightAscension.html(info.ccdJ2000RightAscension);
-		TargetDeclination.html(info.ccdJ2000Declination);
-	}/*将ccd实时状态信息显示在页面 结束*/
+		TargetDeclination.html(info.ccdJ2000Declination);*/
+	//}/*将ccd实时状态信息显示在页面 结束*/
 
-	/*将调焦器实时状态信息显示在页面*/
-	function show_focus_status (info)
-	{
-		focusStatus.html('调焦器:' + info.focusCurStatus);
-		curPos.html(info.focusPosition);
-		targetPosition.html(info.focusTargetPos);
-		//找零状态
-		focusIsHomed.html(info.focusIsHomed);
-		//是否温度补偿
-		compens.html(info.focusIsTCompensation);
-		//温度补偿系数
-		compensX.html(info.focusTCompenensation);
-	}/*将调焦器实时状态信息显示在页面 结束*/
+	// function show_focus_status (info) /*将调焦器实时状态信息显示在页面*/
+	// {
+	// 	focusStatus.html('调焦器:' + info.focusCurStatus);
+	// 	curPos.html(info.focusPosition);
+	// 	targetPosition.html(info.focusTargetPos);
+	// 	//找零状态
+	// 	focusIsHomed.html(info.focusIsHomed);
+	// 	//是否温度补偿
+	// 	compens.html(info.focusIsTCompensation);
+	// 	//温度补偿系数
+	// 	compensX.html(info.focusTCompenensation);
+	// }/*将调焦器实时状态信息显示在页面 结束*/
 
-	/*将随动圆顶实时状态信息显示在页面*/
-	function show_sDome_status (info)
-	{
+	//function show_sDome_status (info) 	/*将随动圆顶实时状态信息显示在页面*/
+	//{
 		//圆顶状态//////////////////////////////////////////////////
 		/* if (info.curstatus == '异常')
 		{
@@ -2316,59 +2451,61 @@
 		}else{
 			$('#gimbPic').attr('src', '/static/images-1/ok.jpg');
 		} */
-		domeStatus.html('圆顶:' + info.slaveDomeCurstatus);
-		domeStatus_1.html(info.slaveDomeCurstatus);
-		scuttle.html(info.slaveDomeScuttleStatus);//天窗状态
-		shadeStatus.html(info.slaveDomeShadeStatus);//风帘状态
-		errorStr.html(info.slaveDomeErrorStatus);//错误标识
-	}/*将随动圆顶实时状态信息显示在页面 结束*/
+	// 	domeStatus.html('圆顶:' + info.slaveDomeCurstatus);
+	// 	domeStatus_1.html(info.slaveDomeCurstatus);
+	// 	scuttle.html(info.slaveDomeScuttleStatus);//天窗状态
+	// 	shadeStatus.html(info.slaveDomeShadeStatus);//风帘状态
+	// 	errorStr.html(info.slaveDomeErrorStatus);//错误标识
+	// }/*将随动圆顶实时状态信息显示在页面 结束*/
 
 	/*将滤光片实时状态信息显示在页面*/
-	function show_filter_status (info)
-	{
-		filterStatus.html('滤光片:' + info.filterCurstatus);
-		filterStatus_1.html(info.filterCurstatus);
-		filterIsHomed.html(info.filterIsHomed);
-		filterErrStr.html(info.filterErrorStatus);
-	}/*将滤光片实时状态信息显示在页面 结束*/
+	// function show_filter_status (info)
+	// {
+	// 	filterStatus.html('滤光片:' + info.filterCurstatus);
+	// 	filterStatus_1.html(info.filterCurstatus);
+	// 	filterIsHomed.html(info.filterIsHomed);
+	// 	filterErrStr.html(info.filterErrorStatus);
+	// }/*将滤光片实时状态信息显示在页面 结束*/
 
 	function getStatus()
 	{
 		$.ajax({
 			type : 'post',
 			url : '/get_status', 
-			data : {at: at,},         
+			data : {at_aperture: aperture},         
             success:  function (info) {
                 var info = eval( '(' + info +')' );
 				
-				//显示转台状态信息
-				if ( info.gimbal )
+				if ( info.gimbal )  //显示转台状态信息
 				{
-					show_gimbal_status (info.gimbal);
+					//show_gimbal_status (info.gimbal);
+					vm.gimbal_status = info.gimbal;
 				}
 
-				//显示ccd状态信息
-				if ( info.ccd )
+				if ( info.ccd )  //显示ccd状态信息
 				{
-					show_ccd_status (info.ccd);
+					//show_ccd_status (info.ccd);
+					vm.ccd_status = info.ccd;
 				}
 				
-				//显示调焦器状态信息
-				if ( info.focus )
+				if ( info.focus ) //显示调焦器状态信息
 				{
-					show_focus_status (info.focus);
+					//show_focus_status (info.focus);
+					vm.focus_status = info.focus;
 				}
 				
-				//显示随动圆顶状态信息
-				if ( info.sDome )
+			
+				if ( info.sDome )//显示随动圆顶状态信息
 				{
-					show_sDome_status (info.sDome);
+					//show_sDome_status (info.sDome);
+					vm.sDome_status = info.sDome;
 				}
 				
-				//显示滤光片状态信息
-				if ( info.filter )
+				
+				if ( info.filter ) //显示滤光片状态信息
 				{
-					show_filter_status (info.filter);
+					//show_filter_status (info.filter);
+					vm.filter_status = info.filter;
 				}
             },/* success方法 结束*/
 			error: function (){
@@ -2418,106 +2555,6 @@
         });
      
     });//////////////////////////////////////////////////////////*/
-
-   //全开圆顶 按钮 js 事件/////////////////////////////////////
-   var oDome_command = $('#oDome_command');
-   //var oDome_btn = oDome_command.children('input');
-   var oDome_btn = oDome_command.children('input'); //所有的按钮
-   var oDome_btn_3 = oDome_command.children('input:gt(1)'); //后面3个按钮
-   /****************全开圆顶 连接/断开****************/
-   oDome_command.on('click', 'input', function () {
-	    var that = $(this);
-	    that.addClass('btnClick');
-		oDome_btn.not(that).removeClass('btnClick');
-		var v = that.val();
-		var fDomeConnect = ''; //连接/断开 指令的参数
-		var openDome = ''; //打开/关闭/停止 指令的参数
-
-		if ( v == '连接圆顶')
-		{
-			fDomeConnect = 1; 
-		}else if ( v == '断开圆顶' ){
-			fDomeConnect = 2;
-		}else if ( v == '打开' ){
-			openDome = 1;
-		}else if ( v == '关闭' ){
-			openDome = 0;
-		}else if ( v == '停止运动' ){
-			openDome = 2;
-		}
-
-		$.ajax ({
-            type: 'post',
-            url : '/opendome',
-            data : {
-				at : at,
-				fDomeConnect : fDomeConnect,
-				openDome : openDome
-			},
-            success:  function (info) {
-				layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}
-					},
-				});
-            },
-            error:  function () {
-                layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
-           },
-       });
-   })/****************全开圆顶 连接/断开   结束****************/
-//     var fDomeConnectFlag = 0; //此处代码 需要修改
-//    $('#fDomeConnect').click(function (){
-//        var e = $(this);
-//        fDomeConnectFlag ++;
-//        if (e.val() == '连接圆顶')   val = '1';
-//        if (e.val() == '断开圆顶')   val = '2';
-//        $.ajax({
-//             type : 'post',
-//             url : '/opendome',
-//             data : {fDomeConnect:val,},             
-//             success:  function (info) {
-// 	              layer.alert(info);
-//                 if (fDomeConnectFlag % 2 == 1 && info.indexOf('成功') != -1)
-//                 {//连接圆顶指令 发送成功
-//                     e.val('断开圆顶');
-//                 }else if(fDomeConnectFlag % 2 == 0 && info.indexOf('成功') != -1){//断开圆顶指令 发送成功
-//                     e.val('连接圆顶');
-//                 }
-//             },
-//             error:  function () {
-// 	              layer.alert('网络异常,请再次点击该按钮!');
-//             },
-//         });
-//    });
-   
-   //全开圆顶 打开 onchange事件/////////////////////////////////
-//     var fDome = $('#fDomeConnect').next('select');
-	
-//    fDome.change(function (){
-// 	   var fDomeVal = fDome.val();
-// 	   if (fDomeVal !== '')
-// 	   {
-// 		   $.ajax({
-//             type : 'post',
-//             url : '/opendome',
-//             data : {openDome:fDomeVal,},             
-//             success:  function (info) {
-// 			    layer.alert(info); 
-//             },
-//             error:  function () {
-// 	              layer.alert('网络异常,请再次选择该指令!');
-//             },
-//         });
-// 	   }
-		
-//    });
 	
 //观测计划 执行模式 js /////////////////////////////////////
 	$('#modeSpan').hover(
