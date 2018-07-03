@@ -132,12 +132,8 @@ class Filter extends Base
     }/*滤光片找零 结束*/
 
     protected function set_filterPos ($postData, $param)  /*滤光片位置*/
-    {halt($postData);
-        if (!preg_match('/^\d{1,5}$/', $filterPos))
-        {
-            return '滤光片位置必须是数字！';
-        }
-        $sendMsg = pack('S', $filterPos);  //unsigned short
+    {
+        $sendMsg = pack('S', $postData['filter_pos']);  //unsigned short
 
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 

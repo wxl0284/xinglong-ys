@@ -1077,9 +1077,10 @@ $(function () {
     gimbalAperture.blur(function () {//验证口径
         var that = $(this);
         var v = $.trim(that.val());
+        var patn = /^\d+\w+$/;
 		var err = 0;
 		
-		if ( !$.isNumeric(v) )
+		if ( !patn.test(v) )
 		{
             err = 1;
             that.data('info', '口径输入有误!');

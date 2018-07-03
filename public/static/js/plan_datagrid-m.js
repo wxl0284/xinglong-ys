@@ -805,7 +805,7 @@
 
 			if ( !$.isNumeric(plan_exposureTime) || plan_exposureTime > configData.ccd[0].maxexposuretime*1 || plan_exposureTime < configData.ccd[0].minexposuretime*1 )
 			{
-				msg += '第' + (i+1) + '条曝光时间超限!<br>';
+				msg += '第' + (i+1) + '条曝光时间超限（'+ configData.ccd[0].minexposuretime + '~' +configData.ccd[0].maxexposuretime+'）!<br>';
 			}
 
 			var plan_delayTime = $.trim(plans[i].delayTime);

@@ -30,6 +30,7 @@ class Status extends Base
             break;
         case '80cm':
             $this->at = 80;
+            break;
         case '85cm':
             $this->at = 85;
             break;
