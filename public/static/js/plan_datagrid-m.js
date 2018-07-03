@@ -334,7 +334,7 @@
 	
 	//将固定属性中的滤光片名称:u/v/b，对变量filterData进行赋值
 	var filterData = [];
-	var plan_filter_option = configData.filter.filtername.split('/');
+	var plan_filter_option = configData.filter.filtername.toLocaleUpperCase().split('/');
 	var filterData_num = plan_filter_option.length;
 	for (var filterData_i = 0; filterData_i < filterData_num; filterData_i++)
 	{
@@ -606,7 +606,7 @@
 					start : index +1,
 					command : 2, //标识 plan.php控制器中用以区别要执行的函数
 					at : at,
-					at_aperture: aperture	
+					at_aperture: aperture,
 				},             
 	            success:  function (info) {
 		            planErr = 0;
@@ -679,6 +679,8 @@
 					at : at,
 					at_aperture:aperture,
 					plan_filter_option : plan_filter_option, //将该望远镜filter的['u','v','b']提交
+					maxExpose: configData.ccd[0].maxexposuretime,
+					minExpose: configData.ccd[0].minexposuretime,
 				},
 				success: function (info){
 					planErr = 0;
@@ -732,6 +734,120 @@
 			if ( !patn.test(plan_type) && ( $.inArray(plan_type, ['恒星','太阳','月亮','彗星','行星','卫星','固定位置','本底','暗流','平场']) == -1)  )
 			{
 				msg += '第' + (i+1) + '条目标类型超限!<br>';
+			}
+
+			var asc1 = $.trim( plans[i].rightAscension1 );
+			patn  = /^\d{1,2}$/;
+			
+			if ( !patn.test(asc1) || asc1 > 24 || asc1 < 0 )
+			{
+				msg += '第' + (i+1) + '条赤经小时参数超限!<br>';
+			}
+			
+			var asc2 = $.trim( plans[i].rightAscension2 );
+			
+			if ( !patn.test(asc2) || asc2 > 59 || asc2 < 0 )
+			{
+				msg += '第' + (i+1) + '条赤经分钟参数超限!<br>';
+			}
+
+			var asc3 = $.trim( plans[i].rightAscension3 );
+			
+			if ( !$.isNumeric(asc3) || asc3 >= 60 || asc3 < 0 )
+			{
+				msg += '第' + (i+1) + '条赤经秒参数超限!<br>';
+			}
+
+			var asc = asc1 + asc2/60 + asc3/3600;
+			if ( asc > 24 )
+			{
+				msg += '第' + (i+1) + '条赤经参数超限!<br>';
+			}
+
+			var dec1 = $.trim( plans[i].declination1 );
+			patn = /^-?\d{1,2}$/;
+
+			if ( !patn.test(dec1) || dec1 > 90 || dec1 < -90 )
+			{
+				msg += '第' + (i+1) + '条赤纬小时参数超限!<br>';
+			}
+
+			var dec2 = $.trim( plans[i].declination2 );
+			patn = /^\d{1,2}$/;
+
+			if ( !patn.test(dec2) || dec2 > 59 || dec2 < 0 )
+			{
+				msg += '第' + (i+1) + '条赤纬分钟参数超限!<br>';
+			}
+
+			var dec3 = $.trim( plans[i].declination3 );
+
+			if ( !$.isNumeric(dec3) || dec3 >= 60 || dec3 < 0 )
+			{
+				msg += '第' + (i+1) + '条赤纬秒参数超限!<br>';
+			}
+
+			var dec = Math.abs(dec1) + dec2/60 + dec3/3600;
+			if ( dec > 90 )
+			{
+				msg += '第' + (i+1) + '条赤纬参数超限!<br>';	
+			}
+
+			var plan_epoch = $.trim(plans[i].epoch).toLocaleLowerCase();
+			patn = /^[0-3]$/;
+
+			if ( !patn.test(plan_epoch) && ( $.inArray(plan_epoch, ['real','j2000','b1950','j2050']) == -1)  )
+			{
+				msg += '第' + (i+1) + '条历元超限!<br>';
+			}
+
+			var plan_exposureTime = $.trim(plans[i].exposureTime);
+
+			if ( !$.isNumeric(plan_exposureTime) || plan_exposureTime > configData.ccd[0].maxexposuretime*1 || plan_exposureTime < configData.ccd[0].minexposuretime*1 )
+			{
+				msg += '第' + (i+1) + '条曝光时间超限!<br>';
+			}
+
+			var plan_delayTime = $.trim(plans[i].delayTime);
+
+			if ( !$.isNumeric(plan_delayTime) || plan_delayTime < 0 )
+			{
+				msg += '第' + (i+1) + '条延迟时间超限!<br>';
+			}
+
+			var plan_expCount = $.trim(plans[i].exposureCount);
+			patn = /^\d+$/;
+			if ( !patn.test(plan_expCount) || plan_expCount < 1 )
+			{
+				msg += '第' + (i+1) + '条曝光数量超限!<br>';
+			}
+
+			var plan_filter = $.trim(plans[i].filter);
+			patn = /^[0-9]$/;
+			if ( !patn.test(plan_filter) && ( $.inArray(plan_filter, plan_filter_option) == -1) )
+			{
+				msg += '第' + (i+1) + '条滤光片超限!<br>';
+			}
+
+			var plan_gain = $.trim(plans[i].gain);
+			patn = /^\d+$/;
+			if ( !patn.test(plan_gain) || plan_gain < 1 )
+			{
+				msg += '第' + (i+1) + '条增益超限!<br>';
+			}
+
+			var plan_bin = $.trim(plans[i].bin);
+			patn = /^\d+$/;
+			if ( !patn.test(plan_bin) || plan_gain < 1 )
+			{
+				msg += '第' + (i+1) + '条bin超限!<br>';
+			}
+
+			var plan_readout = $.trim(plans[i].readout);
+			patn = /^\d+$/;
+			if ( !patn.test(plan_readout) || plan_gain < 1 )
+			{
+				msg += '第' + (i+1) + '条读出速度超限!<br>';
 			}
 		}
 		return msg;

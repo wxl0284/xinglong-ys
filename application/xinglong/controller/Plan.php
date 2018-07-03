@@ -196,7 +196,7 @@ class Plan extends Base
     
     //获取计划数据 验证并发送计划数据/////////////////////////////
 	protected function sendPlan ($postData)  //即原来的savePlan函数
-	{	
+	{
 		//halt($planData['plan_filter_option']);
 		//定义全局$sequence 此变量在packHead()函数中要使用
 		if (Cookie::has('sequence'))
@@ -208,7 +208,6 @@ class Plan extends Base
 			$this->sequence = 0;
 		}
                   
-		//return $planData['planData'][0]['type'];
 		//验证计划数据
 		$planNum = count($postData['planData']);
 		$errMsg = '';	//错误提示
@@ -226,7 +225,7 @@ class Plan extends Base
 			//验证目标类型
 			$type = $postData['planData'][$i]['type'];
 			
-			if( $type === '' || !(preg_match('/^[0-9]{1}$/', $type) || in_array($type, ['恒星','太阳','月亮','彗星','行星','卫星','固定位置','本底','暗流','平场'])) )
+			if( !preg_match('/^[0-9]$/', $type) && !in_array($type, ['恒星','太阳','月亮','彗星','行星','卫星','固定位置','本底','暗流','平场']) )
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:目标类型参数超限!<br>';
 			}
@@ -274,65 +273,44 @@ class Plan extends Base
 
 			//验证历元 
 			$epoch = $postData['planData'][$i]['epoch'];
-			if($epoch === '') //历元 未填写
+
+			$epoch = strtolower ($epoch);
+			if ( !preg_match('/^[0-3]$/', $epoch) && !in_array($epoch, ['real','j2000','b1950','j2050']) )
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:历元参数超限!<br>';
-			}else{ //历元 有值
-				$epoch = strtolower ($epoch);
-				if ( !( preg_match('/^[0-3]{1}$/', $epoch) || in_array($epoch, ['real','j2000','b1950','j2050']) ) )
-				{
-					$errMsg .= '第'. ($i+1) .'条计划:历元参数超限!<br>';
-				}
 			}
 
 			//验证 曝光时间
 			$exposureTime = $postData['planData'][$i]['exposureTime'];
-			if($exposureTime === '')
+
+			if( !is_numeric($exposureTime) || $exposureTime > $postData['maxExpose'] || $exposureTime < $postData['minExpose'] ) //若不是数字
 			{
-				$errMsg .= '第'. ($i+1) .'条计划:曝光时间参数超限!<br>';
-			}else{
-				if( !is_numeric($exposureTime) ) //若不是数字
-				{
-					$errMsg .= '第'. ($i+1) .'条计划:曝光时间参数超限!<br>'; 
-				}
+				$errMsg .= '第'. ($i+1) .'条计划:曝光时间参数超限!<br>'; 
 			}
 
 			//验证 delayTime
 			$delayTime = $postData['planData'][$i]['delayTime'];
 
-			if($delayTime === '') //delayTime 未输入时
+			if( !is_numeric($delayTime) || $delayTime < 0 ) //delayTime 若不是数字
 			{
-				$errMsg .= '第'. ($i+1) .'条计划:delayTime参数超限!<br>'; 
-			}else{
-				if( !is_numeric($delayTime) ) //delayTime 若不是数字
-				{
-					$errMsg .= '第'. ($i+1) .'条计划:delayTime参数超限!<br>';
-				}
+				$errMsg .= '第'. ($i+1) .'条计划:delayTime参数超限!<br>';
 			}
+
 
 			//验证 exposureCount
 			$exposureCount = $postData['planData'][$i]['exposureCount'];
 
-			if($exposureCount === '') //曝光数量 未输入
+			if ( !preg_match('/^\d+$/', $exposureCount) || $exposureCount < 1 )
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:曝光数量参数超限!<br>';
-			}else{	//曝光数量 不是整数 或小于1
-				if ( !preg_match('/^[1-9]{1,3}$/', $exposureCount) )
-				{
-					$errMsg .= '第'. ($i+1) .'条计划:曝光数量参数超限!<br>';
-				}
 			}
 
 			//验证 滤光片
-			$filter = strtolower ($postData['planData'][$i]['filter']);
-			if($filter === '')//滤光片 未填写
+			$filter = strtoupper ($postData['planData'][$i]['filter']);
+	
+			if ( !preg_match('/^[0-9]$/', $filter) && !in_array($filter, $filter_option) )
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:滤光片参数超限!<br>';
-			}else{ //filter有值
-				if ( !in_array($filter, $filter_option) )
-				{
-					$errMsg .= '第'. ($i+1) .'条计划:滤光片参数超限!<br>';
-				}
 			}
 
 			//验证增益
@@ -341,7 +319,7 @@ class Plan extends Base
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:增益参数超限!<br>';
 			}else{
-				if ( !preg_match('/^[0-9]{1}$/', $gain) )
+				if ( !preg_match('/^\d+$/', $gain) || $gain < 1)
 				{
 					$errMsg .= '第'. ($i+1) .'条计划:增益参数超限!<br>';
 				}
@@ -353,7 +331,7 @@ class Plan extends Base
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:bin参数超限!<br>';
 			}else{
-				if ( !preg_match('/^[0-9]{1}$/', $bin) )
+				if ( !preg_match('/^\d+$/', $bin) || $bin < 1)
 				{
 					$errMsg .= '第'. ($i+1) .'条计划:bin参数超限!<br>';
 				}
@@ -365,7 +343,7 @@ class Plan extends Base
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:读出速度参数超限!<br>';
 			}else{
-				if ( !preg_match('/^[1-9]{1}$/', $readout) )
+				if ( !preg_match('/^\d+$/', $readout) ||$readout < 1)
 				{
 					$errMsg .= '第'. ($i+1) .'条计划:读出速度参数超限!<br>';
 				}
@@ -395,7 +373,7 @@ class Plan extends Base
 			$sendMsg .= pack('a48', $target);
 			
 			//目标类型
-			if (preg_match('/^[0-9]{1}$/', $type)) //数字类型
+			if (preg_match('/^[0-9]$/', $type)) //数字类型
 			{
 				$sendMsg .= pack('L', $type); 
 			}else{//直接为汉字类型数据
@@ -464,9 +442,15 @@ class Plan extends Base
 			 $sendMsg .= pack('L', $exposureCount);
 
 			 //滤光片
-			 $filter = $postData['planData'][$i]['filter'];
-			 $filter = strtoupper ($filter);
-			 $sendMsg .= pack('a8', $filter); 
+			$filter = $postData['planData'][$i]['filter'];
+
+			if ( preg_match('/^\d+$/', $filter) ) //数字类型
+			{
+				$sendMsg .= pack('a8', $filter_option[$filter]); 
+			}else{//直接为字符类型数据
+				$filter = strtoupper ($filter);
+				$sendMsg .= pack('a8', $filter); 
+			 }	//历元结束
 
 			//增益 gain
 			$gain = $postData['planData'][$i]['gain'];
