@@ -162,10 +162,13 @@ function data2Time ($data)
 	
 	$hour = (int) $data;
 	$min =  (int) (($data - $hour) * 60);
-	$sec =  (int) (($data - $hour - $min/60) * 36000);
-	
-	$sec = $sec/10;
-	
+	$sec =  (($data - $hour - $min/60) * 360000);
+    $sec = '' . round ($sec/100, 1);
+    if ( strpos($sec, '.') ===false )
+    {
+        $sec .= '.0';
+    }
+
 	if($hour < 10)
 	{
 		$hour = '0' . $hour;
@@ -181,7 +184,7 @@ function data2Time ($data)
 		$sec = '0' . $sec;
 	}
 	
-	return $res = $sign . $hour . ':' . $min . ':' . $sec;
+	return $sign . $hour . ':' . $min . ':' . $sec;
 }
 
 //数据库的时角/恒星时/赤经/赤纬 转为时间 的函数///////////////////

@@ -97,6 +97,7 @@ class Ccd extends Base
                 break;
             case '80cm':
                 $this->at = 36;
+                break;
             case '85cm':
                 $this->at = 35;
                 break;
@@ -658,7 +659,6 @@ class Ccd extends Base
         return '开始曝光指令：'. udpSend($sendMsg, $this->ip, $this->port);	
     }/*开始曝光 结束*/
 
-    /*设置增益*/
     protected function set_gain ($postData, $param)  /*设置增益*/
     {
         $res = Db::table('ccdconf')->where('ccdno', $this->ccdNo)->where('teleid', $postData['at'])->field('gainmode, gainnumber')->find();
@@ -668,7 +668,7 @@ class Ccd extends Base
             return '增益档位参数超限!';
         }
         $sendMsg = pack('S', $postData['mode']);
-        $sendMsg = pack('S', $postData['gear']);
+        $sendMsg .= pack('S', $postData['gear']);
 
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
@@ -783,10 +783,10 @@ class Ccd extends Base
                 return 'em值超限!';
             }
             $sendMsg = pack('S', $postData['em']);
-            $sendMsg = pack('L', $postData['emV']);
+            $sendMsg .= pack('L', $postData['emV']);
         }else if ( $postData['em'] == 0 ){//
             $sendMsg = pack('S', $postData['em']);
-            $sendMsg = pack('L', 0);
+            $sendMsg .= pack('L', 0);
         }
        
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
@@ -814,10 +814,10 @@ class Ccd extends Base
         if ( $postData['isBaseLine'] == 1 )
         {
             $sendMsg = pack('S', $postData['isBaseLine']);
-            $sendMsg = pack('L', $postData['baseLineV']);
+            $sendMsg .= pack('L', $postData['baseLineV']);
         }else if ( $postData['isBaseLine'] == 0 ){//
             $sendMsg = pack('S', $postData['isBaseLine']);
-            $sendMsg = pack('L', 0);
+            $sendMsg .= pack('L', 0);
         }
  
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);

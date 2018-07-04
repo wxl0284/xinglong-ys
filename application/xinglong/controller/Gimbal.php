@@ -21,7 +21,7 @@ class Gimbal extends Base
     protected $port = '';  //中控通信 port
     protected $command_length = [//各指令长度
         'connect' => 50,
-        'findhome' => 48,
+        'findhome' => 50,
         'park' => 48,
         'stop' => 48,
         'emergstop' => 48,
@@ -95,6 +95,7 @@ class Gimbal extends Base
                 break;
             case '80cm':
                 $this->at = 36;
+                break;
             case '85cm':
                 $this->at = 35;
                 break;
@@ -474,7 +475,7 @@ class Gimbal extends Base
         }
 
         $sendMsg = pack('S', $postData['axis']);  //unsigned short
-        $sendMsg = pack('d', $postData['speed']);  //double64
+        $sendMsg .= pack('d', $postData['speed']);  //double64
 
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 

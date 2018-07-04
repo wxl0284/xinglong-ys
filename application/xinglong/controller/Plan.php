@@ -164,7 +164,8 @@ class Plan extends Base
                 $this->at = 37;
                 break;
             case '80cm':
-                $this->at = 36;
+				$this->at = 36;
+				break;
             case '85cm':
                 $this->at = 35;
                 break;

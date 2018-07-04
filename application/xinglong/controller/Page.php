@@ -175,10 +175,10 @@ class Page extends Base
             }
             if ( !in_array(['conf' => 'opticalStructure'], $confOption) )
             {//缺少了'导星镜焦点类型'
-                $errMsg .= '固定属性还须添加：导星镜焦点类型!<br>';
+                $errMsg .= '固定属性还须添加：导星镜焦点类型!';
             }
         }/*检查判断数据表'confoption'内19个动态增减的固定属性  结束*/
-        //$errMsg = '固定属性还须添加<br>'.'固定属性还须添加：全开圆顶类型!<br>';
+       
         if ($errMsg != '')
         {//还须添加固定属性
             return $errMsg;

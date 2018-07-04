@@ -166,8 +166,22 @@ class Status extends Base
             $status['coverStatus'] = '打开';
         }
         
-        $status['rightAscension'] = round($gimbalStatus['rightAscension'], 5); //当前赤经
-        $status['declination'] = round($gimbalStatus['declination'], 5); //当前赤纬
+        if (is_numeric($gimbalStatus['rightAscension'])) //当前赤经
+        {
+            $gimbalStatus['rightAscension'] = floatval ($gimbalStatus['rightAscension']);
+            $status['rightAscension'] = data2Time($gimbalStatus['rightAscension']/15); 
+        }else{
+            $status['rightAscension'] = $gimbalStatus['rightAscension'];
+        }
+
+        if (is_numeric($gimbalStatus['declination'])) //当前赤纬
+        {
+            $gimbalStatus['declination'] = floatval ($gimbalStatus['declination']);
+            $status['declination'] = data2Time($gimbalStatus['declination']); 
+        }else{
+            $status['declination'] = $gimbalStatus['declination'];
+        }
+
         $status['trackObjectName'] = $gimbalStatus['trackObjectName']; //目标名
 
         //获取跟踪目标类型
@@ -199,18 +213,18 @@ class Status extends Base
         //         break;	
         // }
         
-        if (is_numeric($gimbalStatus['targetRightAscension']))
+        if (is_numeric($gimbalStatus['targetRightAscension']))  //目标赤经
         {
             $gimbalStatus['targetRightAscension'] = floatval ($gimbalStatus['targetRightAscension']);
-            $status['targetRightAscension'] = data2Time($gimbalStatus['targetRightAscension']/15); //目标赤经
+            $status['targetRightAscension'] = data2Time($gimbalStatus['targetRightAscension']/15);
         }else{
             $status['targetRightAscension'] = $gimbalStatus['targetRightAscension'];
         }
         
-        if (is_numeric($gimbalStatus['targetDeclination']))
+        if (is_numeric($gimbalStatus['targetDeclination'])) //目标赤纬
         {
             $gimbalStatus['targetDeclination'] = floatval ($gimbalStatus['targetDeclination']);
-            $status['targetDeclination'] = data2Time($gimbalStatus['targetDeclination']); //目标赤纬
+            $status['targetDeclination'] = data2Time($gimbalStatus['targetDeclination']);
         }else{
             $status['targetDeclination'] = $gimbalStatus['targetDeclination'];
         }
@@ -235,37 +249,37 @@ class Status extends Base
         //接下来：转台可变属性
         //$status['timeStamp'] = time(); //时间戳
                 
-        if (is_numeric($gimbalStatus['J2000RightAscension']))
-        {//j2000赤经
-            $gimbalStatus['J2000RightAscension'] = floatval ($gimbalStatus['J2000RightAscension']);
-            $status['J2000RightAscension'] = round(data2Time($gimbalStatus['J2000RightAscension']/15), 5);
-        }else{
-            $status['J2000RightAscension'] = $gimbalStatus['J2000RightAscension'];
-        }
+        // if (is_numeric($gimbalStatus['J2000RightAscension']))
+        // {//j2000赤经
+        //     $gimbalStatus['J2000RightAscension'] = floatval ($gimbalStatus['J2000RightAscension']);
+        //     $status['J2000RightAscension'] = round(data2Time($gimbalStatus['J2000RightAscension']/15), 5);
+        // }else{
+        //     $status['J2000RightAscension'] = $gimbalStatus['J2000RightAscension'];
+        // }
         
-        if (is_numeric($gimbalStatus['J2000Declination']))
-        {//j2000赤纬
-            $gimbalStatus['J2000Declination'] = floatval($gimbalStatus['J2000Declination']);
-            $status['J2000Declination'] = round(data2Time($gimbalStatus['J2000Declination']), 5);
-        }else{
-            $status['J2000Declination'] = $gimbalStatus['J2000Declination'];
-        }
+        // if (is_numeric($gimbalStatus['J2000Declination']))
+        // {//j2000赤纬
+        //     $gimbalStatus['J2000Declination'] = floatval($gimbalStatus['J2000Declination']);
+        //     $status['J2000Declination'] = round(data2Time($gimbalStatus['J2000Declination']), 5);
+        // }else{
+        //     $status['J2000Declination'] = $gimbalStatus['J2000Declination'];
+        // }
         
-        if (is_numeric($gimbalStatus['targetJ2000RightAscension']))
-        {//目标j2000赤经
-            $gimbalStatus['targetJ2000RightAscension'] = floatval($gimbalStatus['targetJ2000RightAscension']);
-            $status['targetJ2000RightAscension'] = round(data2Time($gimbalStatus['targetJ2000RightAscension']/15), 5);
-        }else{
-            $status['targetJ2000RightAscension'] = $gimbalStatus['targetJ2000RightAscension'];
-        }
+        // if (is_numeric($gimbalStatus['targetJ2000RightAscension']))
+        // {//目标j2000赤经
+        //     $gimbalStatus['targetJ2000RightAscension'] = floatval($gimbalStatus['targetJ2000RightAscension']);
+        //     $status['targetJ2000RightAscension'] = round(data2Time($gimbalStatus['targetJ2000RightAscension']/15), 5);
+        // }else{
+        //     $status['targetJ2000RightAscension'] = $gimbalStatus['targetJ2000RightAscension'];
+        // }
         
-        if (is_numeric($gimbalStatus['targetJ2000Declination']))
-        {//目标j2000赤纬
-            $gimbalStatus['targetJ2000Declination'] = floatval($gimbalStatus['targetJ2000Declination']);
-            $status['targetJ2000Declination'] = round(data2Time($gimbalStatus['targetJ2000Declination']), 5);
-        }else{
-            $status['targetJ2000Declination'] = $gimbalStatus['targetJ2000Declination'];
-        }
+        // if (is_numeric($gimbalStatus['targetJ2000Declination']))
+        // {//目标j2000赤纬
+        //     $gimbalStatus['targetJ2000Declination'] = floatval($gimbalStatus['targetJ2000Declination']);
+        //     $status['targetJ2000Declination'] = round(data2Time($gimbalStatus['targetJ2000Declination']), 5);
+        // }else{
+        //     $status['targetJ2000Declination'] = $gimbalStatus['targetJ2000Declination'];
+        // }
 
         //返回数据
         return $status;

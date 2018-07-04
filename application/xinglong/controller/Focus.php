@@ -48,7 +48,7 @@ class Focus extends Base
         }*/
 
         //接受表单数据
-        $postData = input ();
+        $postData = input ();//halt($postData);
         //验证数据
         if (!$postData['at'])
         {//未接收到望远镜编号
@@ -77,6 +77,7 @@ class Focus extends Base
                 break;
             case '80cm':
                 $this->at = 36;
+                break;
             case '85cm':
                 $this->at = 35;
                 break;

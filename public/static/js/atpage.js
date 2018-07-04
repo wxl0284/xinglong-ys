@@ -1143,7 +1143,7 @@
 			ccd_duration:function (tip) {
 				var msg = '';
 				var v = this.ccd_form.exposeParam.duration;
-				if ( !$.isNumeric(v) || v > this.ccd_config.maxexposuretime || v<this.ccd_config.maxexposuretime )
+				if ( !$.isNumeric(v) || v > this.ccd_config.maxexposuretime*1 || v < this.ccd_config.minexposuretime*1 )
 				{
 					msg += '曝光时间参数超限!';
 				}
@@ -1404,8 +1404,8 @@
 			},/*ccd_roi_y 结束*/
 			ccd_roi_w:function (tip) {
 				var msg = '';
-				var v = this.ccd_form.set_roi_form.imageW;
-				var x = this.ccd_form.set_roi_form.startX;
+				var v = this.ccd_form.set_roi_form.imageW*1;
+				var x = this.ccd_form.set_roi_form.startX*1;
 				var patn = /^\d+$/;
 				if ( !patn.test(v) || (v+x) > this.ccd_config.xpixel*1 || v < 1 )
 				{
@@ -1419,8 +1419,8 @@
 			},/*ccd_roi_w 结束*/
 			ccd_roi_h:function (tip) {
 				var msg = '';
-				var v = this.ccd_form.set_roi_form.imageH;
-				var y = this.ccd_form.set_roi_form.startY;
+				var v = this.ccd_form.set_roi_form.imageH*1;
+				var y = this.ccd_form.set_roi_form.startY*1;
 				var patn = /^\d+$/;
 				if ( !patn.test(v) || (v+y) > this.ccd_config.ypixel*1 || v < 1 )
 				{
