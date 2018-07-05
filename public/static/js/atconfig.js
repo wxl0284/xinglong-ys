@@ -136,6 +136,8 @@ $(function () {
                 show_oDome:false, //控制显示全开圆顶的配置表单
                 show_guide:false, //控制显示导星镜的配置表单
             },//show_dev_form 结束
+            confOption: {},
+            test:'',
         },//data 结束
         methods: {
             ff:function (){
@@ -143,235 +145,56 @@ $(function () {
                 //this.show_dev_form.push('show_gimbal');
                 console.log(this.show_dev_form.ccd_form_num);
             },//ff() 结束
+            select_at:function (){
+                var index = layer.load(1); //显示加载图标
+                var that = this; //存储vue实例
+
+                if( that.show_dev_form.at !== '0') //执行ajax请求
+                {
+                    $.ajax({
+                        url: '/config',
+                        type: 'post',
+                        data: {id: that.show_dev_form.at,},   //将望远镜id发送给后端
+                        success:  function (info) {
+                            if ( info.indexOf('{') == -1 )  //不是json, 返回信息提示 给用户
+                            {
+                                layer.close(index);  //关闭加载提示
+                                that.show_dev_form.at = 0;  //将望远镜选择下拉框置为初始值
+                                layer.alert(info, {
+                                    shade:false,
+                                    closeBtn:0,
+                                    yes:function (n){
+                                        layer.close(n);
+                                        if (info.indexOf('登录') !== -1)
+                                        {
+                                            location.href = '/';
+                                        }
+                                    },
+                                });
+                            }else{//处理返回的json数据
+                                //that.show_dev_form.at = 0;
+                                //根据json数据 显示配置项
+                                var info = $.parseJSON(info);
+                                //show_19confOption (info.confOption); 
+                                that.confOption = info.confOption; //将19个配置项数据赋给
+                                //console.log(that.confOption);
+
+                                layer.close(index);  //关闭加载图标
+                            }
+                        },//success 结束
+                        error:  function () {
+                            layer.alert('网络异常,请再次选择!', {shade:false, closeBtn:0});
+                            layer.close(index);  //关闭加载提示
+                        },
+                    });//ajax 结束
+                }//执行ajax请求 结束
+                else{//不执行ajax
+                    layer.close(index);  //关闭加载图标
+                }
+            },//select_at() 结束
         },//methods 结束
-    });//vue 结束
-    /*选择望远镜下拉列表 ajax判断19个固定属性是否添加足够*/
-    //var atNo = $('#atNo');
-    // atNo.change(function (){
-    //     var index = layer.load(1); //显示加载提示
-    //     var val = $(this).val();
-
-    //     if(val !== '0') //执行ajax请求 判断
-    //     {
-    //         $.ajax({
-    //             url: '/config',
-    //             type: 'post',
-    //             data: {id: val,},   //将望远镜id发送给后端
-    //             success:  function (info) {
-    //                 //判断返回的info 是否为json
-    //                 if ( info.indexOf('{') == -1 )  //不是json, 返回信息需要提示给用户
-    //                 {
-    //                     layer.close(index);  //关闭加载提示
-    //                     atNo.val('0');  //将望远镜选择下拉框置为初始值
-
-    //                     layer.alert(info, {
-    //                         shade:false,
-    //                         closeBtn:0,
-    //                         yes:function (n){
-    //                             layer.close(n);
-    //                             if (info.indexOf('登录') !== -1)
-    //                             {
-    //                                 location.href = '/';
-    //                             }
-    //                         },
-    //                     });
-
-    //                 }else{//处理返回的json数据
-                        
-    //                     atNo.val(val);
-    //                     //根据json数据 显示配置项
-    //                     var info = $.parseJSON(info);
-    //                     //console.log(info.ccd_data.attrmodifytime);return;
-    //                     /*将19个动态增减的固定显示与配置页面*/
-    //                     show_19confOption (info.confOption);                      
-    //                     /*将19个动态增减的固定显示与配置页面 结束*/
-
-    //                     /*在页面显示转台的配置数据*/
-    //                     if (info.gimbal_data) //若接收到转台配置数据
-    //                     {
-    //                        have_gimbal.prop('checked', true);  //将转台的选项勾选
-
-    //                        gimbalForm.show();  //显示转台配置表单
-    //                         ccdTeleId.html(info.gimbal_data.atname);  //隶属望远镜
-    //                         ccd_2_TeleId.html(info.gimbal_data.atname);  //隶属望远镜
-    //                         ccd_3_TeleId.html(info.gimbal_data.atname);  //隶属望远镜
-    //                         ccd_4_TeleId.html(info.gimbal_data.atname);  //隶属望远镜
-    //                         ccd_5_TeleId.html(info.gimbal_data.atname);  //隶属望远镜
-    //                         filterTeleId.html(info.gimbal_data.atname);  //隶属望远镜
-    //                         sDomeTeleId.html(info.gimbal_data.atname);  //隶属望远镜
-    //                         oDomeTeleId.html(info.gimbal_data.atname);  //隶属望远镜
-    //                         focusTeleId.html(info.gimbal_data.atname);  //隶属望远镜
-    //                         guideScopeTeleId.html(info.gimbal_data.atname);  //隶属望远镜
-
-
-
-    //                         show_gimbal_data (info.gimbal_data);
-    //                         if (info.gimbal_file)
-    //                         {
-    //                             show_file (gimbalFile, info.gimbal_file);
-    //                         }else{
-    //                             gimbalFile.html('');
-    //                         }
-    //                     }/*在页面显示转台的配置数据 结束*/
-
-    //                     /*在页面显示ccd-No1的配置数据*/
-    //                     if ( info.ccd_data.ccd_num > 0 ) //若接收到ccd配置数据
-    //                     {
-    //                         have_ccd.prop('checked', true);  //将ccd的选项勾选
-    //                         /*接下来 根据ccd数量做相应处理*/
-    //                         var ccd_n = info.ccd_data.ccd_num;
-    //                         //console.log(info.ccd_data);return;
-                            
-    //                         if ( ccd_n > 0 )
-    //                         {
-    //                             ccd_num.val(info.ccd_data.ccd_num); //将ccd数量之select进行设置
-    //                             //显示对应数目的ccd配置表单
-    //                             for ( var ccd_num_i = 1; ccd_num_i <= ccd_n; ccd_num_i++)
-    //                             {
-    //                                 $('#ccd-' + ccd_num_i).show();
-    //                                 //接下来，逐一显示ccd配置表单的数据
-    //                                 if ( ccd_num_i == 1 ) //显示ccd-No1配置信息
-    //                                 {
-    //                                     ccdTeleId.html(info.ccd_data.atname);  //隶属望远镜
-    //                                     ccdAttrModifyTime.html(info.ccd_data[ccd_num_i-1].attrmodifytime); //显示属性更新时间
-    //                                     show_ccd1_data (info.ccd_data[ccd_num_i-1]);
-                                
-    //                                     if (info.ccd_file[ccd_num_i] !== 0)
-    //                                     {
-    //                                         show_file (ccdFile, info.ccd_file[ccd_num_i]);
-    //                                     }else{
-    //                                         ccdFile.html('');
-    //                                     }
-    //                                 }else if ( ccd_num_i == 2 ) //显示ccd-No3配置信息
-    //                                 {
-    //                                     ccd_2_TeleId.html(info.ccd_data.atname);  //隶属望远镜
-    //                                     ccd_2AttrModifyTime.html(info.ccd_data[ccd_num_i-1].attrmodifytime); //显示属性更新时间
-    //                                     show_ccd2_data (info.ccd_data[ccd_num_i-1]);
-
-    //                                     if (info.ccd_file[ccd_num_i] !== 0)
-    //                                     {
-    //                                         show_file (ccd_2_File, info.ccd_file[ccd_num_i]);
-    //                                     }else{
-    //                                         ccd_2_File.html('');
-    //                                     }
-    //                                 }else if ( ccd_num_i == 3 ) //显示ccd-No3配置信息
-    //                                 {
-    //                                     ccd_3_TeleId.html(info.ccd_data.atname);
-    //                                     ccd_3AttrModifyTime.html(info.ccd_data[ccd_num_i-1].attrmodifytime); //显示属性更新时间
-    //                                     show_ccd3_data (info.ccd_data[ccd_num_i-1]);
-
-    //                                     if (info.ccd_file[ccd_num_i] !== 0)
-    //                                     {
-    //                                         show_file (ccd_3_File, info.ccd_file[ccd_num_i]);
-    //                                     }else{
-    //                                         ccd_3_File.html('');
-    //                                     }
-    //                                 }else if ( ccd_num_i == 4 ) //显示ccd-No4配置信息
-    //                                 {
-    //                                     ccd_4_TeleId.html(info.ccd_data.atname);
-    //                                     ccd_4AttrModifyTime.html(info.ccd_data[ccd_num_i-1].attrmodifytime); //显示属性更新时间
-    //                                     show_ccd4_data (info.ccd_data[ccd_num_i-1]);
-
-    //                                     if (info.ccd_file[ccd_num_i] !== 0)
-    //                                     {
-    //                                         show_file (ccd_4_File, info.ccd_file[ccd_num_i]);
-    //                                     }else{
-    //                                         ccd_4_File.html('');
-    //                                     }
-    //                                 }else if ( ccd_num_i == 5 ) //显示ccd-No5配置信息
-    //                                 {
-    //                                     ccd_5_TeleId.html(info.ccd_data.atname);
-    //                                     ccd_5AttrModifyTime.html(info.ccd_data[ccd_num_i-1].attrmodifytime); //显示属性更新时间
-    //                                     show_ccd5_data (info.ccd_data[ccd_num_i-1]);
-
-    //                                     if (info.ccd_file[ccd_num_i] !== 0)
-    //                                     {
-    //                                         show_file (ccd_5_File, info.ccd_file[ccd_num_i]);
-    //                                     }else{
-    //                                         ccd_5_File.html('');
-    //                                     }
-    //                                 }
-    //                             }//循环显示对应数目的ccd配置表单 结束
-    //                         }
-    //                     }/*在页面显示ccd的配置数据 结束*/
-
-    //                     /*在页面显示滤光片的配置数据*/
-    //                     if (info.filter_data) //若接收到滤光片配置数据
-    //                     {
-    //                         have_filter.prop('checked', true);  //将滤光片的选项勾选
-    //                         show_filter_data (info.filter_data);
-    //                         if (info.filter_file)
-    //                         {
-    //                             show_file (filterFile, info.filter_file);
-    //                         }else{
-    //                             filterFile.html('');
-    //                         }
-    //                     }/*在页面显示滤光片的配置数据 结束*/
-
-    //                     /*在页面显示随动圆顶的配置数据*/
-    //                     if (info.sDome_data) //若接收到随动圆顶配置数据
-    //                     {
-    //                         have_sDome.prop('checked', true);  //将随动圆顶的选项勾选
-    //                         show_sDome_data (info.sDome_data);
-    //                         if (info.sDome_file)
-    //                         {
-    //                             show_file (sDomeFile, info.sDome_file);
-    //                         }else{
-    //                             sDomeFile.html('');
-    //                         }
-    //                     }/*在页面显示随动圆顶的配置数据 结束*/
-
-    //                     /*在页面显示全开圆顶的配置数据*/
-    //                     if (info.oDome_data) //若接收到全开圆顶配置数据
-    //                     {
-    //                         have_oDome.prop('checked', true);  //将全开圆顶的选项勾选
-    //                         show_oDome_data (info.oDome_data);
-    //                         if (info.oDome_file)
-    //                         {
-    //                             show_file (oDomeFile, info.oDome_file);
-    //                         }else{
-    //                             oDomeFile.html('');
-    //                         }
-    //                     }/*在页面显示全开圆顶的配置数据 结束*/
-
-    //                     /*在页面显示调焦器的配置数据*/
-    //                     if (info.focus_data) //若接收到调焦器配置数据
-    //                     {
-    //                         have_focus.prop('checked', true);  //将调焦器的选项勾选
-    //                         show_focus_data (info.focus_data);
-    //                         if (info.focus_file)
-    //                         {
-    //                             show_file (focusFile, info.focus_file);
-    //                         }else{
-    //                             focusFile.html('');
-    //                         }
-    //                     }/*在页面显示调焦器的配置数据 结束*/
-
-    //                     /*在页面显示导星望远镜的配置数据*/
-    //                     if (info.guide_data) //若接收到导星望远镜配置数据
-    //                     {
-    //                         have_guide.prop('checked', true);  //将导星望远镜的选项勾选
-    //                         show_guide_data (info.guide_data);
-    //                         if (info.guide_file)
-    //                         {
-    //                             show_file (guideScopeFile, info.guide_file);
-    //                         }else{
-    //                             guideScopeFile.html('');
-    //                         }
-    //                     }/*在页面显示导星望远镜的配置数据 结束*/
-
-    //                     layer.close(index);  //关闭加载提示
-    //                 }
-    //             },/*success 方法结束*/
-    //             error:  function () {
-    //                   layer.alert('网络异常,请再次选择!', {shade:false, closeBtn:0});
-    //                   layer.close(index);  //关闭加载提示
-    //             },
-    //         });//执行ajax请求 判断 结束
-    //     }else{
-    //         layer.close(index);  //关闭加载提示
-    //     }
-    // })/*选择望远镜下拉列表 ajax判断19个固定属性是否添加足够 结束*/
+    });//vue 结束////////////////////
+ 
     
      /* 获取所有要填入数据的元素对象*/
      var gimbalFocustype = $('#gimbalFocustype'); //转台 焦点类型
@@ -447,139 +270,104 @@ $(function () {
      function show_19confOption (data)
      { 
         //显示转台之焦点类型
-        var showData = data.focustype;
-        var resHtml = '<option value="0">请选择</option>';
-        var n = showData.length;
+        // var showData = data.focustype;
+        // var resHtml = '<option value="0">请选择</option>';
+        // var n = showData.length;
        
-        for (var i=0; i < n; i++)
-        {
-            resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        }
-        gimbalFocustype.html(resHtml);
+        // for (var i=0; i < n; i++)
+        // {
+        //     resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
+        // }
+        // gimbalFocustype.html(resHtml);
         //显示转台之焦点类型 结束
 
         //显示转台之焦比
-        showData = data.focusratio;
-        resHtml = '<option value="0">请选择</option>';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        }
-        gimbalFocusratio.html(resHtml);
+        // showData = data.focusratio;
+        // resHtml = '<option value="0">请选择</option>';
+        // var n = showData.length;
+        // for (var i=0; i < n; i++)
+        // {
+        //     resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
+        // }
+        // gimbalFocusratio.html(resHtml);
         //显示转台之焦比 结束
 
         //显示ccd-No1 及其他ccd之图像位数
-        showData = data.imageBits;
-        resHtml = '<option value="0">请选择</option>';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        }
-        ccdImageBits.html(resHtml);
-        ccd_2ImageBits.html(resHtml);
-        ccd_3ImageBits.html(resHtml);
-        ccd_4ImageBits.html(resHtml);
-        ccd_5ImageBits.html(resHtml);
+        // showData = data.imageBits;
+        // resHtml = '<option value="0">请选择</option>';
+        // var n = showData.length;
+        // for (var i=0; i < n; i++)
+        // {
+        //     resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
+        // }
+        // ccdImageBits.html(resHtml);
         //显示ccd-No1 及其他ccd之图像位数  结束
 
         //显示ccd-No1 及其他ccd之制冷方式
-        showData = data.coolerMode;
-        resHtml = '<option value="0">请选择</option>';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        }
-        ccdCoolerMode.html(resHtml);
-        ccd_2CoolerMode.html(resHtml);
-        ccd_3CoolerMode.html(resHtml);
-        ccd_4CoolerMode.html(resHtml);
-        ccd_5CoolerMode.html(resHtml);
+        // showData = data.coolerMode;
+        // resHtml = '<option value="0">请选择</option>';
+        // var n = showData.length;
+        // for (var i=0; i < n; i++)
+        // {
+        //     resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
+        // }
+        // ccdCoolerMode.html(resHtml);
         //显示ccd-No1 及其他ccd之制冷方式 结束
 
         //显示ccd-No1 及其他ccd之读出速度模式
-        /*showData = data.readoutSpeed;
-        resHtml = '<option value="0">请选择</option>';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        }*/
-        showData = data.readoutSpeed;
-        resHtml = '';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += showData[i] + "<input type='checkbox' name='readoutspeed[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
-        }
-        ccdReadoutSpeed.html(resHtml);
-        ccd_2ReadoutSpeed.html(resHtml);
-        ccd_3ReadoutSpeed.html(resHtml);
-        ccd_4ReadoutSpeed.html(resHtml);
-        ccd_5ReadoutSpeed.html(resHtml);
+        // showData = data.readoutSpeed;
+        // resHtml = '';
+        // var n = showData.length;
+        // for (var i=0; i < n; i++)
+        // {
+        //     resHtml += showData[i] + "<input type='checkbox' name='readoutspeed[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
+        // }
+        // ccdReadoutSpeed.html(resHtml);
         //显示ccd-No1 及其他ccd之读出速度模式 结束
 
         //显示ccd-No1 及其他ccd之读出模式
-        showData = data.readoutMode;
-        resHtml = '';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += showData[i] + "<input type='checkbox' name='readoutmode[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
-        }
-        ccdreadoutMode.html(resHtml);
-        ccd_2readoutMode.html(resHtml);
-        ccd_3readoutMode.html(resHtml);
-        ccd_4readoutMode.html(resHtml);
-        ccd_5readoutMode.html(resHtml);
+        // showData = data.readoutMode;
+        // resHtml = '';
+        // var n = showData.length;
+        // for (var i=0; i < n; i++)
+        // {
+        //     resHtml += showData[i] + "<input type='checkbox' name='readoutmode[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
+        // }
+        // ccdreadoutMode.html(resHtml);
         //显示ccd-No1 及其他ccd之读出模式 结束
 
         //显示ccd-No1 及其他ccd之转移速度模式
-        showData = data.transferSpeed;
-        resHtml = '';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += showData[i] + "<input type='checkbox' name='transferspeed[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
-        }
+        // showData = data.transferSpeed;
+        // resHtml = '';
+        // var n = showData.length;
+        // for (var i=0; i < n; i++)
+        // {
+        //     resHtml += showData[i] + "<input type='checkbox' name='transferspeed[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
+        // }
 
-        ccdTransferSpeed.html(resHtml);
-        ccd_2TransferSpeed.html(resHtml);
-        ccd_3TransferSpeed.html(resHtml);
-        ccd_4TransferSpeed.html(resHtml);
-        ccd_5TransferSpeed.html(resHtml);
+        // ccdTransferSpeed.html(resHtml);
         //显示ccd-No1 及其他ccd之转移速度模式 结束
 
         //显示ccd-No1 及其他ccd之增益模式
-        showData = data.gainmode;
-        resHtml = '';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += showData[i] + "<input type='checkbox' name='gainmode[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
-        }
-        ccd_1gainmode.html(resHtml);
-        ccd_2gainmode.html(resHtml);
-        ccd_3gainmode.html(resHtml);
-        ccd_4gainmode.html(resHtml);
-        ccd_5gainmode.html(resHtml);
+        // showData = data.gainmode;
+        // resHtml = '';
+        // var n = showData.length;
+        // for (var i=0; i < n; i++)
+        // {
+        //     resHtml += showData[i] + "<input type='checkbox' name='gainmode[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
+        // }
+        // ccd_1gainmode.html(resHtml);
         //显示ccd-No1 及其他ccd之增益模式 结束
 
         //显示ccd-No1 及其他ccd之增益档位
-        showData = data.gainNumber;
-        resHtml = '<option value="0">请选择</option>';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        }
-        ccd_1GainNumber.html(resHtml);
-        ccd_2GainNumber.html(resHtml);
-        ccd_3GainNumber.html(resHtml);
-        ccd_4GainNumber.html(resHtml);
-        ccd_5GainNumber.html(resHtml);
+        // showData = data.gainNumber;
+        // resHtml = '<option value="0">请选择</option>';
+        // var n = showData.length;
+        // for (var i=0; i < n; i++)
+        // {
+        //     resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
+        // }
+        // ccd_1GainNumber.html(resHtml);
         //显示ccd-No1及其他ccd之增益档位 结束
 
         //显示ccd-No1 及其他ccd之快门类型
@@ -591,10 +379,6 @@ $(function () {
             resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
         }
         ccdShutterType.html(resHtml);
-        ccd_2ShutterType.html(resHtml);
-        ccd_3ShutterType.html(resHtml);
-        ccd_4ShutterType.html(resHtml);
-        ccd_5ShutterType.html(resHtml);
         //显示ccd-No1 及其他ccd之快门类型 结束
 
         //显示ccd-No1 及其他ccd之快门模式

@@ -544,7 +544,7 @@
 				var msg = '';
 				var v = this.gimbal_form.objName.objectName;
 				var patn = /([\u4e00-\u9fa5]| )+/;
-				if ( patn.test(v) || v == '' || v.length > 48 )
+				if ( patn.test(v) || v == '' || v.length > 48 || v.length < 1 )
 				{
 					msg = '名称不能有汉字或空格!';
 				}

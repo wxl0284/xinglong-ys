@@ -83,7 +83,7 @@ class Page extends Base
 
     //ajax请求 判断19个动态增减的固定是否已添加够 并获取相应望远镜的配置数据/////////
     public function config()
-    {
+    {//halt(input());
         //首先判断是否有权限执行
        /* if ($this->ajaxAuthErr == 1)
         {//无权执行

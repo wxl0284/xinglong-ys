@@ -284,7 +284,7 @@ class Gimbal extends Base
     protected function set_obj_name ($postData, $param)  //设置目标名称
     {   
         $length = strlen( $postData['objectName'] );
-        if ( preg_match('/[\x{4e00}-\x{9af5} ]/u', $postData['objectName']) || $length > 48 || $length < 0 )
+        if ( preg_match('/[\x{4e00}-\x{9af5} ]/u', $postData['objectName']) || $length > 48 || $length < 1 )
         {
             return '目标名称须48字符不能含汉字或空格！';
         }

@@ -216,9 +216,11 @@ class Plan extends Base
 		//循环验证每条计划数据
 		for ($i = 0; $i < $planNum; $i ++)
 		{
-			//验证目标
-			$target = $postData['planData'][$i]['target'];
-			if ($target === '')
+			
+			$target = $postData['planData'][$i]['target'];  //验证目标
+			$target_length = strlen ($target);
+
+			if ( preg_match('/[\x{4e00}-\x{9af5} ]/u', $target) || $target_length > 48 || $target_length < 0 )
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:目标名称参数超限!<br>';
 			}
@@ -297,13 +299,12 @@ class Plan extends Base
 				$errMsg .= '第'. ($i+1) .'条计划:delayTime参数超限!<br>';
 			}
 
-
 			//验证 exposureCount
 			$exposureCount = $postData['planData'][$i]['exposureCount'];
 
 			if ( !preg_match('/^\d+$/', $exposureCount) || $exposureCount < 1 )
 			{
-				$errMsg .= '第'. ($i+1) .'条计划:曝光数量参数超限!<br>';
+				$errMsg .= '第'. ($i+1) .'条计划:曝光数量超限!<br>';
 			}
 
 			//验证 滤光片
@@ -413,7 +414,7 @@ class Plan extends Base
 			//历元
 			$epoch = $postData['planData'][$i]['epoch'];
 		
-			if ( preg_match('/^[0-9]{1}$/', $epoch) ) //数字类型
+			if ( preg_match('/^[0-9]$/', $epoch) ) //数字类型
 			{
 				$sendMsg .= pack('L', $epoch); 
 			}else{//直接为字符类型数据
