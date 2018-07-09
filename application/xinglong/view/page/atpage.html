@@ -485,7 +485,12 @@
 									<option value="2">B1950</option>
 									<option value="3">J2050</option>
 								</select></span>
-					<span>当前拍摄波段：<input id='objectBandInput' type="text" name='objectBand' placeholder='8位字符' v-model.trim='ccd_form.exposeParam.objectBand' ></span>
+					<span>当前拍摄波段：
+						<select style='width:110px;' name='objectBand' v-model='ccd_form.exposeParam.objectBand' >
+							<option value="-1">请选择</option>
+							<option :value="v" v-for='v in filter_pos_list' >{{v}}</option>
+						</select>
+					</span>
 					<span>拍摄波段滤光片系统：<select style='width:110px;' v-model='ccd_form.exposeParam.objectFilter' >
 									<option value="-1">请选择</option>
 									<option value="0">Johnshon-Bessel</option>
@@ -521,7 +526,7 @@
 					<span>望远镜赤经：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.telescopeRightAscension' readonly='readonly'></span>
 					<span>望远镜赤纬：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.telescopeDeclination' readonly='readonly'></span>
 					<span>焦距：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.focusLength' ></span>
-					<span>帧数：<input type="text" name='frameNum' placeholder='整数' v-model.trim='ccd_form.exposeParam.frameNum' ></span>
+					<span>帧数：<input type="text" name='frameNum' placeholder='整数' v-model.trim='ccd_form.exposeParam.frameNum' @blur='ccd_exposeNum(true)' ></span>
 					<br><input type="button" class='margin_10' value="提交指令" @click='ccd_exposeParam_sbmt' >
 				</form><!--曝光策略 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "start_expose"'><!--开始曝光-->

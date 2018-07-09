@@ -97,7 +97,7 @@
 					validFlag: '', startTime: '', duration:'', delay: '', objName: '', objType: '-1',
 					objectRightAscension1: '',objectRightAscension2: '', objectRightAscension3: '',
 					objectDeclination1: '', objectDeclination2: '', objectDeclination3: '',
-					objectEpoch: '-1', objectBand: '', objectFilter: '-1',isSaveImage: '-1',
+					objectEpoch: '-1', objectBand: '-1', objectFilter: '-1',isSaveImage: '-1',
 					weatherGatherTime: '', temperature1: '', humidity: '', windSpeed: '',
 					pressure: '', skyGatherTime: '', skyState: '', clouds: '', seeingGatherTime: '',
 					seeing: '', dustGatherTime:'', dust: '', AMS: '', extinctionGatherTime: '',
@@ -265,7 +265,7 @@
 				return final_shutter_mode;
 			}, /*readout_speed_Mode 结束*/
 			filter_pos_list: function (){
-				return this.configData.filter.filtername.split('/');
+				return this.configData.filter.filtername.toUpperCase().split('/');
 			}, /*filter_pos_list 结束*/
 		},/*computed 结束*/
 		methods: {
@@ -1042,6 +1042,33 @@
 					})/*ajax 结束*/
 				}	
 			},/******ccd_cool_sbmt 结束******/
+			ccd_validFlag:function (tip){
+
+			},//ccd_validFlag() 结束
+			ccd_startTime:function (tip){
+
+			},//ccd_startTime() 结束
+			ccd_delay:function (tip){
+
+			},//ccd_delay() 结束
+			ccd_objName:function (tip){
+
+			},//ccd_objName() 结束
+			ccd_exposeNum:function (tip){
+				var msg = '';
+				var patn = /^\d+$/;
+				var v = this.ccd_form.exposeParam.frameNum;
+				
+				if ( !patn.test(v) || v < 1 )
+				{
+					msg = '曝光帧数超限';
+				}
+				if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.ccd_objAsc1);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+			},//ccd_exposeNum() 结束
 			ccd_asc1:function (tip){ //拍摄目标赤经之 小时
 				var msg = '';
 				var patn = /^\d{2}$/;
@@ -1163,6 +1190,7 @@
 				msg += this.ccd_dec2(false);
 				msg += this.ccd_dec3(false);
 				msg += this.ccd_duration(false);
+				msg += this.ccd_exposeNum(false);				
 				var asc1 = Math.abs(this.ccd_form.exposeParam.objectRightAscension1);
 				var asc2 = Math.abs(this.ccd_form.exposeParam.objectRightAscension2);
 				var asc3 = Math.abs(this.ccd_form.exposeParam.objectRightAscension3);
@@ -1190,6 +1218,7 @@
 					layer.alert(msg, {shade:false,closeBtn:0});return;
 				}else{
 					this.ccd_form.exposeParam.ccdNo = this.device_nav.ccdNo;
+					this.ccd_form.exposeParam.filter = this.filter_pos_list;
 					$.ajax({
 						url: '/ccd',
 						type: 'post',

@@ -325,8 +325,8 @@ class Status extends Base
         }
 
         $status['errorString'] = $ccdStatus['errorString'];  //错误标识
-        switch ($ccdStatus['error']) //错误状态
-        {
+        switch ($ccdStatus['error']) 
+        {//错误状态
             case 0:
                 $status['ccdError'] = '正常';
                 break;

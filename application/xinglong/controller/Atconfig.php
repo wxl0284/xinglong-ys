@@ -73,9 +73,8 @@ class Atconfig extends Base
 
             $atlist_res = Db::table('atlist')->where('id', $postData['teleid'])->update($at_data);
             $gimbal_res = Db::table('gimbalconf')->where('teleid', $postData['teleid'])->update($postData);
-
-            //若同时更新ok 
-            if ( $atlist_res && $gimbal_res )
+            
+            if ( $atlist_res && $gimbal_res ) //若同时更新ok
             {
                 Db::commit(); //执行提交
                 $res = true;

@@ -21,104 +21,8 @@ $(function () {
                 configList.hide();
             } 
        );
-    //望远镜列表js代码结束///////////////////////////////////
-    /*选择各望远镜之自设备组成的js*/
-    /*var have_gimbal = $('#have_gimbal'); //
-    var have_ccd = $('#have_ccd');
-    var ccd_num = $('#ccd_num'); //ccd数目的下拉框
-    var have_filter = $('#have_filter'); //滤光片
-    var have_sDome = $('#have_sDome'); //随动圆顶
-    var have_oDome = $('#have_oDome'); //全开圆顶
-    var have_focus = $('#have_focus'); //调焦器
-    var have_guide = $('#have_guide'); //导星镜
-    var have_spectral = $('#have_spectral'); //光谱终端
-    var spectral_Num = $('#spectral_Num'); //光谱终端数目
 
-    var devsBtn = $('#devsBtn');
-
-    devsBtn.click(function () {
-        var ccd_nums = ccd_num.val(); //选定的ccd数量
-        
-        if ( have_gimbal.prop('checked') === true )
-        {
-            gimbalForm.show(); //显示转台表单
-        }
-        
-        if ( have_ccd.prop('checked') === true && ccd_nums >= 1 )
-        {
-            if ( ccd_nums == 1 )
-            {
-                ccd_1Form.show();
-                ccd_2Form.hide();
-                ccd_3Form.hide();
-                ccd_4Form.hide();
-                ccd_5Form.hide();
-            }else if ( ccd_nums == 2 )
-            {
-                ccd_1Form.show();
-                ccd_2Form.show();
-                ccd_3Form.hide();
-                ccd_4Form.hide();
-                ccd_5Form.hide();
-            }else if ( ccd_nums == 3 )
-            {
-                ccd_1Form.show();
-                ccd_2Form.show();
-                ccd_3Form.show();
-                ccd_4Form.hide();
-                ccd_5Form.hide();
-            }else if ( ccd_nums == 4 )
-            {
-                ccd_1Form.show();
-                ccd_2Form.show();
-                ccd_3Form.show();
-                ccd_4Form.show();
-                ccd_5Form.hide();
-            }else if ( ccd_nums == 5 )
-            {
-                ccd_1Form.show();
-                ccd_2Form.show();
-                ccd_3Form.show();
-                ccd_4Form.show();
-                ccd_5Form.show();
-            }
-            
-        }
-
-        if ( have_filter.prop('checked') === true )
-        {
-            filterForm.show();
-        }else{
-            filterForm.hide();
-        }
-
-        if ( have_sDome.prop('checked') === true )
-        {
-            sDomeForm.show();
-        }else{
-            sDomeForm.hide();
-        }
-
-        if ( have_oDome.prop('checked') === true )
-        {
-            oDomeForm.show();
-        }else{
-            oDomeForm.hide();
-        }
-
-        if ( have_focus.prop('checked') === true )
-        {
-            focusForm.show();
-        }
-
-        if ( have_guide.prop('checked') === true )
-        {
-            guideScope.show();
-        }else{
-            guideScope.hide();
-        }
-    });*/
-    /*************8选择各望远镜之自设备组成的js 结束**************/
+    /************* vue 开始 *************/
     var vm = new Vue ({ //vue 开始
         el: '#all',
         data: {
@@ -126,7 +30,7 @@ $(function () {
             // ccd_form_num:'1',//ccd配置表单的数量
             //at:'0',//选择望远镜下拉框中的val,即望远镜的主键id
             show_dev_form: {//控制是否显示各子设备的表单
-                at: '0',//选择望远镜下拉框中的val,即望远镜的主键id
+                teleid: '0',//选择望远镜下拉框中的val,即望远镜的主键id
                 show_gimbal:false, //控制显示转台的配置表单
                 show_ccd:false, //控制显示ccd的配置表单
                 ccd_form_num:'1',//ccd配置表单的数量
@@ -136,30 +40,55 @@ $(function () {
                 show_oDome:false, //控制显示全开圆顶的配置表单
                 show_guide:false, //控制显示导星镜的配置表单
             },//show_dev_form 结束
-            confOption: {},
+            confOption: {BinArray:['']},
             test:'',
+            gimbal_config: {
+                type: '0', focustype: '0', focusratio: '0', 
+            }, //转台的配置信息
+            gimbal_file: {}, //转台上传的文件
+            ccd_config: {
+                type: '0', imagebits: '0', coolermode: '0', gainnumber: '0', shuttertype: '0',
+                binarray: '0', readoutspeed: null,
+            }, //ccd的配置信息
+            ccd_file: {}, //ccd上传的文件
         },//data 结束
+        computed: {
+            final_binArray:function (){
+                var temp = this.confOption.BinArray[0];
+                return temp.replace('[', '').replace(']', '').split(' '); //即：[ "1", "2", "3", "4" ]
+            },
+            final_readOutMode:function (){//ccd 读出速度模式
+                if ( this.ccd_config.readoutspeed !== null)
+                {
+                    var temp = this.ccd_config.readoutspeed;
+                    return temp.split('#');
+                }else{
+                    return [];
+                }
+                
+            },//final_readOutMode 结束
+        },//computed 结束
         methods: {
             ff:function (){
                 //console.log(this.show_dev_form);
                 //this.show_dev_form.push('show_gimbal');
-                console.log(this.show_dev_form.ccd_form_num);
+                console.log(this.final_binArray);
             },//ff() 结束
             select_at:function (){
                 var index = layer.load(1); //显示加载图标
                 var that = this; //存储vue实例
 
-                if( that.show_dev_form.at !== '0') //执行ajax请求
+                if( that.show_dev_form.teleid !== '0') //执行ajax请求
                 {
                     $.ajax({
                         url: '/config',
                         type: 'post',
-                        data: {id: that.show_dev_form.at,},   //将望远镜id发送给后端
+                        data: {id: that.show_dev_form.teleid,},   //将望远镜id发送给后端
                         success:  function (info) {
                             if ( info.indexOf('{') == -1 )  //不是json, 返回信息提示 给用户
                             {
                                 layer.close(index);  //关闭加载提示
-                                that.show_dev_form.at = 0;  //将望远镜选择下拉框置为初始值
+                                that.show_dev_form.teleid = 0;  //将望远镜选择下拉框置为初始值
                                 layer.alert(info, {
                                     shade:false,
                                     closeBtn:0,
@@ -172,14 +101,46 @@ $(function () {
                                     },
                                 });
                             }else{//处理返回的json数据
-                                //that.show_dev_form.at = 0;
-                                //根据json数据 显示配置项
-                                var info = $.parseJSON(info);
-                                //show_19confOption (info.confOption); 
+                                var info = $.parseJSON(info); //根据json数据 显示配置项
+                                //console.log(info.confOption);return;
                                 that.confOption = info.confOption; //将19个配置项数据赋给
-                                //console.log(that.confOption);
+                                
+                                if (info.gimbal_data) //在页面显示转台的配置数据
+                                {
+                                    that.show_dev_form.show_gimbal = true; //显示gimbal配置表单
+                                    if ( !info.gimbal_data.type ) info.gimbal_data.type = '0';
+                                    if ( !info.gimbal_data.focustype ) info.gimbal_data.focustype = '0';
+                                    if ( !info.gimbal_data.focusratio ) info.gimbal_data.focusratio = '0';
+
+                                    that.gimbal_config = info.gimbal_data;
+
+                                    if (info.gimbal_file)
+                                    {
+                                        that.gimbal_file = info.gimbal_file;
+                                    }
+                                }//显示转台配置信息  结束
+
+                                if ( info.ccd_data.ccd_num > 0 ) //在页面显示ccd的配置数据
+                                {   //console.log(info.ccd_file); return;
+                                    that.show_dev_form.show_ccd = true; //显示gimbal配置表单
+                                    if ( !info.ccd_data[0].type ) info.ccd_data[0].type = '0';
+                                    if ( !info.ccd_data[0].imagebits ) info.ccd_data[0].imagebits = '0';
+                                    if ( !info.ccd_data[0].coolermode ) info.ccd_data[0].coolermode = '0';
+                                    if ( !info.ccd_data[0].gainnumber ) info.ccd_data[0].gainnumber = '0';
+                                    if ( !info.ccd_data[0].shuttertype ) info.ccd_data[0].shuttertype = '0';
+                                    if ( !info.ccd_data[0].binarray ) info.ccd_data[0].binarray = '0';
+
+                                    that.ccd_config = info.ccd_data[0]; //将第一个ccd中的配置数据赋值给ccd_config
+                                    
+                                    if (info.ccd_file)
+                                    {
+                                        if ( info.ccd_file[1] != 0 ) that.ccd_file = info.ccd_file[1]
+                                    }
+                                    
+                                }//显示ccd 配置信息  结束
 
                                 layer.close(index);  //关闭加载图标
+                                //console.log(that.ccd_config);
                             }
                         },//success 结束
                         error:  function () {
@@ -192,6 +153,270 @@ $(function () {
                     layer.close(index);  //关闭加载图标
                 }
             },//select_at() 结束
+            check_focuslength: function (tip, v){//验证焦距
+                var msg = '';
+                var patn = /^\[\d+\.?\d? \d+\.?\d?\]$/;
+                if ( !patn.test(v) )
+                {
+                    msg = '焦距输入有误';
+                }
+
+                if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, this.$refs.focus_L);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+            },//check_focuslength() 结束
+            check_axisSpeed: function (tip, v, e, n){//验证 轴 最大速度
+                var msg = '';
+
+                if ( !$.isNumeric(v) || v > 30 || v <= 0 )
+                {
+                    switch (n) {
+                        case 1:
+                            msg = '轴1最大速度输入有误';
+                            break;
+                        case 2:
+                            msg = '轴2最大速度输入有误';
+                            break;
+                        case 3:
+                            msg = '轴3最大速度输入有误';
+                            break;
+                    }                   
+                }
+
+                if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, e);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+            },//check_axisSpeed() 结束
+            check_axisAcce: function (tip, v, e, n){//验证 轴 最大加速度
+                var msg = '';
+
+                if ( !$.isNumeric(v) || v > 5 || v <= 0 )
+                {
+                    switch (n) {
+                        case 1:
+                            msg = '轴1最大加速度输入有误';
+                            break;
+                        case 2:
+                            msg = '轴2最大加速度输入有误';
+                            break;
+                        case 3:
+                            msg = '轴3最大加速度输入有误';
+                            break;
+                    }                   
+                }
+
+                if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, e);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+            },//check_axisAcce() 结束
+            check_axisPark: function (tip, v, e, n){//验证 轴 复位位置
+                var msg = '';
+
+                if ( !$.isNumeric(v) || v > 360 || v < 0 )
+                {
+                    switch (n) {
+                        case 1:
+                            msg = '轴1复位位置输入有误';
+                            break;
+                        case 2:
+                            msg = '轴2复位位置输入有误';
+                            break;
+                        case 3:
+                            msg = '轴3复位位置输入有误';
+                            break;
+                    }                   
+                }
+
+                if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, e);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+            },//check_axisPark() 结束
+            check_minelevation: function (tip, v, e) {
+                var msg = '';
+
+                if ( !$.isNumeric(v) || v <= 10 )
+                {       
+                    msg = '俯仰最低值输入有误'; 
+                }
+
+                if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, e);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+            },//check_minelevation() 结束
+            check_Num: function (tip, v, e, n) {//验证 温度、湿度传感器数目
+                var msg = '';
+                var patn = /^\d+$/;
+                if ( !patn.test(v) || v < 1 )
+                {    
+                    if ( n == 1 )
+                    {
+                       msg = '温度传感器数目输入有误';  
+                    }else if ( n == 2 )
+                    {
+                        msg = '湿度传感器数目输入有误';
+                    }                    
+                }
+
+                if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, e);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+            },//check_Num() 结束
+            check_version: function (tip, v, e, n) {//验证 属性版本号
+                var msg = '';
+                var patn = /^\d+$/;
+                if ( !patn.test(v) || v < 1 )
+                {    
+                    switch (n) {
+                        case 1:
+                            msg = '转台版本号输入有误';
+                            break;
+                        case 2:
+                            msg = 'ccd版本号输入有误';
+                            break;
+                        // case 3:
+                        //     msg = '轴3复位位置输入有误';
+                        //     break;
+                    }                     
+                }
+
+                if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, e);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+            },//check_version() 结束
+            gimbal_sbmt:function (){//提交转台配置信息
+                var that = this; //存储vue的实例
+
+                if ( that.show_dev_form.teleid == '0' )  //未选择某个望远镜
+                {
+                    layer.alert('请选择您要配置的望远镜!', {shade:false,closeBtn:0});return;
+                }
+
+                var msg = '';
+                if ( this.gimbal_config.type === '0' )  msg += '类型未选择<br>';
+
+                if ( this.gimbal_config.focustype === '0' )  msg += '焦点类型未选择<br>';
+
+                if ( this.gimbal_config.focusratio === '0')  msg += '焦比未选择<br>';
+
+                msg += this.check_focuslength(false, this.gimbal_config.focuslength);
+
+                msg += this.check_axisSpeed(false, this.gimbal_config.maxaxis1speed, this.$refs.axis1speed, 1);
+
+                msg += this.check_axisSpeed(false, this.gimbal_config.maxaxis2speed, this.$refs.axis2speed, 2);
+
+                if (this.gimbal_config.haveaxis3 == 1)
+                {
+                    msg += this.check_axisSpeed (false,this.gimbal_config.maxaxis3speed, this.$refs.axis3speed, 3);
+                }
+
+                msg += this.check_axisAcce(false, this.gimbal_config.maxaxis1acceleration, this.$refs.axis1_acce, 1);
+
+                msg += this.check_axisAcce(false, this.gimbal_config.maxaxis2acceleration, this.$refs.axis2_acce, 2);
+
+                if (this.gimbal_config.haveaxis3 == 1)
+                {
+                    msg += this.check_axisAcce (false,this.gimbal_config.maxaxis3acceleration, this.$refs.axis3_acce, 3);
+                }
+                
+                msg += this.check_axisPark(false, this.gimbal_config.axis1parkposition, this.$refs.axis1Park, 1);
+                
+                msg += this.check_axisPark(false, this.gimbal_config.axis2parkposition, this.$refs.axis2Park, 2);
+
+                if (this.gimbal_config.haveaxis3 == 1)
+                {
+                    msg += this.check_axisPark (false,this.gimbal_config.axis3parkposition, this.$refs.axis3Park, 3);
+                }
+                
+                msg += this.check_minelevation(false, this.gimbal_config.minelevation, this.$refs.minElev);
+                
+                msg += this.check_Num(false, this.gimbal_config.numtemperaturesensor, this.$refs.tempera_num, 1);
+                
+                msg += this.check_Num(false, this.gimbal_config.numhumiditysensor, this.$refs.humid_num, 2);
+
+                msg += this.check_version(false, this.gimbal_config.attrversion, this.$refs.gimbal_version, 1);
+
+                if ( this.gimbal_config.haveaxis3 === undefined ) msg += '是否有第3轴未选择<br>';
+                if ( this.gimbal_config.haveaxis5 === undefined ) msg += '是否有镜盖未选择<br>';
+                if ( this.gimbal_config.canconnect === undefined ) msg += '是否支持连接未选择<br>';
+                if ( this.gimbal_config.canfindhome === undefined ) msg += '是否支持找零未选择<br>';
+                if ( this.gimbal_config.cantrackstar === undefined ) msg += '是否支持跟踪恒星未选择<br>';
+                if ( this.gimbal_config.cansetobjectname === undefined ) msg += '是否支持设置目标名称未选择<br>';
+                if ( this.gimbal_config.canslewazel === undefined ) msg += '是否支持指向固定位置未选择<br>';
+                if ( this.gimbal_config.canslewderotator === undefined ) msg += '是否支持轴3指向固定位置未选择<br>';
+                if ( this.gimbal_config.canconfigderotator === undefined ) msg += '是否支持设置轴3工作模式未选择<br>';
+                if ( this.gimbal_config.canstop === undefined ) msg += '是否支持停止未选择<br>';
+                if ( this.gimbal_config.cansettrackspeed === undefined ) msg += '是否支持设置跟踪速度未选择<br>';
+                if ( this.gimbal_config.canpark === undefined ) msg += '是否支持复位未选择<br>';
+                if ( this.gimbal_config.canfixedmove === undefined ) msg += '是否支持恒速运动未选择<br>';
+                if ( this.gimbal_config.canpositioncorrect === undefined ) msg += '是否支持位置修正未选择<br>';
+                if ( this.gimbal_config.cancoveroperation === undefined ) msg += '是否支持镜盖操作未选择<br>';
+                if ( this.gimbal_config.canfocusoperation === undefined ) msg += '是否支持焦点切换镜未选择<br>';
+                if ( this.gimbal_config.canemergencystop === undefined ) msg += '是否支持急停未选择<br>';
+                if ( this.gimbal_config.cansavesyncdata === undefined ) msg += '是否支持保存同步数据未选择<br>';
+                if ( this.gimbal_config.cantracksatellite === undefined ) msg += '是否支持跟踪卫星未选择<br>';
+                if ( this.gimbal_config.canconfigproperty === undefined ) msg += '是否支持属性设置未选择<br>';
+                
+                if ( msg !== '' )
+                {
+                    layer.alert(msg, {shade:false, closeBtn:0});return;
+                }
+                var postData = new FormData (this.$refs.gimbal);
+                postData.append('teleid', this.show_dev_form.teleid); //将望远镜Id 提交上去
+                $.ajax({
+                    type: 'post',
+                    url: 'gimbal_config',
+                    data : postData,
+                    processData : false,
+                    contentType : false,
+                    success:  function (info) {
+                        if ( info.indexOf('{') == -1 ) //info 不是json数据
+                        {
+                            layer.alert(info, {
+                                shade:false,
+                                closeBtn:0,
+                                yes:function (n){
+                                    layer.close(n);
+                                    if (info.indexOf('登录') !== -1)
+                                    {
+                                        location.href = '/';
+                                    }
+                                },
+                            });
+                        }else{//解析 处理 json
+                            var info = $.parseJSON(info);
+        
+                            layer.alert(info.msg, {
+                                shade:false,
+                                closeBtn:0,
+                                yes:function (n){
+                                    layer.close(n);
+                                },
+                            });
+        
+                            that.gimbal_config.attrmodifytime = info.attrmodifytime; //显示属性更新时间             
+
+                            if (info.file) that.gimbal_file = info.file;
+                        }//解析 处理 json 结束
+                     },/*success方法结束 */
+                     error:  function () {
+                          layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0,});
+                     }
+                })/*ajax 结束*/
+            },//gimbal_sbmt() 结束
         },//methods 结束
     });//vue 结束////////////////////
  
@@ -265,241 +490,6 @@ $(function () {
      var oDomeType = $('#oDomeType'); //全开圆顶类型
      var guideScopeOpticalStructure = $('#guideScopeOpticalStructure'); //导星镜 焦点类型
      /* 获取所有要填入数据的元素对象 结束*/
- 
-     //显示19个固定属性选项
-     function show_19confOption (data)
-     { 
-        //显示转台之焦点类型
-        // var showData = data.focustype;
-        // var resHtml = '<option value="0">请选择</option>';
-        // var n = showData.length;
-       
-        // for (var i=0; i < n; i++)
-        // {
-        //     resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        // }
-        // gimbalFocustype.html(resHtml);
-        //显示转台之焦点类型 结束
-
-        //显示转台之焦比
-        // showData = data.focusratio;
-        // resHtml = '<option value="0">请选择</option>';
-        // var n = showData.length;
-        // for (var i=0; i < n; i++)
-        // {
-        //     resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        // }
-        // gimbalFocusratio.html(resHtml);
-        //显示转台之焦比 结束
-
-        //显示ccd-No1 及其他ccd之图像位数
-        // showData = data.imageBits;
-        // resHtml = '<option value="0">请选择</option>';
-        // var n = showData.length;
-        // for (var i=0; i < n; i++)
-        // {
-        //     resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        // }
-        // ccdImageBits.html(resHtml);
-        //显示ccd-No1 及其他ccd之图像位数  结束
-
-        //显示ccd-No1 及其他ccd之制冷方式
-        // showData = data.coolerMode;
-        // resHtml = '<option value="0">请选择</option>';
-        // var n = showData.length;
-        // for (var i=0; i < n; i++)
-        // {
-        //     resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        // }
-        // ccdCoolerMode.html(resHtml);
-        //显示ccd-No1 及其他ccd之制冷方式 结束
-
-        //显示ccd-No1 及其他ccd之读出速度模式
-        // showData = data.readoutSpeed;
-        // resHtml = '';
-        // var n = showData.length;
-        // for (var i=0; i < n; i++)
-        // {
-        //     resHtml += showData[i] + "<input type='checkbox' name='readoutspeed[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
-        // }
-        // ccdReadoutSpeed.html(resHtml);
-        //显示ccd-No1 及其他ccd之读出速度模式 结束
-
-        //显示ccd-No1 及其他ccd之读出模式
-        // showData = data.readoutMode;
-        // resHtml = '';
-        // var n = showData.length;
-        // for (var i=0; i < n; i++)
-        // {
-        //     resHtml += showData[i] + "<input type='checkbox' name='readoutmode[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
-        // }
-        // ccdreadoutMode.html(resHtml);
-        //显示ccd-No1 及其他ccd之读出模式 结束
-
-        //显示ccd-No1 及其他ccd之转移速度模式
-        // showData = data.transferSpeed;
-        // resHtml = '';
-        // var n = showData.length;
-        // for (var i=0; i < n; i++)
-        // {
-        //     resHtml += showData[i] + "<input type='checkbox' name='transferspeed[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
-        // }
-
-        // ccdTransferSpeed.html(resHtml);
-        //显示ccd-No1 及其他ccd之转移速度模式 结束
-
-        //显示ccd-No1 及其他ccd之增益模式
-        // showData = data.gainmode;
-        // resHtml = '';
-        // var n = showData.length;
-        // for (var i=0; i < n; i++)
-        // {
-        //     resHtml += showData[i] + "<input type='checkbox' name='gainmode[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
-        // }
-        // ccd_1gainmode.html(resHtml);
-        //显示ccd-No1 及其他ccd之增益模式 结束
-
-        //显示ccd-No1 及其他ccd之增益档位
-        // showData = data.gainNumber;
-        // resHtml = '<option value="0">请选择</option>';
-        // var n = showData.length;
-        // for (var i=0; i < n; i++)
-        // {
-        //     resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        // }
-        // ccd_1GainNumber.html(resHtml);
-        //显示ccd-No1及其他ccd之增益档位 结束
-
-        //显示ccd-No1 及其他ccd之快门类型
-        showData = data.ShutterType;
-        resHtml = '<option value="0">请选择</option>';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        }
-        ccdShutterType.html(resHtml);
-        //显示ccd-No1 及其他ccd之快门类型 结束
-
-        //显示ccd-No1 及其他ccd之快门模式
-        showData = data.ShutterMode;
-        resHtml = '';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += showData[i] + "<input type='checkbox' name='shuttermode[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
-        }
-        ccd_1ShutterMode.html(resHtml);
-        ccd_2ShutterMode.html(resHtml);
-        ccd_3ShutterMode.html(resHtml);
-        ccd_4ShutterMode.html(resHtml);
-        ccd_5ShutterMode.html(resHtml);
-        //显示ccd-No1 及其他ccd之快门模式 结束
-
-        //显示ccd-No1 及其他ccd之Bin
-        showData = data.BinArray;
-        showData = showData[0].replace('[', '');
-        showData = showData.replace(']', '');
-        showData = showData.split(' ');
-        resHtml = '<option value="0">请选择</option>';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += '<option value="' + showData[i] + '">' + showData[i] + '</option>';
-        }
-        ccd_1BinArray.html(resHtml);
-        ccd_2BinArray.html(resHtml);
-        ccd_3BinArray.html(resHtml);
-        ccd_4BinArray.html(resHtml);
-        ccd_5BinArray.html(resHtml);
-        //显示ccd-No1 及其他ccd之Bin 结束
-
-        //显示ccd-No1 及其他ccd之接口类型
-        showData = data.InterfaceType;
-        resHtml = '';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += showData[i] + "<input type='checkbox' name='interfacetype[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
-        }
-        ccd_1InterfaceType.html(resHtml);
-        ccd_2InterfaceType.html(resHtml);
-        ccd_3InterfaceType.html(resHtml);
-        ccd_4InterfaceType.html(resHtml);
-        ccd_5InterfaceType.html(resHtml);
-        //显示ccd-No1 及其他ccd之接口类型 结束
-
-        //显示ccd-No1 及其他ccd之曝光触发模式
-        showData = data.ExposeTriggerMode;
-        resHtml = '';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += showData[i] + "<input type='checkbox' name='exposetriggermode[]' value='"+ showData[i] +"'>&nbsp;&nbsp;&nbsp;&nbsp;";
-        }
-        ccd_1ExposeTriggerMode.html(resHtml);
-        ccd_2ExposeTriggerMode.html(resHtml);
-        ccd_3ExposeTriggerMode.html(resHtml);
-        ccd_4ExposeTriggerMode.html(resHtml);
-        ccd_5ExposeTriggerMode.html(resHtml);
-        //显示ccd-No1 及其他ccd之曝光触发模式 结束
-
-        //显示滤光片类型
-        showData = data.FilterSystem;
-        resHtml = '<option value="0">请选择</option>';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        }
-        filterSystem.html(resHtml);
-        //显示滤光片类型 结束
-
-        //显示滤光片形状
-        showData = data.FilterShape;
-        resHtml = '<option value="0">请选择</option>';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        }
-        filterShape.html(resHtml);
-        //显示滤光片形状 结束
-
-        //显示随动圆顶类型
-        showData = data.slaveDomeType;
-        resHtml = '<option value="0">请选择</option>';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        }
-        sDomeType.html(resHtml);
-        //显示随动圆顶类型 结束
-
-        //显示全开圆顶类型
-        showData = data.openDomeType;
-        resHtml = '<option value="0">请选择</option>';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        }
-        oDomeType.html(resHtml);
-        //显示全开圆顶类型 结束
-
-        //显示全开圆顶类型
-        showData = data.opticalStructure;
-        resHtml = '<option value="0">请选择</option>';
-        var n = showData.length;
-        for (var i=0; i < n; i++)
-        {
-            resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        }
-        guideScopeOpticalStructure.html(resHtml);
-        //显示全开圆顶类型 结束
-
-     }//显示19个固定属性选项 结束 
 
     //提交转台配置 之js事件/////////////////////////////////
     var gimbalForm = $('#gimbal'); //找到转台表单
@@ -594,570 +584,70 @@ $(function () {
     })
 
     //转台提交按钮 点击事件
-    gimbalBtn.click(function () {
-        //检查望远镜下拉选择框 是否选择了某望远镜
-        var atId = atNo.val();
-        if ( atId == 0)
-        {//未选择某个望远镜
-            layer.alert('请选择您要配置的望远镜!', {shade:false,closeBtn:0});return;
-        }
+//     gimbalBtn.click(function () {
+//         //检查望远镜下拉选择框 是否选择了某望远镜
+//         var atId = atNo.val();
+//         if ( atId == 0)
+//         {//未选择某个望远镜
+//             layer.alert('请选择您要配置的望远镜!', {shade:false,closeBtn:0});return;
+//         }
 
-        var gimbal_form = new FormData(gimbalForm[0]);
-        gimbal_form.append('teleid', atId); //将某望远镜的id 加入表单数据中
-        //验证文本框类型、下拉框、复选框、 单选框配置项是否都已选择 
-        if ( !gimbal_select_valid (gimbal_form) )
-        {
-            return;
-        }//验证文本框类型、下拉框、复选框、 单选框配置项是否都已选择        
+//         var gimbal_form = new FormData(gimbalForm[0]);
+//         gimbal_form.append('teleid', atId); //将某望远镜的id 加入表单数据中
+//         //验证文本框类型、下拉框、复选框、 单选框配置项是否都已选择 
+//         if ( !gimbal_select_valid (gimbal_form) )
+//         {
+//             return;
+//         }//验证文本框类型、下拉框、复选框、 单选框配置项是否都已选择        
 
-        $.ajax({
-            type: 'post',
-            url: 'gimbal_config',
-            data : gimbal_form,
-            processData : false,
-            contentType : false,
-            success:  function (info) {
-                if ( info.indexOf('{') == -1 ) //info 不是json数据
-                {
-                    layer.alert(info, {
-                        shade:false,
-                        closeBtn:0,
-                        yes:function (n){
-                            layer.close(n);
-                            if (info.indexOf('登录') !== -1)
-                            {
-                                location.href = '/';
-                            }
-                        },
-                    });
-                }else{//解析 处理 json
-                    var info = $.parseJSON(info);
+//         $.ajax({
+//             type: 'post',
+//             url: 'gimbal_config',
+//             data : gimbal_form,
+//             processData : false,
+//             contentType : false,
+//             success:  function (info) {
+//                 if ( info.indexOf('{') == -1 ) //info 不是json数据
+//                 {
+//                     layer.alert(info, {
+//                         shade:false,
+//                         closeBtn:0,
+//                         yes:function (n){
+//                             layer.close(n);
+//                             if (info.indexOf('登录') !== -1)
+//                             {
+//                                 location.href = '/';
+//                             }
+//                         },
+//                     });
+//                 }else{//解析 处理 json
+//                     var info = $.parseJSON(info);
 
-                    layer.alert(info.msg, {
-                        shade:false,
-                        closeBtn:0,
-                        yes:function (n){
-                            layer.close(n);
-                        },
-                    });
+//                     layer.alert(info.msg, {
+//                         shade:false,
+//                         closeBtn:0,
+//                         yes:function (n){
+//                             layer.close(n);
+//                         },
+//                     });
 
-                    gimbalAttrModifyTime.html(info.attrmodifytime); //显示属性更新时间
-                    //在页面显示已上传的文件名
-                    if ( info.file ) //有已上传的文件信息
-                    {
-                        show_file (gimbalFile, info.file);
-                    }else{
-                        gimbalFile.html('');
-                    }
-                }//解析 处理 json 结束
+//                     gimbalAttrModifyTime.html(info.attrmodifytime); //显示属性更新时间
+//                     //在页面显示已上传的文件名
+//                     if ( info.file ) //有已上传的文件信息
+//                     {
+//                         show_file (gimbalFile, info.file);
+//                     }else{
+//                         gimbalFile.html('');
+//                     }
+//                 }//解析 处理 json 结束
 
-             },/*success方法结束 */
-             error:  function () {
-	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0,});
-             },
-        })
-    });//转台 提交按钮 js事件 结束
+//              },/*success方法结束 */
+//              error:  function () {
+// 	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0,});
+//              },
+//         })
+//     });//转台 提交按钮 js事件 结束
     //提交转台配置 之js事件 结束////////////////////////////$("input:disabled")
-    var gimbal_text = gimbalForm.find('input[type="text"]');
-    /*
-    *gimbal_select_valid() 验证转台的所有须验证的text框、下拉框、下拉框有错误集中收集，一次提示，
-      return bool值
-    */
-    function gimbal_select_valid (gimbal_form)
-    {
-        var gimbal_errMsg = ''; //转台表单的错误提示
-
-        gimbal_text.each(//逐一验证文本输入框
-            function () {
-                $(this).blur();
-                if ( $(this).data('err') == 1 )
-                {
-                    gimbal_errMsg += $(this).data('info') + '<br>';
-                }
-            }
-        );
-
-        //逐一验证下拉选择框
-        if ( gimbalType.val() == 0 ) //验证类型
-        {
-            gimbal_errMsg += '转台类型未选择!<br>';
-        }
-
-        if ( gimbalFocustype.val() == 0 ) //验证焦点类型
-        {
-            gimbal_errMsg += '焦点类型未选择!<br>';
-        }
-
-        if ( gimbalFocusratio.val() == 0 ) //验证焦比
-        {
-            gimbal_errMsg += '焦比未选择!<br>';
-        }
-
-        if ( gimbal_form.get('haveaxis3') === null ) //验证 是否有第3轴
-        {
-            gimbal_errMsg += '是否有第3轴未选择!<br>';
-        }
-
-        if ( gimbal_form.get('haveaxis5') === null ) //验证 镜盖（轴5）
-        {
-            gimbal_errMsg += '是否有镜盖（轴5）未选择!<br>';
-        }
-
-        if ( gimbal_form.get('canconnect') === null ) //验证 支持连接指令
-        {
-            gimbal_errMsg += '是否支持连接未选择!<br>';
-        }
-
-        if ( gimbal_form.get('canfindhome') === null ) //验证 支持找零指令
-        {
-            gimbal_errMsg += '是否支持找零未选择!<br>';
-        }
-
-        if ( gimbal_form.get('cantrackstar') === null ) //验证 支持跟踪恒星
-        {
-            gimbal_errMsg += '是否支持跟踪恒星未选择!<br>';
-        }
-
-        if ( gimbal_form.get('cansetobjectname') === null ) //验证 设置目标名称
-        {
-            gimbal_errMsg += '是否支持设置目标名称未选择!<br>';
-        }
-
-        if ( gimbal_form.get('canslewazel') === null ) //验证 指向固定位置
-        {
-            gimbal_errMsg += '是否支持指向固定位置未选择!<br>';
-        }
-
-        if ( gimbal_form.get('canslewderotator') === null ) //验证 轴3指向固定位置
-        {
-            gimbal_errMsg += '是否支持轴3指向固定位置未选择!<br>';
-        }
-
-        if ( gimbal_form.get('canconfigderotator') === null ) //验证 设置轴3工作模式
-        {
-            gimbal_errMsg += '是否支持设置轴3工作模式未选择!<br>';
-        }
-
-        if ( gimbal_form.get('canstop') === null ) //验证 停止指令
-        {
-            gimbal_errMsg += '是否支持停止指令未选择!<br>';
-        }
-
-        if ( gimbal_form.get('cansettrackspeed') === null ) //验证 设置跟踪速度
-        {
-            gimbal_errMsg += '是否支持设置跟踪速度未选择!<br>';
-        }
-
-        if ( gimbal_form.get('canpark') === null ) //验证 复位指令
-        {
-            gimbal_errMsg += '是否支持复位指令未选择!<br>';
-        }
-
-        if ( gimbal_form.get('canfixedmove') === null ) //验证 恒速运动
-        {
-            gimbal_errMsg += '是否支持恒速运动未选择!<br>';
-        }
-
-        if ( gimbal_form.get('canpositioncorrect') === null ) //验证 位置修正
-        {
-            gimbal_errMsg += '是否支持位置修正未选择!<br>';
-        }
-
-        if ( gimbal_form.get('cancoveroperation') === null ) //验证 镜盖操作
-        {
-            gimbal_errMsg += '是否支持镜盖操作未选择!<br>';
-        }
-
-        if ( gimbal_form.get('canfocusoperation') === null ) //验证 焦点切换镜
-        {
-            gimbal_errMsg += '是否支持焦点切换镜未选择!<br>';
-        }
-
-        if ( gimbal_form.get('canemergencystop') === null ) //验证 急停指令
-        {
-            gimbal_errMsg += '是否支持急停指令未选择!<br>';
-        }
-
-        if ( gimbal_form.get('cansavesyncdata') === null ) //验证 保存同步数据
-        {
-            gimbal_errMsg += '是否支持保存同步数据未选择!<br>';
-        }
-
-        if ( gimbal_form.get('cantracksatellite') === null ) //验证 跟踪卫星
-        {
-            gimbal_errMsg += '是否支持跟踪卫星未选择!<br>';
-        }
-
-
-        if ( gimbal_errMsg !== '' )
-        {
-            layer.alert(gimbal_errMsg, {shade:false, closeBtn:0});
-            return false;
-        }else{
-            return true;
-        }
-    }/*gimbal_select_valid() 结束*/
-
-    /*各text输入框的blur事件
-    gimbalId.blur(function () {//转台id
-        var that = $(this);
-        var v = $.trim( that.val() );
-        var err = 0;
-		
-		if ( v.length != 5 || !$.isNumeric(v) || v.indexOf('0') !== 0)
-		{
-            err = 1;  
-            that.data('info', '转台id');
-			layer.tips('id格式错误, 正确格式:03000!', that, {tipsMore: true});
-        }
-        that.data('err', err);
-    })//转台id blur结束 */
-
-    /*gimbalName.blur(function () {//望远镜名
-        var that = $(this);
-        var v = $.trim(that.val());
-		var patn = /^\d(\d|\.)*m望远镜+$/;
-		var err = 0;
-		
-		if ( !patn.test(v) )
-		{
-            err = 1;
-            that.data('info', '望远镜名');
-			layer.tips('望远镜名格式错误!', that, {tipsMore: true});
-		}		
-		that.data('err', err);
-    });*///望远镜名 blur结束
-
-    gimbalAddress.blur(function () {//验证观测站
-        var that = $(this);
-        var v = $.trim(that.val());
-		var err = 0;
-		
-		if ( v.length < 2 )
-		{
-            err = 1;
-            that.data('info', '隶属观测站不能为空!');
-			layer.tips('隶属观测站不能为空!', that, {tipsMore: true});
-		}		
-		that.data('err', err);
-    });//验证观测站 结束
-
-    gimbalLongitude.blur(function () {//验证经度
-        var that = $(this);
-        var v = $.trim(that.val());
-		var err = 0;
-		
-		if ( !$.isNumeric(v) || v > 180 || v < -180 )
-		{
-            err = 1;
-            that.data('info', '经度输入有误!');
-			layer.tips('经度输入有误!', that, {tipsMore: true});
-		}		
-		that.data('err', err);
-    });//验证经度 结束
-
-    gimbalLatitude.blur(function () {//验证纬度
-        var that = $(this);
-        var v = $.trim(that.val());
-		var err = 0;
-		
-		if ( !$.isNumeric(v) || v > 90 || v < -90 )
-		{
-            err = 1;
-            that.data('info', '纬度输入有误!');
-			layer.tips('纬度输入有误!', that, {tipsMore: true});
-		}		
-		that.data('err', err);
-    });//验证纬度 结束
-
-    gimbalAltitude.blur(function () {//验证海拔
-        var that = $(this);
-        var v = $.trim(that.val());
-		var err = 0;
-		
-		if ( !$.isNumeric(v) || v > 6000 || v < -1000 )
-		{
-            err = 1;
-            that.data('info', '海拔输入有误!');
-			layer.tips('海拔输入有误!', that, {tipsMore: true});
-		}		
-		that.data('err', err);
-    });//验证海拔 结束
-
-    gimbalAperture.blur(function () {//验证口径
-        var that = $(this);
-        var v = $.trim(that.val());
-        var patn = /^\d+\w+$/;
-		var err = 0;
-		
-		if ( !patn.test(v) )
-		{
-            err = 1;
-            that.data('info', '口径输入有误!');
-			layer.tips('口径输入有误!', that, {tipsMore: true});
-		}		
-		that.data('err', err);
-    });//验证口径 结束
-
-    focusLength.blur(function () {//焦距验证
-        var that = $(this);
-        var v = $.trim(that.val());
-        var err = 0;
-        var patn = /^\[[0-9.]+ [0-9.]+\]$/;
-		
-		if ( !patn.test(v) )
-		{
-            err = 1;
-            that.data('info', '焦距输入有误!');
-			layer.tips('焦距输入有误!', that, {tipsMore: true});
-		}		
-        that.data('err', err);
-
-    }); //焦距验证 结束
-
-    maxAxis1Speed.blur(function () {//验证 轴1最大速度
-        var that = $(this);
-        var v = $.trim(that.val());
-        var err = 0;
-		
-        if ( !$.isNumeric(v) || v > 30 || v < 0 )
-		{
-            err = 1;
-            that.data('info', '轴1最大速度输入有误!');
-			layer.tips('轴1最大速度输入有误!', that, {tipsMore: true});
-		}		
-        that.data('err', err);
-    }); //验证 轴1最大速度 结束
-
-    maxAxis2Speed.blur(function () {//验证 轴2最大速度
-        var that = $(this);
-        var v = $.trim(that.val());
-        var err = 0;
-		
-        if ( !$.isNumeric(v) || v > 30 || v < 0 )
-		{
-            err = 1;
-            that.data('info', '轴2最大速度输入有误!');
-			layer.tips('轴2最大速度输入有误!', that, {tipsMore: true});
-		}		
-        that.data('err', err);
-    }); //验证 轴2最大速度 结束
-
-    axis3_maxSpeed.blur(function () {//验证 轴3最大速度
-        var that = $(this);
-        var v = $.trim(that.val());
-        var err = 0;
-
-        if ( !$.isNumeric(v) || v > 30 || v < 0 )
-        {
-            err = 1;
-            that.data('info', '轴3最大速度输入有误!');
-            layer.tips('轴3最大速度输入有误!', that, {tipsMore: true});
-        }		
-        that.data('err', err);
-    });//验证 轴3最大速度 结束
-
-    axis1Acceleration.blur(function () {//验证 轴1最大加速度
-        var that = $(this);
-        var v = $.trim(that.val());
-        var err = 0;
-
-        if ( !$.isNumeric(v) || v > 5 || v < 0 )
-        {
-            err = 1;
-            that.data('info', '轴1最大加速度输入有误!');
-            layer.tips('轴1最大加速度输入有误!', that, {tipsMore: true});
-        }		
-        that.data('err', err);
-    });//验证 轴1最大加速度 结束
-
-    axis2Acceleration.blur(function () {//验证 轴2最大加速度
-        var that = $(this);
-        var v = $.trim(that.val());
-        var err = 0;
-
-        if ( !$.isNumeric(v) || v > 5 || v < 0 )
-        {
-            err = 1;
-            that.data('info', '轴2最大加速度输入有误!');
-            layer.tips('轴2最大加速度输入有误!', that, {tipsMore: true});
-        }		
-        that.data('err', err);
-    });//验证 轴2最大加速度 结束
-
-    axis3_maxAccel.blur(function () {//验证 轴3最大加速度
-        var that = $(this);
-        var v = $.trim(that.val());
-        var err = 0;
-
-        if ( !$.isNumeric(v) || v > 5 || v < 0 )
-        {
-            err = 1;
-            that.data('info', '轴3最大加速度输入有误!');
-            layer.tips('轴3最大加速度输入有误!', that, {tipsMore: true});
-        }		
-        that.data('err', err);
-    });//验证 轴3最大加速度 结束
-
-    axis1ParkPosition.blur(function () {//验证 轴1复位位置
-        var that = $(this);
-        var v = $.trim(that.val());
-        var err = 0;
-
-        if ( !$.isNumeric(v) || v > 360 || v < 0 )
-        {
-            err = 1;
-            that.data('info', '轴1复位位置输入有误!');
-            layer.tips('轴1复位位置输入有误!', that, {tipsMore: true});
-        }		
-        that.data('err', err);
-    });//验证 轴1复位位置 结束
-
-    axis2ParkPosition.blur(function () {//验证 轴2复位位置
-        var that = $(this);
-        var v = $.trim(that.val());
-        var err = 0;
-
-        if ( !$.isNumeric(v) || v > 360 || v < 0 )
-        {
-            err = 1;
-            that.data('info', '轴2复位位置输入有误!');
-            layer.tips('轴2复位位置输入有误!', that, {tipsMore: true});
-        }		
-        that.data('err', err);
-    });//验证 轴2复位位置 结束
-
-    axis3_ParkPos.blur(function () {//验证 轴3复位位置
-        var that = $(this);
-        var v = $.trim(that.val());
-        var err = 0;
-
-        if ( !$.isNumeric(v) || v > 360 || v < 0 )
-        {
-            err = 1;
-            that.data('info', '轴3复位位置输入有误!');
-            layer.tips('轴3复位位置输入有误!', that, {tipsMore: true});
-        }		
-        that.data('err', err);
-    });//验证 轴3复位位置 结束
-
-    gimbalMinElevation.blur(function () {//验证 俯仰最低值
-        var that = $(this);
-        var v = $.trim(that.val());
-        var err = 0;
-
-        if ( !$.isNumeric(v) || v < 10 || v > 360)
-        {
-            err = 1;
-            that.data('info', '俯仰最低值输入有误!');
-            layer.tips('俯仰最低值输入有误!', that, {tipsMore: true});
-        }		
-        that.data('err', err);
-    });//验证 俯仰最低值 结束
-
-    numTemperatureSensor.blur(function () {//验证 温度传感器数目
-        var that = $(this);
-        var v = $.trim(that.val());
-        var patn = /^[0-9]+$/;
-        var err = 0;
-
-        if ( !patn.test(v) || v <= 0 )
-        {
-            err = 1;
-            that.data('info', '温度传感器数目输入有误!');
-            layer.tips('温度传感器数目输入有误!', that, {tipsMore: true});
-        }		
-        that.data('err', err);
-    });//验证 温度传感器数目 结束
-
-    numHumiditySensor.blur(function () {//验证 湿度传感器数目
-        var that = $(this);
-        var v = $.trim(that.val());
-        var patn = /^[0-9]+$/;
-        var err = 0;
-
-        if ( !patn.test(v) || v <= 0 )
-        {
-            err = 1;
-            that.data('info', '湿度传感器数目输入有误!');
-            layer.tips('湿度传感器数目输入有误!', that, {tipsMore: true});
-        }		
-        that.data('err', err);
-    });//验证 湿度传感器数目 结束
-
-    gimbalAttrVersion.blur(function () {//验证 属性版本号
-        var that = $(this);
-        var v = $.trim(that.val());
-        var patn = /^[0-9]+$/;
-        var err = 0;
-
-        if ( !patn.test(v) || v <= 0 )
-        {
-            err = 1;
-            that.data('info', '属性版本号输入有误!');
-            layer.tips('属性版本号输入有误!', that, {tipsMore: true});
-        }		
-        that.data('err', err);
-    });//验证 属性版本号 结束
-    /*转台 各text输入框的blur事件 结束*/
-
-    /*显示转台的配置数据*/
-    function show_gimbal_data (data)
-    {
-        //显示转台之焦点类型
-        // var showData = data.focustype;
-        // var resHtml = '<option value="0">请选择</option>';
-        // var n = showData.length;
-       
-        // for (var i=0; i < n; i++)
-        // {
-        //     resHtml += '<option value="' + showData[i] + '">' + showData[i] +'</option>';
-        // }
-        // gimbalFocustype.html(resHtml);
-        gimbalIp.val(data.ip);
-        gimbalId.val(data.atid);
-        gimbalName.val(data.atname);
-        gimbalAddress.val(data.address);
-        gimbalLongitude.val(data.longitude);
-        gimbalLatitude.val(data.latitude);
-        gimbalAltitude.val(data.altitude);
-        gimbalAperture.val(data.aperture);
-        data.type === undefined ? gimbalType.val('0') : gimbalType.val(data.type);
-        data.focustype === undefined ? gimbalFocustype.val('0') : gimbalFocustype.val(data.focustype);
-        data.focusratio === undefined ? gimbalFocusratio.val('0') : gimbalFocusratio.val(data.focusratio);
-        focusLength.val(data.focuslength);
-        maxAxis1Speed.val(data.maxaxis1speed);
-        maxAxis2Speed.val(data.maxaxis2speed);
-        maxAxis3Speed.val(data.maxaxis3speed);
-        axis1Acceleration.val(data.maxaxis1acceleration);
-        axis2Acceleration.val(data.maxaxis2acceleration);
-        axis3_maxAccel.val(data.maxaxis3acceleration);
-        axis1ParkPosition.val(data.axis1parkposition);
-        axis2ParkPosition.val(data.axis2parkposition);
-        axis3_ParkPos.val(data.axis3parkposition);
-        data.haveaxis3 == '1' ? axis3_have.click() : axis3_No.click();
-        data.haveaxis5 == '1' ? haveAxis5.click() : haveAxis5_1.click();
-        gimbalMinElevation.val(data.minelevation);
-        numTemperatureSensor.val(data.numtemperaturesensor);
-        numHumiditySensor.val(data.numhumiditysensor);
-        data.canconnect == '1' ? gimbalCanConnect.click() : gimbalCanConnect_1.click();
-        data.canfindhome == '1' ? gimbalCanFindHome.click() : gimbalCanFindHome_1.click();
-        data.cantrackstar == '1' ? gimbalCanTrackStar.click() : gimbalCanTrackStar_1.click();
-        data.cansetobjectname == '1' ? gimbalCanSetObjectName.click() : gimbalCanSetObjectName_1.click();
-        data.canslewazel == '1' ? gimbalCanSlewAzEl.click() : gimbalCanSlewAzEl_1.click();
-        data.canstop == '1' ? gimbalCanStop.click() : gimbalCanStop_1.click();
-        data.cansettrackspeed == '1' ? gimbalCanSetTrackSpeed.click() : gimbalCanSetTrackSpeed_1.click();
-        data.canpark == '1' ? gimbalCanPark.click() : gimbalCanPark_1.click();
-        data.canfixedmove == '1' ? gimbalCanFixedMove.click() : gimbalCanFixedMove_1.click();
-        data.canpositioncorrect == '1' ? canPositionCorrect.click() : canPositionCorrect_1.click();
-        data.cancoveroperation == '1' ? gimbalCanCoverOperation.click() : gimbalCanCoverOperation_1.click();
-        data.canfocusoperation == '1' ? gimbalCanFocusOperation.click() : gimbalCanFocusOperation_1.click();
-        data.canemergencystop == '1' ? gimbalCanEmergencyStop.click() : gimbalCanEmergencyStop_1.click();
-        data.cansavesyncdata == '1' ? canSaveSyncData.click() : canSaveSyncData_1.click();
-        data.cantracksatellite == '1' ? canTrackSatellite.click() : canTrackSatellite_1.click();
-        data.canconfigproperty == '1' ? gimbalCanconfigProperty.click() : gimbalCanconfigProperty_1.click();
-        gimbalAttrVersion.val(data.attrversion);
-    }/*显示转台的配置数据 结束*/
 
     /*ccd-No1 表单元素获取*/
     /*如下：其他所有的ccd表单*/
@@ -5766,16 +5256,4 @@ $(function () {
         that.data('err', err);
     });//验证 版本号 结束
     /*************导星望远镜 js事件 结束*****************/
-
-    /*显示各设备相关文件*/
-    function show_file (selector, file_data)
-    {
-        var file_html= '';
-        var file_num = file_data.length;
-        for (var file_i = 0; file_i < file_num; file_i ++)
-        {
-            file_html += '<a title="点击下载">' + file_data[file_i] + '</a>' + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-        }
-        selector.html(file_html);
-    }/*显示各设备相关文件 结束*/
 })/*jquery 初始化函数 末尾*/

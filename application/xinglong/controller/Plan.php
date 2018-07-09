@@ -451,7 +451,7 @@ class Plan extends Base
 				$sendMsg .= pack('a8', $filter_option[$filter]); 
 			}else{//直接为字符类型数据
 				$filter = strtoupper ($filter);
-				$sendMsg .= pack('a8', $filter); 
+				$sendMsg .= pack('a8', $filter);
 			 }	//历元结束
 
 			//增益 gain

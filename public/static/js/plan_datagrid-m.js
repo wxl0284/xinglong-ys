@@ -352,7 +352,8 @@
 	];*/
 	
 	$(function(){
-		var table_w = ( $(window).width() ) * 0.889546;
+		//var table_w = ( $(window).width() ) * 0.889546;
+		var table_w = ( $('#planInfo').width() ) * 1;
 		table.datagrid({
 			width: table_w,
 			height:400,
@@ -736,7 +737,7 @@
 				msg += '第' + (i+1) + '条目标类型超限!<br>';
 			}
 
-			var asc1 = $.trim( plans[i].rightAscension1 );
+			var asc1 = $.trim( plans[i].rightAscension1 )*1;
 			patn  = /^\d{1,2}$/;
 			
 			if ( !patn.test(asc1) || asc1 > 24 || asc1 < 0 )
@@ -744,14 +745,14 @@
 				msg += '第' + (i+1) + '条赤经小时参数超限!<br>';
 			}
 			
-			var asc2 = $.trim( plans[i].rightAscension2 );
+			var asc2 = $.trim( plans[i].rightAscension2 )*1;
 			
 			if ( !patn.test(asc2) || asc2 > 59 || asc2 < 0 )
 			{
 				msg += '第' + (i+1) + '条赤经分钟参数超限!<br>';
 			}
 
-			var asc3 = $.trim( plans[i].rightAscension3 );
+			var asc3 = $.trim( plans[i].rightAscension3 )*1;
 			
 			if ( !$.isNumeric(asc3) || asc3 >= 60 || asc3 < 0 )
 			{
@@ -759,12 +760,12 @@
 			}
 
 			var asc = asc1 + asc2/60 + asc3/3600;
-			if ( asc > 24 )
+			if ( asc > 24 || asc < 0 )
 			{
 				msg += '第' + (i+1) + '条赤经参数超限!<br>';
 			}
 
-			var dec1 = $.trim( plans[i].declination1 );
+			var dec1 = $.trim( plans[i].declination1 )*1;
 			patn = /^-?\d{1,2}$/;
 
 			if ( !patn.test(dec1) || dec1 > 90 || dec1 < -90 )
@@ -772,7 +773,7 @@
 				msg += '第' + (i+1) + '条赤纬小时参数超限!<br>';
 			}
 
-			var dec2 = $.trim( plans[i].declination2 );
+			var dec2 = $.trim( plans[i].declination2 )*1;
 			patn = /^\d{1,2}$/;
 
 			if ( !patn.test(dec2) || dec2 > 59 || dec2 < 0 )
@@ -780,7 +781,7 @@
 				msg += '第' + (i+1) + '条赤纬分钟参数超限!<br>';
 			}
 
-			var dec3 = $.trim( plans[i].declination3 );
+			var dec3 = $.trim( plans[i].declination3 )*1;
 
 			if ( !$.isNumeric(dec3) || dec3 >= 60 || dec3 < 0 )
 			{
@@ -788,7 +789,7 @@
 			}
 
 			var dec = Math.abs(dec1) + dec2/60 + dec3/3600;
-			if ( dec > 90 )
+			if ( dec > 90 || dec < 0 )
 			{
 				msg += '第' + (i+1) + '条赤纬参数超限!<br>';	
 			}
@@ -926,7 +927,7 @@ function get_plan () {
 	})/*ajax 结束*/
 }
 
-var get_plan_i = setInterval (get_plan, 60000); //定时执行get_plan() 60秒执行一次查询，否则浏览器卡顿
+//var get_plan_i = setInterval (get_plan, 60000); //定时执行get_plan() 60秒执行一次查询，否则浏览器卡顿
 
  function plan_executing (){ //显示正在执行的计划
 	get_plan();

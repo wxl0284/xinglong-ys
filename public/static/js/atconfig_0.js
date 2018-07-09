@@ -165,7 +165,6 @@ $(function () {
                         {
                            have_gimbal.prop('checked', true);  //将转台的选项勾选
 
-                           gimbalForm.show();  //显示转台配置表单
                             ccdTeleId.html(info.gimbal_data.atname);  //隶属望远镜
                             ccd_2_TeleId.html(info.gimbal_data.atname);  //隶属望远镜
                             ccd_3_TeleId.html(info.gimbal_data.atname);  //隶属望远镜

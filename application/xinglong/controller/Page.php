@@ -90,6 +90,8 @@ class Page extends Base
             return '您无权限执行此操作!';
         }*/
 
+        $id = input('id'); //获取相应望远镜的id 在atlist表中此$id对应id字段,其他表中对应teleid字段
+        if ( !$id ) return '提交的数据有误! 请重新提交!';
         /*如下开始
         *判断数据表'confoption'内19个动态增减的固定属性是否已全部添加，
          否则无法进行各望远镜的配置
@@ -187,7 +189,6 @@ class Page extends Base
             $result['confOption'] = $this->get_19confOption ();            
             /*获取19个动态增减的固定属性数据 结束*/
 
-            $id = input('id'); //获取相应望远镜的id 在atlist表中此$id对应id字段,其他表中对应teleid字段
             /*查转台的配置数据 需要查atlist表、gimbalconf表*/
             $at_data = Db::table('atlist')->where('id', $id)->find();
             $gimbal_conf = Db::table('gimbalconf')->where('teleid', $id)->find();
@@ -230,7 +231,7 @@ class Page extends Base
             $ccd_num = count ($ccd_data);  //已配置的ccd数量
             
             $ccd_data['ccd_num'] = $ccd_num;
-         
+            
             $result['ccd_data'] = $ccd_data; //此$ccd_data中可能有多个配置数组
             
             /*查ccd-No1相关文件 每个望远镜的各ccd要单独建一个目录存放文件：如ccd1_1，ccd1_2*/

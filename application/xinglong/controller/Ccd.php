@@ -211,7 +211,7 @@ class Ccd extends Base
     }/*设置制冷温度 结束*/
 
     protected function expose_strategy ($postData, $param) /*设置曝光策略*/
-    {        
+    {   //halt($postData);
         if ( $postData['validFlag'] !== '' )   //数据有效标志位
         {
             if (!preg_match('/^\d{1,5}$/', $postData['validFlag']))
@@ -345,9 +345,9 @@ class Ccd extends Base
         { 
             $length = strlen($postData['objectBand']);
 
-            if ( preg_match('/[\x{4e00}-\x{9af5}]/u', $postData['objectBand']) || $length > 8 || $length < 1 )
+            if ( !in_array($postData['objectBand'], $postData['filter']) )
             {
-                return '拍摄波段须最多8字符不能有汉字！';
+                return '拍摄波段有误！';
             }
 
             $sendMsg .= pack('a8', $postData['objectBand']);     //uint8-8
@@ -640,9 +640,7 @@ class Ccd extends Base
 
     protected function start_expose ($postData, $param)  /*开始曝光*/
     {
-       
         $sendMsg = pack('S', $postData['isReadFrameSeq']);
-
         
         if ( $postData['frameSequence'] !== '' )    //帧序号
         {

@@ -20,7 +20,7 @@
 			<a href='{:url("/conf_option")}' target="_blank">去配置上述固定属性</a>
 		</div><br>
 		<h3 id='atSelect' class='center border'>配置望远镜
-			<select id='atNo' style='width:auto;' v-model='show_dev_form.at' @change='select_at' >
+			<select id='atNo' style='width:auto;' v-model='show_dev_form.teleid' @change='select_at' >
 				<option value="0" >请选择望远镜</option>
 				{volist name="atList" id="vo"}
 					<option value="{$vo.id}">{$vo.atname}</option>
@@ -65,34 +65,34 @@
 		</h3>
 		<br>
 		<div id='allOptions'><!--所有配置项-->
-			<form id='gimbal' ref='gimbal' class="form" v-if='show_dev_form.show_gimbal' ><!--转台配置项-->
+			<form id='gimbal' ref='gimbal' class="form" v-if='show_dev_form.show_gimbal'><!--转台配置项-->
 			<h4 class='center' id='gimbal_h'>转台固定属性</h4>
 			<hr>
 				<table class="center_mrg">
 					<tr>
 						<td>转台ip:</td>
-						<td><input type='text' id='gimbalIp' name='ip' placeholder='ip地址'></td>
+						<td><input type='text' id='gimbalIp' name='ip' placeholder='ip地址' v-model.trim='gimbal_config.ip' ></td>
 						<td>望远镜id:</td>
-						<td><input type='text' id='gimbalId' name='atid' readonly='readonly'></td>
+						<td><input type='text' id='gimbalId' name='atid' readonly='readonly' v-model.trim='gimbal_config.atid' readonly='readonly'></td>
 						<td>望远镜名称:</td>
-						<td><input type='text' id='gimbalName' name='atname' placeholder='1.26m望远镜'></td>
+						<td><input type='text' id='gimbalName' name='atname' v-model.trim='gimbal_config.atname' readonly='readonly'></td>
 					</tr>
 					<tr>
 						<td>隶属观测站:</td>
-						<td><input type='text' id='gimbalAddress' name='address' placeholder='国家天文台兴隆观测基地'></td>
+						<td><input type='text' id='gimbalAddress' name='address' placeholder='兴隆观测基地' v-model.trim='gimbal_config.address' readonly='readonly'></td>
 						<td>经度:</td>
-						<td><input type='text' id='gimbalLongitude' name='longitude' placeholder='-180.0~+180.0'></td>
+						<td><input type='text' id='gimbalLongitude' name='longitude' placeholder='-180.0~+180.0' v-model.trim='gimbal_config.longitude' readonly='readonly'></td>
 						<td>纬度:</td>
-						<td><input type='text' id='gimbalLatitude' name='latitude' placeholder='-90.0~+90.0'></td>
+						<td><input type='text' id='gimbalLatitude' name='latitude' placeholder='-90.0~+90.0' v-model.trim='gimbal_config.latitude' readonly='readonly'></td>
 					</tr>
 					<tr>
 						<td>海拔高度:</td>
-						<td><input type='text' id='gimbalAltitude' name='altitude' placeholder='国家天文台兴隆观测基地'></td>
+						<td><input type='text' id='gimbalAltitude' name='altitude' placeholder='国家天文台兴隆观测基地' v-model.trim='gimbal_config.altitude' readonly='readonly'></td>
 						<td>口径:</td>
-						<td><input type='text' id='gimbalAperture' name='aperture' placeholder='216.0'></td>
+						<td><input type='text' id='gimbalAperture' name='aperture' placeholder='216.0' v-model.trim='gimbal_config.aperture' readonly='readonly'></td>
 						<td>类型:</td>
 						<td>
-							<select id='gimbalType' name='type'>
+							<select id='gimbalType' name='type' v-model='gimbal_config.type'>
 								<option value="0">请选择</option>
 								<option value="赤道式-德国">赤道式-德国</option>
 								<option value="赤道式-叉式">赤道式-叉式</option>
@@ -106,105 +106,105 @@
 					<tr>
 						<td>焦点类型:</td>
 						<td>
-							<select id='gimbalFocustype' name='focustype'>
+							<select id='gimbalFocustype' name='focustype' v-model='gimbal_config.focustype'>
 								<option value="0">请选择</option>
 								<option v-for='v in confOption.focustype' :value='v' >{{v}}</option>
 							</select>
 						</td>
 						<td>焦比:</td>
 						<td>
-							<select id='gimbalFocusratio' name='focusratio'>
+							<select id='gimbalFocusratio' name='focusratio' v-model='gimbal_config.focusratio'>
 								<option value="0">请选择</option>
 								<option v-for='v in confOption.focusratio' :value='v' >{{v}}</option>
 							</select>
 						</td>
 						<td>焦距:</td>
 						<td>
-							<input type='text' id='gimbalFocuslength' name='focuslength' placeholder='[19.4 97.2]'>
+							<input type='text' id='gimbalFocuslength' ref='focus_L' name='focuslength' placeholder='[19.4 97.2]' v-model.trim='gimbal_config.focuslength' @blur='check_focuslength(true, gimbal_config.focuslength)' >
 						</td>
 					</tr>
 					<tr>
 						<td>轴1最大速度（°/s）:</td><!--maxAxis1Speed-->
 						<td>
-							<input type='text' id='gimbalMaxAxis1Speed' name='maxaxis1speed' placeholder='0-30'>
+							<input type='text' name='maxaxis1speed' ref='axis1speed' placeholder='0-30' v-model.trim='gimbal_config.maxaxis1speed' @blur='check_axisSpeed(true, gimbal_config.maxaxis1speed, $refs.axis1speed, 1)' >
 						</td>
 						<td>轴2最大速度（°/s）:</td>
 						<td>
-							<input type='text' id='gimbalMaxAxis2Speed' name='maxaxis2speed' placeholder='0-30'>
+							<input type='text' name='maxaxis2speed' ref='axis2speed' placeholder='0-30' v-model.trim='gimbal_config.maxaxis2speed' @blur='check_axisSpeed(true, gimbal_config.maxaxis2speed, $refs.axis2speed, 2)'>
 						</td>
 						<td>轴3最大速度（°/s）:</td>
 						<td>
-							<input type='text' id='gimbalMaxAxis3Speed' name='maxaxis3speed' placeholder='0-30'>
+							<input type='text' name='maxaxis3speed' ref='axis3speed' placeholder='0-30' v-model.trim='gimbal_config.maxaxis3speed' :disabled='gimbal_config.haveaxis3=="0"' @blur='check_axisSpeed(true, gimbal_config.maxaxis3speed, $refs.axis3speed, 3)'>
 						</td>
 					</tr>
 					<tr>
 						<td>轴1最大加速度（°/s）:</td>
 						<td>
-							<input type='text' id='gimbalMaxAxis1Acceleration' name='maxaxis1acceleration' placeholder='0-5'>
+							<input type='text' ref='axis1_acce' name='maxaxis1acceleration' placeholder='0-5' v-model.trim='gimbal_config.maxaxis1acceleration'  @blur='check_axisAcce(true, gimbal_config.maxaxis1acceleration, $refs.axis1_acce, 1)'>
 						</td>
 						<td>轴2最大加速度（°/s）:</td>
 						<td>
-							<input type='text' id='gimbalMaxAxis2Acceleration' name='maxaxis2acceleration' placeholder='0-5'>
+							<input type='text' ref='axis2_acce' name='maxaxis2acceleration' placeholder='0-5' v-model.trim='gimbal_config.maxaxis2acceleration'  @blur='check_axisAcce(true, gimbal_config.maxaxis2acceleration, $refs.axis2_acce, 2)'>
 						</td>
 						<td>轴3最大加速度（°/s）:</td>
 						<td>
-							<input type='text' id='gimbalMaxAxis3Acceleration' name='maxaxis3acceleration' placeholder='0-5'>
+							<input type='text' ref='axis3_acce' name='maxaxis3acceleration' placeholder='0-5' v-model.trim='gimbal_config.maxaxis3acceleration' :disabled='gimbal_config.haveaxis3=="0"' @blur='check_axisAcce(true, gimbal_config.maxaxis3acceleration, $refs.axis3_acce, 3)'>
 						</td>
 					</tr>
 					<tr>
 						<td>轴1复位位置:</td>
 						<td>
-							<input type='text' id='gimbalAxis1ParkPosition' name='axis1parkposition' placeholder='0-360'>
+							<input type='text' ref='axis1Park' name='axis1parkposition' placeholder='0-360' v-model.trim='gimbal_config.axis1parkposition' @blur='check_axisPark(true, gimbal_config.axis1parkposition, $refs.axis1Park, 1)'>
 						</td>
 						<td>轴2复位位置:</td>
 						<td>
-							<input type='text' id='gimbalAxis2ParkPosition' name='axis2parkposition' placeholder='0-360'>
+							<input type='text' ref='axis2Park' name='axis2parkposition' placeholder='0-360' v-model.trim='gimbal_config.axis2parkposition' @blur='check_axisPark(true, gimbal_config.axis2parkposition, $refs.axis2Park, 2)'>
 						</td>
 						<td>轴3复位位置:</td>
 						<td>
-							<input type='text' id='gimbalAxis3ParkPosition' name='axis3parkposition' placeholder='0-360'>
+							<input type='text' ref='axis3Park' name='axis3parkposition' placeholder='0-360' v-model.trim='gimbal_config.axis3parkposition' :disabled='gimbal_config.haveaxis3==0' @blur='check_axisPark(true, gimbal_config.axis3parkposition, $refs.axis3Park, 3)'>
 						</td>
 					</tr>
 					<tr>
 						<td>第3轴:</td>
 						<td>
 							<label>
-								有<input type='radio' id='gimbalHaveAxis3' name='haveaxis3' value="1">
+								有<input type='radio' id='gimbalHaveAxis3' name='haveaxis3' value="1" v-model='gimbal_config.haveaxis3'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								无<input type='radio' id='gimbalHaveAxis3-1' name='haveaxis3' value="0">
+								无<input type='radio' id='gimbalHaveAxis3-1' name='haveaxis3' value="0"  v-model='gimbal_config.haveaxis3' @click='gimbal_config.canslewderotator="0";gimbal_config.canconfigderotator="0";'>
 							</label>
 						</td>
 						<td>镜盖（轴5）:</td>
 						<td>
 							<label>
-								有<input type='radio' id='gimbalHaveAxis5' name='haveaxis5' value="1">
+								有<input type='radio' id='gimbalHaveAxis5' name='haveaxis5' value="1" v-model='gimbal_config.haveaxis5'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								无<input type='radio' id='gimbalHaveAxis5-1' name='haveaxis5' value="0">
+								无<input type='radio' id='gimbalHaveAxis5-1' name='haveaxis5' value="0" v-model='gimbal_config.haveaxis5' @click='gimbal_config.cancoveroperation="0"'>
 							</label>
 						</td>
 						<td>俯仰最低值（°）:</td>
 						<td>
-							<input type='text' id='gimbalMinElevation' name='minelevation' placeholder="> 10">
+							<input type='text' ref='minElev' name='minelevation' placeholder="> 10" v-model.trim='gimbal_config.minelevation' @blur='check_minelevation(true, gimbal_config.minelevation, $refs.minElev)' >
 						</td>
 					</tr>
 					<tr>
 						<td>温度传感器数目:</td>
 						<td>
-							<input type='text' id='gimbalNumTemperatureSensor' name='numtemperaturesensor'>
+							<input type='text' ref='tempera_num' name='numtemperaturesensor' v-model.trim='gimbal_config.numtemperaturesensor' @blur='check_Num(true, gimbal_config.numtemperaturesensor, $refs.tempera_num, 1)' >
 						</td>
 						<td>湿度传感器数目:</td>
 						<td>
-							<input type='text' id='gimbalNumHumiditySensor' name='numhumiditysensor'>
+							<input type='text' ref='humid_num' name='numhumiditysensor' v-model.trim='gimbal_config.numhumiditysensor' @blur='check_Num(true, gimbal_config.numhumiditysensor, $refs.humid_num, 2)'>
 						</td>
 						<td>支持连接指令:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanConnect' name='canconnect' value="1">
+								是<input type='radio' id='gimbalCanConnect' name='canconnect' value="1" v-model='gimbal_config.canconnect'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanConnect-1' name='canconnect' value="0">
+								否<input type='radio' id='gimbalCanConnect-1' name='canconnect' value="0" v-model='gimbal_config.canconnect'>
 							</label>	
 						</td>
 					</tr>
@@ -212,28 +212,28 @@
 						<td>支持找零指令:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanFindHome' name='canfindhome' value="1">
+								是<input type='radio' id='gimbalCanFindHome' name='canfindhome' value="1" v-model='gimbal_config.canfindhome'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanFindHome-1' name='canfindhome' value="0">
+								否<input type='radio' id='gimbalCanFindHome-1' name='canfindhome' value="0" v-model='gimbal_config.canfindhome'>
 							</label>	
 						</td>
 						<td>支持跟踪恒星:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanTrackStar' name='cantrackstar' value="1">
+								是<input type='radio' id='gimbalCanTrackStar' name='cantrackstar' value="1" v-model='gimbal_config.cantrackstar'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanTrackStar-1' name='cantrackstar' value="0">
+								否<input type='radio' id='gimbalCanTrackStar-1' name='cantrackstar' value="0" v-model='gimbal_config.cantrackstar'>
 							</label>	
 						</td>
 						<td>支持设置目标名称:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanSetObjectName' name='cansetobjectname' value="1">
+								是<input type='radio' id='gimbalCanSetObjectName' name='cansetobjectname' value="1" v-model='gimbal_config.cansetobjectname'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanSetObjectName-1' name='cansetobjectname' value="0">
+								否<input type='radio' id='gimbalCanSetObjectName-1' name='cansetobjectname' value="0" v-model='gimbal_config.cansetobjectname'>
 							</label>	
 						</td>
 					</tr>
@@ -241,28 +241,28 @@
 						<td>支持指向固定位置:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanSlewAzEl' name='canslewazel' value="1">
+								是<input type='radio' id='gimbalCanSlewAzEl' name='canslewazel' value="1" v-model='gimbal_config.canslewazel'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanSlewAzEl-1' name='canslewazel' value="0">
+								否<input type='radio' id='gimbalCanSlewAzEl-1' name='canslewazel' value="0" v-model='gimbal_config.canslewazel'>
 							</label>
 						</td>
 						<td>支持轴3指向固定位置:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanSlewDerotator' name='canslewderotator' value="1">
+								是<input type='radio' id='gimbalCanSlewDerotator' name='canslewderotator' value="1" v-model='gimbal_config.canslewderotator'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanSlewDerotator-1' name='canslewderotator' value="0">
+								否<input type='radio' id='gimbalCanSlewDerotator-1' name='canslewderotator' value="0" v-model='gimbal_config.canslewderotator'>
 							</label>
 						</td>
 						<td>支持设置轴3工作模式:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanConfigDerotator' name='canconfigderotator' value="1">
+								是<input type='radio' id='gimbalCanConfigDerotator' name='canconfigderotator' value="1" v-model='gimbal_config.canconfigderotator'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanConfigDerotator-1' name='canconfigderotator' value="0">
+								否<input type='radio' id='gimbalCanConfigDerotator-1' name='canconfigderotator' value="0" v-model='gimbal_config.canconfigderotator'>
 							</label>
 						</td>
 					</tr>
@@ -270,28 +270,28 @@
 						<td>支持停止指令:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanStop' name='canstop' value="1">
+								是<input type='radio' id='gimbalCanStop' name='canstop' value="1" v-model='gimbal_config.canstop'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanStop-1' name='canstop' value="0">
+								否<input type='radio' id='gimbalCanStop-1' name='canstop' value="0" v-model='gimbal_config.canstop'>
 							</label>
 						</td>
 						<td>支持设置跟踪速度:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanSetTrackSpeed' name='cansettrackspeed' value="1">
+								是<input type='radio' id='gimbalCanSetTrackSpeed' name='cansettrackspeed' value="1" v-model='gimbal_config.cansettrackspeed'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanSetTrackSpeed-1' name='cansettrackspeed' value="0">
+								否<input type='radio' id='gimbalCanSetTrackSpeed-1' name='cansettrackspeed' value="0" v-model='gimbal_config.cansettrackspeed'>
 							</label>	
 						</td>
 						<td>支持复位指令:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanPark' name='canpark' value="1">
+								是<input type='radio' id='gimbalCanPark' name='canpark' value="1" v-model='gimbal_config.canpark'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanPark-1' name='canpark' value="0">
+								否<input type='radio' id='gimbalCanPark-1' name='canpark' value="0" v-model='gimbal_config.canpark'>
 							</label>
 						</td>
 					</tr>
@@ -299,28 +299,28 @@
 						<td>支持恒速运动:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanFixedMove' name='canfixedmove' value="1">
+								是<input type='radio' id='gimbalCanFixedMove' name='canfixedmove' value="1" v-model='gimbal_config.canfixedmove'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanFixedMove-1' name='canfixedmove' value="0">
+								否<input type='radio' id='gimbalCanFixedMove-1' name='canfixedmove' value="0" v-model='gimbal_config.canfixedmove'>
 							</label>	
 						</td>
 						<td>支持位置修正:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanPositionCorrect' name='canpositioncorrect' value="1">
+								是<input type='radio' id='gimbalCanPositionCorrect' name='canpositioncorrect' value="1" v-model='gimbal_config.canpositioncorrect'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanPositionCorrect-1' name='canpositioncorrect' value="0">
+								否<input type='radio' id='gimbalCanPositionCorrect-1' name='canpositioncorrect' value="0" v-model='gimbal_config.canpositioncorrect'>
 							</label>	
 						</td>
 						<td>支持镜盖操作:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanCoverOperation' name='cancoveroperation' value="1">
+								是<input type='radio' id='gimbalCanCoverOperation' name='cancoveroperation' value="1" v-model='gimbal_config.cancoveroperation'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanCoverOperation-1' name='cancoveroperation' value="0">
+								否<input type='radio' id='gimbalCanCoverOperation-1' name='cancoveroperation' value="0" v-model='gimbal_config.cancoveroperation'>
 							</label>
 						</td>
 					</tr>
@@ -328,28 +328,28 @@
 						<td>支持焦点切换镜:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanFocusOperation' name='canfocusoperation' value="1">
+								是<input type='radio' id='gimbalCanFocusOperation' name='canfocusoperation' value="1" v-model='gimbal_config.canfocusoperation'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanFocusOperation-1' name='canfocusoperation' value="0">
+								否<input type='radio' id='gimbalCanFocusOperation-1' name='canfocusoperation' value="0" v-model='gimbal_config.canfocusoperation'>
 							</label>
 						</td>
 						<td>支持急停指令:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanEmergencyStop' name='canemergencystop' value="1">
+								是<input type='radio' id='gimbalCanEmergencyStop' name='canemergencystop' value="1" v-model='gimbal_config.canemergencystop'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanEmergencyStop-1' name='canemergencystop' value="0">
+								否<input type='radio' id='gimbalCanEmergencyStop-1' name='canemergencystop' value="0" v-model='gimbal_config.canemergencystop'>
 							</label>	
 						</td>
 						<td>支持保存同步数据:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanSaveSyncData' name='cansavesyncdata' value="1">
+								是<input type='radio' id='gimbalCanSaveSyncData' name='cansavesyncdata' value="1" v-model='gimbal_config.cansavesyncdata'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanSaveSyncData-1' name='cansavesyncdata' value="0">
+								否<input type='radio' id='gimbalCanSaveSyncData-1' name='cansavesyncdata' value="0" v-model='gimbal_config.cansavesyncdata'>
 							</label>
 						</td>
 					</tr>
@@ -357,27 +357,27 @@
 						<td>支持跟踪卫星:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanTrackSatellite' name='cantracksatellite' value="1">
+								是<input type='radio' id='gimbalCanTrackSatellite' name='cantracksatellite' value="1" v-model='gimbal_config.cantracksatellite'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>
-								否<input type='radio' id='gimbalCanTrackSatellite-1' name='cantracksatellite' value="0">
+								否<input type='radio' id='gimbalCanTrackSatellite-1' name='cantracksatellite' value="0" v-model='gimbal_config.cantracksatellite'>
 							</label>	
 						</td>
 						<td>支持属性设置:</td>
 						<td>
 							<label>
-								是<input type='radio' id='gimbalCanconfigProperty' name='canconfigproperty' value="1">
+								是<input type='radio' id='gimbalCanconfigProperty' name='canconfigproperty' value="1" v-model='gimbal_config.canconfigproperty'>
 							</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='gimbalCanconfigProperty-1' name='canconfigproperty' value="0"></label>
+							<label>否<input type='radio' id='gimbalCanconfigProperty-1' name='canconfigproperty' value="0" v-model='gimbal_config.canconfigproperty'></label>
 						</td>
 						<td>属性版本号:</td>
 						<td>
-							<input type='text' id='gimbalAttrVersion' name='attrversion'>
+							<input type='text' ref='gimbal_version' name='attrversion' v-model.trim='gimbal_config.attrversion' @blur='check_version(true, gimbal_config.attrversion, $refs.gimbal_version, 1)' >
 						</td>
 					</tr>
 					<tr>
 						<td>属性更新时间:</td>
-						<td id='gimbalAttrModifyTime'></td>
+						<td id='gimbalAttrModifyTime'>{{gimbal_config.attrmodifytime}}</td>
 						<td>上传转台相关文件:</td>
 						<td colspan="3" class="border_td">
 							出厂测试报告:<input type='file' name='report'>
@@ -386,10 +386,12 @@
 					</tr>
 					<tr>
 						<td>转台相关文件:</td>
-						<td id='gimbalFile' colspan="5" class="border_td"></td>
+						<td id='gimbalFile' colspan="5" class="border_td">
+							<span v-for='v in gimbal_file'><a title="点击下载">{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						</td>
 					</tr>
 				</table>
-				<input id='gimbalBtn' type='button' value="提交转台配置">
+				<input id='gimbalBtn' type='button' value="提交转台配置" @click='gimbal_sbmt'>
 			</form><!--转台配置项 结束-->
 			<!--如下为ccd配置项-->
 		<form id='ccd-1' class="form" v-if='show_dev_form.show_ccd'><!--ccd-No1配置项-->
@@ -399,18 +401,18 @@
 				<table class="center_mrg">
 					<tr>
 						<td>ccd之ip:</td>
-						<td><input type='text' id='ccdIp' name='ip' placeholder='ip地址'></td>
+						<td><input type='text' id='ccdIp' name='ip' placeholder='ip地址' v-model.trim='ccd_config.ip' ></td>
 						<td>ccd之id:</td>
-						<td><input type='text' id='ccdId' name='ccdid' placeholder='格式:00006'></td>
+						<td><input type='text' id='ccdId' name='ccdid' placeholder='格式:00006' v-model.trim='ccd_config.ccdid'></td>
 						<td>ccd名称:</td>
-						<td><input type='text' id='ccdName' name='name' placeholder='Andor DZ936/PI1300'></td>
+						<td><input type='text' id='ccdName' name='name' placeholder='Andor DZ936/PI1300' v-model.trim='ccd_config.name'></td>
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
-						<td id='ccdTeleId'></td> 
+						<td id='ccdTeleId'>{{gimbal_config.atname}}</td> 
 						<td>探测器类型:</td>
 						<td>
-						  <select id='ccdType' name='type'>
+						  <select id='ccdType' name='type' v-model='ccd_config.type'>
 							<option value="0">请选择</option>
 							<option value="CCD">CCD</option>
 							<option value="FullFrame CCD">FullFrame CCD</option>
@@ -419,29 +421,29 @@
 						  </select>
 						</td>
 						<td>x像素:</td>
-						<td><input type='text' id='ccdXpixel' name='xpixel' placeholder='整数'></td>
+						<td><input type='text' id='ccdXpixel' name='xpixel' placeholder='整数' v-model.trim='ccd_config.xpixel'></td>
 					</tr>
 					<tr>
 						<td>y像素:</td>
-						<td><input type='text' id='ccdYpixel' name='ypixel' placeholder='整数'></td>
+						<td><input type='text' id='ccdYpixel' name='ypixel' placeholder='整数' v-model.trim='ccd_config.ypixel'></td>
 						<td>x像元大小(μm):</td>
-						<td><input type='text' id='ccdXpixelSize' name='xpixelsize' placeholder='小数'></td>
+						<td><input type='text' id='ccdXpixelSize' name='xpixelsize' placeholder='小数' v-model.trim='ccd_config.xpixelsize'></td>
 						<td>y像元大小(μm):</td>
-						<td><input type='text' id='ccdYpixelSize' name='ypixelsize' placeholder='小数'></td>
+						<td><input type='text' id='ccdYpixelSize' name='ypixelsize' placeholder='小数' v-model.trim='ccd_config.ypixelsize'></td>
 					</tr>
 					<tr>
 						<td>传感器名称:</td>
-						<td><input type='text' id='ccdSensorName' name='sensorname' placeholder="芯片名称"></td>
+						<td><input type='text' id='ccdSensorName' name='sensorname' placeholder="芯片名称" v-model.trim='ccd_config.sensorname'></td>
 						<td>图像位数:</td>
 						<td>
-							<select id='ccdImageBits' name='imagebits'>
+							<select id='ccdImageBits' name='imagebits' v-model='ccd_config.imagebits'>
 								<option value="0">请选择</option>
 								<option :value="v" v-for='v in confOption.imageBits'>{{v}}</option>
 							</select>
 						</td>
 						<td>制冷方式:</td>
 						<td>
-							<select id='ccdCoolerMode' name='coolermode'>
+							<select id='ccdCoolerMode' name='coolermode' v-model='ccd_config.coolermode'>
 								<option value="0">请选择</option>
 								<option :value="v" v-for='v in confOption.coolerMode'>{{v}}</option>
 							</select>
@@ -450,29 +452,29 @@
 					<tr>
 						<td>最低制冷温度（℃）:</td>
 						<td>
-							<input type='text' id='ccdLowCoolerT' name='lowcoolert'>
+							<input type='text' id='ccdLowCoolerT' name='lowcoolert' v-model.trim='ccd_config.lowcoolert'>
 						</td>
 						<td>最大曝光时间（s）:</td>
 						<td>
-							<input type='text' id='ccdMaxExposureTime' name='maxexposuretime' placeholder='小数'>
+							<input type='text' id='ccdMaxExposureTime' name='maxexposuretime' placeholder='数字' v-model.trim='ccd_config.maxexposuretime'>
 						</td>
 						<td>最小曝光时间（s）:</td>
 						<td>
-							<input type='text' id='ccdMinExposureTime' name='minexposuretime' placeholder='小数'>
+							<input type='text' id='ccdMinExposureTime' name='minexposuretime' placeholder='数字' v-model.trim='ccd_config.minexposuretime'>
 						</td>
 					</tr>
 					<tr>
 						<td>曝光时间分辨率:</td>
 						<td>
-							<input type='text' id='ccdExposureTimeRation' name='exposuretimeration' placeholder='整数'>
+							<input type='text' id='ccdExposureTimeRation' name='exposuretimeration' placeholder='整数' v-model.trim='ccd_config.exposuretimeration'>
 						</td>
 						<td>满阱电荷:</td>
 						<td>
-							<input type='text' id='ccdFullWellDepth' name='fullwelldepth' placeholder='整数'>
+							<input type='text' id='ccdFullWellDepth' name='fullwelldepth' placeholder='整数' v-model.trim='ccd_config.fullwelldepth'>
 						</td>
 						<td>读出速度模式:</td>
 						<td id='ccdReadoutSpeed' class='border_td'>
-							<span v-for='v in confOption.readoutSpeed'>{{v}}<input type='checkbox' name='readoutspeed[]' :value='v' >&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in final_readOutMode'>{{v}}<input type='checkbox' name='readoutspeed[]' :value='v' v-model='ccd_config.readoutspeed_1'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 					</tr>
 					<tr>
@@ -517,7 +519,9 @@
 					</tr>
 					<tr>
 						<td>快门模式:</td>
-						<td colspan="3" class="border_td" id='ccd_1ShutterMode'> </td>
+						<td colspan="3" class="border_td" id='ccd_1ShutterMode'>
+							<span v-for='v in confOption.ShutterMode'>{{v}}<input type='checkbox' name='shuttermode[]' :value='v'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						</td>
 						<td>支持帧转移:</td>
 						<td>
 							<label>是<input type='radio' id='ccdIsSupportFullFrame' name='issupportfullframe' value="1"></label>
@@ -554,7 +558,10 @@
 						</td>
 						<td>BIN:</td>
 						<td>
-							<select id='ccd_1BinArray' name='binarray'> </select>
+							<select id='ccd_1BinArray' name='binarray'>
+								<option value="0">请选择</option>
+								<option :value="v" v-for='v in final_binArray'>{{v}}</option>
+							</select>
 						</td>
 						<td>支持开窗:</td>
 						<td>
@@ -565,7 +572,9 @@
 					</tr>
 					<tr>
 						<td>接口类型:</td>
-						<td colspan="3" class="border_td" id='ccd_1InterfaceType'> </td>
+						<td colspan="3" class="border_td" id='ccd_1InterfaceType'>
+							<span v-for='v in confOption.InterfaceType'>{{v}}<input type='checkbox' name='interfacetype[]' :value='v'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						</td>
 						<td>最大EM:</td>
 						<td>
 							<input type='text' id='ccdEmMaxValue' name='emmaxvalue' placeholder="整数">
@@ -573,7 +582,9 @@
 					</tr>
 					<tr>
 						<td>曝光触发模式:</td>
-						<td colspan="3" class="border_td" id='ccd_1ExposeTriggerMode'></td>
+						<td colspan="3" class="border_td" id='ccd_1ExposeTriggerMode'>
+							<span v-for='v in confOption.ExposeTriggerMode'>{{v}}<input type='checkbox' name='exposetriggermode[]' :value='v'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						</td>
 						<td>最小EM:</td>
 						<td>
 							<input type='text' id='ccdEmMinValue' name='emminvalue' placeholder="整数">
@@ -718,7 +729,7 @@
 				<input id='ccdBtn-1' type='button' value="提交CCD-No1配置">
 			</form><!--ccd配置项 结束-->
 
-			<form id='filter' class="form displayNo" enctype='multipart/form-data'><!--滤光片配置项-->
+			<form id='filter' class="form" v-if='show_dev_form.show_filter' ><!--滤光片配置项-->
 			<br>
 			<h4 class='center'>滤光片固定属性</h4>
 			<hr>
@@ -733,7 +744,7 @@
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
-						<td id='filterTeleId'></td>
+						<td id='filterTeleId'>{{gimbal_config.atname}}</td>
 						<td>插槽数目:</td>
 						<td><input type='text' id='filterNum' name='numberoffilter'></td>
 						<td>插槽大小（mm）:</td>
@@ -747,7 +758,10 @@
 								<option value="0">选择插槽</option>
 							</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							滤光片类型:<!--此元素的值也无须入库 此2元素的点击事件中生成一个数组，然后入库-->
-							<select id='filterSystem' name='filtersystem'> <option value="0">选择类型</option> </select>
+							<select id='filterSystem' name='filtersystem'>
+								<option value="0">请选择</option>
+								<option :value="v" v-for='v in confOption.FilterSystem'>{{v}}</option>
+							</select>
 						</td>
 						<td>滤光片名称:</td>
 						<td><input type='text' id='filter_Name' name='filtername' placeholder='u/v/r/i...'></td>
@@ -759,7 +773,10 @@
 						</td>
 						<td>滤光片形状:</td>
 						<td>
-							<select id='filterShape' name='filtershape'> </select>
+							<select id='filterShape' name='filtershape'>
+								<option value="0">请选择</option>
+								<option :value="v" v-for='v in confOption.FilterShape'>{{v}}</option>
+							</select>
 						</td>
 					</tr>
 					<tr>
@@ -802,7 +819,7 @@
 				<input id='filterBtn' type='button' value="提交滤光片配置">
 			</form><!-- 滤光片固定属性配置项 结束-->
 
-		<form id='sDome' class="form displayNo" enctype='multipart/form-data'><!--随动圆顶配置项-->
+		<form id='sDome' class="form" v-if='show_dev_form.show_sDome'><!--随动圆顶配置项-->
 			<br>
 			<h4 class='center'>随动圆顶固定属性</h4>
 			<hr>
@@ -817,10 +834,13 @@
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
-						<td id='sDomeTeleId'></td>
+						<td id='sDomeTeleId'>{{gimbal_config.atname}}</td>
 						<td>类型:</td>
 						<td>
-							<select id='sDomeType' name='dometype'> </select>
+							<select id='sDomeType' name='dometype'>
+								<option value="0">请选择</option>
+								<option :value="v" v-for='v in confOption.slaveDomeType'>{{v}}</option>
+							</select>
 						</td>
 						<td>最大转动速度（度/秒）:</td>
 						<td><input type='text' id='sDomeMaxSpeed' name='maxspeed' placeholder='小数'></td>
@@ -903,7 +923,7 @@
 				<input id='sDomeBtn' type='button' value="提交随动圆顶配置">
 			</form><!-- 随动圆顶固定属性配置项 结束-->
 
-			<form id='oDome' class="form displayNo" enctype='multipart/form-data'><!--全开圆顶配置项-->
+			<form id='oDome' class="form" v-if='show_dev_form.show_oDome' ><!--全开圆顶配置项-->
 			<br>
 			<h4 class='center' id='oDome_h'>全开圆顶固定属性</h4>
 			<hr>
@@ -918,10 +938,13 @@
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
-						<td id='oDomeTeleId'></td>
+						<td id='oDomeTeleId'>{{gimbal_config.atname}}</td>
 						<td>类型:</td>
 						<td>
-							<select id='oDomeType' name='type'> </select>
+							<select id='oDomeType' name='type'>
+								<option value="0">请选择</option>
+								<option :value="v" v-for='v in confOption.openDomeType'>{{v}}</option>
+							</select>
 						</td>
 						<td>尺寸大小（m）:</td>
 						<td><input type='text' id='oDomeDiameter' name='diameter' placeholder='直径'></td>
@@ -960,7 +983,7 @@
 				<input id='oDomeBtn' type='button' value="提交全开圆顶配置">
 			</form><!-- 全开圆顶固定属性配置项 结束-->
 
-			<form id='focus' class="form displayNo" enctype='multipart/form-data'><!--调焦器配置项-->
+			<form id='focus' class="form" v-if='show_dev_form.show_focus'><!--调焦器配置项-->
 			<br>
 			<h4 class='center' id='focus_h'>调焦器固定属性</h4>
 			<hr>
@@ -975,7 +998,7 @@
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
-						<td id='focusTeleId'></td>
+						<td id='focusTeleId'>{{gimbal_config.atname}}</td>
 						<td>最大值（μm）:</td>
 						<td>
 							<input type='text' id='focusMaxValue' name='maxvalue' placeholder='小数'>
@@ -1065,7 +1088,7 @@
 				<input id='focusBtn' type='button' value="提交调焦器配置">
 			</form><!--调焦器固定属性配置项 结束-->
 
-			<form id='guideScope' class="form displayNo" enctype='multipart/form-data'><!--导星望远镜配置项-->
+			<form id='guideScope' class="form" v-if='show_dev_form.show_guide' ><!--导星望远镜配置项-->
 			<br>
 			<h4 class='center' id='guideScope_h'>导星望远镜固定属性</h4>
 			<hr>
@@ -1080,14 +1103,17 @@
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
-						<td id='guideScopeTeleId'></td>
+						<td id='guideScopeTeleId'>{{gimbal_config.atname}}</td>
 						<td>口径:</td>
 						<td>
 							<input type='text' id='guideScopeAperture' name='aperture' placeholder='小数'>
 						</td>
 						<td>焦点类型:</td>
 						<td>
-							<select id='guideScopeOpticalStructure' name='opticalstructure'> </select>
+							<select id='guideScopeOpticalStructure' name='opticalstructure'>
+								<option value="0">请选择</option>
+								<option :value="v" v-for='v in confOption.opticalStructure'>{{v}}</option>
+							</select>
 						</td>
 					</tr>
 					<tr>
