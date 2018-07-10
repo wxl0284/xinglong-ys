@@ -229,9 +229,66 @@ class Page extends Base
             /*查ccd配置数据*/
             $ccd_data = Db::table('ccdconf')->where('teleid', $id)->order('ccdno asc')->select();
             $ccd_num = count ($ccd_data);  //已配置的ccd数量
-            
+
+            if ( $ccd_num > 0 )  //循环遍历$ccd_data中的复选框配置数据
+            {
+                for ($ccd_i = 0; $ccd_i < $ccd_num; $ccd_i++)
+                {
+                    foreach ( $ccd_data[$ccd_i] as $v)
+                    {
+                        if ( is_string($ccd_data[$ccd_i]['readoutspeed']) )
+                        {//处理读出速度模式
+                            $ccd_data[$ccd_i]['readoutspeed'] = explode('#', $ccd_data[$ccd_i]['readoutspeed']);
+                        }else if( $ccd_data[$ccd_i]['readoutspeed'] === null ){
+                            $ccd_data[$ccd_i]['readoutspeed'] = [];
+                        }
+
+                        if ( is_string($ccd_data[$ccd_i]['readoutmode']) )
+                        {//处理读出模式
+                            $ccd_data[$ccd_i]['readoutmode'] = explode('#', $ccd_data[$ccd_i]['readoutmode']);
+                        }else if( $ccd_data[$ccd_i]['readoutmode'] === null ){
+                            $ccd_data[$ccd_i]['readoutmode'] = [];
+                        }
+
+                        if ( is_string($ccd_data[$ccd_i]['transferspeed']) )
+                        {//处理转移速度模式
+                            $ccd_data[$ccd_i]['transferspeed'] = explode('#', $ccd_data[$ccd_i]['transferspeed']);
+                        }else if( $ccd_data[$ccd_i]['transferspeed'] === null ){
+                            $ccd_data[$ccd_i]['transferspeed'] = [];
+                        }
+
+                        if ( is_string($ccd_data[$ccd_i]['gainmode']) )
+                        {//处理增益模式
+                            $ccd_data[$ccd_i]['gainmode'] = explode('#', $ccd_data[$ccd_i]['gainmode']);
+                        }else if( $ccd_data[$ccd_i]['gainmode'] === null ){
+                            $ccd_data[$ccd_i]['gainmode'] = [];
+                        }
+
+                        if ( is_string($ccd_data[$ccd_i]['shuttermode']) )
+                        {//处理快门模式
+                            $ccd_data[$ccd_i]['shuttermode'] = explode('#', $ccd_data[$ccd_i]['shuttermode']);
+                        }else if( $ccd_data[$ccd_i]['shuttermode'] === null ){
+                            $ccd_data[$ccd_i]['shuttermode'] = [];
+                        }
+
+                        if ( is_string($ccd_data[$ccd_i]['interfacetype']) )
+                        {//处理接口类型
+                            $ccd_data[$ccd_i]['interfacetype'] = explode('#', $ccd_data[$ccd_i]['interfacetype']);
+                        }else if( $ccd_data[$ccd_i]['interfacetype'] === null ){
+                            $ccd_data[$ccd_i]['interfacetype'] = [];
+                        }
+
+                        if ( is_string($ccd_data[$ccd_i]['exposetriggermode']) )
+                        {//处理曝光触发模式
+                            $ccd_data[$ccd_i]['exposetriggermode'] = explode('#', $ccd_data[$ccd_i]['exposetriggermode']);
+                        }else if( $ccd_data[$ccd_i]['exposetriggermode'] === null ){
+                            $ccd_data[$ccd_i]['exposetriggermode'] = [];
+                        }
+                    }
+                }
+            }//循环遍历处理ccd配置中checkbox 结束 
+
             $ccd_data['ccd_num'] = $ccd_num;
-            
             $result['ccd_data'] = $ccd_data; //此$ccd_data中可能有多个配置数组
             
             /*查ccd-No1相关文件 每个望远镜的各ccd要单独建一个目录存放文件：如ccd1_1，ccd1_2*/

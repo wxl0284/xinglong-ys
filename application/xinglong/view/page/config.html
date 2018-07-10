@@ -403,9 +403,9 @@
 						<td>ccd之ip:</td>
 						<td><input type='text' id='ccdIp' name='ip' placeholder='ip地址' v-model.trim='ccd_config.ip' ></td>
 						<td>ccd之id:</td>
-						<td><input type='text' id='ccdId' name='ccdid' placeholder='格式:00006' v-model.trim='ccd_config.ccdid'></td>
+						<td><input type='text' ref='ccdId' name='ccdid' placeholder='格式:00006' v-model.trim='ccd_config.ccdid' @blur='check_devId(true, ccd_config.ccdid, $refs.ccdId, "ccd")'></td>
 						<td>ccd名称:</td>
-						<td><input type='text' id='ccdName' name='name' placeholder='Andor DZ936/PI1300' v-model.trim='ccd_config.name'></td>
+						<td><input type='text' ref='ccdName' name='name' placeholder='Andor DZ936/PI1300' v-model.trim='ccd_config.name' @blur='check_devName(true, ccd_config.name, $refs.ccdName, "ccd")'></td>
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
@@ -427,9 +427,9 @@
 						<td>y像素:</td>
 						<td><input type='text' id='ccdYpixel' name='ypixel' placeholder='整数' v-model.trim='ccd_config.ypixel'></td>
 						<td>x像元大小(μm):</td>
-						<td><input type='text' id='ccdXpixelSize' name='xpixelsize' placeholder='小数' v-model.trim='ccd_config.xpixelsize'></td>
+						<td><input type='text' id='ccdXpixelSize' name='xpixelsize' placeholder='数字' v-model.trim='ccd_config.xpixelsize'></td>
 						<td>y像元大小(μm):</td>
-						<td><input type='text' id='ccdYpixelSize' name='ypixelsize' placeholder='小数' v-model.trim='ccd_config.ypixelsize'></td>
+						<td><input type='text' id='ccdYpixelSize' name='ypixelsize' placeholder='数字' v-model.trim='ccd_config.ypixelsize'></td>
 					</tr>
 					<tr>
 						<td>传感器名称:</td>
@@ -474,27 +474,27 @@
 						</td>
 						<td>读出速度模式:</td>
 						<td id='ccdReadoutSpeed' class='border_td'>
-							<span v-for='v in final_readOutMode'>{{v}}<input type='checkbox' name='readoutspeed[]' :value='v' v-model='ccd_config.readoutspeed_1'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in confOption.readoutSpeed'>{{v}}<input type='checkbox' name='readoutspeed[]' :value='v' v-model='ccd_config.readoutspeed'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 					</tr>
 					<tr>
 						<td>读出模式:</td>
 						<td colspan="3" class="border_td" id='ccd_1readoutMode'>
-							<span v-for='v in confOption.readoutMode'>{{v}}<input type='checkbox' name='readoutmode[]' :value='v'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in confOption.readoutMode'>{{v}}<input type='checkbox' name='readoutmode[]' :value='v' v-model='ccd_config.readoutmode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 						<td>转移速度模式:</td>
 						<td id='ccdTransferSpeed' class='border_td'>
-							<span v-for='v in confOption.transferSpeed'>{{v}}<input type='checkbox' name='transferspeed[]' :value='v' >&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in confOption.transferSpeed'>{{v}}<input type='checkbox' name='transferspeed[]' :value='v' v-model='ccd_config.transferspeed'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 					</tr>
 					<tr>
 						<td>增益模式:</td>
 						<td colspan="3" class="border_td" id='ccd_1gainmode'>
-							<span v-for='v in confOption.gainmode'>{{v}}<input type='checkbox' name='gainmode[]' :value='v'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in confOption.gainmode'>{{v}}<input type='checkbox' name='gainmode[]' :value='v' v-model='ccd_config.gainmode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 						<td>增益档位:</td>
 						<td>
-							<select id='ccd_1GainNumber' name='gainnumber'>
+							<select id='ccd_1GainNumber' name='gainnumber' v-model='ccd_config.gainnumber'>
 								<option value="0">请选择</option>
 								<option :value="v" v-for='v in confOption.gainNumber'>{{v}}</option>
 							</select>
@@ -503,15 +503,15 @@
 					<tr>
 						<td>增益值:</td>
 						<td>
-							<input type='text' id='ccdGainValueArray' name='gainvaluearray'>
+							<input type='text' id='ccdGainValueArray' name='gainvaluearray' v-model='ccd_config.gainvaluearray'>
 						</td>
 						<td>读出噪声值:</td>
 						<td>
-							<input type='text' id='ccdReadoutNoiseArray' name='readoutnoisearray'>
+							<input type='text' id='ccdReadoutNoiseArray' name='readoutnoisearray' v-model='ccd_config.readoutnoisearray'>
 						</td>
 						<td>快门类型:</td>
 						<td>
-							<select id='ccdShutterType' name='shuttertype'>
+							<select id='ccdShutterType' name='shuttertype' v-model='ccd_config.shuttertype'>
 								<option value="0">请选择</option>
 								<option :value="v" v-for='v in confOption.ShutterType'>{{v}}</option>
 							</select>
@@ -520,198 +520,198 @@
 					<tr>
 						<td>快门模式:</td>
 						<td colspan="3" class="border_td" id='ccd_1ShutterMode'>
-							<span v-for='v in confOption.ShutterMode'>{{v}}<input type='checkbox' name='shuttermode[]' :value='v'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in confOption.ShutterMode'>{{v}}<input type='checkbox' name='shuttermode[]' :value='v' v-model='ccd_config.shuttermode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 						<td>支持帧转移:</td>
 						<td>
-							<label>是<input type='radio' id='ccdIsSupportFullFrame' name='issupportfullframe' value="1"></label>
+							<label>是<input type='radio' id='ccdIsSupportFullFrame' name='issupportfullframe' value="1" v-model='ccd_config.issupportfullframe'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdIsSupportFullFrame-1' name='issupportfullframe' value="0"></label>	
+							<label>否<input type='radio' id='ccdIsSupportFullFrame-1' name='issupportfullframe' value="0" v-model='ccd_config.issupportfullframe'></label>	
 						</td>
 					</tr>
 					<tr>
 						<td>支持EM:</td>
 						<td>
-							<label>是<input type='radio' id='ccdIsSupportEM' name='issupportem' value="1"></label>
+							<label>是<input type='radio' id='ccdIsSupportEM' name='issupportem' value="1" v-model='ccd_config.issupportem'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdIsSupportEM-1' name='issupportem' value="0"></label>
+							<label>否<input type='radio' id='ccdIsSupportEM-1' name='issupportem' value="0" v-model='ccd_config.issupportem'></label>
 						</td>
 						<td>支持CMOS noise filter:</td>
 						<td>
-							<label>是<input type='radio' id='ccdIsSupportsCmosNoiseFilter' name='issupportscmosnoisefilter' value="1"></label>
+							<label>是<input type='radio' id='ccdIsSupportsCmosNoiseFilter' name='issupportscmosnoisefilter' value="1" v-model='ccd_config.issupportscmosnoisefilter'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdIsSupportsCmosNoiseFilter-1' name='issupportscmosnoisefilter' value="0"></label>
+							<label>否<input type='radio' id='ccdIsSupportsCmosNoiseFilter-1' name='issupportscmosnoisefilter' value="0" v-model='ccd_config.issupportscmosnoisefilter'></label>
 						</td>
 						<td>支持base line:</td>
 						<td>
-							<label>是<input type='radio' id='ccdIsSupportBaseLine' name='issupportbaseline' value="1"></label>
+							<label>是<input type='radio' id='ccdIsSupportBaseLine' name='issupportbaseline' value="1" v-model='ccd_config.issupportbaseline'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdIsSupportBaseLine-1' name='issupportbaseline' value="0"></label>
+							<label>否<input type='radio' id='ccdIsSupportBaseLine-1' name='issupportbaseline' value="0" v-model='ccd_config.issupportbaseline'></label>
 						</td>
 					</tr>
 					<tr>
 						<td>支持Over scan:</td>
 						<td>
-							<label>是<input type='radio' id='ccdIsSupportOverScan' name='issupportoverscan' value="1"></label>
+							<label>是<input type='radio' id='ccdIsSupportOverScan' name='issupportoverscan' value="1" v-model='ccd_config.issupportoverscan'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdIsSupportOverScan-1' name='issupportoverscan' value="0"></label>
+							<label>否<input type='radio' id='ccdIsSupportOverScan-1' name='issupportoverscan' value="0" v-model='ccd_config.issupportoverscan'></label>
 						</td>
 						<td>BIN:</td>
 						<td>
-							<select id='ccd_1BinArray' name='binarray'>
+							<select id='ccd_1BinArray' name='binarray' v-model='ccd_config.binarray'>
 								<option value="0">请选择</option>
 								<option :value="v" v-for='v in final_binArray'>{{v}}</option>
 							</select>
 						</td>
 						<td>支持开窗:</td>
 						<td>
-							<label>是<input type='radio' id='ccdIsSupportROI' name='issupportroi' value="1"></label>
+							<label>是<input type='radio' id='ccdIsSupportROI' name='issupportroi' value="1" v-model='ccd_config.issupportroi'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdIsSupportROI-1' name='issupportroi' value="0"></label>
+							<label>否<input type='radio' id='ccdIsSupportROI-1' name='issupportroi' value="0" v-model='ccd_config.issupportroi'></label>
 						</td>
 					</tr>
 					<tr>
 						<td>接口类型:</td>
 						<td colspan="3" class="border_td" id='ccd_1InterfaceType'>
-							<span v-for='v in confOption.InterfaceType'>{{v}}<input type='checkbox' name='interfacetype[]' :value='v'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in confOption.InterfaceType'>{{v}}<input type='checkbox' name='interfacetype[]' :value='v' v-model='ccd_config.interfacetype'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 						<td>最大EM:</td>
 						<td>
-							<input type='text' id='ccdEmMaxValue' name='emmaxvalue' placeholder="整数">
+							<input type='text' id='ccdEmMaxValue' name='emmaxvalue' placeholder="整数" v-model.trim='ccd_config.emmaxvalue'>
 						</td>
 					</tr>
 					<tr>
 						<td>曝光触发模式:</td>
 						<td colspan="3" class="border_td" id='ccd_1ExposeTriggerMode'>
-							<span v-for='v in confOption.ExposeTriggerMode'>{{v}}<input type='checkbox' name='exposetriggermode[]' :value='v'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in confOption.ExposeTriggerMode'>{{v}}<input type='checkbox' name='exposetriggermode[]' :value='v' v-model='ccd_config.exposetriggermode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 						<td>最小EM:</td>
 						<td>
-							<input type='text' id='ccdEmMinValue' name='emminvalue' placeholder="整数">
+							<input type='text' id='ccdEmMinValue' name='emminvalue' placeholder="整数" v-model.trim='ccd_config.emminvalue'>
 						</td>
 					</tr>
 					<tr>
 						<td>支持连接:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanConnect' name='canconnect' value="1"></label>
+							<label>是<input type='radio' id='ccdCanConnect' name='canconnect' value="1" v-model='ccd_config.canconnect'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanConnect-1' name='canconnect' value="0"></label>
+							<label>否<input type='radio' id='ccdCanConnect-1' name='canconnect' value="0" v-model='ccd_config.canconnect'></label>
 						</td>
 						<td>设置制冷温度:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanSetCoolerT' name='cansetcoolert' value="1"></label>
+							<label>是<input type='radio' id='ccdCanSetCoolerT' name='cansetcoolert' value="1" v-model='ccd_config.cansetcoolert'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanSetCoolerT-1' name='cansetcoolert' value="0"></label>
+							<label>否<input type='radio' id='ccdCanSetCoolerT-1' name='cansetcoolert' value="0" v-model='ccd_config.cansetcoolert'></label>
 							
 						</td>
 						<td>设置曝光策略:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanSetExposureParam' name='cansetexposureparam' value="1"></label>
+							<label>是<input type='radio' id='ccdCanSetExposureParam' name='cansetexposureparam' value="1" v-model='ccd_config.cansetexposureparam'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanSetExposureParam-1' name='cansetexposureparam' value="0"></label>	
+							<label>否<input type='radio' id='ccdCanSetExposureParam-1' name='cansetexposureparam' value="0" v-model='ccd_config.cansetexposureparam'></label>	
 						</td>
 					</tr>
 					<tr>
 						<td>支持开始曝光:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanStartExposure' name='canstartexposure' value="1"></label>
+							<label>是<input type='radio' id='ccdCanStartExposure' name='canstartexposure' value="1" v-model='ccd_config.canstartexposure'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanStartExposure-1' name='canstartexposure' value="0"></label>
+							<label>否<input type='radio' id='ccdCanStartExposure-1' name='canstartexposure' value="0" v-model='ccd_config.canstartexposure'></label>
 						</td>
 						<td>支持停止曝光:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanStopExposure' name='canstopexposure' value="1"></label>
+							<label>是<input type='radio' id='ccdCanStopExposure' name='canstopexposure' value="1" v-model='ccd_config.canstopexposure'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanStopExposure-1' name='canstopexposure' value="0"></label>	
+							<label>否<input type='radio' id='ccdCanStopExposure-1' name='canstopexposure' value="0" v-model='ccd_config.canstopexposure'></label>	
 						</td>
 						<td>支持终止曝光:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanAbortExposure' name='canabortexposure' value="1"></label>
+							<label>是<input type='radio' id='ccdCanAbortExposure' name='canabortexposure' value="1" v-model='ccd_config.canabortexposure'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanAbortExposure-1' name='canabortexposure' value="0"></label>
+							<label>否<input type='radio' id='ccdCanAbortExposure-1' name='canabortexposure' value="0" v-model='ccd_config.canabortexposure'></label>
 						</td>
 					</tr>
 					<tr>
 						<td>设置增益:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanSetGain' name='cansetgain' value="1"></label>
+							<label>是<input type='radio' id='ccdCanSetGain' name='cansetgain' value="1" v-model='ccd_config.cansetgain'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanSetGain-1' name='cansetgain' value="0"></label>
+							<label>否<input type='radio' id='ccdCanSetGain-1' name='cansetgain' value="0" v-model='ccd_config.cansetgain'></label>
 						</td>
 						<td>设置读出速度模式:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanSetReadoutSpeedMode' name='cansetreadoutspeedmode' value="1"></label>
+							<label>是<input type='radio' id='ccdCanSetReadoutSpeedMode' name='cansetreadoutspeedmode' value="1" v-model='ccd_config.cansetreadoutspeedmode'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanSetReadoutSpeedMode-1' name='cansetreadoutspeedmode' value="0"></label>
+							<label>否<input type='radio' id='ccdCanSetReadoutSpeedMode-1' name='cansetreadoutspeedmode' value="0" v-model='ccd_config.cansetreadoutspeedmode'></label>
 						</td>
 						<td>设置转移速度模式:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanSetTransferSpeedMode' name='cansettransferspeedmode' value="1"></label>
+							<label>是<input type='radio' id='ccdCanSetTransferSpeedMode' name='cansettransferspeedmode' value="1" v-model='ccd_config.cansettransferspeedmode'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanSetTransferSpeedMode-1' name='cansettransferspeedmode' value="0"></label>
+							<label>否<input type='radio' id='ccdCanSetTransferSpeedMode-1' name='cansettransferspeedmode' value="0" v-model='ccd_config.cansettransferspeedmode'></label>
 						</td>
 					</tr>
 					<tr>
 						<td>设置BIN:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanSetBin' name='cansetbin' value="1"></label>
+							<label>是<input type='radio' id='ccdCanSetBin' name='cansetbin' value="1" v-model='ccd_config.cansetbin'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanSetBin-1' name='cansetbin' value="0"></label>
+							<label>否<input type='radio' id='ccdCanSetBin-1' name='cansetbin' value="0" v-model='ccd_config.cansetbin'></label>
 						</td>
 						<td>设置ROI:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanSetROI' name='cansetroi' value="1"></label>
+							<label>是<input type='radio' id='ccdCanSetROI' name='cansetroi' value="1" v-model='ccd_config.cansetroi'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanSetROI-1' name='cansetroi' value="0"></label>
+							<label>否<input type='radio' id='ccdCanSetROI-1' name='cansetroi' value="0" v-model='ccd_config.cansetroi'></label>
 						</td>
 						<td>设置快门:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanSetShutter' name='cansetshutter' value="1"></label>
+							<label>是<input type='radio' id='ccdCanSetShutter' name='cansetshutter' value="1" v-model='ccd_config.cansetshutter'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanSetShutter-1' name='cansetshutter' value="0"></label>
+							<label>否<input type='radio' id='ccdCanSetShutter-1' name='cansetshutter' value="0" v-model='ccd_config.cansetshutter'></label>
 						</td>
 					</tr>
 					<tr>
 						<td>设置帧转移:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanSetFullFrame' name='cansetfullframe' value="1"></label>
+							<label>是<input type='radio' id='ccdCanSetFullFrame' name='cansetfullframe' value="1" v-model='ccd_config.cansetfullframe'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanSetFullFrame-1' name='cansetfullframe' value="0"></label>
+							<label>否<input type='radio' id='ccdCanSetFullFrame-1' name='cansetfullframe' value="0" v-model='ccd_config.cansetfullframe'></label>
 						</td>
 						<td>设置EM:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanSetEM' name='cansetem' value="1"></label>
+							<label>是<input type='radio' id='ccdCanSetEM' name='cansetem' value="1" v-model='ccd_config.cansetem'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanSetEM-1' name='cansetem' value="0"></label>
+							<label>否<input type='radio' id='ccdCanSetEM-1' name='cansetem' value="0" v-model='ccd_config.cansetem'></label>
 						</td>
 						<td>设置CMOS noise filter:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanNoiseFilter' name='cannoisefilter' value="1"></label>
+							<label>是<input type='radio' id='ccdCanNoiseFilter' name='cannoisefilter' value="1" v-model='ccd_config.cannoisefilter'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanNoiseFilter-1' name='cannoisefilter' value="0"></label>
+							<label>否<input type='radio' id='ccdCanNoiseFilter-1' name='cannoisefilter' value="0" v-model='ccd_config.cannoisefilter'></label>
 						</td>
 					</tr>
 					<tr>
 						<td>设置Base line:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanSetBaseline' name='cansetbaseline' value="1"></label>
+							<label>是<input type='radio' id='ccdCanSetBaseline' name='cansetbaseline' value="1" v-model='ccd_config.cansetbaseline'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanSetBaseline-1' name='cansetbaseline' value="0"></label>
+							<label>否<input type='radio' id='ccdCanSetBaseline-1' name='cansetbaseline' value="0" v-model='ccd_config.cansetbaseline'></label>
 						</td>
 						<td>设置Over scan:</td>
 						<td>
-							<label>是<input type='radio' id='ccdCanSetOverScan' name='cansetoverscan' value="1"></label>
+							<label>是<input type='radio' id='ccdCanSetOverScan' name='cansetoverscan' value="1" v-model='ccd_config.cansetoverscan'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdCanSetOverScan-1' name='cansetoverscan' value="0"></label>
+							<label>否<input type='radio' id='ccdCanSetOverScan-1' name='cansetoverscan' value="0" v-model='ccd_config.cansetoverscan'></label>
 						</td>
 						<td>属性版本号:</td>
 						<td>
-							<input type='text' id='ccdAttrVersion' name='attrversion'>
+							<input type='text' id='ccdAttrVersion' name='attrversion' v-model='ccd_config.attrversion'>
 						</td>
 					</tr>
 					<tr>
 						<td>属性更新时间:</td>
-						<td id='ccdAttrModifyTime'></td>
+						<td id='ccdAttrModifyTime'>{{ccd_config.attrmodifytime}}</td>
 					</tr>
 					<tr>
 						<td>上传CCD-No1相关文件:</td>
@@ -726,7 +726,7 @@
 						<td id='ccdFile' colspan="5" class="border_td">	</td>
 					</tr>
 				</table>
-				<input id='ccdBtn-1' type='button' value="提交CCD-No1配置">
+				<input id='ccdBtn-1' type='button' value="提交CCD-No1配置" @click='ccd_sbmt'>
 			</form><!--ccd配置项 结束-->
 
 			<form id='filter' class="form" v-if='show_dev_form.show_filter' ><!--滤光片配置项-->
