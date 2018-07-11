@@ -627,7 +627,7 @@ class Ccd extends Base
             // }
             $sendMsg .= pack('L', $postData['frameNum']);     //uint32
         }else{
-            $sendMsg .= pack('L', 0);
+            $sendMsg .= pack('L', 1);
         }
         
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);

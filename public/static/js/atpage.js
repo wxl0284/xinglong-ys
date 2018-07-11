@@ -103,7 +103,7 @@
 					seeing: '', dustGatherTime:'', dust: '', AMS: '', extinctionGatherTime: '',
 					rightAscension: '', declination: '', band:'', extinctionFactor1: '', extinctionFactor2: '',
 					extinctionFactor3: '',telescopeRightAscension: '', telescopeDeclination: '',
-					focusLength:'', frameNum: '', command:'expose_param', at:at, at_aperture: aperture
+					focusLength:'', frameNum: '1', command:'expose_param', at:at, at_aperture: aperture
 				},
 				start_expose: {
 					isReadFrameSeq:'1', frameSequence: '', command:'start_expose', at:at, at_aperture: aperture

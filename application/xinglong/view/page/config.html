@@ -421,19 +421,19 @@
 						  </select>
 						</td>
 						<td>x像素:</td>
-						<td><input type='text' id='ccdXpixel' name='xpixel' placeholder='整数' v-model.trim='ccd_config.xpixel'></td>
+						<td><input type='text' ref='ccdXpixel' name='xpixel' placeholder='整数' v-model.trim='ccd_config.xpixel' @blur='check_pixel(true, ccd_config.xpixel, $refs.ccdXpixel, "x")'></td>
 					</tr>
 					<tr>
 						<td>y像素:</td>
-						<td><input type='text' id='ccdYpixel' name='ypixel' placeholder='整数' v-model.trim='ccd_config.ypixel'></td>
+						<td><input type='text' ref='ccdYpixel' name='ypixel' placeholder='整数' v-model.trim='ccd_config.ypixel' @blur='check_pixel(true, ccd_config.ypixel, $refs.ccdYpixel, "y")'></td>
 						<td>x像元大小(μm):</td>
-						<td><input type='text' id='ccdXpixelSize' name='xpixelsize' placeholder='数字' v-model.trim='ccd_config.xpixelsize'></td>
+						<td><input type='text' ref='ccdXpixelSize' name='xpixelsize' placeholder='数字' v-model.trim='ccd_config.xpixelsize' @blur='check_pixel_size(true, ccd_config.xpixelsize, $refs.ccdXpixelSize, "x")'></td>
 						<td>y像元大小(μm):</td>
-						<td><input type='text' id='ccdYpixelSize' name='ypixelsize' placeholder='数字' v-model.trim='ccd_config.ypixelsize'></td>
+						<td><input type='text' ref='ccdYpixelSize' name='ypixelsize' placeholder='数字' v-model.trim='ccd_config.ypixelsize' @blur='check_pixel_size(true, ccd_config.ypixelsize, $refs.ccdYpixelSize, "y")'></td>
 					</tr>
 					<tr>
 						<td>传感器名称:</td>
-						<td><input type='text' id='ccdSensorName' name='sensorname' placeholder="芯片名称" v-model.trim='ccd_config.sensorname'></td>
+						<td><input type='text' ref='ccdSensorName' name='sensorname' placeholder="芯片名称" v-model.trim='ccd_config.sensorname' @blur='check_devName(true, ccd_config.sensorname, $refs.ccdSensorName, "ccd_sensor")'></td>
 						<td>图像位数:</td>
 						<td>
 							<select id='ccdImageBits' name='imagebits' v-model='ccd_config.imagebits'>
@@ -452,25 +452,25 @@
 					<tr>
 						<td>最低制冷温度（℃）:</td>
 						<td>
-							<input type='text' id='ccdLowCoolerT' name='lowcoolert' v-model.trim='ccd_config.lowcoolert'>
+							<input type='text' ref='ccdLowCoolerT' name='lowcoolert' v-model.trim='ccd_config.lowcoolert' @blur='check_coolT(true, ccd_config.lowcoolert, $refs.ccdLowCoolerT)'>
 						</td>
 						<td>最大曝光时间（s）:</td>
 						<td>
-							<input type='text' id='ccdMaxExposureTime' name='maxexposuretime' placeholder='数字' v-model.trim='ccd_config.maxexposuretime'>
+							<input type='text' ref='ccdMaxExposureTime' name='maxexposuretime' placeholder='数字' v-model.trim='ccd_config.maxexposuretime' @blur='check_maxExposTime(true, ccd_config.maxexposuretime, $refs.ccdMaxExposureTime)'>
 						</td>
 						<td>最小曝光时间（s）:</td>
 						<td>
-							<input type='text' id='ccdMinExposureTime' name='minexposuretime' placeholder='数字' v-model.trim='ccd_config.minexposuretime'>
+							<input type='text' ref='ccdMinExposureTime' name='minexposuretime' placeholder='数字' v-model.trim='ccd_config.minexposuretime' @blur='check_maxExposTime(true, ccd_config.minexposuretime, $refs.ccdMinExposureTime, ccd_config.maxexposuretime)'>
 						</td>
 					</tr>
 					<tr>
 						<td>曝光时间分辨率:</td>
 						<td>
-							<input type='text' id='ccdExposureTimeRation' name='exposuretimeration' placeholder='整数' v-model.trim='ccd_config.exposuretimeration'>
+							<input type='text' ref='exposureTimeRation' name='exposuretimeration' placeholder='整数' v-model.trim='ccd_config.exposuretimeration' @blur='check_intV(true, ccd_config.exposuretimeration, $refs.exposureTimeRation, 1)'>
 						</td>
 						<td>满阱电荷:</td>
 						<td>
-							<input type='text' id='ccdFullWellDepth' name='fullwelldepth' placeholder='整数' v-model.trim='ccd_config.fullwelldepth'>
+							<input type='text' ref='fullWellDepth' name='fullwelldepth' placeholder='整数' v-model.trim='ccd_config.fullwelldepth' @blur='check_intV(true, ccd_config.fullwelldepth, $refs.fullWellDepth, 2)'>
 						</td>
 						<td>读出速度模式:</td>
 						<td id='ccdReadoutSpeed' class='border_td'>
@@ -577,7 +577,7 @@
 						</td>
 						<td>最大EM:</td>
 						<td>
-							<input type='text' id='ccdEmMaxValue' name='emmaxvalue' placeholder="整数" v-model.trim='ccd_config.emmaxvalue'>
+							<input type='text' ref='emMaxValue' name='emmaxvalue' placeholder="整数" v-model.trim='ccd_config.emmaxvalue' @blur='check_emV(true, ccd_config.emmaxvalue, $refs.emMaxValue)' >
 						</td>
 					</tr>
 					<tr>
@@ -587,7 +587,7 @@
 						</td>
 						<td>最小EM:</td>
 						<td>
-							<input type='text' id='ccdEmMinValue' name='emminvalue' placeholder="整数" v-model.trim='ccd_config.emminvalue'>
+							<input type='text' ref='emMinValue' name='emminvalue' placeholder="整数" v-model.trim='ccd_config.emminvalue' @blur='check_emV(true, ccd_config.emminvalue, $refs.emMinValue, ccd_config.emmaxvalue)'>
 						</td>
 					</tr>
 					<tr>
@@ -706,7 +706,7 @@
 						</td>
 						<td>属性版本号:</td>
 						<td>
-							<input type='text' id='ccdAttrVersion' name='attrversion' v-model='ccd_config.attrversion'>
+							<input type='text' ref='ccd_version' name='attrversion' v-model='ccd_config.attrversion' @blur='check_version(true, ccd_config.attrversion, $refs.ccd_version, 2)'>
 						</td>
 					</tr>
 					<tr>
