@@ -22,11 +22,13 @@ class Slavedome extends Base
     protected $command_length = [//各指令长度
         'connect' => 50,
         'stop' => 48,
-        'open' => 50,
+        //'open' => 50, //钟
+        'open' => 52, //胡 加2
         'set_objPos' => 56,
         'set_speed' => 56,
         'set_shade' => 56,
-        'set_action' => 50,
+        //'set_action' => 50,	//钟
+        'set_action' => 52,	//胡 加2
     ];
     protected $operation = [//各指令之编号
         'connect' => 1,
@@ -150,7 +152,8 @@ class Slavedome extends Base
 
     protected function scuttle ($scuttle, $param)  /*随动圆顶 开/关天窗*/
     {
-        $sendMsg = pack('S', $scuttle); //unsinged short
+        //$sendMsg = pack('S', $scuttle); //unsinged short 钟
+        $sendMsg = pack('I', $scuttle); //unsinged int 胡
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
@@ -214,7 +217,8 @@ class Slavedome extends Base
      
      protected function shadeAction ($postData, $param)  /*随动圆顶 风帘运动*/
      {  
-        $sendMsg = pack('S', $postData['action']); //unsigned short
+        //$sendMsg = pack('S', $postData['action']); //unsigned short 钟
+        $sendMsg = pack('I', $postData['action']); //unsigned int 胡2018.7.11
  
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 

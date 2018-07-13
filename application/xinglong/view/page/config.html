@@ -394,9 +394,16 @@
 				<input id='gimbalBtn' type='button' value="提交转台配置" @click='gimbal_sbmt'>
 			</form><!--转台配置项 结束-->
 			<!--如下为ccd配置项-->
-		<form id='ccd-1' class="form" v-if='show_dev_form.show_ccd'><!--ccd-No1配置项-->
+		<form ref='ccd' class="form" v-if='show_dev_form.show_ccd'><!--ccd-No1配置项-->
 			<br>
-			<h4 class='center'>CCD-No1固定属性</h4>
+			<h4 class='center'>CCD-No{{show_dev_form.ccd_no}}固定属性
+				<span v-if='show_dev_form.ccd_form_num > 1'>
+					&nbsp;&nbsp;&nbsp;&nbsp;选择ccd：
+					<select style='width:6%;' v-model='show_dev_form.ccd_no' @change='change_ccd(show_dev_form.ccd_no)'>
+						<option :value="v" v-for='v in show_dev_form.ccd_form_num*1' >ccd{{v}}</option>
+					</select>
+				</span>
+			</h4>
 			<hr>
 				<table class="center_mrg">
 					<tr>
@@ -714,7 +721,7 @@
 						<td id='ccdAttrModifyTime'>{{ccd_config.attrmodifytime}}</td>
 					</tr>
 					<tr>
-						<td>上传CCD-No1相关文件:</td>
+						<td>上传CCD-No{{show_dev_form.ccd_no}}相关文件:</td>
 						<td colspan="5" class="border_td">
 							量子效率曲线:<input type='file' name='qecurve'>&nbsp;&nbsp;&nbsp;&nbsp;
 							出厂测试报告:<input type='file' name='specification'>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -722,11 +729,13 @@
 						</td>
 					</tr>
 					<tr>
-						<td>CCD-No1相关文件:</td>
-						<td id='ccdFile' colspan="5" class="border_td">	</td>
+						<td>CCD-No{{show_dev_form.ccd_no}}相关文件:</td>
+						<td id='ccdFile' colspan="5" class="border_td">
+							<span v-for='v in ccd_file'><a title="点击下载">{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						</td>
 					</tr>
 				</table>
-				<input id='ccdBtn-1' type='button' value="提交CCD-No1配置" @click='ccd_sbmt'>
+				<input id='ccdBtn-1' type='button' :value="'提交CCD-No'+show_dev_form.ccd_no+'配置'" @click='ccd_sbmt'>
 			</form><!--ccd配置项 结束-->
 
 			<form id='filter' class="form" v-if='show_dev_form.show_filter' ><!--滤光片配置项-->

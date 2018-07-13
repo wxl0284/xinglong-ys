@@ -51,10 +51,10 @@ class Status extends Base
 
        //获取utc时间
        //获取UTC时间 格式：12:30:30.5
-        $hms = gmdate('H:i:s');
-        $usec = substr(microtime(), 2, 1);
-        $UTC = $hms . '.' . $usec;
-        $status['UTC'] = $UTC;
+        //$hms = gmdate('H:i:s');
+        //$usec = substr(microtime(), 2, 1);
+        //$UTC = $hms . '.' . $usec;
+        //$status['UTC'] = $UTC;
 
        //获取转台状态信息
        $status['gimbal'] = $this->gimbal_status($this->at);
@@ -75,7 +75,8 @@ class Status extends Base
     {
         $gimbal_table = 'at' . $at . 'gimbalstatus';   //at 转台状态表
         $gimbalStatus = Db::table($gimbal_table)->order('id desc')->find();
-
+		
+		$status['UTC'] = date('Y-m-d H:i:s', $gimbalStatus['sec']);
         //60cm望远镜 当前状态信息/////////////////////////////
         switch ($gimbalStatus['curstatus'])
         {
@@ -107,10 +108,10 @@ class Status extends Base
                 $status['curstatus'] = '急停';
                 break;
             case 10:
-                $status['curstatus'] = '急停中';
+                $status['curstatus'] = '复位中';
                 break;
             case 11:
-                $status['curstatus'] = '急停';
+                $status['curstatus'] = '复位';
                 break;
             case 12:
                 $status['curstatus'] = '等待恒速跟踪';
@@ -137,7 +138,7 @@ class Status extends Base
                 $status['curstatus'] = '等待恒速';
                 break;
             case 20:
-                $status['curstatus'] = '等待恒速';
+                $status['curstatus'] = '恒速运动';
                 break;
             case 21:
                 $status['curstatus'] = '异常';
@@ -241,8 +242,9 @@ class Status extends Base
         
         if (is_numeric($gimbalStatus['siderealTime']))
         {//当前恒星时
-            $gimbalStatus['siderealTime'] = floatval ($gimbalStatus['siderealTime']);
-            $status['siderealTime'] = round(data2Time($gimbalStatus['siderealTime']), 5);
+            //$status['siderealTime'] = data2Tim$gimbalStatus['siderealTime']);
+            $status['siderealTime'] = data2Time($gimbalStatus['siderealTime']);
+            //$status['siderealTime'] = round(data2Time($gimbalStatus['siderealTime']), 5);
         }else{
             $status['siderealTime'] = $gimbalStatus['siderealTime'];
         }
@@ -290,6 +292,8 @@ class Status extends Base
         $ccd_table = 'at' . $at . 'ccdstatus';   //at ccd状态表
         $ccdStatus = Db::table($ccd_table)->order('id desc')->find();
 
+        $status['frameTotal'] = $ccdStatus['frameTotal']; //总帧数
+        $status['frameSequence'] = $ccdStatus['frameSequence']; //
         switch ($ccdStatus['curstatus'])
         {
             case 1:
@@ -325,8 +329,8 @@ class Status extends Base
         }
 
         $status['errorString'] = $ccdStatus['errorString'];  //错误标识
-        switch ($ccdStatus['error']) 
-        {//错误状态
+        switch ($ccdStatus['error']) //错误状态
+        {
             case 0:
                 $status['ccdError'] = '正常';
                 break;

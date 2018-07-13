@@ -30,9 +30,12 @@ class Gimbal extends Base
         'slewAzEl' => 64,
         'slewDerotator' => 56,
         'axis3Mode' => 58,
-        'speed_alter' => 58,
-        'speed_fixed' => 58,
-        'position_alter' => 58,
+        //'speed_alter' => 58,	//钟
+        //'speed_fixed' => 58,	//钟
+		//'position_alter' => 58, //钟
+		'speed_alter' => 60,	//胡
+        'speed_fixed' => 60,	//胡
+		'position_alter' => 60, //胡        
         'cover_op' => 50,
         'setFocusType' => 50,
         'save_sync_data' => 48,
@@ -436,7 +439,8 @@ class Gimbal extends Base
 
     protected function speed_alter_sendData ($axix, $correction, $param) //发送 速度修正指令的参数
     {
-        $sendMsg = pack('S', $axix);   //unsigned short
+        //$sendMsg = pack('S', $axix);   //unsigned short 钟
+        $sendMsg = pack('I', $axix);   //unsigned int 胡 201807
         $sendMsg .= pack('d', $correction); //double64
 
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
@@ -474,7 +478,8 @@ class Gimbal extends Base
             return '速度参数超限!';
         }
 
-        $sendMsg = pack('S', $postData['axis']);  //unsigned short
+        //$sendMsg = pack('S', $postData['axis']);  //unsigned short 钟
+        $sendMsg = pack('I', $postData['axis']);  //unsigned int 胡
         $sendMsg .= pack('d', $postData['speed']);  //double64
 
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
@@ -549,7 +554,8 @@ class Gimbal extends Base
 
     protected function pos_alter_sendData ($axix, $correction, $param) //发送 位置修正指令的参数
     {
-        $sendMsg = pack('S', $axix);   //unsigned short
+        //$sendMsg = pack('S', $axix);   //unsigned short 钟
+        $sendMsg = pack('I', $axix);   //unsigned int 胡
         $sendMsg .= pack('d', $correction); //double64
 
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);

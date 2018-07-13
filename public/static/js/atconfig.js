@@ -29,11 +29,13 @@ $(function () {
             // show_dev_form:[],//各设备配置表单是否被选中
             // ccd_form_num:'1',//ccd配置表单的数量
             //at:'0',//选择望远镜下拉框中的val,即望远镜的主键id
+            all_ccd_config:{},//所有ccd的配置
             show_dev_form: {//控制是否显示各子设备的表单
                 teleid: '0',//选择望远镜下拉框中的val,即望远镜的主键id
                 show_gimbal:false, //控制显示转台的配置表单
                 show_ccd:false, //控制显示ccd的配置表单
-                ccd_form_num:'1',//ccd配置表单的数量
+                ccd_form_num:'1',//ccd的数量
+                ccd_no:'1',//ccd序号
                 show_focus:false, //控制显示调焦器的配置表单
                 show_filter:false, //控制显示滤光片转轮的配置表单
                 show_sDome:false, //控制显示随动圆顶的配置表单
@@ -43,14 +45,20 @@ $(function () {
             confOption: {BinArray:['']},
             test:'',
             gimbal_config: {
-                type: '0', focustype: '0', focusratio: '0', 
+                ip:'', type: '0', focustype: '0', focusratio: '0', focuslength:'', maxaxis1speed:'', maxaxis2speed:'',
+                maxaxis1speed:'', maxaxis1acceleration:'', maxaxis2acceleration:'', maxaxis3acceleration:'',
+                axis1parkposition:'', axis2parkposition:'', axis3parkposition:'', minelevation:'', numtemperaturesensor:'',
+                numhumiditysensor:'', attrversion:''
             }, //转台的配置信息
             gimbal_file: {}, //转台上传的文件
             ccd_config: {
                 type: '0', imagebits: '0', coolermode: '0', gainnumber: '0', shuttertype: '0',
-                binarray: '0', 
+                binarray: '0',ip:'', ccdid:'', name:'', xpixel:'', ypixel:'', xpixelsize:'', ypixelsize:'',
+                sensorname:'', lowcoolert:'', maxexposuretime:'', minexposuretime:'', exposuretimeration:'', 
+                fullwelldepth:'', readoutspeed:[], readoutmode:[], transferspeed:[], gainmode:[], gainvaluearray:'',
+                readoutnoisearray:'', shuttermode:[], interfacetype:[], emmaxvalue:'', exposetriggermode:[],
+                emminvalue:'', attrversion:'' 
             }, //ccd的配置信息
-            ccd_readoutspeed: [],
             ccd_file: {}, //ccd上传的文件
         },//data 结束
         computed: {
@@ -65,6 +73,9 @@ $(function () {
                 //this.show_dev_form.push('show_gimbal');
                 console.log(this.ccd_config.readoutspeed);
             },//ff() 结束
+            change_ccd: function (n) {//切换要配置的ccd
+                this.ccd_config = thi;
+            },//change_ccd() 结束
             select_at:function (){
                 var index = layer.load(1); //显示加载图标
                 var that = this; //存储vue实例
@@ -113,7 +124,9 @@ $(function () {
 
                                 if ( info.ccd_data.ccd_num > 0 ) //在页面显示ccd的配置数据
                                 {   //console.log(info.ccd_file); return;
-                                    that.show_dev_form.show_ccd = true; //显示gimbal配置表单
+                                    that.all_ccd_config = info.ccd_data; //将所有ccd的配置赋给 all_ccd_config
+                                    that.show_dev_form.show_ccd = true; //显示ccd配置表单
+                                    that.show_dev_form.ccd_form_num = info.ccd_data.ccd_num; //显示多个ccd
                                     if ( !info.ccd_data[0].type ) info.ccd_data[0].type = '0';
                                     if ( !info.ccd_data[0].imagebits ) info.ccd_data[0].imagebits = '0';
                                     if ( !info.ccd_data[0].coolermode ) info.ccd_data[0].coolermode = '0';
@@ -270,9 +283,9 @@ $(function () {
                 {    
                     switch (n) {
                         case 1:
-                            msg = '转台版本号输入有误';  break;
+                            msg = '转台属性版本号输入有误';  break;
                         case 2:
-                            msg = 'ccd版本号输入有误';  break;
+                            msg = 'ccd属性版本号输入有误';  break;
                         // case 3:
                         //     msg = '轴3复位位置输入有误';
                         //     break;
@@ -436,7 +449,7 @@ $(function () {
             },//check_devId() 结束
             check_devName:function (tip, v, e, dev) {//验证各设备 名称
                 var msg = '';
-            
+
                 if ( v.length < 1 )
                 {
                     switch (dev) {
@@ -593,6 +606,22 @@ $(function () {
                 {
                     layer.alert('请选择您要配置的望远镜!', {shade:false,closeBtn:0});return;
                 }
+                
+                msg += this.check_devId(false, this.ccd_config.ccdid, this.$refs.ccdId, "ccd");
+                msg += this.check_devName(false, this.ccd_config.name, this.$refs.ccdName, "ccd");
+                msg += this.check_pixel(false, this.ccd_config.xpixel, this.$refs.ccdXpixel, "x");
+                msg += this.check_pixel(false, this.ccd_config.ypixel, this.$refs.ccdYpixel, "y");
+                msg += this.check_pixel_size(false, this.ccd_config.xpixelsize, this.$refs.ccdXpixelSize, "x");
+                msg += this.check_pixel_size(false, this.ccd_config.ypixelsize, this.$refs.ccdYpixelSize, "y");
+                msg += this.check_devName(false, this.ccd_config.sensorname, this.$refs.ccdSensorName, "ccd_sensor");
+                msg += this.check_coolT(false, this.ccd_config.lowcoolert, this.$refs.ccdLowCoolerT);
+                msg += this.check_maxExposTime(false, this.ccd_config.maxexposuretime, this.$refs.ccdMaxExposureTime);
+                msg += this.check_maxExposTime(false, this.ccd_config.minexposuretime, this.$refs.ccdMinExposureTime, this.ccd_config.maxexposuretime);
+                msg += this.check_intV(false, this.ccd_config.exposuretimeration, this.$refs.exposureTimeRation, 1);
+                msg += this.check_intV(false, this.ccd_config.fullwelldepth, this.$refs.fullWellDepth, 2);
+                msg += this.check_emV(false, this.ccd_config.emmaxvalue, this.$refs.emMaxValue);
+                msg += this.check_emV(false, this.ccd_config.emminvalue, this.$refs.emMinValue, this.ccd_config.emmaxvalue);
+                msg += this.check_version(false, this.ccd_config.attrversion, this.$refs.ccd_version, 2);
                 if ( this.ccd_config.type == '0' )              msg += '探测器类型未选择<br>';
                 if ( this.ccd_config.imagebits == '0' )         msg += '图像位数未选择<br>';
                 if ( this.ccd_config.coolermode == '0' )        msg += '制冷方式未选择<br>';
@@ -635,6 +664,49 @@ $(function () {
                     layer.alert(msg, {shade:false,closeBtn:0});return;
                 }
 
+                var postData = new FormData (this.$refs.ccd);
+                postData.append('teleid', this.show_dev_form.teleid); //将望远镜Id 提交上去
+                postData.append('ccdno', this.show_dev_form.ccd_no); //将ccd序号 提交上去
+                $.ajax({
+                    type: 'post',
+                    url: 'ccd_config',
+                    data : postData,
+                    processData : false,
+                    contentType : false,
+                    success:  function (info) {
+                        if ( info.indexOf('{') == -1 ) //info 不是json数据
+                        {
+                            layer.alert(info, {
+                                shade:false,
+                                closeBtn:0,
+                                yes:function (n){
+                                    layer.close(n);
+                                    if (info.indexOf('登录') !== -1)
+                                    {
+                                        location.href = '/';
+                                    }
+                                },
+                            });
+                        }else{//解析 处理 json
+                            var info = $.parseJSON(info);
+        
+                            layer.alert(info.msg, {
+                                shade:false,
+                                closeBtn:0,
+                                yes:function (n){
+                                    layer.close(n);
+                                },
+                            });
+        
+                            that.ccd_config.attrmodifytime = info.attrmodifytime; //显示属性更新时间             
+
+                            if (info.file) that.ccd_file = info.file;
+                        }//解析 处理 json 结束
+                     },/*success方法结束 */
+                     error:  function () {
+                          layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0,});
+                     }
+                })/*ajax 结束*/
             },//ccd_sbmt() 结束
         },//methods 结束
     });//vue 结束////////////////////
@@ -713,25 +785,6 @@ $(function () {
 //              },
 //         })
 //     });/*ccd-No1 提交按钮 点击事件 结束*/
-
-    /*显示ccd-No1配置数据*/
-    
-    /*验证ccd-No1 表单数据*/
-
-    ccdAttrVersion.blur(function () {//验证 属性版本号
-        var that = $(this);
-        var v = $.trim(that.val());
-        var err = 0;
-
-        if ( v.length < 1 )
-        {
-            err = 1;
-            that.data('info', '属性版本号输入有误!');
-            layer.tips('属性版本号输入有误!', that, {tipsMore: true});
-        }		
-        that.data('err', err);
-    });//验证 属性版本号 结束
-    /****************ccd-No1 验证结束 ****************/
 
     /*****************滤光片表单 按钮 js事件*************/
     var filterBtn = $('#filterBtn');
