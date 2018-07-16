@@ -41,11 +41,6 @@ $(function () {
             {
                 layer.alert('焦点类型输入不合法', {shade:false});return;
             }
-        }else if( conf == 'focusratio' ){
-            if ( focusratio_valid(confVal) === false)  //验证 焦比
-            {
-                layer.alert('焦比输入不合法', {shade:false}); return;
-            }
         }else if( conf == 'imageBits' ){
             if ( imageBits_valid(confVal) === false)  //验证 图像位数
             {
@@ -61,25 +56,10 @@ $(function () {
             {
                 layer.alert('读出模式输入不合法', {shade:false});  return;
             }
-        }else if( conf == 'readoutSpeed' ){
-            if ( readoutSpeed_valid(confVal) === false)  //验证 读出速度模式
-            {
-                layer.alert('读出速度模式输入不合法', {shade:false}); return;
-            }
-        }else if( conf == 'transferSpeed' ){
-            if ( transferSpeed_valid(confVal) === false)  //验证 转移速度模式
-            {
-                layer.alert('转移速度模式输入不合法', {shade:false}); return;
-            }
         }else if( conf == 'gainmode' ){
             if ( gainmode_valid(confVal) === false)  //验证 增益模式
             {
                 layer.alert('增益模式输入不合法', {shade:false}); return;
-            }
-        }else if( conf == 'gainNumber' ){
-            if ( gainNumber_valid(confVal) === false)  //验证 增益档位
-            {
-                layer.alert('增益档位输入不合法', {shade:false});return;
             }
         }else if( conf == 'ShutterType' ){
             if ( ShutterType_valid(confVal) === false)  //验证 快门类型
@@ -90,11 +70,6 @@ $(function () {
             if ( ShutterMode_valid(confVal) === false)  //验证 快门模式
             {
                 layer.alert('快门模式输入不合法', {shade:false}); return;
-            }
-        }else if( conf == 'BinArray' ){
-            if ( BinArray_valid(confVal) === false)  //验证 bin
-            {
-                layer.alert('bin值输入不合法', {shade:false}); return;
             }
         }else if( conf == 'InterfaceType' ){
             if ( InterfaceType_valid(confVal) === false)  //验证 ccd接口类型
@@ -173,15 +148,15 @@ $(function () {
     }//验证焦点类型 结束
 
     //验证焦比
-    function focusratio_valid (v)
-    {
-        //输入格式为[12.1 18.1]
-        var patn = /^\[[0-9.]+ [0-9.]+\]$/;
-        if ( !patn.test(v) )
-        {
-            return false;
-        }
-    }//验证焦比 结束
+    // function focusratio_valid (v)
+    // {
+    //     //输入格式为[12.1 18.1]
+    //     var patn = /^\[[0-9.]+ [0-9.]+\]$/;
+    //     if ( !patn.test(v) )
+    //     {
+    //         return false;
+    //     }
+    // }//验证焦比 结束
 
     //验证图像位数
     function imageBits_valid (v)
@@ -209,34 +184,12 @@ $(function () {
     function readoutMode_valid (v)
     {
         //输入格式为汉字 包含’支持‘
-        var patn = /^支持[\u4e00-\u9fa5]+读出$/;
-        if ( !patn.test(v) )
+        //var patn = /^支持[\u4e00-\u9fa5]+读出$/;
+        if ( $.trim(v).length < 1 )
         {
             return false;
         }
     }//验证读出模式 结束
-
-    //验证读出速度模式
-    function readoutSpeed_valid (v)
-    {
-        //输入格式A B C 选一
-        var patn = /^[A-Z]$/;
-        if ( !patn.test(v) )
-        {
-            return false;
-        }
-    }//验证读出速度模式 结束
-
-    //验证转移速度模式
-    function transferSpeed_valid (v)
-    {
-        //输入格式a b c 选一
-        var patn = /^[a-z]$/;
-        if ( !patn.test(v) )
-        {
-            return false;
-        }
-    }//验证转移速度模式 结束
 
     //验证增益模式
     function gainmode_valid (v)
@@ -248,17 +201,6 @@ $(function () {
             return false;
         }
     }//验证增益模式 结束
-
-    //验证增益档位
-    function gainNumber_valid (v)
-    {
-        //输入格式正整数
-        var patn = /^[1-9]+$/;
-        if ( !patn.test(v) )
-        {
-            return false;
-        }
-    }//验证增益档位 结束
 
     //验证快门类型
     function ShutterType_valid (v)
@@ -275,30 +217,19 @@ $(function () {
     function ShutterMode_valid (v)
     {
         //输入格式 支持GlobalShutter
-        var patn = /^支持\w+$/;
-        if ( !patn.test(v) )
+        //var patn = /^支持\w+$/;
+        if ( $.trim(v).length < 1 )
         {
             return false;
         }
     }//验证快门模式 结束
 
-    //验证bin
-    function BinArray_valid (v)
-    {
-        //输入格式 [1 2 3]
-        var patn = /^\[1( [1-9]+)*\]$/;
-        if ( !patn.test(v) )
-        {
-            return false;
-        }
-    }//验证bin 结束
-
     //验证ccd接口类型
     function InterfaceType_valid (v)
     {
         //输入格式 支持CameraLink
-        var patn = /^支持\w+(\w|.)*$/;
-        if ( !patn.test(v) )
+        //var patn = /^支持\w+(\w|.)*$/;
+        if ( $.trim(v).length < 1 )
         {
             return false;
         }

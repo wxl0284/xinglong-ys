@@ -43,7 +43,12 @@ $(function () {
                 show_guide:false, //控制显示导星镜的配置表单
             },//show_dev_form 结束
             confOption: {BinArray:['']},
-            test:'',
+            ccd_readOutSpeed:{//ccd读出速度
+                speed_num:1, //显示的读出速度数量
+            },//ccd读出速度 结束
+            ccd_transSpeed:{//ccd转移速度
+                speed_num:1, //显示的转移速度数量
+            },//ccd转移速度 结束
             gimbal_config: {
                 ip:'', type: '0', focustype: '0', focusratio: '0', focuslength:'', maxaxis1speed:'', maxaxis2speed:'',
                 maxaxis1speed:'', maxaxis1acceleration:'', maxaxis2acceleration:'', maxaxis3acceleration:'',
@@ -53,9 +58,9 @@ $(function () {
             gimbal_file: {}, //转台上传的文件
             ccd_config: {
                 type: '0', imagebits: '0', coolermode: '0', gainnumber: '0', shuttertype: '0',
-                binarray: '0',ip:'', ccdid:'', name:'', xpixel:'', ypixel:'', xpixelsize:'', ypixelsize:'',
+                binarray: '',ip:'', ccdid:'', name:'', xpixel:'', ypixel:'', xpixelsize:'', ypixelsize:'',
                 sensorname:'', lowcoolert:'', maxexposuretime:'', minexposuretime:'', exposuretimeration:'', 
-                fullwelldepth:'', readoutspeed:[], readoutmode:[], transferspeed:[], gainmode:[], gainvaluearray:'',
+                fullwelldepth:'', /*readoutspeed:[],*/ readoutmode:[], transferspeed:[], gainmode:[], gainvaluearray:'',
                 readoutnoisearray:'', shuttermode:[], interfacetype:[], emmaxvalue:'', exposetriggermode:[],
                 emminvalue:'', attrversion:'' 
             }, //ccd的配置信息
@@ -132,7 +137,6 @@ $(function () {
                                     if ( !info.ccd_data[0].coolermode ) info.ccd_data[0].coolermode = '0';
                                     if ( !info.ccd_data[0].gainnumber ) info.ccd_data[0].gainnumber = '0';
                                     if ( !info.ccd_data[0].shuttertype ) info.ccd_data[0].shuttertype = '0';
-                                    if ( !info.ccd_data[0].binarray ) info.ccd_data[0].binarray = '0';
                         
                                     that.ccd_config = info.ccd_data[0]; //将第一个ccd中的配置数据赋值给ccd_config
                                     
@@ -311,8 +315,6 @@ $(function () {
 
                 if ( this.gimbal_config.focustype === '0' )  msg += '焦点类型未选择<br>';
 
-                if ( this.gimbal_config.focusratio === '0')  msg += '焦比未选择<br>';
-
                 msg += this.check_focuslength(false, this.gimbal_config.focuslength);
 
                 msg += this.check_axisSpeed(false, this.gimbal_config.maxaxis1speed, this.$refs.axis1speed, 1);
@@ -478,10 +480,24 @@ $(function () {
 				}
 				return msg !== '' ? msg + '<br>' : '';
             },//check_devName() 结束
+            check_bin: function (tip, v, e){//验证ccd bin
+                var msg = '';
+                var patn = /^\d+( \d+)*$/;
+                if ( !patn.test(v) )
+                {
+                    msg = 'bin输入有误';
+                }
+
+                if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, e);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+            },//check_bin() 结束
             check_pixel: function (tip, v, e, n) {//验证 ccd x、y像素数目
                 var msg = '';
-                var patn = /^\d{4,}$/;
-                if ( !patn.test(v) || v < 1024 )
+                var patn = /^\d+$/;
+                if ( !patn.test(v) || v < 1 )
                 {
                     switch (n) {
                         case 'x':
@@ -622,6 +638,7 @@ $(function () {
                 msg += this.check_emV(false, this.ccd_config.emmaxvalue, this.$refs.emMaxValue);
                 msg += this.check_emV(false, this.ccd_config.emminvalue, this.$refs.emMinValue, this.ccd_config.emmaxvalue);
                 msg += this.check_version(false, this.ccd_config.attrversion, this.$refs.ccd_version, 2);
+                msg += this.check_bin(false, this.ccd_config.binarray, this.$refs.bin);
                 if ( this.ccd_config.type == '0' )              msg += '探测器类型未选择<br>';
                 if ( this.ccd_config.imagebits == '0' )         msg += '图像位数未选择<br>';
                 if ( this.ccd_config.coolermode == '0' )        msg += '制冷方式未选择<br>';
@@ -629,7 +646,6 @@ $(function () {
                 if ( this.ccd_config.readoutmode.length < 1 )   msg += '读出模式未选择<br>';
                 if ( this.ccd_config.transferspeed.length < 1 ) msg += '转移速度模式未选择<br>';
                 if ( this.ccd_config.gainmode.length < 1 )      msg += '增益模式未选择<br>';
-                if ( this.ccd_config.gainnumber == '0' )        msg += '增益档位未选择<br>';
                 if ( this.ccd_config.shuttertype == '0' )       msg += '快门类型未选择<br>';
                 if ( this.ccd_config.shuttermode.length < 1)    msg += '快门模式未选择<br>';
                 if ( this.ccd_config.issupportfullframe === undefined ) msg += '支持帧转移未选择<br>';
@@ -637,7 +653,6 @@ $(function () {
                 if ( this.ccd_config.issupportscmosnoisefilter === undefined ) msg += '支持CMOS noise filter未选择<br>';
                 if ( this.ccd_config.issupportbaseline === undefined ) msg += '支持base line未选择<br>';
                 if ( this.ccd_config.issupportoverscan === undefined ) msg += '支持Over scan未选择<br>';
-                if ( this.ccd_config.binarray == '0' ) msg += 'BIN值未选择<br>';
                 if ( this.ccd_config.issupportroi === undefined )   msg += '支持开窗未选择<br>';
                 if ( this.ccd_config.interfacetype.length < 1 )     msg += '接口类型未选择<br>';
                 if ( this.ccd_config.exposetriggermode.length < 1 ) msg += '曝光触发模式未选择<br>';

@@ -113,10 +113,11 @@
 						</td>
 						<td>焦比:</td>
 						<td>
-							<select id='gimbalFocusratio' name='focusratio' v-model='gimbal_config.focusratio'>
+							<!-- <select id='gimbalFocusratio' name='focusratio' v-model='gimbal_config.focusratio'>
 								<option value="0">请选择</option>
 								<option v-for='v in confOption.focusratio' :value='v' >{{v}}</option>
-							</select>
+							</select> -->
+							<input type='text' ref='focus_L' name='focusratio' placeholder='[8 8]' v-model.trim='gimbal_config.focusratio'>
 						</td>
 						<td>焦距:</td>
 						<td>
@@ -471,7 +472,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td>曝光时间分辨率:</td>
+						<td>曝光时间分辨率（μs）:</td>
 						<td>
 							<input type='text' ref='exposureTimeRation' name='exposuretimeration' placeholder='整数' v-model.trim='ccd_config.exposuretimeration' @blur='check_intV(true, ccd_config.exposuretimeration, $refs.exposureTimeRation, 1)'>
 						</td>
@@ -479,19 +480,31 @@
 						<td>
 							<input type='text' ref='fullWellDepth' name='fullwelldepth' placeholder='整数' v-model.trim='ccd_config.fullwelldepth' @blur='check_intV(true, ccd_config.fullwelldepth, $refs.fullWellDepth, 2)'>
 						</td>
-						<td>读出速度模式:</td>
-						<td id='ccdReadoutSpeed' class='border_td'>
-							<span v-for='v in confOption.readoutSpeed'>{{v}}<input type='checkbox' name='readoutspeed[]' :value='v' v-model='ccd_config.readoutspeed'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+					</tr>
+					<tr>
+						<td>读出速度（MHz）:</td>
+						<td id='ccdReadoutSpeed' colspan="5" class='border_td'>
+							<span  v-for='v in ccd_readOutSpeed.speed_num'>
+								{{v}}:<input type='text' style='width:4.5%' name='readoutspeed'>
+								<span v-if='ccd_readOutSpeed.speed_num>=2'>&nbsp;<input type='button' style='width:4.5%;font-size:1em;font-weight:normal;' value='删除' @click='ccd_readOutSpeed.speed_num--;'></span>
+								<span v-if='ccd_readOutSpeed.speed_num==v'>&nbsp;<input type='button' style='width:4.5%;font-size:1em;font-weight:normal;' value='增加' @click='ccd_readOutSpeed.speed_num++;'></span>
+							</span>
+						</td>
+					</tr>
+					<tr>
+						<td>转移速度（MHz）:</td>
+						<td id='ccdReadoutSpeed' colspan="5" class='border_td'>
+							<span  v-for='v in ccd_transSpeed.speed_num'>
+								{{v}}:<input type='text' style='width:4.5%' name='transferspeed'>
+								<span v-if='ccd_transSpeed.speed_num>=2'>&nbsp;<input type='button' style='width:4.5%;font-size:1em;font-weight:normal;' value='删除' @click='ccd_transSpeed.speed_num--;'></span>
+								<span v-if='ccd_transSpeed.speed_num==v'>&nbsp;<input type='button' style='width:4.5%;font-size:1em;font-weight:normal;' value='增加' @click='ccd_transSpeed.speed_num++;'></span>
+							</span>
 						</td>
 					</tr>
 					<tr>
 						<td>读出模式:</td>
-						<td colspan="3" class="border_td" id='ccd_1readoutMode'>
+						<td colspan="5" class="border_td" id='ccd_1readoutMode'>
 							<span v-for='v in confOption.readoutMode'>{{v}}<input type='checkbox' name='readoutmode[]' :value='v' v-model='ccd_config.readoutmode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-						</td>
-						<td>转移速度模式:</td>
-						<td id='ccdTransferSpeed' class='border_td'>
-							<span v-for='v in confOption.transferSpeed'>{{v}}<input type='checkbox' name='transferspeed[]' :value='v' v-model='ccd_config.transferspeed'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 					</tr>
 					<tr>
@@ -501,10 +514,11 @@
 						</td>
 						<td>增益档位:</td>
 						<td>
-							<select id='ccd_1GainNumber' name='gainnumber' v-model='ccd_config.gainnumber'>
+							<!-- <select id='ccd_1GainNumber' name='gainnumber' v-model='ccd_config.gainnumber'>
 								<option value="0">请选择</option>
 								<option :value="v" v-for='v in confOption.gainNumber'>{{v}}</option>
-							</select>
+							</select> -->
+							<input type='text' name='gainnumber' v-model='ccd_config.gainnumber'>
 						</td>
 					</tr>
 					<tr>
@@ -565,10 +579,11 @@
 						</td>
 						<td>BIN:</td>
 						<td>
-							<select id='ccd_1BinArray' name='binarray' v-model='ccd_config.binarray'>
+							<!-- <select id='ccd_1BinArray' name='binarray' v-model='ccd_config.binarray'>
 								<option value="0">请选择</option>
 								<option :value="v" v-for='v in final_binArray'>{{v}}</option>
-							</select>
+							</select> -->
+							<input type='text' ref='bin' name='binarray' placeholder='1 2 4' v-model.trim='ccd_config.binarray' @blur='check_bin(true, ccd_config.binarray, $refs.bin)'>
 						</td>
 						<td>支持开窗:</td>
 						<td>

@@ -334,7 +334,7 @@
 	
 	//将固定属性中的滤光片名称:u/v/b，对变量filterData进行赋值
 	var filterData = [];
-	var plan_filter_option = configData.filter.filtername.toLocaleUpperCase().split('/');
+	var plan_filter_option = configData.filter.filtername.split('/');
 	var filterData_num = plan_filter_option.length;
 	for (var filterData_i = 0; filterData_i < filterData_num; filterData_i++)
 	{
@@ -824,8 +824,9 @@
 			}
 
 			var plan_filter = $.trim(plans[i].filter);
-			patn = /^[0-9]$/;
-			if ( !patn.test(plan_filter) && ( $.inArray(plan_filter, plan_filter_option) == -1) )
+			//patn = /^[0-9]$/;
+			//if ( !patn.test(plan_filter) && ( $.inArray(plan_filter, plan_filter_option) == -1) )
+			if ( $.inArray(plan_filter, plan_filter_option) == -1 )
 			{
 				msg += '第' + (i+1) + '条滤光片超限!<br>';
 			}
@@ -904,15 +905,18 @@ function get_plan () {
 					},
 				});
 			}else{
-				var info = $.parseJSON(info);
+				var info = info.split('#'); //将计划数据与tag组成的字符串从其中的'#'分割为数组
+				var plan_tag = info[1];
+				var plan = $.parseJSON(info[0]);
+
 				var arr = [];
 				var ii = 0;
-				for (var p in info)
+				for (var p in plan)
 				{
-					arr[ii] = info[p];
+					arr[ii] = plan[p];
 					ii ++;
 				}
-				
+
 				table.datagrid({
 						data: arr,
 				});
@@ -920,8 +924,8 @@ function get_plan () {
 				editRow = undefined; //否则 导入后无法插入新行
 				planErr = 0; //将提交计划的错误标识 改为0
 				
-				//table.datagrid('scrollTo', 3); //滚动到第3行
-				//table.datagrid('highlightRow', 3); //高亮第3行		
+				table.datagrid('scrollTo', plan_tag-1); //滚动到第tag行
+				table.datagrid('highlightRow', plan_tag-1); //高亮第tag行		
 			}
 		},//success 方法结束
 	})/*ajax 结束*/
@@ -931,7 +935,7 @@ function get_plan () {
 
  function plan_executing (){ //显示正在执行的计划
 	get_plan();
-	setInterval (get_plan, 60000);
+	setInterval (get_plan, 2000);
  }
 
  function plan_d ()

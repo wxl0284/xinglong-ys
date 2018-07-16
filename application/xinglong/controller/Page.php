@@ -100,16 +100,11 @@ class Page extends Base
         $confNum = count($confOption);  //动态增减的固定属性的数量
         
         $errMsg = '';  //错误提示
-        if ( $confNum < 19 )    //不够19个时
+        if ( $confNum < 14 )    //不够14个时
         {//逐一判断缺少了哪个固定属性
             if ( !in_array(['conf' => 'focustype'], $confOption) )
             {//缺少了'焦点类型'
                 $errMsg .= '固定属性还须添加：焦点类型!<br>';
-            }
-
-            if ( !in_array(['conf' => 'focusratio'], $confOption) )
-            {//缺少了'焦距'
-                $errMsg .= '固定属性还须添加：焦比!<br>';
             }
             if ( !in_array(['conf' => 'imageBits'], $confOption) )
             {//缺少了'图像位数'
@@ -123,21 +118,9 @@ class Page extends Base
             {//缺少了'读出模式'
                 $errMsg .= '固定属性还须添加：读出模式!<br>';
             }
-            if ( !in_array(['conf' => 'readoutSpeed'], $confOption) )
-            {//缺少了'读出速度模式'
-                $errMsg .= '固定属性还须添加：读出速度模式!<br>';
-            }
-            if ( !in_array(['conf' => 'transferSpeed'], $confOption) )
-            {//缺少了'转移速度模式'
-                $errMsg .= '固定属性还须添加：转移速度模式!<br>';
-            }
             if ( !in_array(['conf' => 'gainmode'], $confOption) )
             {//缺少了'增益模式'
                 $errMsg .= '固定属性还须添加：增益模式!<br>';
-            }
-            if ( !in_array(['conf' => 'gainNumber'], $confOption) )
-            {//缺少了'增益档位'
-                $errMsg .= '固定属性还须添加：增益档位!<br>';
             }
             if ( !in_array(['conf' => 'ShutterType'], $confOption) )
             {//缺少了'快门类型'
@@ -146,10 +129,6 @@ class Page extends Base
             if ( !in_array(['conf' => 'ShutterMode'], $confOption) )
             {//缺少了'快门模式'
                 $errMsg .= '固定属性还须添加：快门模式!<br>';
-            }
-            if ( !in_array(['conf' => 'BinArray'], $confOption) )
-            {//缺少了'Bin'
-                $errMsg .= '固定属性还须添加：Bin!<br>';
             }
             if ( !in_array(['conf' => 'InterfaceType'], $confOption) )
             {//缺少了'ccd接口类型'
@@ -179,15 +158,15 @@ class Page extends Base
             {//缺少了'导星镜焦点类型'
                 $errMsg .= '固定属性还须添加：导星镜焦点类型!';
             }
-        }/*检查判断数据表'confoption'内19个动态增减的固定属性  结束*/
+        }/*检查判断数据表'confoption'内14个动态增减的固定属性  结束*/
        
         if ($errMsg != '')
         {//还须添加固定属性
             return $errMsg;
         }else{//获取相应望远镜的配置数据，以json格式返回
-            /*1、获取19个动态增减的固定属性数据*/
-            $result['confOption'] = $this->get_19confOption ();            
-            /*获取19个动态增减的固定属性数据 结束*/
+            /*1、获取动态增减的固定属性数据*/
+            $result['confOption'] = $this->get_14confOption ();            
+            /*获取动态增减的固定属性数据 结束*/
 
             /*查转台的配置数据 需要查atlist表、gimbalconf表*/
             $at_data = Db::table('atlist')->where('id', $id)->find();
@@ -971,7 +950,7 @@ class Page extends Base
     }/*验证望远镜名 口径 结束*/
 
     /*获取19个动态增减的固定属性 数据*/
-    protected function get_19confOption ()
+    protected function get_14confOption ()
     {
         /*获取所有配置选项 */
         $confOption = Db::table('confoption')->field('conf, conf_val')->select();

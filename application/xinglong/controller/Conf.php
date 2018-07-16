@@ -34,12 +34,6 @@ class Conf extends Base
             {
                 return '焦点类型格式错误';
             }
-        }elseif ( $postData['conf'] == 'focusratio' )    //验证 焦比
-        {
-            if ( !$this->check_focusratio($postData['conf_val']) )
-            {
-                return '焦比格式错误';
-            }
         }elseif ( $postData['conf'] == 'imageBits' ) //验证 图像位数
         {
             if ( !$this->check_imageBits($postData['conf_val']) )
@@ -58,12 +52,6 @@ class Conf extends Base
              {
                  return '读出模式格式错误';
              }
-         }elseif ( $postData['conf'] == 'readoutSpeed' )   //验证 读出速度模式
-         {
-             if ( !$this->check_readoutSpeed($postData['conf_val']) )
-             {
-                 return '读出速度模式格式错误';
-             }
          }elseif ( $postData['conf'] == 'transferSpeed' )   //验证 转移速度模式
          {
              if ( !$this->check_transferSpeed($postData['conf_val']) )
@@ -76,12 +64,6 @@ class Conf extends Base
              {
                  return '增益模式格式错误';
              }
-         }elseif ( $postData['conf'] == 'gainNumber' )   //验证 增益档位
-         {
-             if ( !$this->check_gainNumber($postData['conf_val']) )
-             {
-                 return '增益档位格式错误';
-             }
          }elseif ( $postData['conf'] == 'ShutterType' )   //验证 快门类型
          {
              if ( !$this->check_ShutterType($postData['conf_val']) )
@@ -93,12 +75,6 @@ class Conf extends Base
              if ( !$this->check_ShutterMode($postData['conf_val']) )
              {
                  return '快门模式格式错误';
-             }
-         }elseif ( $postData['conf'] == 'BinArray' )   //验证 Bin
-         {
-             if ( !$this->check_BinArray($postData['conf_val']) )
-             {
-                 return 'Bin格式错误';
              }
          }elseif ( $postData['conf'] == 'InterfaceType' )   //验证 ccd接口类型
          {
@@ -209,28 +185,18 @@ class Conf extends Base
         if ( $postConf == 'focustype')
         {
             $conf = '望远镜焦点类型';
-        }else if ($postConf == 'focusratio'){
-            $conf = '焦比';
         }else if ($postConf == 'imageBits'){
             $conf = '图像位数';
         }else if ($postConf == 'coolerMode'){
             $conf = '制冷方式';
         }else if ($postConf == 'readoutMode'){
             $conf = '读出模式';
-        }else if ($postConf == 'readoutSpeed'){
-            $conf = '读出速度模式';
-        }else if ($postConf == 'transferSpeed'){
-            $conf = '转移速度模式';
         }else if ($postConf == 'gainmode'){
             $conf = '增益模式';
-        }else if ($postConf == 'gainNumber'){
-            $conf = '增益档位';
         }else if ($postConf == 'ShutterType'){
             $conf = '快门类型';
         }else if ($postConf == 'ShutterMode'){
             $conf = '快门模式';
-        }else if ($postConf == 'BinArray'){
-            $conf = 'BIN';
         }else if ($postConf == 'InterfaceType'){
             $conf = 'ccd接口类型';
         }else if ($postConf == 'ExposeTriggerMode'){
@@ -246,7 +212,6 @@ class Conf extends Base
         }else if ($postConf == 'opticalStructure'){
             $conf = '导星镜焦点类型';
         }
-
         return $conf;
     }//根据表单数据 判断是哪个固定属性 结束
 
@@ -260,17 +225,6 @@ class Conf extends Base
             return true;
         }
     }/*验证 焦点类型 结束*/
-
-    /*验证 焦比*/
-    protected function check_focusratio ($val)
-    {
-        if ( !preg_match('/^\[[0-9.]+ [0-9.]+\]$/', $val) )
-        {
-            return false;
-        }else{
-            return true;
-        }
-    }/*验证 焦比 结束*/
 
     /*验证 图像位数*/
     protected function check_imageBits ($val)
@@ -297,35 +251,14 @@ class Conf extends Base
     /*验证 读出模式*/
     protected function check_readoutMode ($val)
     {
-        if ( !preg_match('/^支持[\x{4e00}-\x{9af5}]+读出$/u', $val) )
+        //if ( !preg_match('/^支持[\x{4e00}-\x{9af5}]+读出$/u', $val) )
+        if ( strlen($val) < 1 )
         {
             return false;
         }else{
             return true;
         }
     }/*验证 读出模式 结束*/
-
-    /*验证 读出速度模式*/
-    protected function check_readoutSpeed ($val)
-    {
-        if ( !preg_match('/^[A-Z]$/', $val) )
-        {
-            return false;
-        }else{
-            return true;
-        }
-    }/*验证 读出速度模式 结束*/
-
-    /*验证 转移速度模式*/
-    protected function check_transferSpeed ($val)
-    {
-        if ( !preg_match('/^[a-z]$/', $val) )
-        {
-            return false;
-        }else{
-            return true;
-        }
-    }/*验证 转移速度模式 结束*/
 
     /*验证 增益模式*/
      protected function check_gainmode ($val)
@@ -337,17 +270,6 @@ class Conf extends Base
              return true;
          }
      }/*验证 增益模式 结束*/
-
-    /*验证 增益档位*/
-    protected function check_gainNumber ($val)
-    {
-        if ( !preg_match('/^[1-9]+$/', $val) )
-        {
-            return false;
-        }else{
-            return true;
-        }
-    }/*验证 增益档位 结束*/
 
     /*验证 快门类型*/
     protected function check_ShutterType ($val)
@@ -363,7 +285,8 @@ class Conf extends Base
     /*验证 快门模式*/
     protected function check_ShutterMode ($val)
     {
-        if ( !preg_match('/^支持\w+$/', $val) )
+        //if ( !preg_match('/^支持\w+$/', $val) )
+        if ( strlen($val) < 1 )
         {
             return false;
         }else{
@@ -371,21 +294,11 @@ class Conf extends Base
         }
     }/*验证 快门模式 结束*/
 
-    /*验证 Bin*/
-    protected function check_BinArray ($val)
-    {
-        if ( !preg_match('/^\[1( [1-9]+)*\]$/', $val) )
-        {
-            return false;
-        }else{
-            return true;
-        }
-    }/*验证 Bin 结束*/
-
     /*验证 ccd接口类型*/
     protected function check_InterfaceType ($val)
     {
-        if ( !preg_match('/^支持\w+(\w|.)*$/', $val) )
+        //if ( !preg_match('/^支持\w+(\w|.)*$/', $val) )
+        if ( strlen($val) < 1 )
         {
             return false;
         }else{

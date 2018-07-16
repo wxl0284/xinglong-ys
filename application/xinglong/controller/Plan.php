@@ -310,7 +310,8 @@ class Plan extends Base
 			//验证 滤光片
 			$filter = strtoupper ($postData['planData'][$i]['filter']);
 	
-			if ( !preg_match('/^[0-9]$/', $filter) && !in_array($filter, $filter_option) )
+			//if ( !preg_match('/^[0-9]$/', $filter) && !in_array($filter, $filter_option) )
+			if ( !in_array($filter, $filter_option) )
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:滤光片参数超限!<br>';
 			}
@@ -445,14 +446,14 @@ class Plan extends Base
 
 			 //滤光片
 			$filter = $postData['planData'][$i]['filter'];
-
-			if ( preg_match('/^\d+$/', $filter) ) //数字类型
-			{
-				$sendMsg .= pack('a8', $filter_option[$filter]); 
-			}else{//直接为字符类型数据
-				$filter = strtoupper ($filter);
-				$sendMsg .= pack('a8', $filter);
-			 }	//历元结束
+			$sendMsg .= pack('a8', $filter);
+			// if ( preg_match('/^\d+$/', $filter) ) //数字类型
+			// {
+			// 	$sendMsg .= pack('a8', $filter_option[$filter]); 
+			// }else{//直接为字符类型数据
+			// 	$filter = strtoupper ($filter);
+			// 	$sendMsg .= pack('a8', $filter);
+			//  }	//滤光片
 
 			//增益 gain
 			$gain = $postData['planData'][$i]['gain'];
@@ -580,12 +581,12 @@ class Plan extends Base
 			//如果此用户用正在执行的计划，
 			//........
 			//去表plandata中倒序获取第一条，以json格式返回给ajax
-			//.............
 			//$exetue = Db::table($plan_table)->where('user', $this->user)->order('id', 'desc')->field('tag')->find();
+			$exetue = Db::table($plan_table)->where('user', $this->user)->order('id', 'desc')->field('tag')->find();
 			$plan_data = Db::table('plandata')->where('atuser', $this->user)->where('at', $at)->order('id', 'desc')->field('plan')->find();
-			if ($plan_data)
+			if ( $plan_data && $exetue )
 			{
-				return $plan_data['plan'];
+				return $plan_data['plan']. '#' . $exetue ['tag']; //将计划的json数据连接上#tag
 			}else{
 				return '无正执行计划!';
 			}

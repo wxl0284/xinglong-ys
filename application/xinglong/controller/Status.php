@@ -81,68 +81,49 @@ class Status extends Base
         switch ($gimbalStatus['curstatus'])
         {
             case 1:
-                $status['curstatus'] = '离线';
-                break;
+                $status['curstatus'] = '离线';break;
             case 2:
-                $status['curstatus'] = '连接中';
-                break;
+                $status['curstatus'] = '连接中';break;
             case 3:
-                $status['curstatus'] = '断开中';
-                break;
+                $status['curstatus'] = '断开中'; break;
             case 4:
-                $status['curstatus'] = '未找零';
-                break;
+                $status['curstatus'] = '未找零';break;
             case 5:
-                $status['curstatus'] = '找零中';
-                break;
+                $status['curstatus'] = '找零中';break;
             case 6:
-                $status['curstatus'] = '停止中';
-                break;
+                $status['curstatus'] = '停止中'; break;
             case 7:
-                $status['curstatus'] = '停止';
-                break;
+                $status['curstatus'] = '停止';break;
             case 8:
-                $status['curstatus'] = '急停中';
-                break;
+                $status['curstatus'] = '急停中';break;
             case 9:
-                $status['curstatus'] = '急停';
-                break;
+                $status['curstatus'] = '急停';break;
             case 10:
-                $status['curstatus'] = '复位中';
-                break;
+                $status['curstatus'] = '复位中';break;
             case 11:
-                $status['curstatus'] = '复位';
-                break;
+                $status['curstatus'] = '复位'; break;
             case 12:
-                $status['curstatus'] = '等待恒速跟踪';
-                break;
+                $status['curstatus'] = '等待恒速跟踪'; break;
             case 13:
-                $status['curstatus'] = '恒速跟踪';
-                break;
+                $status['curstatus'] = '恒速跟踪';break;
             case 14:
-                $status['curstatus'] = '速度修正中';
-                break;
+                $status['curstatus'] = '速度修正中';break;
             case 15:
-                $status['curstatus'] = '等待变速跟踪';
-                break;
+                $status['curstatus'] = '位置修正中';break;
             case 16:
-                $status['curstatus'] = '变速跟踪中';
-                break;
+                $status['curstatus'] = '等待变速跟踪';break;
             case 17:
-                $status['curstatus'] = '指向中';
-                break;
+                $status['curstatus'] = '等待变速跟踪';break;
             case 18:
-                $status['curstatus'] = '指向到位';
-                break;
+                $status['curstatus'] = '指向中';break;
             case 19:
-                $status['curstatus'] = '等待恒速';
-                break;
+                $status['curstatus'] = '指向到位';break;
             case 20:
-                $status['curstatus'] = '恒速运动';
-                break;
+                $status['curstatus'] = '等待恒速跟踪';break;
             case 21:
-                $status['curstatus'] = '异常';
-                break;
+                $status['curstatus'] = '恒速跟踪';break;
+			case 22:
+                $status['curstatus'] = '错误'; break;               
 			default:
 				$status['curstatus'] = '未获取到';
                 break;	
@@ -242,9 +223,7 @@ class Status extends Base
         
         if (is_numeric($gimbalStatus['siderealTime']))
         {//当前恒星时
-            //$status['siderealTime'] = data2Tim$gimbalStatus['siderealTime']);
             $status['siderealTime'] = data2Time($gimbalStatus['siderealTime']);
-            //$status['siderealTime'] = round(data2Time($gimbalStatus['siderealTime']), 5);
         }else{
             $status['siderealTime'] = $gimbalStatus['siderealTime'];
         }
