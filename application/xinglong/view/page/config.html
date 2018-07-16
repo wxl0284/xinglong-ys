@@ -42,7 +42,7 @@
 							<option value="5">5</option>
 						</select>
 					</td>
-					<td>滤光片转轮<input id='have_filter' type="checkbox" value='show_filter' v-model='show_dev_form.show_filter' @click='ff' ></td>
+					<td>滤光片转轮<input id='have_filter' type="checkbox" value='show_filter' v-model='show_dev_form.show_filter'></td>
 					<td>随动圆顶<input id='have_sDome' type="checkbox" name='sDome' v-model='show_dev_form.show_sDome' ></td>
 					<td>全开圆顶<input id='have_oDome' type="checkbox" name='oDome'v-model='show_dev_form.show_oDome' ></td>
 					<td>调焦器<input id='have_focus' type="checkbox" name='focus' v-model='show_dev_form.show_focus'></td>
@@ -105,25 +105,24 @@
 					</tr>
 					<tr>
 						<td>焦点类型:</td>
-						<td>
-							<select id='gimbalFocustype' name='focustype' v-model='gimbal_config.focustype'>
-								<option value="0">请选择</option>
-								<option v-for='v in confOption.focustype' :value='v' >{{v}}</option>
-							</select>
-						</td>
-						<td>焦比:</td>
-						<td>
-							<!-- <select id='gimbalFocusratio' name='focusratio' v-model='gimbal_config.focusratio'>
-								<option value="0">请选择</option>
-								<option v-for='v in confOption.focusratio' :value='v' >{{v}}</option>
-							</select> -->
-							<input type='text' ref='focus_L' name='focusratio' placeholder='[8 8]' v-model.trim='gimbal_config.focusratio'>
-						</td>
-						<td>焦距:</td>
-						<td>
-							<input type='text' id='gimbalFocuslength' ref='focus_L' name='focuslength' placeholder='[19.4 97.2]' v-model.trim='gimbal_config.focuslength' @blur='check_focuslength(true, gimbal_config.focuslength)' >
+						<td colspan="5" class="border_td">
+							<span v-for='v in confOption.focustype'>{{v}}<input type='checkbox' :value='v' v-model='gimbal_focus.focustype'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 					</tr>
+					<tr><!--将焦点类型-焦比-焦距 一一对应-->
+						<td colspan="6">
+							<table id='gimbal_focus' v-if='gimbal_focus.focustype.length>0'>
+								<tr>
+									<td>焦点类型</td> <td>焦比</td> <td @click='tt'>焦距</td>
+								</tr>
+								<tr v-for='(v,k) in confOption.focustype' v-if='show_focus_tr(v,k)'>
+									<td>{{v}}</td>
+									<td><input type="text" :ref='"focusR"+k' placeholder="[2.3 3.6]" v-model.trim='gimbal_focus.postData[k].focusratio' @blur='check_focus_val(k)'></td>
+									<td><input type="text" placeholder="[2.3 3.6]" v-model.trim='gimbal_focus.postData[k].focuslength'></td>
+								</tr>
+							</table>
+						</td>
+					</tr><!--将焦点类型-焦比-焦距 一一对应 结束 -->
 					<tr>
 						<td>轴1最大速度（°/s）:</td><!--maxAxis1Speed-->
 						<td>

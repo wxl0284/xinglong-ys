@@ -42,6 +42,10 @@ $(function () {
                 show_oDome:false, //控制显示全开圆顶的配置表单
                 show_guide:false, //控制显示导星镜的配置表单
             },//show_dev_form 结束
+            gimbal_focus:{//存储转台 各焦点类型一一对应的焦比及焦距
+                focustype:[],
+                postData:{},//转台焦点类型须提交的数据
+            },//gimbal_focus 结束
             confOption: {BinArray:['']},
             ccd_readOutSpeed:{//ccd读出速度
                 speed_num:1, //显示的读出速度数量
@@ -50,7 +54,7 @@ $(function () {
                 speed_num:1, //显示的转移速度数量
             },//ccd转移速度 结束
             gimbal_config: {
-                ip:'', type: '0', focustype: '0', focusratio: '0', focuslength:'', maxaxis1speed:'', maxaxis2speed:'',
+                ip:'', type: '0', focustype: [], focusratio: '0', focuslength:'', maxaxis1speed:'', maxaxis2speed:'',
                 maxaxis1speed:'', maxaxis1acceleration:'', maxaxis2acceleration:'', maxaxis3acceleration:'',
                 axis1parkposition:'', axis2parkposition:'', axis3parkposition:'', minelevation:'', numtemperaturesensor:'',
                 numhumiditysensor:'', attrversion:''
@@ -72,12 +76,30 @@ $(function () {
                 return temp.replace('[', '').replace(']', '').split(' '); //即：[ "1", "2", "3", "4" ]
             },
         },//computed 结束
+        mounted:function () {
+
+        },//mounted 结束
         methods: {
-            ff:function (){
-                //console.log(this.show_dev_form);
-                //this.show_dev_form.push('show_gimbal');
-                console.log(this.ccd_config.readoutspeed);
-            },//ff() 结束
+            tt:function (e) {
+                //console.log(this.gimbal_focus.postData);
+                console.log(this.gimbal_focus.postData[1].focusratio);
+                //console.log(this.confOption.focustype);
+                //layer.tips('haha', e.target);
+            },
+            show_focus_tr:function (v, k){
+                if ( $.inArray(v, this.gimbal_focus.focustype) !== -1 )
+                {
+                    return true;
+                }else{
+                    return false;
+                } 
+            },
+            check_focus_val: function (k){
+                if ( this.gimbal_focus.postData[k].focusratio == 0 ){
+                    layer.tips('no', this.$refs['focusR'+k]);
+                }
+                console.log(this.gimbal_focus.postData[k].focusratio);
+            },//check_focus_val() 结束
             change_ccd: function (n) {//切换要配置的ccd
                 this.ccd_config = thi;
             },//change_ccd() 结束
@@ -110,14 +132,19 @@ $(function () {
                             }else{//处理返回的json数据
                                 var info = $.parseJSON(info); //根据json数据 显示配置项
                                 //console.log(info.confOption);return;
-                                that.confOption = info.confOption; //将19个配置项数据赋给
-                                
+                                that.confOption = info.confOption; //将14个配置项数据赋给
+                                var focustype_num = info.confOption.focustype.length; //转台的焦点类型个数
+                                for ( let i = 0; i < focustype_num; i++)
+                                {
+                                    that.gimbal_focus.postData[i] = {focusratio:'', focuslength:''}; //初始化gimbal_focus.postData
+                                }
+
                                 if (info.gimbal_data) //在页面显示转台的配置数据
                                 {
                                     that.show_dev_form.show_gimbal = true; //显示gimbal配置表单
                                     if ( !info.gimbal_data.type ) info.gimbal_data.type = '0';
-                                    if ( !info.gimbal_data.focustype ) info.gimbal_data.focustype = '0';
-                                    if ( !info.gimbal_data.focusratio ) info.gimbal_data.focusratio = '0';
+                                    //if ( !info.gimbal_data.focustype ) info.gimbal_data.focustype = '0';
+                                    //if ( !info.gimbal_data.focusratio ) info.gimbal_data.focusratio = '0';
 
                                     that.gimbal_config = info.gimbal_data;
 
@@ -313,9 +340,9 @@ $(function () {
                 var msg = '';
                 if ( this.gimbal_config.type === '0' )  msg += '类型未选择<br>';
 
-                if ( this.gimbal_config.focustype === '0' )  msg += '焦点类型未选择<br>';
+                //if ( this.gimbal_config.focustype === '0' )  msg += '焦点类型未选择<br>';
 
-                msg += this.check_focuslength(false, this.gimbal_config.focuslength);
+                //msg += this.check_focuslength(false, this.gimbal_config.focuslength);
 
                 msg += this.check_axisSpeed(false, this.gimbal_config.maxaxis1speed, this.$refs.axis1speed, 1);
 

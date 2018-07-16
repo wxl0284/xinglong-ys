@@ -24,3 +24,7 @@ form.form input[type='button'] {font-size: 18px;font-weight:bold;}
 
 #atSelect button {width: 10%;font-size: 18px;}
 
+/*转台的焦点类型 焦比 焦距 表格 样式*/
+#gimbal_focus {border:1px solid #7a7a7a;border-collapse:collapse;width:100%}
+
+#gimbal_focus td {text-align: center;}
