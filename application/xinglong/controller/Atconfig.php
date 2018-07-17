@@ -37,6 +37,7 @@ class Atconfig extends Base
         //     $postData['ip'] = null;
         // }
         $postData = input();
+        halt($postData);
         //halt(isset($postData['maxaxis3speed']));
         
         //处理表单数据，若无轴3，则轴3相关input框禁用，则将$postData轴3相关之置为空字符串

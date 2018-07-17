@@ -115,10 +115,10 @@
 								<tr>
 									<td>焦点类型</td> <td>焦比</td> <td @click='tt'>焦距</td>
 								</tr>
-								<tr v-for='(v,k) in confOption.focustype' v-if='show_focus_tr(v,k)'>
+								<tr v-for='(v,k) in confOption.focustype' v-if='show_focus_tr(v)'>
 									<td>{{v}}</td>
-									<td><input type="text" :ref='"focusR"+k' placeholder="[2.3 3.6]" v-model.trim='gimbal_focus.postData[k].focusratio' @blur='check_focus_val(k)'></td>
-									<td><input type="text" placeholder="[2.3 3.6]" v-model.trim='gimbal_focus.postData[k].focuslength'></td>
+									<td><input type="text" :ref='"focusR"+k' placeholder="[2.3 3.6]" v-model.trim='gimbal_focus.postData[k].focusratio' @blur='check_focus_val(true,k,1)'></td>
+									<td><input type="text" :ref='"focusL"+k' placeholder="[2.3 3.6]" v-model.trim='gimbal_focus.postData[k].focuslength' @blur='check_focus_val(true,k,2)'></td>
 								</tr>
 							</table>
 						</td>

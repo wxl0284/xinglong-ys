@@ -456,8 +456,8 @@ class Page extends Base
         }
 
         //生成一个唯一标识此望远镜的id, 此望远镜名称的md5值
-        //$postData['atid'] = md5 ($postData['atname']);
-        $postData['atid'] = '';
+        $postData['atid'] = md5 ($postData['atname']);
+        //$postData['atid'] = '';
 
         /*验证望远镜添加表单的数据*/
         $errMsg = ''; //存储错误提示信息
@@ -499,10 +499,10 @@ class Page extends Base
         }
 
         //验证望远镜观 口径
-        if ( !$this->check_aperture( $postData['aperture']) )
-        {
-            $errMsg .= '望远镜口径格式错误!<br>';
-        }
+        // if ( !$this->check_aperture( $postData['aperture']) )
+        // {
+        //     $errMsg .= '望远镜口径格式错误!<br>';
+        // }
 
         if ($errMsg != '')
         {
@@ -938,16 +938,16 @@ class Page extends Base
     }/*验证望远镜名 海拔 结束*/
 
     /*验证望远镜 口径*/
-    protected function check_aperture ($aperture)
-    {
-        //合法格式：216.0
-        if ( !is_numeric($aperture) )
-        {
-            return false;
-        }else{
-            return true;
-        }
-    }/*验证望远镜名 口径 结束*/
+    // protected function check_aperture ($aperture)
+    // {
+    //     //合法格式：216.0
+    //     if ( !is_numeric($aperture) )
+    //     {
+    //         return false;
+    //     }else{
+    //         return true;
+    //     }
+    // }/*验证望远镜名 口径 结束*/
 
     /*获取19个动态增减的固定属性 数据*/
     protected function get_14confOption ()

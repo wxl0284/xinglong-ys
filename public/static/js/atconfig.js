@@ -82,11 +82,11 @@ $(function () {
         methods: {
             tt:function (e) {
                 //console.log(this.gimbal_focus.postData);
-                console.log(this.gimbal_focus.postData[1].focusratio);
+                console.log(JSON);
                 //console.log(this.confOption.focustype);
                 //layer.tips('haha', e.target);
             },
-            show_focus_tr:function (v, k){
+            show_focus_tr:function (v){
                 if ( $.inArray(v, this.gimbal_focus.focustype) !== -1 )
                 {
                     return true;
@@ -94,14 +94,32 @@ $(function () {
                     return false;
                 } 
             },
-            check_focus_val: function (k){
-                if ( this.gimbal_focus.postData[k].focusratio == 0 ){
-                    layer.tips('no', this.$refs['focusR'+k]);
+            check_focus_val: function (tip, k, n){//验证转台：焦点类型-焦比-焦距
+                var msg = '';
+                var patn = /^\[\d+\.?\d? \d+\.?\d?\]$/; //匹配[2.3 5.2]
+                var ele = ''; //输入框
+                if ( !patn.test(this.gimbal_focus.postData[k].focusratio) )
+                {
+                    switch (n)
+                    {
+                        case 1: //焦比
+                            msg = this.confOption.focustype[k] + '焦比输入有误';
+                            ele = 'focusR' + k;
+                            break;
+                        case 2: //焦距
+                            msg = this.confOption.focustype[k] + '焦距输入有误';
+                            ele = 'focusL' + k;
+                            break;
+                    }
                 }
-                console.log(this.gimbal_focus.postData[k].focusratio);
+                if ( tip === true && msg !== '' )
+                {
+                    layer.tips(msg, this.$refs[ele]);
+                }
+                return msg !== '' ? msg + '<br>' : '';
             },//check_focus_val() 结束
             change_ccd: function (n) {//切换要配置的ccd
-                this.ccd_config = thi;
+                //this.ccd_config = thi;
             },//change_ccd() 结束
             select_at:function (){
                 var index = layer.load(1); //显示加载图标
@@ -136,7 +154,7 @@ $(function () {
                                 var focustype_num = info.confOption.focustype.length; //转台的焦点类型个数
                                 for ( let i = 0; i < focustype_num; i++)
                                 {
-                                    that.gimbal_focus.postData[i] = {focusratio:'', focuslength:''}; //初始化gimbal_focus.postData
+                                    that.gimbal_focus.postData[i] = {focusratio:"", focuslength:""}; //初始化gimbal_focus.postData
                                 }
 
                                 if (info.gimbal_data) //在页面显示转台的配置数据
@@ -340,10 +358,23 @@ $(function () {
                 var msg = '';
                 if ( this.gimbal_config.type === '0' )  msg += '类型未选择<br>';
 
-                //if ( this.gimbal_config.focustype === '0' )  msg += '焦点类型未选择<br>';
+                if ( this.gimbal_focus.focustype.length == 0 )  msg += '焦点类型未选择<br>';
 
-                //msg += this.check_focuslength(false, this.gimbal_config.focuslength);
-
+                //接下来验证：每个被选择的焦点类型，其焦比、焦距是否输入正确
+                if ( this.gimbal_focus.focustype.length > 0 ) //焦点类型已被选择
+                {
+                    $.each( this.confOption.focustype, function(i, v) //jquery遍历
+                    {
+                        if ( $.inArray(v, vm.gimbal_focus.focustype ) !== -1 ) //confOption.focustype中第i个元素被选择
+                        {
+                            msg += vm.check_focus_val(false, i, 1);
+                            msg += vm.check_focus_val(false, i, 2);
+                        }else{//未被选择
+                            delete vm.gimbal_focus.postData[i]; //删除空的对象
+                        }
+                    });
+                }//验证：每个被选择的焦点类型，其焦比、焦距是否输入正确 结束
+    
                 msg += this.check_axisSpeed(false, this.gimbal_config.maxaxis1speed, this.$refs.axis1speed, 1);
 
                 msg += this.check_axisSpeed(false, this.gimbal_config.maxaxis2speed, this.$refs.axis2speed, 2);
@@ -406,6 +437,7 @@ $(function () {
                 }
                 var postData = new FormData (this.$refs.gimbal);
                 postData.append('teleid', this.show_dev_form.teleid); //将望远镜Id 提交上去
+                postData.append('focustype', JSON.stringify(vm.gimbal_focus.postData)); //将焦点类型-焦比-焦距 提交上去, 此处有bug
                 $.ajax({
                     type: 'post',
                     url: 'gimbal_config',
