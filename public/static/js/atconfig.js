@@ -69,6 +69,9 @@ $(function () {
                 emminvalue:'', attrversion:'' 
             }, //ccd的配置信息
             ccd_file: {}, //ccd上传的文件
+            filter_config: {
+                numberoffilter: 0,
+            },//滤光片的配置信息
         },//data 结束
         computed: {
             final_binArray: function (){
@@ -82,7 +85,6 @@ $(function () {
         methods: {
             tt:function (e) {
                 //console.log(this.gimbal_focus.postData);
-                console.log(JSON);
                 //console.log(this.confOption.focustype);
                 //layer.tips('haha', e.target);
             },
@@ -93,7 +95,10 @@ $(function () {
                 }else{
                     return false;
                 } 
-            },
+            },//show_focus_tr() 结束
+            show_filter_tr: function (v) {
+                return true;
+            },//show_filter_tr() 结束
             check_focus_val: function (tip, k, n){//验证转台：焦点类型-焦比-焦距
                 var msg = '';
                 var patn = /^\[\d+\.?\d? \d+\.?\d?\]$/; //匹配[2.3 5.2]
@@ -149,7 +154,7 @@ $(function () {
                                 });
                             }else{//处理返回的json数据
                                 var info = $.parseJSON(info); //根据json数据 显示配置项
-                                //console.log(info.confOption);return;
+                                //console.log($.parseJSON(info.gimbal_data.focustype));return;
                                 that.confOption = info.confOption; //将14个配置项数据赋给
                                 var focustype_num = info.confOption.focustype.length; //转台的焦点类型个数
                                 for ( let i = 0; i < focustype_num; i++)
@@ -161,8 +166,20 @@ $(function () {
                                 {
                                     that.show_dev_form.show_gimbal = true; //显示gimbal配置表单
                                     if ( !info.gimbal_data.type ) info.gimbal_data.type = '0';
-                                    //if ( !info.gimbal_data.focustype ) info.gimbal_data.focustype = '0';
-                                    //if ( !info.gimbal_data.focusratio ) info.gimbal_data.focusratio = '0';
+                                    
+                                    var gimbal_focus_conf = $.parseJSON(info.gimbal_data.focustype); //处理焦点类型-焦比-焦距
+                              
+                                    let focus_num = gimbal_focus_conf.focus.length;
+                                    if ( focus_num > 0 ) //有焦点类型被选择
+                                    {
+                                        that.gimbal_focus.focustype = gimbal_focus_conf.focus;
+                                        delete gimbal_focus_conf.focus;
+                                        for ( var p in gimbal_focus_conf )
+                                        {
+                                            that.gimbal_focus.postData[p[1]].focusratio = gimbal_focus_conf[p]['focusRatio'];
+                                            that.gimbal_focus.postData[p[1]].focuslength = gimbal_focus_conf[p]['focusLeng'];
+                                        }
+                                    }//处理焦点类型-焦比-焦距 结束
 
                                     that.gimbal_config = info.gimbal_data;
 
@@ -327,8 +344,7 @@ $(function () {
             },//check_Num() 结束
             check_version: function (tip, v, e, n) {//验证 属性版本号
                 var msg = '';
-                var patn = /^\d+$/;
-                if ( !patn.test(v) || v < 1 )
+                if ( v < 1 )
                 {    
                     switch (n) {
                         case 1:
@@ -437,7 +453,7 @@ $(function () {
                 }
                 var postData = new FormData (this.$refs.gimbal);
                 postData.append('teleid', this.show_dev_form.teleid); //将望远镜Id 提交上去
-                postData.append('focustype', JSON.stringify(vm.gimbal_focus.postData)); //将焦点类型-焦比-焦距 提交上去, 此处有bug
+                //postData.append('focustype', JSON.stringify(vm.gimbal_focus.postData)); //将焦点类型-焦比-焦距 提交上去, 此处有bug
                 $.ajax({
                     type: 'post',
                     url: 'gimbal_config',
@@ -481,8 +497,7 @@ $(function () {
             },//gimbal_sbmt() 结束
             check_devId:function (tip, v, e, dev) {//验证各设备 id
                 var msg = '';
-                var patn = /^\d{5}$/;
-                if ( !patn.test(v) )
+                if ( v.length < 1 )
                 {
                     switch (dev) {
                         case 'ccd':
@@ -881,76 +896,76 @@ $(function () {
     var filterAttrVersion = $('#filterAttrVersion'); //属性 版本号
  //根据插槽数目的值，在插槽序号的下拉框中显示相应数目的插槽 并显示各槽的滤光片类型
     /*1、首先获取插槽数目的值*/
-    var filterNum = $('#filterNum'); //插槽数目这个input框
+    //var filterNum = $('#filterNum'); //插槽数目这个input框
     /*2、插槽数目input框 blur事件*/
-    var filterSlot = $('#filterSlot'); //插槽序号 下拉框
-    filterNum.blur(function () {
-        var that = $(this);
-        var err = 0;
+    //var filterSlot = $('#filterSlot'); //插槽序号 下拉框
+    // filterNum.blur(function () {
+    //     var that = $(this);
+    //     var err = 0;
 
-        //判断是否输入了插槽数目
-        var slotNum = $.trim( that.val() );
-        if ( !$.isNumeric(slotNum) || slotNum < 1)
-        {
-            err = 1;
-            layer.tips('插槽数目的值有误!', that, {tipsMore: true});
-            return;
-        }
-        that.data('err', err);
+    //     //判断是否输入了插槽数目
+    //     var slotNum = $.trim( that.val() );
+    //     if ( !$.isNumeric(slotNum) || slotNum < 1)
+    //     {
+    //         err = 1;
+    //         layer.tips('插槽数目的值有误!', that, {tipsMore: true});
+    //         return;
+    //     }
+    //     that.data('err', err);
         
         //跟据新输入的插槽数目，删除filter_type中多余的数据
-        for (p in filter_type)
-        {
-            if ( p > slotNum )
-            {
-                delete filter_type[p]
-            }
-        }
+        // for (p in filter_type)
+        // {
+        //     if ( p > slotNum )
+        //     {
+        //         delete filter_type[p]
+        //     }
+        // }
 
         /*根据插槽数目，显示相应数目的槽*/
-        var slotHtml = '<option value="0">选择插槽</option>';
-        for (var slot = 1; slot <= slotNum; slot++)
-        {
-            slotHtml += '<option value="' + slot + '">插槽' + slot + '</option>';
-        }
-        filterSlot.html(slotHtml);
-    })/*插槽数目input框 blur事件结束*/
+    //     var slotHtml = '<option value="0">选择插槽</option>';
+    //     for (var slot = 1; slot <= slotNum; slot++)
+    //     {
+    //         slotHtml += '<option value="' + slot + '">插槽' + slot + '</option>';
+    //     }
+    //     filterSlot.html(slotHtml);
+    // })/*插槽数目input框 blur事件结束*/
      
     /*3、插槽序号下拉框 点击事件*/
-    var filter_type = {};  //定义一个对象存放各插槽的滤光片类型
+   // var filter_type = {};  //定义一个对象存放各插槽的滤光片类型
 
-    filterSlot.click(function (){
+    //filterSlot.click(function (){
         //获取子元素<option>的数目
-        var option_num = $(this).children('option').length;
-        if ( option_num < 2 )
-        {
-            layer.tips('请先输入插槽数目!', $(this), {tipsMore: true});return;
-        }
+        // var option_num = $(this).children('option').length;
+        // if ( option_num < 2 )
+        // {
+        //     layer.tips('请先输入插槽数目!', $(this), {tipsMore: true});return;
+        // }
         //获取相应的插槽序号的滤光片类型，并显示之
-        var slot_num = $(this).val();
-        if ( filter_type[slot_num] )
-        {
-            filterSystem.val( filter_type[slot_num] );
-        }
-     
-    })
+    //     
     /*插槽序号下拉框 点击事件 结束*/
 
     /*4、滤光片类型下拉框 点击事件*/
-
-    filterSystem.click(function () {
-        var filterSlot_val = filterSlot.val(); //获取插槽序号的值
-        if ( filterSlot_val == 0)
-        {
-            layer.alert('请先选择插槽序号!', {shade:false, closeBtn:0});return;
-        }
-        var filter_val = $(this).val();
-        if ( filter_val != 0 )
-        {//将滤光片类型的值存入 filter_type
-            filter_type[filterSlot_val] = filter_val;
-        }
-        //console.log(filter_type[1]);
-    })/*滤光片类型下拉框 点击事件 结束*/
+    //var slot_num = $(this).val();
+    //     if ( filter_type[slot_num] )
+    //     {
+    //         filterSystem.val( filter_type[slot_num] );
+    //     }
+     
+    // })
+    // filterSystem.click(function () {
+    //     var filterSlot_val = filterSlot.val(); //获取插槽序号的值
+    //     if ( filterSlot_val == 0)
+    //     {
+    //         layer.alert('请先选择插槽序号!', {shade:false, closeBtn:0});return;
+    //     }
+    //     var filter_val = $(this).val();
+    //     if ( filter_val != 0 )
+    //     {//将滤光片类型的值存入 filter_type
+    //         filter_type[filterSlot_val] = filter_val;
+    //     }
+    //     //console.log(filter_type[1]);
+    // })/*滤光片类型下拉框 点击事件 结束*/
 
     //根据插槽数目的值，在插槽序号的下拉框中显示相应数目的插槽 并显示各槽的滤光片类型 结束
 
@@ -960,18 +975,18 @@ $(function () {
     *  parameter：{1:'a', 2:'b'}
     *   return: 1:a#2:b
     */
-    function handle_filtersystem_data (filter_type)
-    {
-        var filter_system_str = '';
-        var filter_system_i = 1;
-         for (var p in filter_type)
-         {
-            filter_system_str += filter_system_i + ':' + filter_type[p] + '#';
-            filter_system_i ++;
-         }
-         filter_system_str = filter_system_str.substring(0, filter_system_str.length-1);
-        return filter_system_str;
-    }/*将filter_type的对象形式数据转为字符串形式 结束*/
+    // function handle_filtersystem_data (filter_type)
+    // {
+    //     var filter_system_str = '';
+    //     var filter_system_i = 1;
+    //      for (var p in filter_type)
+    //      {
+    //         filter_system_str += filter_system_i + ':' + filter_type[p] + '#';
+    //         filter_system_i ++;
+    //      }
+    //      filter_system_str = filter_system_str.substring(0, filter_system_str.length-1);
+    //     return filter_system_str;
+    // }/*将filter_type的对象形式数据转为字符串形式 结束*/
 
     /*滤光片 提交按钮 点击事件*/
     filterBtn.click(function () {
@@ -1036,35 +1051,35 @@ $(function () {
     /*滤光片表单 按钮 js事件 结束*/
 
     /*显示滤光片配置数据 */
-    function show_filter_data (data)
-    { 
-        filterIp.val(data.ip);
-        //filterId.val(data.filterid);
-        filterName.val(data.name);
-        filterTeleId.html(data.atname);
-        filterNum.val(data.numberoffilter);
-        data.numberoffilter !== undefined && filterNum.blur(); //如果插槽数目有值，执行插槽数目input框的blur事件
-        /*将滤光片类型的值赋予：filter_type*/
-        if (data.filtersystem)
-        {
-            filter_type = {}; //将此对象重置为空
-            data.filtersystem = data.filtersystem.split('#'); //得到['1:aa', '2:cc']
-            var filtersystem_num = data.filtersystem.length;
-            for (var filtersystem_i = 0; filtersystem_i < filtersystem_num; filtersystem_i++)
-            {
-                var temp_data = data.filtersystem[filtersystem_i].split(':');
-                filter_type[ temp_data[0] ] = temp_data[1];
-            }
-        }/*将滤光片类型的值赋予：filter_type 结束*/
-        filterSize.val(data.filtersize);
-        filter_Name.val(data.filtername);
-        focusLengthCompensate.html(data.filterfocuslengthcompensate);
-        filterShape.val(data.filtershape);
-        data.cansetfilterposition == '1' ? canSetFilterPosition.click() : canSetFilterPosition_1.click();
-        data.canconnect == '1' ? filterCanConnect.click() : filterCanConnect_1.click();
-        data.canfindhome == '1' ? filterCanFindHome.click() : filterCanFindHome_1.click();
-        filterAttrVersion.val(data.attrversion);
-    }/*显示滤光片配置数据 结束*/
+    // function show_filter_data (data)
+    // { 
+    //     filterIp.val(data.ip);
+    //     //filterId.val(data.filterid);
+    //     filterName.val(data.name);
+    //     filterTeleId.html(data.atname);
+    //     filterNum.val(data.numberoffilter);
+    //     data.numberoffilter !== undefined && filterNum.blur(); //如果插槽数目有值，执行插槽数目input框的blur事件
+    //     /*将滤光片类型的值赋予：filter_type*/
+    //     if (data.filtersystem)
+    //     {
+    //         filter_type = {}; //将此对象重置为空
+    //         data.filtersystem = data.filtersystem.split('#'); //得到['1:aa', '2:cc']
+    //         var filtersystem_num = data.filtersystem.length;
+    //         for (var filtersystem_i = 0; filtersystem_i < filtersystem_num; filtersystem_i++)
+    //         {
+    //             var temp_data = data.filtersystem[filtersystem_i].split(':');
+    //             filter_type[ temp_data[0] ] = temp_data[1];
+    //         }
+    //     }/*将滤光片类型的值赋予：filter_type 结束*/
+    //     filterSize.val(data.filtersize);
+    //     filter_Name.val(data.filtername);
+    //     focusLengthCompensate.html(data.filterfocuslengthcompensate);
+    //     filterShape.val(data.filtershape);
+    //     data.cansetfilterposition == '1' ? canSetFilterPosition.click() : canSetFilterPosition_1.click();
+    //     data.canconnect == '1' ? filterCanConnect.click() : filterCanConnect_1.click();
+    //     data.canfindhome == '1' ? filterCanFindHome.click() : filterCanFindHome_1.click();
+    //     filterAttrVersion.val(data.attrversion);
+    // }/*显示滤光片配置数据 结束*/
 
     /*验证滤光片表单数据*/
     var filter_text = filterForm.find('input[type="text"]');

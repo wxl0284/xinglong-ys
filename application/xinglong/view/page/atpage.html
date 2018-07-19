@@ -402,9 +402,9 @@
                     <li class='li fl'>纬度:<span>{{configData.gimbal.latitude}}</span></li>
                     <li class='li fl'>口径:<span>{{configData.gimbal.aperture}}</span> </li>
                     <li class='li fl'>类型:<span>{{configData.gimbal.type}}</span></li>
-                    <li class='li fl'>焦点类型:<span>{{configData.gimbal.focustype}}</span></li>
-                    <li class='li fl'>焦比:<span>{{configData.gimbal.focusratio}}</span></li>
-                    <li class='li fl'>焦距:<span>{{configData.gimbal.focuslength}}</span></li>
+                    <li class='li fl' style='width:100%'>焦点类型:<span>{{configData.gimbal.focustype}}</span></li>
+                    <li class='li fl' style='width:100%'>焦比:<span>{{configData.gimbal.focusratio}}</span></li>
+                    <li class='li fl' style='width:100%'>焦距:<span>{{configData.gimbal.focuslength}}</span></li>
                     <li class='li fl'>轴1最大速度:<span>{{configData.gimbal.maxaxis1speed}}</span></li>
                     <li class='li fl'> 轴2最大速度:<span>{{configData.gimbal.maxaxis2speed}}</span></li>
                     <li class='li fl'> 轴3最大速度:<span>{{configData.gimbal.maxaxis3speed}}</span></li>
@@ -942,7 +942,6 @@
 			<a class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="savePlan()">保存</a>
 			<a class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="submitPlan()">提交计划</a>
 			<a class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="plan_executing()">正执行的计划列表</a>
-			<a class="easyui-linkbutton" iconCls="icon-delete" plain="true" onclick="plan_d()">删除</a>
            </div>
 		   <!--观测计划的模式按钮-->
 		   <div id='planModes' class='pos_a'>

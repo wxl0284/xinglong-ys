@@ -577,24 +577,24 @@ class Plan extends Base
 		}
 
 		try{
-			//Db::table($plan_table)->where('user', $this->user)->order('id', 'desc')->field('tag, executing')->find();
+			//Db::table($plan_table)->where('user', $this->user)->order('id', 'desc')->field('tag')->find();
 			//如果此用户用正在执行的计划，
 			//........
 			//去表plandata中倒序获取第一条，以json格式返回给ajax
-			//$exetue = Db::table($plan_table)->where('user', $this->user)->order('id', 'desc')->field('tag')->find();
-			$exetue = Db::table($plan_table)->where('user', $this->user)->order('id', 'desc')->field('tag')->find();
-			$plan_data = Db::table('plandata')->where('atuser', $this->user)->where('at', $at)->order('id', 'desc')->field('plan')->find();
-			if ( $plan_data && $exetue )
+			$sql = 'select tag from ' . $plan_table . ' where "user" ='. "'". $this->user. "'" . ' order by id desc limit 1';
+			$exetue = Db::query($sql);
+			//halt($exetue);
+			//$plan_data = Db::table('plandata')->where('atuser', $this->user)->where('at', $at)->order('id', 'desc')->field('plan')->find();
+			if ( $exetue )
 			{
-				return $plan_data['plan']. '#' . $exetue ['tag']; //将计划的json数据连接上#tag
+				//return $plan_data['plan']. '#' . $exetue ['tag']; //将计划的json数据连接上#tag
+				return '{}' . '#' . $exetue[0]['tag']; //将计划的json数据连接上#tag
 			}else{
 				return '无正执行计划!';
 			}
 		}catch(\Exception $e){
 			return '查询正在执行计划遇异常!';
 		}
-
-
 	}
 	/****ajax 请求  是否有观测计划在执行 结束*******/
 }

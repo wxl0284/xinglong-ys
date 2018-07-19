@@ -976,8 +976,23 @@ class Page extends Base
         $gimbal['aperture'] = $atData['aperture']; //口径
         if ( $gimbal )
         {
+            //处理焦点类型-焦比-焦距
+            if ( $gimbal['focustype'] )
+            {
+                $temp_data = json_decode($gimbal['focustype'], true);
+    
+                $gimbal['focustype'] = implode (', ', $temp_data['focus']);
+                foreach ( $temp_data as $k => $v )
+                {
+                    if ( isset($v['focusRatio']) ) $gimbal['focusratio'][] = $v['focusRatio'];
+                    if ( isset($v['focusLeng']) )  $gimbal['focuslength'][] = $v['focusLeng'];
+                }
+            }
+            $gimbal['focusratio'] = implode (', ', $gimbal['focusratio']);
+            $gimbal['focuslength'] = implode (', ', $gimbal['focuslength']);
+            //处理焦点类型-焦比-焦距 结束
             $result['gimbal'] = $gimbal;
-            $result['has_gimbal'] = 1; //表示有转台的配置数据
+            $result['has_gimbal'] = 1; //表示有转台的配置数据 
         }
 
         $ccd_num = Db::table('ccdconf')->where('teleid', $at)->count('ccdno'); //查ccd数量

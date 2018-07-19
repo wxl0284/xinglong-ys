@@ -106,19 +106,20 @@
 					<tr>
 						<td>焦点类型:</td>
 						<td colspan="5" class="border_td">
-							<span v-for='v in confOption.focustype'>{{v}}<input type='checkbox' :value='v' v-model='gimbal_focus.focustype'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in confOption.focustype'>{{v}}<input type='checkbox' :value='v' name='gimbal_focus[]' v-model='gimbal_focus.focustype'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 					</tr>
 					<tr><!--将焦点类型-焦比-焦距 一一对应-->
 						<td colspan="6">
-							<table id='gimbal_focus' v-if='gimbal_focus.focustype.length>0'>
+							<input type="hidden" name="focus_n" :value='confOption.focustype.length'><!--将焦点类型的选项个数提交-->
+							<table class='inner_table' v-if='gimbal_focus.focustype.length>0'>
 								<tr>
-									<td>焦点类型</td> <td>焦比</td> <td @click='tt'>焦距</td>
+									<td>焦点类型</td> <td>焦比</td> <td>焦距</td>
 								</tr>
 								<tr v-for='(v,k) in confOption.focustype' v-if='show_focus_tr(v)'>
 									<td>{{v}}</td>
-									<td><input type="text" :ref='"focusR"+k' placeholder="[2.3 3.6]" v-model.trim='gimbal_focus.postData[k].focusratio' @blur='check_focus_val(true,k,1)'></td>
-									<td><input type="text" :ref='"focusL"+k' placeholder="[2.3 3.6]" v-model.trim='gimbal_focus.postData[k].focuslength' @blur='check_focus_val(true,k,2)'></td>
+									<td><input type="text" :ref='"focusR"+k' placeholder="[2.3 3.6]" :name='"focusRatio"+k' v-model.trim='gimbal_focus.postData[k].focusratio' @blur='check_focus_val(true,k,1)'></td>
+									<td><input type="text" :ref='"focusL"+k' placeholder="[2.3 3.6]" :name='"focusLeng"+k' v-model.trim='gimbal_focus.postData[k].focuslength' @blur='check_focus_val(true,k,2)'></td>
 								</tr>
 							</table>
 						</td>
@@ -769,38 +770,38 @@
 						<td>隶属望远镜:</td>
 						<td id='filterTeleId'>{{gimbal_config.atname}}</td>
 						<td>插槽数目:</td>
-						<td><input type='text' id='filterNum' name='numberoffilter'></td>
+						<td><input type='text' id='filterNum' name='numberoffilter' v-model='filter_config.numberoffilter'></td>
 						<td>插槽大小（mm）:</td>
 						<td><input type='text' id='filterSize' name='filtersize' placeholder='[x,y,z]'></td>
 					</tr>
 					<tr>
-						<td>滤光片类型:</td>
-						<td colspan="3" class="border_td">
+						<td colspan="6">
+							<table class='inner_table'>
+								<tr>
+									<td>插槽序号</td> <td>滤光片类型</td> <td>滤光片名称</td> <td @click='tt'>焦距偏差值{{filter_config.numberoffilter}}</td>
+								</tr>
+								<tr v-for='v in filter_config.numberoffilter*1' v-if='show_filter_tr(v)'>
+									<td>vvv</td>
+									<td>vvvv</td>
+									<!--<td>{{v}}</td>
+									 <td><input type="text" :ref='"focusR"+k' placeholder="[2.3 3.6]" :name='"focusRatio"+k' v-model.trim='gimbal_focus.postData[k].focusratio' @blur='check_focus_val(true,k,1)'></td>
+									<td><input type="text" :ref='"focusL"+k' placeholder="[2.3 3.6]" :name='"focusLeng"+k' v-model.trim='gimbal_focus.postData[k].focuslength' @blur='check_focus_val(true,k,2)'></td> -->
+								</tr>
+							</table>
+						</td>
+						<!-- <td colspan="3" class="border_td">
 							插槽序号:
-							<select id='filterSlot' name='slot'><!--此元素的值无须入库-->
+							<select id='filterSlot' name='slot'>
 								<option value="0">选择插槽</option>
 							</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							滤光片类型:<!--此元素的值也无须入库 此2元素的点击事件中生成一个数组，然后入库-->
+							滤光片类型:
 							<select id='filterSystem' name='filtersystem'>
 								<option value="0">请选择</option>
 								<option :value="v" v-for='v in confOption.FilterSystem'>{{v}}</option>
 							</select>
 						</td>
 						<td>滤光片名称:</td>
-						<td><input type='text' id='filter_Name' name='filtername' placeholder='u/v/r/i...'></td>
-					</tr>
-					<tr>
-						<td>滤光片焦距偏差值（μm）:</td>
-						<td colspan="3">
-							<input type='text' id='filterFocusLengthCompensate' name='filterfocuslengthcompensate' placeholder="[2 3 4]" style="width:580px;">
-						</td>
-						<td>滤光片形状:</td>
-						<td>
-							<select id='filterShape' name='filtershape'>
-								<option value="0">请选择</option>
-								<option :value="v" v-for='v in confOption.FilterShape'>{{v}}</option>
-							</select>
-						</td>
+						<td><input type='text' id='filter_Name' name='filtername' placeholder='u/v/r/i...'></td> -->
 					</tr>
 					<tr>
 						<td>设置滤光片位置:</td>
@@ -823,12 +824,19 @@
 						</td>
 					</tr>
 					<tr>
-						<td>属性更新时间:</td>
-						<td id='filterAttrModifyTime'></td>
+						<td>滤光片形状:</td>
+						<td>
+							<select id='filterShape' name='filtershape'>
+								<option value="0">请选择</option>
+								<option :value="v" v-for='v in confOption.FilterShape'>{{v}}</option>
+							</select>
+						</td>
 						<td>属性版本号:</td>
 						<td>
 							<input id='filterAttrVersion' type='text' name='attrversion'>
 						</td>
+						<td>属性更新时间:</td>
+						<td id='filterAttrModifyTime'></td>
 					</tr>
 					<tr>
 						<td>上传滤光片相关文件:</td>

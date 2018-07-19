@@ -887,6 +887,7 @@ function get_plan () {
 		type: 'post',
 		data: {at: at, command: 'get_plan', at_aperture:aperture},
 		success: function (info) {
+			
 			if ( info.indexOf("{") === -1 )
 			{//非json数据
 				layer.alert(info, {
@@ -900,14 +901,14 @@ function get_plan () {
 						}
 						if ( info.indexOf('无正执行计划') !== -1 )
 						{
-							clearInterval(get_plan_i); //清楚定时器
+							//clearInterval(get_plan_i); //清楚定时器
 						}
 					},
 				});
 			}else{
 				var info = info.split('#'); //将计划数据与tag组成的字符串从其中的'#'分割为数组
 				var plan_tag = info[1];
-				var plan = $.parseJSON(info[0]);
+				/*var plan = $.parseJSON(info[0]);
 
 				var arr = [];
 				var ii = 0;
@@ -919,7 +920,7 @@ function get_plan () {
 
 				table.datagrid({
 						data: arr,
-				});
+				}); */
 				
 				editRow = undefined; //否则 导入后无法插入新行
 				planErr = 0; //将提交计划的错误标识 改为0
@@ -932,14 +933,9 @@ function get_plan () {
 }
 
 //var get_plan_i = setInterval (get_plan, 60000); //定时执行get_plan() 60秒执行一次查询，否则浏览器卡顿
-
+var get_plan_i = 0;
  function plan_executing (){ //显示正在执行的计划
 	get_plan();
-	setInterval (get_plan, 2000);
- }
-
- function plan_d ()
- {
-	console.log(configData.ccd[0].lowcoolert);
+	//get_plan_i = setInterval (get_plan, 5000);
  }
 /*******实时获取 获取正在执行的计划 结束*******/

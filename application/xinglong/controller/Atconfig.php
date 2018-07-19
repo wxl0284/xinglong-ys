@@ -37,7 +37,7 @@ class Atconfig extends Base
         //     $postData['ip'] = null;
         // }
         $postData = input();
-        halt($postData);
+        //halt($postData);
         //halt(isset($postData['maxaxis3speed']));
         
         //处理表单数据，若无轴3，则轴3相关input框禁用，则将$postData轴3相关之置为空字符串
@@ -48,6 +48,19 @@ class Atconfig extends Base
             $postData['axis3parkposition'] = '';    //轴3复位位置
         }
 
+        //处理焦点类型-焦比-焦距
+        $gimbal_focus_num = isset($postData['gimbal_focus']) ? count ($postData['gimbal_focus']) : 0; //被选择的
+        if ( $gimbal_focus_num == 0 ) return '您未选择焦点类型';
+        //halt($postData['focus_n']);
+        for ( $f_i = 0; $f_i < $postData['focus_n']; $f_i++)
+        { //将焦比-焦距数据整理为一个数组[ 'v0'=>['focusRatio'=>'[1 2]', 'focusLeng'=>'[1 2]'], 'v1'=>['focusRatio'=>'[1 2]', 'focusLeng'=>'[1 2]'] ]
+            if ( isset( $postData['focusRatio'.$f_i], $postData['focusLeng'.$f_i] ) ) 
+            {
+                $focus_temp['v'.$f_i] = [ 'focusRatio' => $postData['focusRatio'.$f_i], 'focusLeng' => $postData['focusLeng'.$f_i] ];
+            }
+        }
+        $focus_temp['focus'] = $postData['gimbal_focus'];
+        $postData['focustype'] = json_encode ($focus_temp); //将整理后的数组转为json字串，存入focustype字段
         //属性更新时间
         $postData['attrmodifytime'] = date ('Y-m-d');
 
@@ -73,7 +86,7 @@ class Atconfig extends Base
             Db::startTrans();
 
             $atlist_res = Db::table('atlist')->where('id', $postData['teleid'])->update($at_data);
-            $gimbal_res = Db::table('gimbalconf')->where('teleid', $postData['teleid'])->update($postData);
+            $gimbal_res = Db::table('gimbalconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
             
             if ( $atlist_res && $gimbal_res ) //若同时更新ok
             {
@@ -99,8 +112,8 @@ class Atconfig extends Base
             //开启事务 同时操作atlist表 和 gimbalconf表
             Db::startTrans();
 
-            $atlist_res = Db::table('atlist')->where('id', $postData['teleid'])->update($at_data);
-            $gimbal_res = Db::table('gimbalconf')->insert($postData);
+            $atlist_res = Db::table('atlist')->where('id', $postData['teleid'])->strict(false)->update($at_data);
+            $gimbal_res = Db::table('gimbalconf')->strict(false)->insert($postData);
 
             //若同时执行ok 
             if ( $atlist_res && $gimbal_res )
