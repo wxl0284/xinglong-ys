@@ -112,7 +112,7 @@
 					<tr><!--将焦点类型-焦比-焦距 一一对应-->
 						<td colspan="6">
 							<input type="hidden" name="focus_n" :value='confOption.focustype.length'><!--将焦点类型的选项个数提交-->
-							<table class='inner_table' v-if='gimbal_focus.focustype.length>0'>
+							<table id='inner_table1' v-if='gimbal_focus.focustype.length>0'>
 								<tr>
 									<td>焦点类型</td> <td>焦比</td> <td>焦距</td>
 								</tr>
@@ -409,9 +409,9 @@
 				<table class="center_mrg">
 					<tr>
 						<td>ccd之ip:</td>
-						<td><input type='text' id='ccdIp' name='ip' placeholder='ip地址' v-model.trim='ccd_config.ip' ></td>
+						<td><input type='text' ref='ccdIp' name='ip' placeholder='ip地址' v-model.trim='ccd_config.ip' @blur='check_ip(true, ccd_config.ip, $refs.ccdIp)'></td>
 						<td>ccd之id:</td>
-						<td><input type='text' ref='ccdId' name='ccdid' placeholder='格式:00006' v-model.trim='ccd_config.ccdid' @blur='check_devId(true, ccd_config.ccdid, $refs.ccdId, "ccd")'></td>
+						<td><input type='text' ref='ccdId' name='ccdid' placeholder='格式:00006' v-model.trim='ccd_config.ccdid' @blur='check_devId(true, ccd_config.ccdid, $refs.ccdId)'></td>
 						<td>ccd名称:</td>
 						<td><input type='text' ref='ccdName' name='name' placeholder='Andor DZ936/PI1300' v-model.trim='ccd_config.name' @blur='check_devName(true, ccd_config.name, $refs.ccdName, "ccd")'></td>
 					</tr>
@@ -753,90 +753,85 @@
 				<input id='ccdBtn-1' type='button' :value="'提交CCD-No'+show_dev_form.ccd_no+'配置'" @click='ccd_sbmt'>
 			</form><!--ccd配置项 结束-->
 
-			<form id='filter' class="form" v-if='show_dev_form.show_filter' ><!--滤光片配置项-->
+			<form ref='filter' class="form" v-if='show_dev_form.show_filter' ><!--滤光片配置项-->
 			<br>
 			<h4 class='center'>滤光片固定属性</h4>
 			<hr>
 				<table class="center_mrg">
 					<tr>
 						<td>滤光片ip:</td>
-						<td><input type='text' id='filterIp' name='ip' placeholder='ip地址'></td>
+						<td><input type='text' ref='filterIp' name='ip' placeholder='ip地址' v-model.trim='filter_config.ip' @blur='check_ip(true, filter_config.ip, $refs.filterIp)'></td>
 						<td>滤光片id:</td>
-						<td><input type='text' id='filterId' name='filterid' placeholder='格式:00006'></td>
+						<td><input type='text' ref='filterId' name='filterid' v-model.trim='filter_config.filterid' @blur='check_devId(true, filter_config.filterid, $refs.filterId)'></td>
 						<td>名称:</td>
-						<td><input type='text' id='filterName' name='name'></td>
+						<td><input type='text' ref='filterName' name='name' v-model.trim='filter_config.name' @blur='check_devName(true, filter_config.name, $refs.filterName, "filter")'></td>
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
 						<td id='filterTeleId'>{{gimbal_config.atname}}</td>
 						<td>插槽数目:</td>
-						<td><input type='text' id='filterNum' name='numberoffilter' v-model='filter_config.numberoffilter'></td>
+						<td><input type='text' ref='filterNum' name='numberoffilter' v-model.trim.lazy='filter_config.numberoffilter' @blur='check_slot(true, filter_config.numberoffilter, $refs.filterNum)'></td>
 						<td>插槽大小（mm）:</td>
-						<td><input type='text' id='filterSize' name='filtersize' placeholder='[x,y,z]'></td>
+						<td><input type='text' ref='filterSize' name='filtersize' placeholder='[x,y,z]' v-model.trim='filter_config.filtersize' @blur='check_filterSize(true, filter_config.filtersize, $refs.filterSize)'></td>
 					</tr>
 					<tr>
 						<td colspan="6">
-							<table class='inner_table'>
+							<table id='inner_table2' v-if='filter_config.numberoffilter>0'><!--将插槽序号-滤光片类型-滤光片名称-偏差值 一一对应 -->
 								<tr>
-									<td>插槽序号</td> <td>滤光片类型</td> <td>滤光片名称</td> <td @click='tt'>焦距偏差值{{filter_config.numberoffilter}}</td>
+									<td>插槽序号</td> <td>滤光片类型</td> <td>滤光片名称</td> <td @click='tt'>焦距偏差值（μm）</td>
 								</tr>
-								<tr v-for='v in filter_config.numberoffilter*1' v-if='show_filter_tr(v)'>
-									<td>vvv</td>
-									<td>vvvv</td>
-									<!--<td>{{v}}</td>
-									 <td><input type="text" :ref='"focusR"+k' placeholder="[2.3 3.6]" :name='"focusRatio"+k' v-model.trim='gimbal_focus.postData[k].focusratio' @blur='check_focus_val(true,k,1)'></td>
-									<td><input type="text" :ref='"focusL"+k' placeholder="[2.3 3.6]" :name='"focusLeng"+k' v-model.trim='gimbal_focus.postData[k].focuslength' @blur='check_focus_val(true,k,2)'></td> -->
+								<tr v-for='v in filter_config.numberoffilter*1'>
+									<td>插槽{{v}}</td>
+									<td>
+										<select name="slot['filterType'][]" v-model='filter_slot.slotData[v].filterType'>
+											<option value="0">请选择</option>
+											<option :value="v" v-for='v in confOption.FilterSystem'>{{v}}</option>
+										</select>
+									</td>
+									<td>
+										<input type="text" :ref='"filterName"+v' placeholder="Hα" name="slot['filterName'][]" v-model.trim='filter_slot.slotData[v].filterName' @blur='check_filterName(true, v)'>
+									</td>
+									<td>
+										<input type="text" :ref='"filterComp"+v' placeholder="整数" name="slot['filterComp'][]" v-model.trim='filter_slot.slotData[v].filterComp' @blur='check_filterComp(true, v)'>
+									</td>
 								</tr>
-							</table>
+							</table><!--将插槽序号-滤光片类型-滤光片名称-偏差值 一一对应 结束 -->
 						</td>
-						<!-- <td colspan="3" class="border_td">
-							插槽序号:
-							<select id='filterSlot' name='slot'>
-								<option value="0">选择插槽</option>
-							</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							滤光片类型:
-							<select id='filterSystem' name='filtersystem'>
-								<option value="0">请选择</option>
-								<option :value="v" v-for='v in confOption.FilterSystem'>{{v}}</option>
-							</select>
-						</td>
-						<td>滤光片名称:</td>
-						<td><input type='text' id='filter_Name' name='filtername' placeholder='u/v/r/i...'></td> -->
 					</tr>
 					<tr>
 						<td>设置滤光片位置:</td>
 						<td>
-							<label>是<input type='radio' id='canSetFilterPosition' name='cansetfilterposition' value="1"></label>
+							<label>是<input type='radio' name='cansetfilterposition' value="1" v-model='filter_config.cansetfilterposition'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='canSetFilterPosition-1' name='cansetfilterposition' value="0"></label>
+							<label>否<input type='radio' name='cansetfilterposition' value="0" v-model='filter_config.cansetfilterposition'></label>
 						</td>
 						<td>支持连接:</td>
 						<td>
-							<label>是<input type='radio' id='filterCanConnect' name='canconnect' value="1"></label>
+							<label>是<input type='radio' id='filterCanConnect' name='canconnect' value="1" v-model='filter_config.canconnect'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='filterCanConnect-1' name='canconnect' value="0"></label>
+							<label>否<input type='radio' id='filterCanConnect-1' name='canconnect' value="0" v-model='filter_config.canconnect'></label>
 						</td>
 						<td>支持找零:</td>
 						<td>
-							<label>是<input type='radio' id='filterCanFindHome' name='canfindhome' value="1"></label>
+							<label>是<input type='radio' id='filterCanFindHome' name='canfindhome' value="1" v-model='filter_config.canfindhome'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='filterCanFindHome-1' name='canfindhome' value="0"></label>
+							<label>否<input type='radio' id='filterCanFindHome-1' name='canfindhome' value="0" v-model='filter_config.canfindhome'></label>
 						</td>
 					</tr>
 					<tr>
 						<td>滤光片形状:</td>
 						<td>
-							<select id='filterShape' name='filtershape'>
+							<select id='filterShape' name='filtershape' v-model='filter_config.filtershape'>
 								<option value="0">请选择</option>
 								<option :value="v" v-for='v in confOption.FilterShape'>{{v}}</option>
 							</select>
 						</td>
 						<td>属性版本号:</td>
 						<td>
-							<input id='filterAttrVersion' type='text' name='attrversion'>
+							<input ref='filterAttrVersion' type='text' name='attrversion' v-model.trim='filter_config.attrversion' @blur='check_version(true, filter_config.attrversion, $refs.filterAttrVersion, 3)'>
 						</td>
 						<td>属性更新时间:</td>
-						<td id='filterAttrModifyTime'></td>
+						<td id='filterAttrModifyTime'>{{filter_config.attrmodifytime}}</td>
 					</tr>
 					<tr>
 						<td>上传滤光片相关文件:</td>
@@ -844,10 +839,12 @@
 							说明文件:<input type='file' name='specification'>
 						</td>
 						<td>滤光片相关文件:</td>
-						<td id='filterFile' colspan="2" class="border_td"></td>
+						<td id='filterFile' colspan="2" class="border_td">
+							<span v-for='v in filter_file'><a title="点击下载">{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						</td>
 					</tr>
 				</table>
-				<input id='filterBtn' type='button' value="提交滤光片配置">
+				<input id='filterBtn' type='button' value="提交滤光片配置" @click='filter_sbmt'>
 			</form><!-- 滤光片固定属性配置项 结束-->
 
 		<form id='sDome' class="form" v-if='show_dev_form.show_sDome'><!--随动圆顶配置项-->

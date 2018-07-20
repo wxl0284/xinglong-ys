@@ -438,11 +438,19 @@ class Atconfig extends Base
         // dump($postData['maxAxis3Speed']);
 
         $postData = input();
-
+        //halt($postData);
        //属性更新时间
        $postData['attrmodifytime'] = date ('Y-m-d');
-       //去除 表单中的多余字段 slot
-       unset ($postData['slot']);
+       //接下来处理 各插槽的 滤光片类型-名称-偏差值
+       if ( !isset($postData['numberoffilter']) || $postData['numberoffilter'] < 1 )
+       {
+           return '未填写插槽数目';
+       }
+
+       if ( !isset($postData['slot']) || count($postData['slot']) < 3 )
+       {
+           return '请各插槽';
+       }
 
         //定义错误提示
         $errMsg = '';
@@ -451,9 +459,9 @@ class Atconfig extends Base
 
         if ( $data )
         {//已有配置数据 进行update
-            $res = Db::table('filterconf')->where('teleid', $postData['teleid'])->update($postData);
+            $res = Db::table('filterconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
         }else{//还无配置数据 进行insert
-            $res = Db::table('filterconf')->insert($postData);
+            $res = Db::table('filterconf')->strict(false)->insert($postData);
         }
 
         if ( !$res )
