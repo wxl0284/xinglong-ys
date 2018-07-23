@@ -488,7 +488,7 @@
 					<span>当前拍摄波段：
 						<select style='width:110px;' name='objectBand' v-model='ccd_form.exposeParam.objectBand' >
 							<option value="-1">请选择</option>
-							<option :value="v" v-for='v in filter_pos_list' >{{v}}</option>
+							<option :value="v" v-for='v in configData.filter.filtername' >{{v}}</option>
 						</select>
 					</span>
 					<span>拍摄波段滤光片系统：<select style='width:110px;' v-model='ccd_form.exposeParam.objectFilter' >
@@ -837,7 +837,7 @@
 					<span v-if='configData.filter.cansetfilterposition==1'>
 						滤光片位置：<select id='filterPosi' v-model='filter_form.filter_position.filter_pos' class='border1 btnCommand' style='width:90px;color:#000;border:1px solid #7a7a7a;' >
 							    <option value="-1">请选择</option>
-							    <option v-for='n in filter_pos_list.length' :value='n-1' >{{filter_pos_list[n-1]}}</option>
+							    <option v-for='n in configData.filter.filtername.length' :value='n-1' >{{configData.filter.filtername[n-1]}}</option>
 						</select>&nbsp;&nbsp;
 					    <input :class='{hover: device_nav.filterPos_btn=="hover"}' class='border submitBtn' type='button' value='提交滤光片位置' @click='filterPos_sbmt' @mouseover='device_nav.filterPos_btn="hover"' @mouseleave='device_nav.filterPos_btn=""' >
 					</span>
@@ -856,17 +856,20 @@
 		<div class='border2'><!--滤光片 固定属性-->
 			<br><span class='propT'>滤光片固定属性:</span><br><br>
 			<ul class='properUl'>
-			    <li class='li fl'>插槽数目:&nbsp;&nbsp;<span>{{configData.filter.numberoffilter}}</span></li>
-			   <li class='li fl'>可否设置滤光片位置:&nbsp;&nbsp;
+				<li class='li fl' style='width:80%;'>
+					<table class="center center_mrg" style='width:100%;'>
+						<tr>
+							<td>插槽序号</td> <td>滤光片类型</td> <td>滤光片焦距偏差值</td>
+						</tr>
+						<tr v-for='n in configData.filter.slot_num*1'>
+							<td>插槽{{n}}</td> <td>{{configData.filter.filterType[n-1]}}</td> <td>{{configData.filter.filterComp[n-1]}}</td>
+						</tr>
+					</table>
+				</li>   
+				<li class='li fl'>可否设置滤光片位置:&nbsp;&nbsp;
 				<span v-if='configData.filter.cansetfilterposition==1' >是</span>
 				<span v-else>否</span>
 				</li>
-			   <li class='li fl' style='width:40%;'>滤光片焦距偏差值:&nbsp;&nbsp;<span>{{configData.filter.filterfocuslengthcompensate}}</span></li>
-			   <li class='li fl' style='width:100%;'>滤光片类型:&nbsp;&nbsp;
-				<span>
-				{{configData.filter.filtersystem.replace(/#/g,'')}}
-				</span>
-			   </li>
 			</ul>
            <div class='clear'></div>
 		 </div><!--滤光片 固定属性 结束-->
@@ -902,8 +905,10 @@
 			<div class='border2'><!--导星镜 固定属性-->
 			<br><span class='propT'>导星镜固定属性:</span><br><br>
 			<ul class='properUl'>
-			    <li class='li fl'>焦点类型:&nbsp;&nbsp;<span>{{configData.guide.opticalstructure}}</span></li>
-			    <li class='li fl'>焦点类型:&nbsp;&nbsp;<span>{{configData.guide.focuslength}}</span></li>
+				<!--
+					<li class='li fl'>焦点类型:&nbsp;&nbsp;<span>{{configData.guide.opticalstructure}}</span></li>
+			    	<li class='li fl'>焦点类型:&nbsp;&nbsp;<span>{{configData.guide.focuslength}}</span></li>
+				-->
 			   <li class='li fl'>使能自动对焦:&nbsp;&nbsp;
 				<span v-if='configData.guide.canenableautofocus==1' >是</span>
 				<span v-else>否</span>
@@ -912,6 +917,16 @@
 				<span v-if='configData.guide.canopencover==1' >是</span>
 				<span v-else>否</span>
 				</li>
+				<li class='li fl' style='width:80%;'>
+					<table class="center center_mrg" style='width:100%;'>
+						<tr>
+							<td>焦点类型</td> <td>焦距</td>
+						</tr>
+						<tr v-for='n in configData.guide.focus.length'>
+							<td>{{configData.guide.focus[n-1]}}</td> <td>{{configData.guide.focus_length[n-1]}}</td>
+						</tr>
+					</table>
+				</li>   
 			</ul>
            <div class='clear'></div>
 		 </div><!--导星镜 固定属性 结束-->

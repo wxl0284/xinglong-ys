@@ -411,7 +411,7 @@
 						<td>ccd之ip:</td>
 						<td><input type='text' ref='ccdIp' name='ip' placeholder='ip地址' v-model.trim='ccd_config.ip' @blur='check_ip(true, ccd_config.ip, $refs.ccdIp)'></td>
 						<td>ccd之id:</td>
-						<td><input type='text' ref='ccdId' name='ccdid' placeholder='格式:00006' v-model.trim='ccd_config.ccdid' @blur='check_devId(true, ccd_config.ccdid, $refs.ccdId)'></td>
+						<td><input type='text' ref='ccdId' name='ccdid' v-model.trim='ccd_config.ccdid' @blur='check_devId(true, ccd_config.ccdid, $refs.ccdId)'></td>
 						<td>ccd名称:</td>
 						<td><input type='text' ref='ccdName' name='name' placeholder='Andor DZ936/PI1300' v-model.trim='ccd_config.name' @blur='check_devName(true, ccd_config.name, $refs.ccdName, "ccd")'></td>
 					</tr>
@@ -502,12 +502,6 @@
 						</td>
 					</tr>
 					<tr>
-						<td>读出模式:</td>
-						<td colspan="5" class="border_td" id='ccd_1readoutMode'>
-							<span v-for='v in confOption.readoutMode'>{{v}}<input type='checkbox' name='readoutmode[]' :value='v' v-model='ccd_config.readoutmode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-						</td>
-					</tr>
-					<tr>
 						<td>增益模式:</td>
 						<td colspan="3" class="border_td" id='ccd_1gainmode'>
 							<span v-for='v in confOption.gainmode'>{{v}}<input type='checkbox' name='gainmode[]' :value='v' v-model='ccd_config.gainmode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -536,6 +530,12 @@
 								<option value="0">请选择</option>
 								<option :value="v" v-for='v in confOption.ShutterType'>{{v}}</option>
 							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>读出模式:</td>
+						<td colspan="5" class="border_td" id='ccd_1readoutMode'>
+							<span v-for='v in confOption.readoutMode'>{{v}}<input type='checkbox' name='readoutmode[]' :value='v' v-model='ccd_config.readoutmode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 					</tr>
 					<tr>
@@ -783,16 +783,16 @@
 								<tr v-for='v in filter_config.numberoffilter*1'>
 									<td>插槽{{v}}</td>
 									<td>
-										<select name="slot['filterType'][]" v-model='filter_slot.slotData[v].filterType'>
+										<select name="filterType[]" v-model='filter_slot.slotData[v].filterType'>
 											<option value="0">请选择</option>
 											<option :value="v" v-for='v in confOption.FilterSystem'>{{v}}</option>
 										</select>
 									</td>
 									<td>
-										<input type="text" :ref='"filterName"+v' placeholder="Hα" name="slot['filterName'][]" v-model.trim='filter_slot.slotData[v].filterName' @blur='check_filterName(true, v)'>
+										<input type="text" :ref='"filterName"+v' placeholder="Hα" name="filterName[]" v-model.trim='filter_slot.slotData[v].filterName' @blur='check_filterName(true, v)'>
 									</td>
 									<td>
-										<input type="text" :ref='"filterComp"+v' placeholder="整数" name="slot['filterComp'][]" v-model.trim='filter_slot.slotData[v].filterComp' @blur='check_filterComp(true, v)'>
+										<input type="text" :ref='"filterComp"+v' placeholder="整数" name="filterComp[]" v-model.trim='filter_slot.slotData[v].filterComp' @blur='check_filterComp(true, v)'>
 									</td>
 								</tr>
 							</table><!--将插槽序号-滤光片类型-滤光片名称-偏差值 一一对应 结束 -->
@@ -847,97 +847,97 @@
 				<input id='filterBtn' type='button' value="提交滤光片配置" @click='filter_sbmt'>
 			</form><!-- 滤光片固定属性配置项 结束-->
 
-		<form id='sDome' class="form" v-if='show_dev_form.show_sDome'><!--随动圆顶配置项-->
+		<form ref='sDome' class="form" v-if='show_dev_form.show_sDome'><!--随动圆顶配置项-->
 			<br>
 			<h4 class='center'>随动圆顶固定属性</h4>
 			<hr>
 				<table class="center_mrg">
 					<tr>
 						<td>随动圆顶ip:</td>
-						<td><input type='text' id='sDomeIp' name='ip' placeholder='ip地址'></td>
+						<td><input type='text' ref='sDomeIp' name='ip' placeholder='ip地址' v-model.trim='sDome_config.ip' @blur='check_ip(true, sDome_config.ip, $refs.sDomeIp)'></td>
 						<td>随动圆顶id:</td>
-						<td><input type='text' id='sDomeId' name='sdomeid' placeholder='格式:00006'></td>
+						<td><input type='text' ref='sDomeId' name='sdomeid' v-model.trim='sDome_config.sdomeid' @blur='check_devId(true, sDome_config.sdomeid, $refs.sDomeId)'></td>
 						<td>随动圆顶名称:</td>
-						<td><input type='text' id='sDomeName' name='name'></td>
+						<td><input type='text' ref='sDomeName' name='name' v-model.trim='sDome_config.name' @blur='check_devName(true, sDome_config.name, $refs.sDomeName, "sDome")'></td>
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
 						<td id='sDomeTeleId'>{{gimbal_config.atname}}</td>
 						<td>类型:</td>
 						<td>
-							<select id='sDomeType' name='dometype'>
+							<select name='dometype' v-model='sDome_config.dometype'>
 								<option value="0">请选择</option>
 								<option :value="v" v-for='v in confOption.slaveDomeType'>{{v}}</option>
 							</select>
 						</td>
 						<td>最大转动速度（度/秒）:</td>
-						<td><input type='text' id='sDomeMaxSpeed' name='maxspeed' placeholder='小数'></td>
+						<td><input type='text' ref='sDomeMaxSpeed' name='maxspeed' placeholder='数字' v-model.trim='sDome_config.maxspeed' @blur='check_num(true, sDome_config.maxspeed, $refs.sDomeMaxSpeed, "sDome_speed")'></td>
 					</tr>
 					<tr>
-						<td>尺寸大小:</td>
+						<td>尺寸大小（m）:</td>
 						<td>
-							<input type='text' id='sDomeDiameter' name='diameter' placeholder='小数'></td>
+							<input type='text' ref='sDomeDiameter' name='diameter' placeholder='直径' v-model.trim='sDome_config.diameter' @blur='check_num(true, sDome_config.diameter, $refs.sDomeDiameter, "sDome_D")'></td>
 						</td>
 						<td>风帘:</td>
 						<td>
-							<label>有<input type='radio' id='sDomeHasShade' name='hasshade' value="1"></label>
+							<label>有<input type='radio' name='hasshade' value="1" v-model='sDome_config.hasshade'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>无<input type='radio' id='sDomeHasShade-1' name='hasshade' value="0"></label>
+							<label>无<input type='radio' name='hasshade' value="0" v-model='sDome_config.hasshade'></label>
 						</td>
 					</tr>
 					<tr>
 						<td>设置目标方位:</td>
 						<td>
-							<label>是<input type='radio' id='sDomeCanSetDomePositin' name='cansetdomepositin' value="1"></label>
+							<label>是<input type='radio' name='cansetdomepositin' value="1" v-model='sDome_config.cansetdomepositin'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='sDomeCanSetDomePositin-1' name='cansetdomepositin' value="0"></label>
+							<label>否<input type='radio' name='cansetdomepositin' value="0" v-model='sDome_config.cansetdomepositin'></label>
 						</td>
 						<td>设置风帘位置:</td>
 						<td>
-							<label>是<input type='radio' id='sDomeCanSetShadePosition' name='cansetshadeposition' value="1"></label>
+							<label>是<input type='radio' name='cansetshadeposition' value="1"  v-model='sDome_config.cansetshadeposition'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='sDomeCanSetShadePosition-1' name='cansetshadeposition' value="0"></label>
+							<label>否<input type='radio' name='cansetshadeposition' value="0"  v-model='sDome_config.cansetshadeposition'></label>
 						</td>
 						<td>设置转动速度:</td>
 						<td>
-							<label>是<input type='radio' id='sDomeCanSetRotateSpeed' name='cansetrotatespeed' value="1"></label>
+							<label>是<input type='radio' name='cansetrotatespeed' value="1" v-model='sDome_config.cansetrotatespeed'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='sDomeCanSetRotateSpeed-1' name='cansetrotatespeed' value="0"></label>
+							<label>否<input type='radio' name='cansetrotatespeed' value="0" v-model='sDome_config.cansetrotatespeed'></label>
 						</td>
 					</tr>
 					<tr>
 						<td>支持停止运动:</td>
 						<td>
-							<label>是<input type='radio' id='sDomeCanStop' name='canstop' value="1"></label>
+							<label>是<input type='radio' name='canstop' value="1" v-model='sDome_config.canstop'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='sDomeCanStop-1' name='canstop' value="0"></label>
+							<label>否<input type='radio' name='canstop' value="0" v-model='sDome_config.canstop'></label>
 						</td>
 						<td>支持打开天窗:</td>
 						<td>
-							<label>是<input type='radio' id='sDomeCanOpenShutter' name='canopenshutter' value="1"></label>
+							<label>是<input type='radio' name='canopenshutter' value="1" v-model='sDome_config.canopenshutter'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='sDomeCanOpenShutter-1' name='canopenshutter' value="0"></label>
+							<label>否<input type='radio' name='canopenshutter' value="0" v-model='sDome_config.canopenshutter'></label>
 						</td>
 						<td>控制风帘运动:</td>
 						<td>
-							<label>是<input type='radio' id='sDomeCanSetShadeSpeed' name='cansetshadespeed' value="1"></label>
+							<label>是<input type='radio' name='cansetshadespeed' value="1" v-model='sDome_config.cansetshadespeed'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='sDomeCanSetShadeSpeed-1' name='cansetshadespeed' value="0"></label>
+							<label>否<input type='radio' name='cansetshadespeed' value="0" v-model='sDome_config.cansetshadespeed'></label>
 						</td>
 					</tr>
 					<tr>
 						<td>支持连接:</td>
 						<td>
-							<label>是<input type='radio' id='sDomeCanConnect' name='canconnect' value="1"></label>
+							<label>是<input type='radio' name='canconnect' value="1" v-model='sDome_config.canconnect'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='sDomeCanConnect-1' name='canconnect' value="0"></label>
+							<label>否<input type='radio' name='canconnect' value="0" v-model='sDome_config.canconnect'></label>
 						</td>
-						<td>属性更新时间:</td>
-						<td id='sDomeAttrModifyTime'></td>
 						<td>属性版本号:</td>
 						<td>
-							<input type='text' id='sDomeAttrVersion' name='attrversion'>
+							<input type='text' ref='sDome_version' name='attrversion' v-model.trim='sDome_config.attrversion' @blur='check_version(true, sDome_config.attrversion, $refs.sDome_version, 6)'>
 						</td>
+						<td>属性更新时间:</td>
+						<td>{{sDome_config.attrmodifytime}}</td>
 					</tr>
 					<tr>
 						<td>上传随动圆顶相关文件:</td>
@@ -945,59 +945,61 @@
 							说明文件:<input type='file' name='specification'>
 						</td>
 						<td>随动圆顶相关文件:</td>
-						<td colspan="2" class="border_td" id='sDomeFile'></td>
+						<td colspan="2" class="border_td" id='sDomeFile'>
+							<span v-for='v in sDome_file'><a title="点击下载">{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						</td>
 					</tr>
 				</table>
-				<input id='sDomeBtn' type='button' value="提交随动圆顶配置">
+				<input id='sDomeBtn' type='button' value="提交随动圆顶配置" @click='sDome_sbmt'>
 			</form><!-- 随动圆顶固定属性配置项 结束-->
 
-			<form id='oDome' class="form" v-if='show_dev_form.show_oDome' ><!--全开圆顶配置项-->
+			<form ref='oDome' class="form" v-if='show_dev_form.show_oDome' ><!--全开圆顶配置项-->
 			<br>
 			<h4 class='center' id='oDome_h'>全开圆顶固定属性</h4>
 			<hr>
 				<table class="center_mrg">
 					<tr>
 						<td>全开圆顶ip:</td>
-						<td><input type='text' id='oDomeIp' name='ip' placeholder='ip地址'></td>
+						<td><input type='text' ref='oDomeIp' name='ip' placeholder='ip地址' v-model.tirm='oDome_config.ip' @blur='check_ip(true, oDome_config.ip, $refs.oDomeIp)'></td>
 						<td>全开圆顶id:</td>
-						<td><input type='text' id='oDomeId' name='odomeid' placeholder='格式:00006'></td>
+						<td><input type='text' ref='oDomeId' name='odomeid' v-model.trim='oDome_config.odomeid' @blur='check_devId(true, oDome_config.odomeid, $refs.oDomeId)'></td>
 						<td>全开圆顶名称:</td>
-						<td><input type='text' id='oDomeName' name='name'></td>
+						<td><input type='text' ref='oDomeName' name='name' v-model.trim='oDome_config.name' @blur='check_devName(true, oDome_config.name, $refs.oDomeName, "oDome")'></td>
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
 						<td id='oDomeTeleId'>{{gimbal_config.atname}}</td>
 						<td>类型:</td>
 						<td>
-							<select id='oDomeType' name='type'>
+							<select name='type' v-model='oDome_config.type'>
 								<option value="0">请选择</option>
 								<option :value="v" v-for='v in confOption.openDomeType'>{{v}}</option>
 							</select>
 						</td>
 						<td>尺寸大小（m）:</td>
-						<td><input type='text' id='oDomeDiameter' name='diameter' placeholder='直径'></td>
+						<td><input type='text' ref='oDomeDiameter' name='diameter' placeholder='直径' v-model.trim='oDome_config.diameter' @blur='check_num(true, oDome_config.diameter, $refs.oDomeDiameter, "oDome_D")'></td>
 					</tr>
 					<tr>
 						<td>支持打开圆顶:</td>
 						<td>
-							<label>是<input type='radio' id='oDomeCanOpenDome' name='canopendome' value="1"></label>
+							<label>是<input type='radio' name='canopendome' value="1" v-model='oDome_config.canopendome'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='oDomeCanOpenDome-1' name='canopendome' value="0"></label>
+							<label>否<input type='radio' name='canopendome' value="0" v-model='oDome_config.canopendome'></label>
 						</td>
 						<td>支持连接:</td>
 						<td>
-							<label>是<input type='radio' id='oDomeCanConnect' name='canconnect' value="1"></label>
+							<label>是<input type='radio' name='canconnect' value="1" v-model='oDome_config.canconnect'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='oDomeCanConnect-1' name='canconnect' value="0"></label>
+							<label>否<input type='radio' name='canconnect' value="0" v-model='oDome_config.canconnect'></label>
 						</td>
 						<td>属性版本号:</td>
 						<td>
-							<input type='text' id='odomeAttrversion' name='attrversion'>
+							<input type='text' ref='odomeAttrversion' name='attrversion' v-model.trim='oDome_config.attrversion' @blur='check_version(true, oDome_config.attrversion, $refs.odomeAttrversion, 5)'>
 						</td>
 					</tr>
 					<tr>
 						<td>属性更新时间:</td>
-						<td id='oDomeAttrModifyTime'></td>
+						<td id='oDomeAttrModifyTime'>{{oDome_config.attrmodifytime}}</td>
 						<td>上传全开圆顶相关文件:</td>
 						<td colspan="2" class="border_td">
 							说明文件:<input type='file' name='specification'>
@@ -1005,10 +1007,12 @@
 					</tr>
 					<tr>
 						<td>全开圆顶相关文件:</td>
-						<td class="border_td" id='oDomeFile'> </td>
+						<td class="border_td">
+							<span v-for='v in oDome_file'><a title="点击下载">{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						</td>
 					</tr>
 				</table>
-				<input id='oDomeBtn' type='button' value="提交全开圆顶配置">
+				<input id='oDomeBtn' type='button' value="提交全开圆顶配置" @click='oDome_sbmt'>
 			</form><!-- 全开圆顶固定属性配置项 结束-->
 
 			<form id='focus' class="form" v-if='show_dev_form.show_focus'><!--调焦器配置项-->
@@ -1020,7 +1024,7 @@
 						<td>调焦器ip:</td>
 						<td><input type='text' id='focusIp' name='ip' placeholder='ip地址'></td>
 						<td>调焦器id:</td>
-						<td><input type='text' id='focusId' name='focusid' placeholder='格式:00006'></td>
+						<td><input type='text' id='focusId' name='focusid'></td>
 						<td>调焦器名称:</td>
 						<td><input type='text' id='focusName' name='name'></td>
 					</tr>
@@ -1116,90 +1120,99 @@
 				<input id='focusBtn' type='button' value="提交调焦器配置">
 			</form><!--调焦器固定属性配置项 结束-->
 
-			<form id='guideScope' class="form" v-if='show_dev_form.show_guide' ><!--导星望远镜配置项-->
+			<form ref='guideScope' class="form" v-if='show_dev_form.show_guide' ><!--导星望远镜配置项-->
 			<br>
 			<h4 class='center' id='guideScope_h'>导星望远镜固定属性</h4>
 			<hr>
 				<table class="center_mrg">
 					<tr>
 						<td>导星望远镜ip:</td>
-						<td><input type='text' id='guideScopeIp' name='ip' placeholder='ip地址'></td>
+						<td><input type='text' ref='guideScopeIp' name='ip' placeholder='ip地址' v-model.trim='guide_config.ip' @blur='check_ip(true, guide_config.ip, $refs.guideScopeIp)'></td>
 						<td>导星望远镜id:</td>
-						<td><input type='text' id='guideScopeId' name='guidescopeid' placeholder='格式:00006'></td>
+						<td><input type='text' ref='guideScopeId' name='guidescopeid' v-model.trim='guide_config.guidescopeid' @blur='check_devId(true, guide_config.guidescopeid, $refs.guideScopeId)'></td>
 						<td>导星望远镜名称:</td>
-						<td><input type='text' id='guideScopeName' name='name'></td>
+						<td><input type='text' ref='guideScopeName' name='name' v-model.trim='guide_config.name' @blur='check_devName(true, guide_config.name, $refs.guideScopeName, "guide")'></td>
 					</tr>
 					<tr>
 						<td>隶属望远镜:</td>
 						<td id='guideScopeTeleId'>{{gimbal_config.atname}}</td>
-						<td>口径:</td>
+						<td>口径（m）:</td>
 						<td>
-							<input type='text' id='guideScopeAperture' name='aperture' placeholder='小数'>
+							<input type='text' ref='guideScopeAperture' name='aperture' placeholder='小数' v-model.trim='guide_config.aperture' @blur='check_num(true, guide_config.aperture, $refs.guideScopeAperture, "guide")'>
 						</td>
-						<td>焦点类型:</td>
+						<td>支持镜盖操作:</td>
 						<td>
-							<select id='guideScopeOpticalStructure' name='opticalstructure'>
-								<option value="0">请选择</option>
-								<option :value="v" v-for='v in confOption.opticalStructure'>{{v}}</option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>焦距:</td>
-						<td>
-							<input type='text' id='guideScopeFocusLength' name='focuslength' placeholder='小数'>
-						</td>
-						<td>镜盖（轴5）:</td>
-						<td>
-							<label>有<input type='radio' id='guideScopeMirrorCover' name='hasmirrorcover' value="1"></label>
+							<label>是<input type='radio' name='canopencover' value="1" v-model='guide_config.canopencover'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>无<input type='radio' id='guideScopeMirrorCover-1' name='hasmirrorcover' value="0"></label>
-						</td>
-						<td>支持自动调焦:</td>
-						<td>
-							<label>是<input type='radio' id='SupportAutoFocus' name='issupportautofocus' value="1"></label>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='SupportAutoFocus-1' name='issupportautofocus' value="0"></label>
+							<label>否<input type='radio' name='canopencover' value="0" v-model='guide_config.canopencover'></label>
 						</td>
 					</tr>
 					<tr>
 						<td>支持连接:</td>
 						<td>
-							<label>是<input type='radio' id='guideScopeCanConnect' name='canconnect' value="1"></label>
+							<label>是<input type='radio' name='canconnect' value="1" v-model='guide_config.canconnect'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='guideScopeCanConnect-1' name='canconnect' value="0"></label>
+							<label>否<input type='radio' name='canconnect' value="0" v-model='guide_config.canconnect'></label>
 						</td>
-						<td>支持镜盖操作:</td>
+						<td>镜盖（轴5）:</td>
 						<td>
-							<label>是<input type='radio' id='guideScopeOpenCover' name='canopencover' value="1"></label>
+							<label>有<input type='radio' name='hasmirrorcover' value="1" v-model='guide_config.hasmirrorcover'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='guideScopeOpenCover-1' name='canopencover' value="0"></label>
+							<label>无<input type='radio' name='hasmirrorcover' value="0" v-model='guide_config.hasmirrorcover'></label>
 						</td>
-						<td>使能自动调焦:</td>
+						<td>支持自动调焦:</td>
 						<td>
-							<label>是<input type='radio' id='guideEnableAutoFocus' name='canenableautofocus' value="1"></label>
+							<label>是<input type='radio' name='issupportautofocus' value="1" v-model='guide_config.issupportautofocus'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='guideEnableAutoFocus-1' name='canenableautofocus' value="0"></label>
+							<label>否<input type='radio' name='issupportautofocus' value="0" v-model='guide_config.issupportautofocus'></label>
 						</td>
 					</tr>
 					<tr>
+						<td>使能自动调焦:</td>
+						<td>
+							<label>是<input type='radio' name='canenableautofocus' value="1" v-model='guide_config.canenableautofocus'></label>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label>否<input type='radio' name='canenableautofocus' value="0" v-model='guide_config.canenableautofocus'></label>
+						</td>
 						<td>属性版本号:</td>
 						<td>
-							<input type='text' id='guideScopeAttrVersion' name='attrversion'>
+							<input type='text' ref='guideAttrVersion' name='attrversion' v-model.trim='guide_config.attrversion' @blur='check_version(true, guide_config.attrversion, $refs.guideAttrVersion, 4)'>
 						</td>
 						<td>属性更新时间:</td>
-						<td id='guideScopeAttrModifyTime'></td>
+						<td>{{guide_config.attrmodifytime}}</td>
 					</tr>
+					<tr>
+						<td>焦点类型:</td>
+						<td colspan="5" class="border_td">
+							<span v-for='v in confOption.opticalStructure'>{{v}}<input type='checkbox' :value='v' name='guide_focus[]' v-model='guide_focus.focustype'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						</td>
+					</tr>
+					<tr><!--将焦点类型-焦距 一一对应-->
+						<td colspan="6">
+							<input type="hidden" name="focus_n" :value='confOption.opticalStructure.length'><!--将焦点类型的选项个数提交-->
+							<table id='inner_table3' v-if='guide_focus.focustype.length>0'>
+								<tr>
+									<td>焦点类型</td> <td>焦距</td>
+								</tr>
+								<tr v-for='(v,k) in confOption.opticalStructure' v-if='show_guide_tr(v)'>
+									<td>{{v}}</td>
+									<td><input type="text" :ref='"guideFocus"+k' placeholder="数字" :name='"focusLeng"+k' v-model.trim='guide_focus.postData[k].focuslength' @blur='check_guideFocusL(true,k)'></td>
+								</tr>
+							</table>
+						</td>
+					</tr><!--将焦点类型-焦距 一一对应 结束 -->
 					<tr>
 						<td>上传导星望远镜相关文件:</td>
 						<td colspan="2" class="border_td">
 							说明文件:<input type='file' name='specification'>
 						</td>
 						<td>导星望远镜相关文件:</td>
-						<td colspan="2" class="border_td" id='guideScopeFile'> </td>
+						<td colspan="2" class="border_td">
+							<span v-for='v in guide_file'><a title="点击下载">{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						</td>
 					</tr>
 				</table>
-				<input id='guideScopeBtn' type='button' value="提交导星望远镜配置">
+				<input id='guideScopeBtn' type='button' value="提交导星望远镜配置" @click='guide_sbmt'>
 			</form><!--导星望远镜固定属性配置项 结束-->
 		</div><!-- 所有配置项 结束 -->
 	</div><!-- id='all' 结束 --><br><br>

@@ -211,7 +211,7 @@ class Ccd extends Base
     }/*设置制冷温度 结束*/
 
     protected function expose_strategy ($postData, $param) /*设置曝光策略*/
-    {   //halt($postData);
+    {  // halt($postData['filter']);
         if ( $postData['validFlag'] !== '' )   //数据有效标志位
         {
             if (!preg_match('/^\d{1,5}$/', $postData['validFlag']))

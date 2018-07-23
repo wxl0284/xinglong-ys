@@ -264,9 +264,9 @@
 				);
 				return final_shutter_mode;
 			}, /*readout_speed_Mode 结束*/
-			filter_pos_list: function (){
-				return this.configData.filter.filtername.toUpperCase().split('/');
-			}, /*filter_pos_list 结束*/
+			/*filter_pos_list: function (){
+				return this.configData.filter.filtername.split('/');
+			}, filter_pos_list 结束*/
 		},/*computed 结束*/
 		methods: {
 			plan_click: function () {
@@ -544,7 +544,7 @@
 				var msg = '';
 				var v = this.gimbal_form.objName.objectName;
 				var patn = /([\u4e00-\u9fa5]| )+/;
-				if ( patn.test(v) || v == '' || v.length > 48 || v.length < 1 )
+				if ( patn.test(v) || v.length > 48 || v.length < 1 )
 				{
 					msg = '名称不能有汉字或空格!';
 				}
@@ -1218,7 +1218,7 @@
 					layer.alert(msg, {shade:false,closeBtn:0});return;
 				}else{
 					this.ccd_form.exposeParam.ccdNo = this.device_nav.ccdNo;
-					this.ccd_form.exposeParam.filter = this.filter_pos_list;
+					this.ccd_form.exposeParam.filter = this.configData.filter.filtername;
 					$.ajax({
 						url: '/ccd',
 						type: 'post',

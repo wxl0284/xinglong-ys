@@ -25,6 +25,6 @@ form.form input[type='button'] {font-size: 18px;font-weight:bold;}
 #atSelect button {width: 10%;font-size: 18px;}
 
 /*转台的焦点类型 焦比 焦距 表格 样式*/
-#inner_table1,#inner_table2 {border:1px solid #7a7a7a;border-collapse:collapse;width:100%}
+#inner_table1,#inner_table2,#inner_table3 {border:1px solid #7a7a7a;border-collapse:collapse;width:100%}
 
-#inner_table1 td,#inner_table2 td {text-align:center;}
+#inner_table1 td,#inner_table2 td,#inner_table3 td {text-align:center;}

@@ -79,9 +79,7 @@ class Atconfig extends Base
             $at_data['latitude'] = $postData['latitude'];
             $at_data['altitude'] = $postData['altitude'];
             $at_data['aperture'] = $postData['aperture'];
-            //删除$postData的上述数据
-            unset($postData['atid'],$postData['atname'],$postData['address'],$postData['longitude']
-                  ,$postData['latitude'],$postData['altitude'],$postData['aperture']);
+            
             //开启事务 同时操作atlist表 和 gimbalconf表
             Db::startTrans();
 
@@ -106,9 +104,7 @@ class Atconfig extends Base
             $at_data['latitude'] = $postData['latitude'];
             $at_data['altitude'] = $postData['altitude'];
             $at_data['aperture'] = $postData['aperture'];
-            //删除$postData的上述数据
-            unset($postData['atid'],$postData['atname'],$postData['address'],$postData['longitude']
-                  ,$postData['latitude'],$postData['altitude'],$postData['aperture']);
+
             //开启事务 同时操作atlist表 和 gimbalconf表
             Db::startTrans();
 
@@ -125,7 +121,6 @@ class Atconfig extends Base
                 $res = false;
             }
         }
-
 
         if ( !$res )
         {
@@ -230,18 +225,6 @@ class Atconfig extends Base
         // {
         //     return '您无权执行此操作!';
         // }
-
-        //$postData = input('maxAxis3Speed');
-        //$file = request()->file('instruction');
-        //dump($postData);
-        //dump($file);
-        // $postData = input();
-
-        // if ( !isset($postData['maxAxis3Speed']) )
-        // {
-        //     $postData['maxAxis3Speed'] = null;
-        // }
-        // dump($postData['maxAxis3Speed']);
 
         $postData = input();
         //halt($postData);
@@ -425,34 +408,51 @@ class Atconfig extends Base
         //     return '您无权执行此操作!';
         // }
 
-        //$postData = input('maxAxis3Speed');
-        //$file = request()->file('instruction');
-        //dump($postData);
-        //dump($file);
-        // $postData = input();
-
-        // if ( !isset($postData['maxAxis3Speed']) )
-        // {
-        //     $postData['maxAxis3Speed'] = null;
-        // }
-        // dump($postData['maxAxis3Speed']);
-
         $postData = input();
-        //halt($postData);
-       //属性更新时间
-       $postData['attrmodifytime'] = date ('Y-m-d');
+    
+       $postData['attrmodifytime'] = date ('Y-m-d');   //属性更新时间
        //接下来处理 各插槽的 滤光片类型-名称-偏差值
        if ( !isset($postData['numberoffilter']) || $postData['numberoffilter'] < 1 )
        {
            return '未填写插槽数目';
        }
 
-       if ( !isset($postData['slot']) || count($postData['slot']) < 3 )
+       $filter_type_data = Db::table('confoption')->where('conf', 'FilterSystem')->select();
+       
+       $filter_type_data = array_column($filter_type_data, 'conf_val'); //获取confoption表中的滤光片类型
+      
+       $slot_err = ''; //记录错误提示
+
+       for ( $slot_i = 0; $slot_i < $postData['numberoffilter']; $slot_i++ ) //逐一检查每个插槽的 滤光片类型-名称-偏差值
        {
-           return '请各插槽';
+            //首先检查滤光片类型
+            if ( !in_array( $postData['filterType'][$slot_i],  $filter_type_data)  )
+            {
+                $slot_err .= '插槽' . ($slot_i+1) . '滤光片类型有误';
+            }
+            //检查滤光片名称
+            if ( preg_match('/[\x{4e00}-\x{9af5} 0-9]/u', $postData['filterName'][$slot_i]) || $postData['filterName'][$slot_i] === '' )
+            {
+                $slot_err .= '插槽' . ($slot_i+1) . '滤光片名称有误';
+            }
+            //检查焦距偏差值
+            if ( !preg_match('/\d+/', $postData['filterComp'][$slot_i]) || $postData['filterComp'][$slot_i] < 1 )
+            {
+                $slot_err .= '插槽' . ($slot_i+1) . '焦距偏差值有误';
+            }
        }
 
-        //定义错误提示
+       if ( $slot_err !== '' ) return $slot_err;
+
+       $slot_temp['slot_num'] = $postData['numberoffilter'];
+       $slot_temp['filterType'] = $postData['filterType'];
+       $slot_temp['filterName'] = $postData['filterName'];
+       $slot_temp['filterComp'] = $postData['filterComp'];
+
+       $postData['filtersystem'] = json_encode ($slot_temp);
+       //处理 各插槽的 滤光片类型-名称-偏差值 结束
+        
+       //定义错误提示
         $errMsg = '';
 
         $data = Db::table('filterconf')->where('teleid', $postData['teleid'])->find();
@@ -530,18 +530,6 @@ class Atconfig extends Base
         // {
         //     return '您无权执行此操作!';
         // }
-
-        //$postData = input('maxAxis3Speed');
-        //$file = request()->file('instruction');
-        //dump($postData);
-        //dump($file);
-        // $postData = input();
-
-        // if ( !isset($postData['maxAxis3Speed']) )
-        // {
-        //     $postData['maxAxis3Speed'] = null;
-        // }
-        // dump($postData['maxAxis3Speed']);
 
         $postData = input();
 
@@ -819,20 +807,26 @@ class Atconfig extends Base
         //     return '您无权执行此操作!';
         // }
 
-        //$postData = input('maxAxis3Speed');
-        //$file = request()->file('instruction');
-        //dump($postData);
-        //dump($file);
-        // $postData = input();
-
-        // if ( !isset($postData['maxAxis3Speed']) )
-        // {
-        //     $postData['maxAxis3Speed'] = null;
-        // }
-        // dump($postData['maxAxis3Speed']);
-
         $postData = input();
+        //halt($postData);
 
+        //处理焦点类型-焦比-焦距
+        $guide_focus_num = isset($postData['guide_focus']) ? count ($postData['guide_focus']) : 0; //被选择的
+        if ( $guide_focus_num == 0 ) return '您未选择焦点类型';
+        
+        for ( $g_i = 0; $g_i < $postData['focus_n']; $g_i++)
+        { //将焦距数据整理为一个数组[ 'v0'=>['focusLeng'=>'11'], 'v1'=>'22' ]
+            if ( isset( $postData['focusLeng'.$g_i] ) && is_numeric($postData['focusLeng'.$g_i]) && $postData['focusLeng'.$g_i] > 0 ) 
+            {
+                $focus_temp['v'.$g_i] = [ 'focusLeng' => $postData['focusLeng'.$g_i] ];
+            }elseif ( isset( $postData['focusLeng'.$g_i] ) && !(is_numeric($postData['focusLeng'.$g_i]) && $postData['focusLeng'.$g_i] > 0) ){
+                return $postData['guide_focus'][$g_i] . ': 焦距输入有误';
+            }
+        }
+
+        $focus_temp['focus'] = $postData['guide_focus'];
+
+        $postData['focuslength'] = json_encode ($focus_temp); //将整理后的数组转为json字串，存入focustype字段
        //属性更新时间
        $postData['attrmodifytime'] = date ('Y-m-d');
 
@@ -843,9 +837,9 @@ class Atconfig extends Base
 
         if ( $data )
         {//已有配置数据 进行update
-            $res = Db::table('guideconf')->where('teleid', $postData['teleid'])->update($postData);
+            $res = Db::table('guideconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
         }else{//还无配置数据 进行insert
-            $res = Db::table('guideconf')->insert($postData);
+            $res = Db::table('guideconf')->strict(false)->insert($postData);
         }
 
         if ( !$res )

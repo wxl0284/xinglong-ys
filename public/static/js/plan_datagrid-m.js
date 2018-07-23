@@ -334,7 +334,7 @@
 	
 	//将固定属性中的滤光片名称:u/v/b，对变量filterData进行赋值
 	var filterData = [];
-	var plan_filter_option = configData.filter.filtername.split('/');
+	var plan_filter_option = configData.filter.filtername;
 	var filterData_num = plan_filter_option.length;
 	for (var filterData_i = 0; filterData_i < filterData_num; filterData_i++)
 	{

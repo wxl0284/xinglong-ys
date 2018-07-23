@@ -1060,12 +1060,17 @@ class Page extends Base
         $filter = Db::table('filterconf')->where('teleid', $at)->find();
         if ( $filter )
         {
-            //将filtername字段处理为json数据，给atpage页面的js进行赋值
-            if ( $filter['filtername'] )
+            //处理filtersystem字段数据
+            if ( $filter['filtersystem'] )
             {
-                $temp_filtername = explode ('/', $filter['filtername']);
-                $filter['filter_name_json'] = json_encode ($temp_filtername);
+                $temp = json_decode ($filter['filtersystem'], true); //先将json数据转为数组
+
+                $filter['slot_num'] = $temp['slot_num']; //插槽数目
+                $filter['filtername'] = $temp['filterName']; //滤光片名称
+                $filter['filterType'] = $temp['filterType']; //滤光片类型
+                $filter['filterComp'] = $temp['filterComp']; //滤光片类型
             }
+
             $result['filter'] = $filter;
             $result['has_filter'] = 1; //表示有filter的配置数据
         }
@@ -1098,6 +1103,17 @@ class Page extends Base
         $guide = Db::table('guideconf')->where('teleid', $at)->find();
         if ( $guide )
         {
+            //处理focuslength字段数据
+            if ( $guide['focuslength'] )
+            {
+                $temp = json_decode ($guide['focuslength'], true); //先将json数据转为数组
+
+                $guide_focusLeng = array_column ($temp, 'focusLeng');
+
+                $guide['focus'] = $temp['focus'];
+                $guide['focus_length'] = $guide_focusLeng;
+            }
+
             $result['guide'] = $guide;
             $result['has_guide'] = 1; //表示有 导星镜的配置数据
         }
