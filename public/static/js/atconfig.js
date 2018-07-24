@@ -3,32 +3,22 @@ $(function () {
     //显示导航栏望远镜列表///////////////////////////////////// 
        var ul = $('#atListUl');
        $('#atList').hover(
-            function (){
-                ul.show();
-            }, 
-           function (){		
-                ul.hide();
-            } 
+            function (){  ul.show();}, 
+           function (){ ul.hide();}
        );
        
         //各望远镜配置 js事件
        var configList = $('#atConfigList');
        $('#atConfig').hover(
-            function (){
-                configList.show();
-            }, 
-           function (){		
-                configList.hide();
-            } 
+            function (){ configList.show(); }, 
+           function (){ configList.hide(); } 
        );
-
-    /************* vue 开始 *************/
+/************* vue 开始 *************/
     var vm = new Vue ({ //vue 开始
         el: '#all',
         data: {
-            // show_dev_form:[],//各设备配置表单是否被选中
-            // ccd_form_num:'1',//ccd配置表单的数量
-            //at:'0',//选择望远镜下拉框中的val,即望远镜的主键id
+            test:'', //测试数据
+            ccd_gain_noise_tr:1,//ccd 增益值及读出噪声值输入表格的行数
             all_ccd_config:{},//所有ccd的配置
             show_dev_form: {//控制是否显示各子设备的表单
                 teleid: '0',//选择望远镜下拉框中的val,即望远镜的主键id
@@ -49,9 +39,11 @@ $(function () {
             confOption: {BinArray:['']},
             ccd_readOutSpeed:{//ccd读出速度
                 speed_num:1, //显示的读出速度数量
+                readoutspeed:[]
             },//ccd读出速度 结束
             ccd_transSpeed:{//ccd转移速度
                 speed_num:1, //显示的转移速度数量
+                transferspeed:[]
             },//ccd转移速度 结束
             gimbal_config: {
                 ip:'', type: '0', focustype: [], focusratio: '0', focuslength:'', maxaxis1speed:'', maxaxis2speed:'',
@@ -93,6 +85,10 @@ $(function () {
                 ip:'', sdomeid:'', name:'', dometype:'0', maxspeed:'', diameter:'', attrversion:'', attrmodifytime:'',
             },//oDome_config 结束
             sDome_file: {}, //随动圆顶 上传的文件
+            focus_config: {//调焦器配置信息
+                ip:'', focusid:'', name:'', increment:'', maxvalue:'', minvalue:'', maxspeed:'', attrversion:'', attrmodifytime:''
+            },//focus_config 结束
+            focus_file: {}, //调焦器 上传的文件
         },//data 结束
         computed: {
             final_binArray: function (){
@@ -100,15 +96,29 @@ $(function () {
                 return temp.replace('[', '').replace(']', '').split(' '); //即：[ "1", "2", "3", "4" ]
             },
         },//computed 结束
-        mounted:function () {
-
-        },//mounted 结束
         methods: {
             tt:function (e) {
                 //console.log(this.gimbal_focus.postData);
                 //console.log(this.confOption.focustype);
                 //layer.tips('haha', e.target);
             },
+            show_gain_noise_table: function (){//显示ccd: 增益值及读出噪声值的
+               var read_speed_num = this.ccd_readOutSpeed.speed_num == 0 ? 1 : this.ccd_readOutSpeed.speed_num; //读出速度的个数
+               var trans_speed_num = this.ccd_transSpeed.speed_num == 0 ? 1 : this.ccd_transSpeed.speed_num; //转移速度的个数
+               var gainMode_num = this.ccd_config.gainmode.length == 0 ? 1 : this.ccd_config.gainmode.length; //增益模式的个数
+               var gainNum = !this.ccd_config.gainnumber ? 1 : this.ccd_config.gainnumber*1; //增益档位
+               this.ccd_gain_noise_tr = read_speed_num * trans_speed_num * gainMode_num * gainNum;
+
+               //this.test= !this.ccd_config.gainnumber ? 1 : this.ccd_config.gainnumber*1;
+            },//show_gain_noise_table 结束
+            delete_readOutSpeed: function (v) {//删除ccd 读出速度
+                this.ccd_readOutSpeed.speed_num--;
+                this.ccd_readOutSpeed.readoutspeed.splice(v-1, 1);
+            },//delete_readOutSpeed 结束
+            delete_transferSpeed: function (v) {//删除ccd 转移速度
+                this.ccd_transSpeed.speed_num--;
+                this.ccd_transSpeed.transferspeed.splice(v-1, 1);
+            },//delete_transferSpeed 结束
             show_focus_tr:function (v){
                 if ( $.inArray(v, this.gimbal_focus.focustype) !== -1 )
                 {
@@ -280,6 +290,16 @@ $(function () {
                                         that.filter_file = info.filter_file;
                                     }
                                 }//显示滤光片配置信息  结束
+
+                                if (info.focus_data) //在页面显示调焦器配置数据
+                                {
+                                    that.show_dev_form.show_focus = true;  //将调焦器的选项勾选
+                                    that.focus_config = info.focus_data;
+                                    if (info.focus_file)
+                                    {
+                                        that.focus_file = info.focus_file;
+                                    }
+                                }/*在页面显示调焦器的配置数据 结束*/
 
                                 if (info.sDome_data) //在页面显示随动圆顶的配置数据
                                 {   //console.log(info.filter_data);
@@ -483,6 +503,8 @@ $(function () {
                             msg = '全开圆顶属性版本号输入有误';  break;
                         case 6:
                             msg = '随动圆顶属性版本号输入有误';  break;
+                        case 7:
+                            msg = '调焦器属性版本号输入有误';  break;
                     }                     
                 }
 
@@ -653,6 +675,8 @@ $(function () {
                             msg = '请输入全开圆顶名称'; break;
                         case 'sDome':
                             msg = '请输入随动圆顶名称'; break;
+                        case 'focus':
+                            msg = '请输入调焦器名称'; break;
                     }
                 }
 
@@ -753,6 +777,28 @@ $(function () {
 				}
 				return msg !== '' ? msg + '<br>' : '';
             },//check_maxExposTime() 结束
+            check_focusV: function (tip, v, e, v1) {
+                var msg = '';
+                
+                if ( !$.isNumeric(v) || v <= 0 )
+                {
+                    msg = '调焦器最大值输入有误';
+                    if ( v1 !== undefined ) msg = '调焦器最小值输入有误';
+            
+                }
+
+                if ( v1 !== undefined && v1 < v*1 )
+                {
+                    msg = '调焦器最小值输入有误';
+            
+                }
+
+                if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, e);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+            },//check_focusV() 结束
             check_intV:function (tip, v, e, n){
                 var msg = '';
                 var patn = /^\d+$/;
@@ -927,13 +973,17 @@ $(function () {
                 {
                     switch (dev) {
                         case 'guide':
-                            msg = '口径输入有误'; break;
+                            msg = '导星镜口径输入有误'; break;
                         case 'oDome_D':
                             msg = '全开圆顶尺寸输入有误'; break;
                         case 'sDome_speed':
                             msg = '随动圆顶最大转动速度输入有误'; break;
                         case 'sDome_D':
                             msg = '随动圆顶尺寸输入有误'; break;
+                        case 'focus_I':
+                            msg = '调焦器分辨率输入有误'; break;
+                        case 'focus_S':
+                            msg = '调焦器最大速度输入有误'; break;
                     }
                 }
 
@@ -1320,17 +1370,85 @@ $(function () {
                      error:  function () {
                           layer.alert('网络异常,请重新提交', {shade:0, closeBtn:0,});
                      }
-                })/*ajax 结束*/
+                })//ajax 结束
             },//guide_sbmt() 结束
+            focus_sbmt:function (){//提交调焦器配置数据
+                var that = this; //存储vue的实例
+
+                if ( this.show_dev_form.teleid == '0' )  //未选择某个望远镜
+                {
+                    layer.alert('请选择您要配置的望远镜!', {shade:0,closeBtn:0});return;
+                }
+
+                var msg = '';
+                msg += this.check_ip(false, this.focus_config.ip, this.$refs.focusIp);
+                msg += this.check_devId(false, this.focus_config.focusid, this.$refs.focusId);
+                msg += this.check_devName(false, this.focus_config.name, this.$refs.focusName, "focus");
+                msg += this.check_focusV(false, this.focus_config.maxvalue, this.$refs.focusMaxValue);
+                msg += this.check_focusV(false, this.focus_config.minvalue, this.$refs.focusMinValue, this.focus_config.maxvalue);
+                msg += this.check_num(false, this.focus_config.increment, this.$refs.focusIncrement, "focus_I");
+                msg += this.check_num(false, this.focus_config.maxspeed, this.$refs.focusMaxSpeed, "focus_S");
+                if ( this.focus_config.canconnect === undefined ) msg += '支持连接未选择<br>';
+                if ( this.focus_config.canfindhome === undefined ) msg += '支持找零未选择<br>';
+                if ( this.focus_config.cantemperturecompensate === undefined ) msg += '进行温度补偿未选择<br>';
+                if ( this.focus_config.cansetposition === undefined ) msg += '设置目标位置未选择<br>';
+                if ( this.focus_config.cansetspeed === undefined ) msg += '设置恒速运动未选择<br>';
+                if ( this.focus_config.canstop === undefined ) msg += '支持停止运动未选择<br>';
+                if ( this.focus_config.canenabletemperturecompensate === undefined ) msg += '使能温度补偿未选择<br>';
+                if ( this.focus_config.cansettemperturecompensatecoefficient === undefined ) msg += '设置温度补偿系数未选择<br>';
+                msg += this.check_version(false, this.focus_config.attrversion, this.$refs.focusAttrVersion, 7);
+                
+                if ( msg !== '' )
+                {
+                    layer.alert(msg, {shade:false, closeBtn:0});return;
+                }
+                
+                var focus_Data = new FormData (this.$refs.focus);
+                focus_Data.append('teleid', this.show_dev_form.teleid); //将望远镜Id 提交上去
+                
+                $.ajax({
+                    type: 'post',
+                    url: 'focus_config',
+                    data : focus_Data,
+                    processData : false,
+                    contentType : false,
+                    success:  function (info) {
+                        if ( info.indexOf('{') == -1 ) //info 不是json数据
+                        {
+                            layer.alert(info, {
+                                shade:0,
+                                closeBtn:0,
+                                yes:function (n){
+                                    layer.close(n);
+                                    if (info.indexOf('登录') !== -1)
+                                    {
+                                        location.href = '/';
+                                    }
+                                },
+                            });
+                        }else{//解析 处理 json
+                            var info = $.parseJSON(info);
+        
+                            layer.alert(info.msg, {
+                                shade:false,
+                                closeBtn:0,
+                                yes:function (n){
+                                    layer.close(n);
+                                },
+                            });
+        
+                            that.focus_config.attrmodifytime = info.attrmodifytime; //显示属性更新时间             
+
+                            if (info.file) that.focus_file = info.file;
+                        }//解析 处理 json 结束
+                     },/*success方法结束 */
+                     error:  function () {
+                          layer.alert('网络异常,请重新提交', {shade:0, closeBtn:0,});
+                     }
+                })//ajax 结束
+            },//focus_sbmt() 结束
         },//methods 结束
     });//vue 结束////////////////////
- 
-    //  var filterSystem = $('#filterSystem'); //滤光片类型
-    //  var filterShape = $('#filterShape'); //滤光片形状
-    //  var sDomeType = $('#sDomeType'); //随动圆顶类型
-    //  var oDomeType = $('#oDomeType'); //全开圆顶类型
-    //  var guideScopeOpticalStructure = $('#guideScopeOpticalStructure'); //导星镜 焦点类型
-     /* 获取所有要填入数据的元素对象 结束*/
     
     /*ccd-No1 提交按钮 点击事件*/
 //     ccdBtn_1.click(function () {
@@ -1399,423 +1517,4 @@ $(function () {
 //              },
 //         })
 //     });/*ccd-No1 提交按钮 点击事件 结束*/
-
-    /*滤光片 提交按钮 点击事件*/
-//     filterBtn.click(function () {
-//         //检查望远镜下拉选择框 是否选择了某望远镜
-//         var atId = atNo.val();
-//         if ( atId == 0)
-//         {//未选择某个望远镜
-//             layer.alert('请选择您要配置的望远镜!', {shade:false, closeBtn:0});return;
-//         }
-
-//         var filterData = new FormData(filterForm[0]);
-//         filterData.append('teleid', atId); //将某望远镜的id 加入表单数据中
-//         //将各插槽之滤光片类型数据加入表单 
-//         //加入之前先验证 filter_type的元素个数不能少于插槽数目值
-//         var tempStr = handle_filtersystem_data (filter_type);
-//         filterData.append('filtersystem', tempStr); //将各插槽之滤光片类型数据加入表单 结束
-
-//         $.ajax({
-//             type: 'post',
-//             url: 'filter_config',
-//             data : filterData,
-//             processData : false,
-//             contentType : false,
-//             success:  function (info) {
-//                 if ( info.indexOf('{') == -1 ) //info 不是json数据
-//                 {
-//                     layer.alert(info, {
-//                         shade:false,
-//                         closeBtn:0,
-//                         yes:function (n){
-//                             layer.close(n);
-//                             if (info.indexOf('登录') !== -1)
-//                             {
-//                                 location.href = '/';
-//                             }
-//                         },
-//                     });
-//                 }else{//解析 处理 json
-//                     var info = $.parseJSON(info);
-//                     layer.alert(info.msg, {shade:false, closeBtn:0});
-//                     filterAttrModifyTime.html(info.attrmodifytime); //显示属性更新时间
-//                     //在页面显示已上传的文件名
-//                     if ( info.file ) //有已上传的文件信息
-//                     {
-//                         show_file (filterFile, info.file);
-//                     }else{
-//                         filterFile.html('');
-//                     }
-//                 }//解析 处理 json 结束
-//              },
-//              error:  function () {
-// 	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
-//              },
-//         })
-//     }); /*滤光片 提交按钮 点击事件 结束*/
-    /*滤光片表单 按钮 js事件 结束*/
-
-    /**********************滤光片text框 blur事件 结束*****/
-    /*************验证滤光片表单数据 结束*************/
-
-    /*****随动圆顶  js事件**************/
-//     sDomeBtn.click(function () {
-//         var atId = atNo.val();
-//         if ( atId == 0)
-//         {//未选择某个望远镜
-//             layer.alert('请选择您要配置的望远镜!', {shade:false, closeBtn:0});return;
-//         }
-//         var sDome_Data = new FormData(sDomeForm[0]);
-//         sDome_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
-
-//         //验证 随动圆顶的各配置项
-//         if ( !sDome_select_valid (sDome_Data) )
-//         {
-//             return;
-//         }//随动圆顶的各配置项 结束
-        
-//         $.ajax({
-//             type: 'post',
-//             url: 'slaveDome_config',
-//             data : sDome_Data,
-//             processData : false,
-//             contentType : false,
-//             success:  function (info) {
-//                 if ( info.indexOf('{') == -1 ) //info 不是json数据
-//                 {
-//                     layer.alert(info, {
-//                         shade:false,
-//                         closeBtn:0,
-//                         yes:function (n){
-//                             layer.close(n);
-//                             if (info.indexOf('登录') !== -1)
-//                             {
-//                                 location.href = '/';
-//                             }
-//                         },
-//                     });
-
-//                 }else{//解析 处理 json
-//                     var info = $.parseJSON(info);
-//                     layer.alert(info.msg, {shade:false, closeBtn:0});
-//                     sDomeAttrModifyTime.html(info.attrmodifytime);
-//                     //在页面显示已上传的文件名
-//                     if ( info.file ) //有已上传的文件信息
-//                     {
-//                         show_file (sDomeFile, info.file);
-//                     }else{
-//                         sDomeFile.html('');
-//                     }
-//                 }//解析 处理 json 结束
-//              },
-//              error:  function () {
-// 	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
-//              },
-//         })
-//     });/*随动圆顶 ajax 结束*/
-
-    /*调焦器 js事件
-    var focusBtn = $('#focusBtn'); //获取调焦器 提交按钮
-    var focusForm = $('#focus'); //调焦器 表单
-    var focusAttrModifyTime = $('#focusAttrModifyTime'); //属性更新时间
-    var focusFile = $('#focusFile'); //相关文件
-    var focusIp = $('#focusIp'); //ip
-    var focusId = $('#focusId'); //id
-    var focusName = $('#focusName'); //名称
-    var focusTeleId = $('#focusTeleId'); //隶属望远镜
-    var focusMaxValue = $('#focusMaxValue'); //最大值
-    var focusMinValue = $('#focusMinValue'); //最小值
-    var focusIncrement = $('#focusIncrement'); //分辨率
-    var focusMaxSpeed = $('#focusMaxSpeed'); //最大速度
-    var focusCanConnect = $('#focusCanConnect'); //连接 是
-    var focusCanConnect_1 = $('#focusCanConnect-1'); //连接 否
-    var focusCanFindHome = $('#focusCanFindHome'); //找零 是
-    var focusCanFindHome_1 = $('#focusCanFindHome-1'); //找零 否
-    var focusTempeCompensate = $('#focusTempeCompensate'); //进行温度补偿 是
-    var focusTempeCompensate_1 = $('#focusTempeCompensate-1'); //进行温度补偿 否
-    var focusCanSetPosition = $('#focusCanSetPosition'); //进行温度补偿 是
-    var focusCanSetPosition_1 = $('#focusCanSetPosition-1'); //进行温度补偿 否
-    var focusCanSetSpeed = $('#focusCanSetSpeed'); //设置恒速运动 是
-    var focusCanSetSpeed_1 = $('#focusCanSetSpeed-1'); //设置恒速运动 否
-    var focusCanStop = $('#focusCanStop'); //支持停止运动 是
-    var focusCanStop_1 = $('#focusCanStop-1'); //支持停止运动 否
-    var enableTemperCompensate = $('#enableTemperCompensate'); //使能温度补偿 是
-    var enableTemperCompensate_1 = $('#enableTemperCompensate-1'); //使能温度补偿 否
-    var focusTemperCompensateCoef_1 = $('#focusTemperCompensateCoef-1'); //设置温度补偿系数 否
-    var focusAttrVersion = $('#focusAttrVersion'); //属性版本号
-
-    focusBtn.click(function () {
-        //检查望远镜下拉选择框 是否选择了某望远镜
-        var atId = atNo.val();
-        if ( atId == 0)
-        {//未选择某个望远镜
-            layer.alert('请选择您要配置的望远镜!', {shade:false, closeBtn:0});return;
-        }
-        var focus_Data = new FormData(focusForm[0]);
-        focus_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
-
-        //验证文本框类型、下拉框、复选框、单选框配置项 是否都已选择 
-        if ( !focus_select_valid (focus_Data) )
-        {
-            return;
-        }//验证文本框类型、下拉框、复选框、单选框配置项  是否都已选择 结束        
-
-        $.ajax({
-            type: 'post',
-            url: 'focus_config',
-            data : focus_Data,
-            processData : false,
-            contentType : false,
-            success:  function (info) {
-                if ( info.indexOf('{') == -1 ) //info 不是json数据
-                {
-                    layer.alert(info, {
-                        shade:false,
-                        closeBtn:0,
-                        yes:function (n){
-                            layer.close(n);
-                            if (info.indexOf('登录') !== -1)
-                            {
-                                location.href = '/';
-                            }
-                        },
-                    });
-                }else{//解析 处理 json
-                    var info = $.parseJSON(info);
-                    layer.alert(info.msg, {shade:false, closeBtn:0});
-                    focusAttrModifyTime.html(info.attrmodifytime);
-                    //在页面显示已上传的文件名
-                    if ( info.file ) //有已上传的文件信息
-                    {
-                        show_file (focusFile, info.file);
-                    }else{
-                        focusFile.html('');
-                    }
-                }//解析 处理 json 结束
-             },
-             error:  function () {
-	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
-             },
-        })
-    });/*调焦器 ajax 结束*/
-
-//     function focus_select_valid (focus_form)
-//     {
-//         var focus_errMsg = ''; //全开圆顶表单的错误提示
-
-//         focus_text.each(//逐一验证文本输入框
-//             function () {
-//                 $(this).blur();
-//                 if ( $(this).data('err') == 1 )
-//                 {
-//                     focus_errMsg += $(this).data('info') + '<br>';
-//                 }
-//             }
-//         );
-
-//         if ( focus_form.get('canconnect') === null ) //验证 支持连接
-//         {
-//             focus_errMsg += '是否支持连接未选择!<br>';
-//         }
-
-//         if ( focus_form.get('canfindhome') === null ) //验证 支持找零
-//         {
-//             focus_errMsg += '是否支持找零未选择!<br>';
-//         }
-
-//         if ( focus_form.get('cantemperturecompensate') === null ) //验证 进行温度补偿
-//         {
-//             focus_errMsg += '是否支持进行温度补偿未选择!<br>';
-//         }
-
-//         if ( focus_form.get('cansetposition') === null ) //验证 设置目标位置
-//         {
-//             focus_errMsg += '是否支持设置目标位置未选择!<br>';
-//         }
-
-//         if ( focus_form.get('cansetspeed') === null ) //验证 设置恒速运动
-//         {
-//             focus_errMsg += '是否支持设置恒速运动未选择!<br>';
-//         }
-        
-//         if ( focus_form.get('canstop') === null ) //验证 支持停止运动
-//         {
-//             focus_errMsg += '是否支持停止运动未选择!<br>';
-//         }
-
-//         if ( focus_form.get('canenabletemperturecompensate') === null ) //验证 使能温度补偿
-//         {
-//             focus_errMsg += '是否使能温度补偿未选择!<br>';
-//         }
-
-//         if ( focus_form.get('cansettemperturecompensatecoefficient') === null ) //验证 设置温度补偿系数
-//         {
-//             focus_errMsg += '是否设置温度补偿系数未选择!<br>';
-//         }
-
-//         if ( focus_errMsg !== '' )
-//         {
-//             layer.alert(focus_errMsg, {shade:false, closeBtn:0});
-//             return false;
-//         }else{
-//             return true;
-//         }
-//     }/*  focus_select_valid () 结束*********/
-
-//     focusId.blur(function () {//验证 调焦器id
-//         var that = $(this);
-//         var v = $.trim(that.val());
-//         var patn = /^[0-9]{5}$/;
-//         var err = 0;
-
-//         if ( !patn.test(v) )
-//         {
-//             err = 1;
-//             that.data('info', '调焦器id应为5位数字!');
-//             layer.tips('调焦器id应为5位数字!', that, {tipsMore: true});
-//         }		
-//         that.data('err', err);
-//     });//验证 调焦器id 结束
-
-//     focusName.blur(function () {//验证 调焦器名称
-//         var that = $(this);
-//         var v = $.trim(that.val());
-//         var err = 0;
-
-//         if ( v.length < 2 )
-//         {
-//             err = 1;
-//             that.data('info', '调焦器名称不能为空!');
-//             layer.tips('调焦器名称不能为空!', that, {tipsMore: true});
-//         }		
-//         that.data('err', err);
-//     });//验证 调焦器id 结束
-
-//     focusMaxValue.blur(function () {//验证 最大值
-//         var that = $(this);
-//         var v = $.trim(that.val());
-//         var err = 0;
-
-//         if ( !$.isNumeric(v) || v <= 0 )
-//         {
-//             err = 1;
-//             that.data('info', '调焦器最大值输入有误!');
-//             layer.tips('调焦器最大值输入有误!', that, {tipsMore: true});
-//         }		
-//         that.data('err', err);
-//     });//验证 调焦器最大值 结束
-
-//     focusMinValue.blur(function () {//验证 最小值
-//         var that = $(this);
-//         var v = $.trim(that.val());
-//         var v1 = $.trim(focusMaxValue.val());
-//         var err = 0;
-
-//         if ( !$.isNumeric(v) || v <= 0 || v >= v1*1 )
-//         {
-//             err = 1;
-//             that.data('info', '调焦器最小值输入有误!');
-//             layer.tips('调焦器最小值输入有误!', that, {tipsMore: true});
-//         }		
-//         that.data('err', err);
-//     });//验证 调焦器最小值 结束
-
-//     focusIncrement.blur(function () {//验证 分辨率
-//         var that = $(this);
-//         var v = $.trim(that.val());
-//         var err = 0;
-
-//         if ( !$.isNumeric(v) || v <= 0 )
-//         {
-//             err = 1;
-//             that.data('info', '调焦器分辨率输入有误!');
-//             layer.tips('调焦器分辨率输入错误!', that, {tipsMore: true});
-//         }		
-//         that.data('err', err);
-//     });//验证 调焦器分辨率 结束
-
-//     focusMaxSpeed.blur(function () {//验证 最大速度
-//         var that = $(this);
-//         var v = $.trim(that.val());
-//         var err = 0;
-
-//         if ( !$.isNumeric(v) || v <= 0 )
-//         {
-//             err = 1;
-//             that.data('info', '调焦器最大速度输入有误!');
-//             layer.tips('调焦器最大速度输入错误!', that, {tipsMore: true});
-//         }		
-//         that.data('err', err);
-//     });//验证 最大速度 结束
-
-//     focusAttrVersion.blur(function () {//验证 版本号
-//         var that = $(this);
-//         var v = $.trim(that.val());
-//         var err = 0;
-
-//         if ( v.length < 1 )
-//         {
-//             err = 1;
-//             that.data('info', '调焦器版本号输入有误!');
-//             layer.tips('调焦器版本号输入错误!', that, {tipsMore: true});
-//         }		
-//         that.data('err', err);
-//     });
-//     /***************调焦器 js事件 结束**************/ 
-
-//     guideScopeBtn.click(function () {
-//         //检查望远镜下拉选择框 是否选择了某望远镜
-//         var atId = atNo.val();
-//         if ( atId == 0)
-//         {//未选择某个望远镜
-//             layer.alert('请选择您要配置的望远镜!', {shade:false, closeBtn:0});return;
-//         }
-//         var guide_Data = new FormData(guideScope[0]);
-//         guide_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
-
-//         //验证文本框类型、下拉框、复选框、单选框配置项 是否都已选择 
-//         if ( !guide_select_valid (guide_Data) )
-//         {
-//             return;
-//         }//验证文本框类型、下拉框、复选框、单选框配置项  是否都已选择 结束        
-
-//         $.ajax({
-//             type: 'post',
-//             url: 'guideScope_config',
-//             data : guide_Data,
-//             processData : false,
-//             contentType : false,
-//             success:  function (info) {
-//                 if ( info.indexOf('{') == -1 ) //info 不是json数据
-//                 {
-//                     layer.alert(info, {
-//                         shade:false,
-//                         closeBtn:0,
-//                         yes:function (n){
-//                             layer.close(n);
-//                             if (info.indexOf('登录') !== -1)
-//                             {
-//                                 location.href = '/';
-//                             }
-//                         },
-//                     });
-//                 }else{//解析 处理 json
-//                     var info = $.parseJSON(info);
-//                     layer.alert(info.msg, {shade:false, closeBtn:0});
-//                     guideScopeAttrModifyTime.html(info.attrmodifytime);
-//                     //在页面显示已上传的文件名
-//                     if ( info.file ) //有已上传的文件信息
-//                     {
-//                         show_file (guideScopeFile, info.file);
-//                     }else{
-//                         guideScopeFile.html('');
-//                     }
-//                 }//解析 处理 json 结束
-//              },
-//              error:  function () {
-// 	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
-//              },
-//         })
-//     });/*导星望远镜 ajax 结束*/
 })/*jquery 初始化函数 末尾*/

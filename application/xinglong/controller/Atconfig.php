@@ -810,16 +810,17 @@ class Atconfig extends Base
         $postData = input();
         //halt($postData);
 
-        //处理焦点类型-焦比-焦距
+        //处理焦点类型--焦距
         $guide_focus_num = isset($postData['guide_focus']) ? count ($postData['guide_focus']) : 0; //被选择的
         if ( $guide_focus_num == 0 ) return '您未选择焦点类型';
         
         for ( $g_i = 0; $g_i < $postData['focus_n']; $g_i++)
-        { //将焦距数据整理为一个数组[ 'v0'=>['focusLeng'=>'11'], 'v1'=>'22' ]
+        { //将焦距数据整理为一个数组[ 'v0'=>'11', 'v1'=>'22' ]
             if ( isset( $postData['focusLeng'.$g_i] ) && is_numeric($postData['focusLeng'.$g_i]) && $postData['focusLeng'.$g_i] > 0 ) 
             {
                 $focus_temp['v'.$g_i] = [ 'focusLeng' => $postData['focusLeng'.$g_i] ];
-            }elseif ( isset( $postData['focusLeng'.$g_i] ) && !(is_numeric($postData['focusLeng'.$g_i]) && $postData['focusLeng'.$g_i] > 0) ){
+            }elseif ( isset( $postData['focusLeng'.$g_i] ) && !(is_numeric($postData['focusLeng'.$g_i]) && $postData['focusLeng'.$g_i] > 0) )
+            {
                 return $postData['guide_focus'][$g_i] . ': 焦距输入有误';
             }
         }
