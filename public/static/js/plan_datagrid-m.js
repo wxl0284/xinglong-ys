@@ -922,7 +922,7 @@ function get_plan () {
 						data: arr,
 				}); */
 				
-				editRow = undefined; //否则 导入后无法插入新行
+				//editRow = undefined; //否则 导入后无法插入新行
 				planErr = 0; //将提交计划的错误标识 改为0
 				
 				table.datagrid('scrollTo', plan_tag-1); //滚动到第tag行

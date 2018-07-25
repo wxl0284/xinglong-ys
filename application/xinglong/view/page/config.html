@@ -489,54 +489,56 @@
 						</td>
 					</tr>
 					<tr>
-						<td>读出速度（MHz）:&nbsp;<input type='button' value='增加' style='width:20%;font-size:1em;font-weight:normal;' @click='ccd_readOutSpeed.speed_num++;'></td>
-						<td id='ccdReadoutSpeed' colspan="5" class='border_td'>
-							<span  v-for='v in ccd_readOutSpeed.speed_num'>
-								{{v}}:<input type='text' style='width:4.5%' name='readoutspeed[]' v-model.trim='ccd_readOutSpeed.readoutspeed[v-1]' >
-								<span v-if='ccd_readOutSpeed.speed_num>=1'>&nbsp;<input type='button' style='width:4.5%;font-size:1em;font-weight:normal;' value='删除' @click='delete_readOutSpeed(v)'></span>
+						<td>读出速度（MHz）:&nbsp;<input type='button' value='增加' style='width:20%;font-size:1em;font-weight:normal;' @click='r_spd++;'></td>
+						<td  colspan="5" class='border_td'>
+							<span  v-for='v in r_spd'>
+								{{v}}:<input type='text' style='width:4.5%' name='readoutspeed[]' v-model.trim='readoutspeed[v-1]' >
+								<span v-if='r_spd>=1'>&nbsp;<input type='button' style='width:4.5%;font-size:1em;font-weight:normal;' value='删除' @click='delete_readOutSpeed(v)'></span>
 							</span>
-							<span  v-if='ccd_readOutSpeed.speed_num==0'>无此配置</span>
+							<span  v-if='r_spd==0'>无此配置</span>
 						</td>
 					</tr>
 					<tr>
-						<td>转移速度（MHz）:&nbsp;<input type='button' style='width:20%;font-size:1em;font-weight:normal;' value='增加' @click='ccd_transSpeed.speed_num++;'></td>
-						<td id='ccdReadoutSpeed' colspan="5" class='border_td'>
-							<span  v-for='v in ccd_transSpeed.speed_num'>
-								{{v}}:<input type='text' style='width:4.5%' name='transferspeed[]' v-model.trim='ccd_transSpeed.transferspeed[v-1]'>
-								<span v-if='ccd_transSpeed.speed_num>=1'>&nbsp;<input type='button' style='width:4.5%;font-size:1em;font-weight:normal;' value='删除' @click='delete_transferSpeed(v)'></span>
+						<td>转移速度（MHz）:&nbsp;<input type='button' style='width:20%;font-size:1em;font-weight:normal;' value='增加' @click='t_spd++;'></td>
+						<td colspan="5" class='border_td'>
+							<span  v-for='v in t_spd'>
+								{{v}}:<input type='text' style='width:4.5%' name='transferspeed[]' v-model.trim='transferspeed[v-1]'>
+								<span v-if='t_spd>=1'>&nbsp;<input type='button' style='width:4.5%;font-size:1em;font-weight:normal;' value='删除' @click='delete_transferSpeed(v)'></span>
 							</span>
-							<span  v-if='ccd_transSpeed.speed_num==0'>无此配置</span>
+							<span  v-if='t_spd==0'>无此配置</span>
 						</td>
 					</tr>
 					<tr>
 						<td>增益模式:</td>
 						<td colspan="3" class="border_td" id='ccd_1gainmode'>
-							<span v-for='v in confOption.gainmode'>{{v}}<input type='checkbox' name='gainmode[]' :value='v' v-model='ccd_config.gainmode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<!-- <span v-for='v in confOption.gainmode'>{{v}}<input type='checkbox' name='gainmode[]' :value='v' v-model='ccd_config.gainmode'>&nbsp;&nbsp;&nbsp;&nbsp;</span> -->
+							<span v-for='v in confOption.gainmode'>{{v}}<input type='checkbox' name='gainmode[]' :value='v' v-model='gainMode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 						<td>增益档位:</td>
 						<td>
-							<!-- <select id='ccd_1GainNumber' name='gainnumber' v-model='ccd_config.gainnumber'>
-								<option value="0">请选择</option>
-								<option :value="v" v-for='v in confOption.gainNumber'>{{v}}</option>
-							</select> -->
-							<input type='text' name='gainnumber' v-model.trim='ccd_config.gainnumber'>
+							<input type='text' ref='gainN' name='gainnumber' placeholder="整数" v-model.trim.number='gain_num'>
 						</td>
 					</tr>
 					<tr>
-						<td colspan="6" style='text-align:center;padding:20px;'>
-							<input style="width:auto;" type="button" value="确定上述:读出速度、转移速度、增益模式及增益档位" @click='show_gain_noise_table'>{{ccd_gain_noise_tr}}
+						<td colspan="6" style='text-align:center;padding:20px;'> {{row}}
 							<table id='inner_table4'>
 								<tr>
-									<td v-if='ccd_config.gainmode.length>0'>增益模式</td> <td>读出速度</td> <td>转移速度</td> <td>增益档位</td> <td>增益值</td> <td>读出噪声值</td>
+									<td v-if='gainMode.length>0'>增益模式</td> <td v-if='r_spd>0'>读出速度</td> <td v-if='t_spd>0'>转移速度</td> <td v-if='gain_num>0'>增益档位</td> <td>增益值</td> <td @click='tt'>读出噪声值</td>
 								</tr>
-								<tr v-for='n in ccd_gain_noise_tr'>
-									<td v-if='ccd_config.gainmode.length>0&&n<=ccd_gain_noise_tr/ccd_config.gainmode.length'>{{ccd_config.gainmode[0]}}</td>
-									<td v-if='ccd_config.gainmode.length==2&&n>ccd_gain_noise_tr/ccd_config.gainmode.length'>{{ccd_config.gainmode[1]}}</td>
-									<td>读出速度</td>
-									<td>转移速度</td>
-									<td>增益档位</td>
-									<td>增益值</td>
-									<td>读出噪声值</td>
+								<tr v-for='n in row'>
+									<!-- <td v-if='gainMode.length>0&&n<=row/gainMode.length'>{{gainMode[0]}}</td>
+									<td v-if='gainMode.length==2&&n>row/gainMode.length'>{{gainMode[1]}}</td> -->
+									<td v-if='gainMode.length>0&&n<=row/gainMode.length'>{{gainMode[0]}}</td>
+									<td v-if='gainMode.length>0&&n>row/gainMode.length'>{{gainMode[gainMode.length-1]}}</td>
+									<td v-if='show_readOut'>读出速度</td>
+									<td v-if='t_spd>0'>转移速度</td>
+									<td v-if='gain_num>0'>增益档位</td>
+									<td>
+										<input type="text" name='"gainVal"+n' v-model='gain_noise.data[n-1].gain' @blur='check_gain_noise(true, n, 1)'>
+									</td>
+									<td>
+										<input type="text" name='"noiseVal"+n' v-model='gain_noise.data[n-1].noise' @blur='check_gain_noise(true, n, 2)'>
+									</td>
 								</tr>
 							</table>
 						</td>
@@ -798,7 +800,7 @@
 						<td colspan="6">
 							<table id='inner_table2' v-if='filter_config.numberoffilter>0'><!--将插槽序号-滤光片类型-滤光片名称-偏差值 一一对应 -->
 								<tr>
-									<td>插槽序号</td> <td>滤光片类型</td> <td>滤光片名称</td> <td @click='tt'>焦距偏差值（μm）</td>
+									<td>插槽序号</td> <td>滤光片类型</td> <td>滤光片名称</td> <td>焦距偏差值（μm）</td>
 								</tr>
 								<tr v-for='v in filter_config.numberoffilter*1'>
 									<td>插槽{{v}}</td>

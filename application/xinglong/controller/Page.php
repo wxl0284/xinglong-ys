@@ -81,7 +81,7 @@ class Page extends Base
         return view('config', $vars);  //之前配置页面的模板文件是page/config-0.html
     }//望远镜配置页面 结束
 
-    //ajax请求 判断19个动态增减的固定是否已添加够 并获取相应望远镜的配置数据/////////
+    //ajax请求 判断14个动态增减的固定是否已添加够 并获取相应望远镜的配置数据/////////
     public function config()
     {//halt(input());
         //首先判断是否有权限执行

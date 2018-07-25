@@ -75,7 +75,7 @@ Route::post('del_conf$', 'xinglong/conf/delete_conf');
 /*配置各望远镜固定属性 路由*/
 //显示望远镜配置页面 路由
 Route::get('atconfig$', 'xinglong/page/at_config');
-//望远镜配置页面'望远镜选择下拉选择框'的ajax请求判断19个固定属性并获取配置的json数据 路由 
+//望远镜配置页面'望远镜选择下拉选择框'的ajax请求判断14个固定属性并获取配置的json数据 路由 
 Route::post('config$', 'xinglong/page/config');
 //ajax提交转台配置数据 路由
 Route::post('gimbal_config$', 'xinglong/atconfig/gimbal_config');

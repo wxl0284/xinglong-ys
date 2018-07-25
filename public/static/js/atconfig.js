@@ -6,7 +6,7 @@ $(function () {
             function (){  ul.show();}, 
            function (){ ul.hide();}
        );
-       
+
         //各望远镜配置 js事件
        var configList = $('#atConfigList');
        $('#atConfig').hover(
@@ -17,8 +17,17 @@ $(function () {
     var vm = new Vue ({ //vue 开始
         el: '#all',
         data: {
-            test:'', //测试数据
-            ccd_gain_noise_tr:1,//ccd 增益值及读出噪声值输入表格的行数
+            row:1, //ccd 增益值及读出噪声值输入表格的行数
+            r_spd:1, //ccd 读出速度的数目
+            readoutspeed:[], //ccd 读出速度
+            t_spd:1, //ccd 转移速度的数目
+            transferspeed:[], //ccd 转移速度
+            gain_num:1, //ccd 增益挡位
+            gainMode:[], //ccd 增益模式
+            gain_noise:{//ccd 输入增益值及读出噪声值时v-model绑定的对象
+                data:[], //data里存储一条条的数据
+            },//gain_noise
+            read_out: [], //ccd 增益值及读出噪声值输入表格内读出速度列
             all_ccd_config:{},//所有ccd的配置
             show_dev_form: {//控制是否显示各子设备的表单
                 teleid: '0',//选择望远镜下拉框中的val,即望远镜的主键id
@@ -37,14 +46,6 @@ $(function () {
                 postData:{},//转台焦点类型须提交的数据
             },//gimbal_focus 结束
             confOption: {BinArray:['']},
-            ccd_readOutSpeed:{//ccd读出速度
-                speed_num:1, //显示的读出速度数量
-                readoutspeed:[]
-            },//ccd读出速度 结束
-            ccd_transSpeed:{//ccd转移速度
-                speed_num:1, //显示的转移速度数量
-                transferspeed:[]
-            },//ccd转移速度 结束
             gimbal_config: {
                 ip:'', type: '0', focustype: [], focusratio: '0', focuslength:'', maxaxis1speed:'', maxaxis2speed:'',
                 maxaxis1speed:'', maxaxis1acceleration:'', maxaxis2acceleration:'', maxaxis3acceleration:'',
@@ -96,28 +97,85 @@ $(function () {
                 return temp.replace('[', '').replace(']', '').split(' '); //即：[ "1", "2", "3", "4" ]
             },
         },//computed 结束
+        watch: {
+            r_spd: function (newV){//监听data.r_spd
+                var r_speed = newV == 0 ? 1 : newV;
+                var gainMode_num = this.gainMode.length == 0 ? 1 : this.gainMode.length;
+                var t_speed = this.t_spd == 0 ? 1 : this.t_spd;
+                var gainNum = this.gain_num ? this.gain_num : 1;
+
+                this.row = r_speed * t_speed * gainMode_num * gainNum;
+                //接下来初始化：gain_noise.data
+                for (let i = 0; i < this.row; i++) {
+                    this.gain_noise.data[i] ? '' : this.gain_noise.data[i] = {gain:'', noise:''};
+                }
+            },
+            t_spd: function (newV){//监听data.t_spd
+                var t_speed = newV == 0 ? 1 : newV;
+                var gainMode_num = this.gainMode.length == 0 ? 1 : this.gainMode.length;
+                var r_speed = this.r_spd == 0 ? 1 : this.r_spd;
+                var gainNum = this.gain_num ? this.gain_num : 1;
+
+                this.row = r_speed * t_speed * gainMode_num * gainNum;
+                //接下来初始化：gain_noise.data
+                for (let i = 0; i < this.row; i++) {
+                    this.gain_noise.data[i] ? '' : this.gain_noise.data[i] = {gain:'', noise:''};
+                }
+            },
+            gainMode: function (newV){//监听data.gainMode
+                var gainMode_num = newV.length == 0 ? 1 : newV.length;
+                var r_speed = this.r_spd == 0 ? 1 : this.r_spd;
+                var t_speed = this.t_spd == 0 ? 1 : this.t_spd;
+                var gainNum = this.gain_num ? this.gain_num : 1;
+
+                this.row = r_speed * t_speed * gainMode_num * gainNum;
+                //接下来初始化：gain_noise.data
+                for (let i = 0; i < this.row; i++) {
+                    this.gain_noise.data[i] ? '' : this.gain_noise.data[i] = {gain:'', noise:''};
+                }
+            },
+            gain_num: function (newV){//监听data.gain_num
+                var patn = /^\d+$/;
+                if ( !patn.test(newV) || newV <= 0 )
+                {
+                    layer.tips('输入有误', this.$refs.gainN); this.gain_num = ''; //输入错误或不输入，都将挡位置为1
+                }          
+
+                var gainNum = this.gain_num ? this.gain_num : 1;
+                var gainMode_num = this.gainMode.length == 0 ? 1 : this.gainMode.length;
+                var r_speed = this.r_spd == 0 ? 1 : this.r_spd;
+                var t_speed = this.t_spd == 0 ? 1 : this.t_spd;
+                this.row = r_speed * t_speed * gainMode_num * gainNum;
+                //接下来初始化：gain_noise.data
+                for (let i = 0; i < this.row; i++) {
+                    this.gain_noise.data[i] ? '' : this.gain_noise.data[i] = {gain:'', noise:''};
+                }
+            },
+        },//watch 结束
         methods: {
             tt:function (e) {
-                //console.log(this.gimbal_focus.postData);
-                //console.log(this.confOption.focustype);
-                //layer.tips('haha', e.target);
+                if ( this.gain_noise.data[2] )
+                {
+                    layer.alert('nnn');
+                }
+                //console.log( this.gain_noise.data[200] );
+                //console.log( this.gain_noise.data[1] );
             },
-            show_gain_noise_table: function (){//显示ccd: 增益值及读出噪声值的
-               var read_speed_num = this.ccd_readOutSpeed.speed_num == 0 ? 1 : this.ccd_readOutSpeed.speed_num; //读出速度的个数
-               var trans_speed_num = this.ccd_transSpeed.speed_num == 0 ? 1 : this.ccd_transSpeed.speed_num; //转移速度的个数
-               var gainMode_num = this.ccd_config.gainmode.length == 0 ? 1 : this.ccd_config.gainmode.length; //增益模式的个数
-               var gainNum = !this.ccd_config.gainnumber ? 1 : this.ccd_config.gainnumber*1; //增益档位
-               this.ccd_gain_noise_tr = read_speed_num * trans_speed_num * gainMode_num * gainNum;
-
-               //this.test= !this.ccd_config.gainnumber ? 1 : this.ccd_config.gainnumber*1;
-            },//show_gain_noise_table 结束
+            check_gain_noise:function (tip, n, k){//验证ccd 增益值及读出噪声值
+                switch (k) {
+                    case 1:
+                        layer.alert('增益'+n); break;
+                    case 2:
+                        layer.alert('噪声'+n); break;
+                }
+            },//check_gain_noise()
             delete_readOutSpeed: function (v) {//删除ccd 读出速度
-                this.ccd_readOutSpeed.speed_num--;
-                this.ccd_readOutSpeed.readoutspeed.splice(v-1, 1);
+                this.r_spd--;
+                this.readoutspeed.splice(v-1, 1);
             },//delete_readOutSpeed 结束
             delete_transferSpeed: function (v) {//删除ccd 转移速度
-                this.ccd_transSpeed.speed_num--;
-                this.ccd_transSpeed.transferspeed.splice(v-1, 1);
+                this.t_spd--;
+                this.transferspeed.splice(v-1, 1);
             },//delete_transferSpeed 结束
             show_focus_tr:function (v){
                 if ( $.inArray(v, this.gimbal_focus.focustype) !== -1 )
@@ -135,6 +193,33 @@ $(function () {
                     return false;
                 } 
             },//show_guide_tr() 结束
+            show_readOut: function (){
+                if ( this.r_spd < 1 ) //无读出速度这个选项
+                {
+                    return false;
+                }
+
+                //接下来，根据表格各字段所属列的数量，将需要在表格中显示的读出速度，拼装为一个数组：this.readout
+                var trans_num = this.t_spd == 0 ? 1 : this.t_spd; //转移速度的数目
+                var gain_Num = this.gain_num ? this.gain_num : 1; //增益挡位的值
+                var gainMode_num = this.gainMode.length == 0 ? 1 : this.gainMode.length; //被选中增益模式的数目
+                var total = trans_num * gain_Num * this.r_spd; //this.readout内元素总数
+                //var per_read_out_row = trans_num * gain_Num; //每个读出速度值要显示的行数
+
+                for (let i = 0; i < total_row; i++)
+                {
+                    const element = array[i];                    
+                }
+                // if ( gainMode_num == 1 ) //只有一种增益模式
+                // {
+
+                // }else if( gainMode_num == 2 ) //两种增益模式
+                // {
+
+                // }
+
+                return true;
+            },//show_readOut() 结束
             check_focus_val: function (tip, k, n){//验证转台：焦点类型-焦比-焦距
                 var msg = '';
                 var patn = /^\[\d+\.?\d? \d+\.?\d?\]$/; //匹配[2.3 5.2]
@@ -255,13 +340,24 @@ $(function () {
                                     if ( !info.ccd_data[0].gainnumber ) info.ccd_data[0].gainnumber = '0';
                                     if ( !info.ccd_data[0].shuttertype ) info.ccd_data[0].shuttertype = '0';
                         
+                                    //接下来 初始化进行v-model数据绑定的 gain_noise.data 增益-读出噪声, 待修改
+                                    // that.r_spd = 3;
+                                    // that.r_spd = 3;
+                                    // that.gain_num = 3;
+                                    // that.gainMode = ['High Sensitivity', 'High Capacity'];
+                                    for (let i = 0; i < 16; i++) {
+                                        that.gain_noise.data[i] = {gain:'', noise:''};
+                                    }
+                                    //初始化进行v-model数据绑定的 gain_noise.data 增益-读出噪声, 待修改
+
                                     that.ccd_config = info.ccd_data[0]; //将第一个ccd中的配置数据赋值给ccd_config
                                     
+                                    that.gainMode = that.ccd_config.gainmode; //将增益模式赋给data.gainMode
+
                                     if (info.ccd_file)
                                     {
                                         if ( info.ccd_file[1] != 0 ) that.ccd_file = info.ccd_file[1];
                                     }
-                        
                                 }//显示ccd 配置信息  结束
 
                                 if (info.filter_data) //在页面显示滤光片的配置数据
@@ -327,9 +423,9 @@ $(function () {
                                     }
                                 }//显示全开圆顶配置信息  结束
 
-                                if (info.guide_data) //在页面显示全开圆顶的配置数据
+                                if (info.guide_data) //在页面显示导星镜的配置数据
                                 {   //console.log(info.filter_data);
-                                    that.show_dev_form.show_guide = true; //显示全开圆顶配置表单
+                                    that.show_dev_form.show_guide = true; //显示导星镜配置表单
 
                                     //var gimbal_focus_conf = $.parseJSON(info.gimbal_data.focustype); //处理焦点类型-焦比-焦距
                                     var guide_focus_conf = $.parseJSON(info.guide_data.focuslength); //处理焦点类型-焦距
@@ -351,7 +447,7 @@ $(function () {
                                     {
                                         that.guide_file = info.guide_file;
                                     }
-                                }//显示全开圆顶配置信息  结束
+                                }//显示导星镜配置信息  结束
 
                                 layer.close(index);  //关闭加载图标
                             }
@@ -1012,7 +1108,8 @@ $(function () {
                 {
                     for (let i = 1; i <= v*1; i++)
                     {
-                        this.filter_slot.slotData[i] = {filterType:'0', filterName:'', filterComp:''};
+                        //this.filter_slot.slotData[i] = {filterType:'0', filterName:'', filterComp:''};
+                        if ( !this.filter_slot.slotData[i] ) this.filter_slot.slotData[i] = {filterType:'0', filterName:'', filterComp:''};
                     }
                 }
 				return msg !== '' ? msg + '<br>' : '';
