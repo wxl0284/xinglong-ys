@@ -22,8 +22,7 @@ class Slavedome extends Base
     protected $command_length = [//各指令长度
         'connect' => 50,
         'stop' => 48,
-        //'open' => 50, //钟
-        'open' => 52, //胡 加2
+        'open' => 50,
         'set_objPos' => 56,
         'set_speed' => 56,
         'set_shade' => 56,
@@ -152,8 +151,7 @@ class Slavedome extends Base
 
     protected function scuttle ($scuttle, $param)  /*随动圆顶 开/关天窗*/
     {
-        //$sendMsg = pack('S', $scuttle); //unsinged short 钟
-        $sendMsg = pack('I', $scuttle); //unsinged int 胡
+        $sendMsg = pack('S', $scuttle);
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
         $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);

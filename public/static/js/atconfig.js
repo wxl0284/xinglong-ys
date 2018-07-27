@@ -17,17 +17,16 @@ $(function () {
     var vm = new Vue ({ //vue 开始
         el: '#all',
         data: {
-            row:1, //ccd 增益值及读出噪声值输入表格的行数
-            r_spd:1, //ccd 读出速度的数目
+            //rows:1, //ccd 增益值及读出噪声值输入表格的行数
+            r_spd:0, //ccd 读出速度的数目
             readoutspeed:[], //ccd 读出速度
-            t_spd:1, //ccd 转移速度的数目
+            t_spd:0, //ccd 转移速度的数目
             transferspeed:[], //ccd 转移速度
-            gain_num:1, //ccd 增益挡位
+            gain_num:'', //ccd 增益挡位
             gainMode:[], //ccd 增益模式
-            gain_noise:{//ccd 输入增益值及读出噪声值时v-model绑定的对象
-                data:[], //data里存储一条条的数据
-            },//gain_noise
-            read_out: [], //ccd 增益值及读出噪声值输入表格内读出速度列
+            gain_noise:{//存储增益模式-读出速度-转移速度-增益挡位-增益值-噪声值, 并将此对象提交给php
+                
+            },//gain_noise 结束
             all_ccd_config:{},//所有ccd的配置
             show_dev_form: {//控制是否显示各子设备的表单
                 teleid: '0',//选择望远镜下拉框中的val,即望远镜的主键id
@@ -98,69 +97,137 @@ $(function () {
             },
         },//computed 结束
         watch: {
-            r_spd: function (newV){//监听data.r_spd
-                var r_speed = newV == 0 ? 1 : newV;
-                var gainMode_num = this.gainMode.length == 0 ? 1 : this.gainMode.length;
-                var t_speed = this.t_spd == 0 ? 1 : this.t_spd;
-                var gainNum = this.gain_num ? this.gain_num : 1;
+            // rows: function (v){//监听rows
+            //     for (let i = 1; i <= v; i++) //初始化this.gain_noise对象
+            //     {
+            //         this.gain_noise[i] = {gainMode:'', readOut_speed:'', transfer_speed:'', gain_gear:'', gainVal:'', noiseVal:''};
+            //     }
 
-                this.row = r_speed * t_speed * gainMode_num * gainNum;
-                //接下来初始化：gain_noise.data
-                for (let i = 0; i < this.row; i++) {
-                    this.gain_noise.data[i] ? '' : this.gain_noise.data[i] = {gain:'', noise:''};
-                }
+            //     var t = this.transferspeed.length; //转移速度的数目
+            //     var m = this.gainMode.length; //增益模式的数目
+            //     var r = this.readoutspeed.length; //读出速度的数目
+            //     var g = this.gain_num; //增益挡位
+            //     //console.log(r);
+            //     //组装gain_noise这个对象
+            //     for (let i = 1; i <= v; i++)
+            //     {
+            //         switch (m)
+            //         {
+            //             case 0://console.log(1);
+            //                 if ( r == 0 )
+            //                 {//console.log(2);
+            //                     this.gain_noise[i].readOut_speed = '';
+            //                 }else{
+            //                     t = t ? t : 1; 
+            //                     g = g ? g : 1; 
+            //                     for (let j = 1; j <= r; j++)
+            //                     {
+            //                         //if ( i <= j*g*t ) this.gain_noise[i].readOut_speed = this.readoutspeed[j-1];
+            //                         //console.log(i);                            
+            //                     }
+            //                 }
+
+            //                 this.gain_noise[i].gainMode = '';
+            //                 //this.gain_noise[i] = {gainMode:'', readOut_speed:'', transfer_speed:'', gain_gear:'', gainVal:'', noiseVal:''};
+            //                 break;
+            //             case 1:
+            //                 //this.gain_noise[i] = {gainMode:this.gainMode[0], readOut_speed:'', transfer_speed:'', gain_gear:'', gainVal:'', noiseVal:''};
+            //                 break;
+            //             case 2:
+            //                 //this.gain_noise[i] = {gainMode:this.gainMode[0], readOut_speed:'', transfer_speed:'', gain_gear:'', gainVal:'', noiseVal:''};
+            //                 break;
+            //         }
+                    
+            //     //     // if ( i <= rows/gainMode_num ) //增益模式
+            //     //     // {
+            //     //     //     this.gain_noise[i] = {gainMode:'', readOut_speed:'', transfer_speed:'', gain_gear:'', gainVal:'', noiseVal:''};
+            //     //     // }
+            //     //     // //增益模式
+            //     //     // if (  )
+            //     }//组装gain_noise这个对象 结束
+            // },
+            readoutspeed: function (newV){//监听readoutspeed
+                var r = newV.length,
+                    m = this.gainMode.length,
+                    t =  this.transferspeed.length,
+                    g = this.gain_num;
+
+                var r1 = r == 0 ? 1 : r;
+                var m1 = m == 0 ? 1 : m;
+                var t1 = t == 0 ? 1 : t;
+                var g1 = g === '' ? 1 : g;
+
+                var rows = m1 * r1 * t1 *g1;
+                this.set_gain_noise(rows, m, r, t, g);
             },
-            t_spd: function (newV){//监听data.t_spd
-                var t_speed = newV == 0 ? 1 : newV;
-                var gainMode_num = this.gainMode.length == 0 ? 1 : this.gainMode.length;
-                var r_speed = this.r_spd == 0 ? 1 : this.r_spd;
-                var gainNum = this.gain_num ? this.gain_num : 1;
+            transferspeed: function (newV){//监听transferspeed
+                var t = newV.length,
+                    m = this.gainMode.length,
+                    r =  this.readoutspeed.length,
+                    g = this.gain_num;
 
-                this.row = r_speed * t_speed * gainMode_num * gainNum;
-                //接下来初始化：gain_noise.data
-                for (let i = 0; i < this.row; i++) {
-                    this.gain_noise.data[i] ? '' : this.gain_noise.data[i] = {gain:'', noise:''};
-                }
+                var r1 = r == 0 ? 1 : r;
+                var m1 = m == 0 ? 1 : m;
+                var t1 = t == 0 ? 1 : t;
+                var g1 = g === '' ? 1 : g;
+
+                var rows = m1 * r1 * t1 *g1;
+
+                this.set_gain_noise(rows, m, r, t, g);
             },
             gainMode: function (newV){//监听data.gainMode
-                var gainMode_num = newV.length == 0 ? 1 : newV.length;
-                var r_speed = this.r_spd == 0 ? 1 : this.r_spd;
-                var t_speed = this.t_spd == 0 ? 1 : this.t_spd;
-                var gainNum = this.gain_num ? this.gain_num : 1;
+                var m = newV.length,
+                    t = this.transferspeed.length,
+                    r = this.readoutspeed.length,
+                    g = this.gain_num;
 
-                this.row = r_speed * t_speed * gainMode_num * gainNum;
-                //接下来初始化：gain_noise.data
-                for (let i = 0; i < this.row; i++) {
-                    this.gain_noise.data[i] ? '' : this.gain_noise.data[i] = {gain:'', noise:''};
-                }
+                var r1 = r == 0 ? 1 : r;
+                var m1 = m == 0 ? 1 : m;
+                var t1 = t == 0 ? 1 : t;
+                var g1 = g === '' ? 1 : g;
+
+                var rows = m1 * r1 * t1 *g1;
+
+                this.set_gain_noise(rows, m, r, t, g);
             },
             gain_num: function (newV){//监听data.gain_num
                 var patn = /^\d+$/;
                 if ( !patn.test(newV) || newV <= 0 )
                 {
-                    layer.tips('输入有误', this.$refs.gainN); this.gain_num = ''; //输入错误或不输入，都将挡位置为1
+                    this.gain_num = ''; //输入错误或不输入，都将挡位置为''
                 }          
 
-                var gainNum = this.gain_num ? this.gain_num : 1;
-                var gainMode_num = this.gainMode.length == 0 ? 1 : this.gainMode.length;
-                var r_speed = this.r_spd == 0 ? 1 : this.r_spd;
-                var t_speed = this.t_spd == 0 ? 1 : this.t_spd;
-                this.row = r_speed * t_speed * gainMode_num * gainNum;
-                //接下来初始化：gain_noise.data
-                for (let i = 0; i < this.row; i++) {
-                    this.gain_noise.data[i] ? '' : this.gain_noise.data[i] = {gain:'', noise:''};
-                }
+                var g = this.gain_num,
+                    m = this.gainMode.length,
+                    t = this.transferspeed.length,
+                    r = this.readoutspeed.length;
+
+                var r1 = r == 0 ? 1 : r;
+                var m1 = m == 0 ? 1 : m;
+                var t1 = t == 0 ? 1 : t;
+                var g1 = g === '' ? 1 : g;
+
+                var rows = m1 * r1 * t1 *g1;
+
+                this.set_gain_noise(rows, m, r, t, g);
             },
         },//watch 结束
         methods: {
-            tt:function (e) {
-                if ( this.gain_noise.data[2] )
-                {
-                    layer.alert('nnn');
-                }
-                //console.log( this.gain_noise.data[200] );
-                //console.log( this.gain_noise.data[1] );
+            tt:function () {
+                layer.alert('nnn');
             },
+            set_gain_noise: function (rows, m, r, t, g){//设置this.gain_noise对象
+                layer.alert(rows);
+                for (let i = 1; i <= rows; i++) //初始化this.gain_noise对象
+                {
+                    if ( !this.gain_noise[i] )
+                    {
+                        this.gain_noise[i] = {gainMode:'', readOut_speed:'', transfer_speed:'', gain_gear:'', gainVal:'', noiseVal:''};
+                    }
+                
+                }
+
+            },//set_gain_noise 结束
             check_gain_noise:function (tip, n, k){//验证ccd 增益值及读出噪声值
                 switch (k) {
                     case 1:
@@ -168,7 +235,7 @@ $(function () {
                     case 2:
                         layer.alert('噪声'+n); break;
                 }
-            },//check_gain_noise()
+            },//check_gain_noise()*/
             delete_readOutSpeed: function (v) {//删除ccd 读出速度
                 this.r_spd--;
                 this.readoutspeed.splice(v-1, 1);
@@ -193,7 +260,7 @@ $(function () {
                     return false;
                 } 
             },//show_guide_tr() 结束
-            show_readOut: function (){
+            /*show_readOut: function (){
                 if ( this.r_spd < 1 ) //无读出速度这个选项
                 {
                     return false;
@@ -219,7 +286,7 @@ $(function () {
                 // }
 
                 return true;
-            },//show_readOut() 结束
+            },//show_readOut() 结束*/
             check_focus_val: function (tip, k, n){//验证转台：焦点类型-焦比-焦距
                 var msg = '';
                 var patn = /^\[\d+\.?\d? \d+\.?\d?\]$/; //匹配[2.3 5.2]
@@ -345,9 +412,9 @@ $(function () {
                                     // that.r_spd = 3;
                                     // that.gain_num = 3;
                                     // that.gainMode = ['High Sensitivity', 'High Capacity'];
-                                    for (let i = 0; i < 16; i++) {
-                                        that.gain_noise.data[i] = {gain:'', noise:''};
-                                    }
+                                    // for (let i = 0; i < 16; i++) {
+                                    //     that.gain_noise.data[i] = {gain:'', noise:''};
+                                    // }
                                     //初始化进行v-model数据绑定的 gain_noise.data 增益-读出噪声, 待修改
 
                                     that.ccd_config = info.ccd_data[0]; //将第一个ccd中的配置数据赋值给ccd_config

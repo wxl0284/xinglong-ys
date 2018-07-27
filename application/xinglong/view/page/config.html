@@ -520,25 +520,39 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="6" style='text-align:center;padding:20px;'> {{row}}
+						<td colspan="6" style='text-align:center;padding:20px;'>
 							<table id='inner_table4'>
 								<tr>
 									<td v-if='gainMode.length>0'>增益模式</td> <td v-if='r_spd>0'>读出速度</td> <td v-if='t_spd>0'>转移速度</td> <td v-if='gain_num>0'>增益档位</td> <td>增益值</td> <td @click='tt'>读出噪声值</td>
 								</tr>
-								<tr v-for='n in row'>
+								<tr>
+									<td></td>
+									<td >读出速度</td>
+									<td>转移速度</td>
+									<td>增益档位</td>
+									<td>
+										<input type="text" name='"gainVal"+n' >
+									</td>
+									<td>
+										<input type="text" name='"noiseVal"+n' >
+									</td>
 									<!-- <td v-if='gainMode.length>0&&n<=row/gainMode.length'>{{gainMode[0]}}</td>
-									<td v-if='gainMode.length==2&&n>row/gainMode.length'>{{gainMode[1]}}</td> -->
-									<td v-if='gainMode.length>0&&n<=row/gainMode.length'>{{gainMode[0]}}</td>
 									<td v-if='gainMode.length>0&&n>row/gainMode.length'>{{gainMode[gainMode.length-1]}}</td>
-									<td v-if='show_readOut'>读出速度</td>
+									<td >读出速度</td>
 									<td v-if='t_spd>0'>转移速度</td>
 									<td v-if='gain_num>0'>增益档位</td>
 									<td>
-										<input type="text" name='"gainVal"+n' v-model='gain_noise.data[n-1].gain' @blur='check_gain_noise(true, n, 1)'>
+										<input type="text" name='"gainVal"+n' >
 									</td>
 									<td>
-										<input type="text" name='"noiseVal"+n' v-model='gain_noise.data[n-1].noise' @blur='check_gain_noise(true, n, 2)'>
+										<input type="text" name='"noiseVal"+n' >
+									</td> -->
+									<!-- <td>
+										<input type="text" name='"gainVal"+n' @blur='check_gain_noise(true, n, 1)'>
 									</td>
+									<td>
+										<input type="text" name='"noiseVal"+n' @blur='check_gain_noise(true, n, 2)'>
+									</td> -->
 								</tr>
 							</table>
 						</td>

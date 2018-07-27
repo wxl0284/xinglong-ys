@@ -141,10 +141,10 @@ class Status extends Base
         }
         
         //获取镜盖 开/关 情况
-        if ($gimbalStatus['coverIndex'] === 0)
+        if ($gimbalStatus['coverIndex'] === 1)
         {
             $status['coverStatus'] = '关闭'; //位置信息：镜盖状态
-        }elseif ($gimbalStatus['coverIndex'] === 1){
+        }elseif ($gimbalStatus['coverIndex'] === 0){
             $status['coverStatus'] = '打开';
         }
         
