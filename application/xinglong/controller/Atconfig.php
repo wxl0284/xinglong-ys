@@ -227,7 +227,7 @@ class Atconfig extends Base
         // }
 
         $postData = input();
-        //halt($postData);
+    
        //处理表单数据中若干个 复选框
        /*处理 读出模式*/
        if ( isset($postData['readoutmode']) ) //有此数据
@@ -235,17 +235,17 @@ class Atconfig extends Base
            $postData['readoutmode'] = implode ('#', $postData['readoutmode']);
        }/*处理 读出模式 结束*/
 
-       /*处理 读出速度模式*/
+       /*处理 读出速度*/
        if ( isset($postData['readoutspeed']) ) //有此数据
        {
            $postData['readoutspeed'] = implode ('#', $postData['readoutspeed']);
-       }/*处理 读出速度模式 结束*/
+       }/*处理 读出速度 结束*/
 
-       /*处理 转移速度模式*/
+       /*处理 转移速度*/
        if ( isset($postData['transferspeed']) ) //有此数据
        {
            $postData['transferspeed'] = implode ('#', $postData['transferspeed']);
-       }/*处理 转移速度模式 结束*/
+       }/*处理 转移速度 结束*/
 
        /*处理 增益模式*/
        if ( isset($postData['gainmode']) ) //有此数据
@@ -276,8 +276,6 @@ class Atconfig extends Base
        
        //根据提交上来的ccd数量（假如是1个ccd,则删除字段ccdno大于1的配置数据）
        //Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', '>', $postData['ccd_num'])->delete();
-       //删除多余的$postData['ccd_num']字段
-       //unset ($postData['ccd_num']);
         
         $errMsg = '';  //定义错误提示
 
@@ -285,9 +283,9 @@ class Atconfig extends Base
 
         if ( $data )
         {//已有配置数据 进行update
-            $res = Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', $postData['ccdno'])->update($postData);
+            $res = Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', $postData['ccdno'])->strict(false)->update($postData);
         }else{//还无配置数据 进行insert
-            $res = Db::table('ccdconf')->insert($postData);
+            $res = Db::table('ccdconf')->strict(false)->insert($postData);
         }
 
         if ( !$res )
@@ -398,6 +396,58 @@ class Atconfig extends Base
             return json_encode ($result);
         }
     }/*获取ccd配置项表单 存入表ccdconf中 结束*/
+
+    //将vue对象中gain_noise数据对象存入ccdconf表中gain_noise字段中（以json字符串的形式）
+    public function gainNoiseConfig ()
+    {
+        //判断ajax 请求时 是否有权限
+        // if ($this->ajaxAuthErr == 1)
+        // {
+        //     return '您无权执行此操作!';
+        // }
+
+        $postData = input();
+        if ( !isset( $postData['gain_noise'], $postData['teleid'], $postData['ccdno'] ) || count($postData['gain_noise']) < 1 )
+        {//表单数据内无gain_noise，或$postData['gain_noise']内无数据
+            return '提交的增益-读出噪声数据有误';
+        }
+        
+        //看提交的teleid是否在atlist表内
+        $teleId =  Db::table('atlist')->column('id');
+
+        if ( !in_array($postData['teleid'], $teleId) ) return '提交的增益-读出噪声数据有误';
+        //halt ($teleId);
+
+        $postData['gain_noise'] = json_encode ($postData['gain_noise']);
+        
+       $postData['attrmodifytime'] = date ('Y-m-d');   //属性更新时间
+
+       $data = Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', $postData['ccdno'])->find();
+
+        if ( $data )
+        {//已有配置数据 进行update
+            $res = Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', $postData['ccdno'])->strict(false)->update($postData);
+        }else{//还无配置数据 进行insert
+            $res = Db::table('ccdconf')->strict(false)->insert($postData);
+        }
+
+        $errMsg = ''; //错误信息
+
+        if ( !$res )
+        {
+            $errMsg = '增益值-读出噪声值存储失败!';
+        }
+
+        if ($errMsg !== '')
+        {
+            return $errMsg;
+        }else{
+            $result['msg'] = '增益值-读出噪声值配置ok!';
+            $result['attrmodifytime'] = $postData['attrmodifytime'];
+            return json_encode ($result);
+        }
+
+    }//将vue对象中gain_noise数据对象存入ccdconf表中gain_noise字段中 结束
 
     /*获取滤光片配置项表单 存入表filterconf中*/
     public function filter_config()

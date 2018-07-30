@@ -359,7 +359,24 @@ class Plan extends Base
 			return $errMsg;
 		}
         
-        $this->msg = 8; $length =28 + 208;
+       //接下来 给中控 发送数据 ///////////////
+		//首先执行一个停止的指令
+		
+		$this->msg = 9; //指令类型
+        $length =28 + 16; //数据长度
+	   
+		$headInfo = planPackHead($this->magic, $this->version, $this->msg, $length, $this->sequence, $this->at, $this->device);
+               
+		$sendMsg = pack('L', 2);
+		$sendMsg .= pack('L', '4'); //执行模式 ？此模式值共有4个（1,2,3,4）
+		$sendMsg .= pack('L', 1); //从第几条开始
+		$sendMsg .= pack('L', 0);
+		
+		$sendMsg = $headInfo . $sendMsg;
+		udpSend($sendMsg, $this->ip, $this->port);
+		//停止指令 发送完毕
+		//接下来开始给中控发送计划数据
+		$this->msg = 8; $length =28 + 208;
 	   
 		$headInfo = planPackHead($this->magic, $this->version, $this->msg, $length, $this->sequence, $this->at, $this->device);
         

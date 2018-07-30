@@ -17,7 +17,7 @@ $(function () {
     var vm = new Vue ({ //vue 开始
         el: '#all',
         data: {
-            //rows:1, //ccd 增益值及读出噪声值输入表格的行数
+            rows:1, //ccd 增益值及读出噪声值输入表格的行数
             r_spd:0, //ccd 读出速度的数目
             readoutspeed:[], //ccd 读出速度
             t_spd:0, //ccd 转移速度的数目
@@ -56,7 +56,7 @@ $(function () {
                 type: '0', imagebits: '0', coolermode: '0', gainnumber: '0', shuttertype: '0',
                 binarray: '', ip:'', ccdid:'', name:'', xpixel:'', ypixel:'', xpixelsize:'', ypixelsize:'',
                 sensorname:'', lowcoolert:'', maxexposuretime:'', minexposuretime:'', exposuretimeration:'', 
-                fullwelldepth:'', /*readoutspeed:[],*/ readoutmode:[], transferspeed:[], gainmode:[], gainvaluearray:'',
+                fullwelldepth:'', readoutspeed:[], readoutmode:[], transferspeed:[], gainmode:[], gainvaluearray:'',
                 readoutnoisearray:'', shuttermode:[], interfacetype:[], emmaxvalue:'', exposetriggermode:[],
                 emminvalue:'', attrversion:'' 
             }, //ccd的配置信息
@@ -97,68 +97,19 @@ $(function () {
             },
         },//computed 结束
         watch: {
-            // rows: function (v){//监听rows
-            //     for (let i = 1; i <= v; i++) //初始化this.gain_noise对象
-            //     {
-            //         this.gain_noise[i] = {gainMode:'', readOut_speed:'', transfer_speed:'', gain_gear:'', gainVal:'', noiseVal:''};
-            //     }
-
-            //     var t = this.transferspeed.length; //转移速度的数目
-            //     var m = this.gainMode.length; //增益模式的数目
-            //     var r = this.readoutspeed.length; //读出速度的数目
-            //     var g = this.gain_num; //增益挡位
-            //     //console.log(r);
-            //     //组装gain_noise这个对象
-            //     for (let i = 1; i <= v; i++)
-            //     {
-            //         switch (m)
-            //         {
-            //             case 0://console.log(1);
-            //                 if ( r == 0 )
-            //                 {//console.log(2);
-            //                     this.gain_noise[i].readOut_speed = '';
-            //                 }else{
-            //                     t = t ? t : 1; 
-            //                     g = g ? g : 1; 
-            //                     for (let j = 1; j <= r; j++)
-            //                     {
-            //                         //if ( i <= j*g*t ) this.gain_noise[i].readOut_speed = this.readoutspeed[j-1];
-            //                         //console.log(i);                            
-            //                     }
-            //                 }
-
-            //                 this.gain_noise[i].gainMode = '';
-            //                 //this.gain_noise[i] = {gainMode:'', readOut_speed:'', transfer_speed:'', gain_gear:'', gainVal:'', noiseVal:''};
-            //                 break;
-            //             case 1:
-            //                 //this.gain_noise[i] = {gainMode:this.gainMode[0], readOut_speed:'', transfer_speed:'', gain_gear:'', gainVal:'', noiseVal:''};
-            //                 break;
-            //             case 2:
-            //                 //this.gain_noise[i] = {gainMode:this.gainMode[0], readOut_speed:'', transfer_speed:'', gain_gear:'', gainVal:'', noiseVal:''};
-            //                 break;
-            //         }
-                    
-            //     //     // if ( i <= rows/gainMode_num ) //增益模式
-            //     //     // {
-            //     //     //     this.gain_noise[i] = {gainMode:'', readOut_speed:'', transfer_speed:'', gain_gear:'', gainVal:'', noiseVal:''};
-            //     //     // }
-            //     //     // //增益模式
-            //     //     // if (  )
-            //     }//组装gain_noise这个对象 结束
-            // },
             readoutspeed: function (newV){//监听readoutspeed
-                var r = newV.length,
-                    m = this.gainMode.length,
-                    t =  this.transferspeed.length,
-                    g = this.gain_num;
+                var r = newV.length, //r: 读出速度的数目
+                    m = this.gainMode.length, //m: 增益模式的数目
+                    t =  this.transferspeed.length, // 转移速度的数目
+                    g = this.gain_num; //增益挡位
 
                 var r1 = r == 0 ? 1 : r;
                 var m1 = m == 0 ? 1 : m;
                 var t1 = t == 0 ? 1 : t;
                 var g1 = g === '' ? 1 : g;
 
-                var rows = m1 * r1 * t1 *g1;
-                this.set_gain_noise(rows, m, r, t, g);
+                this.rows = m1 * r1 * t1 *g1; //表格总行数
+                this.set_gain_noise(this.rows, m, r, t, g);
             },
             transferspeed: function (newV){//监听transferspeed
                 var t = newV.length,
@@ -171,9 +122,9 @@ $(function () {
                 var t1 = t == 0 ? 1 : t;
                 var g1 = g === '' ? 1 : g;
 
-                var rows = m1 * r1 * t1 *g1;
+                this.rows = m1 * r1 * t1 *g1;
 
-                this.set_gain_noise(rows, m, r, t, g);
+                this.set_gain_noise(this.rows, m, r, t, g);
             },
             gainMode: function (newV){//监听data.gainMode
                 var m = newV.length,
@@ -186,9 +137,9 @@ $(function () {
                 var t1 = t == 0 ? 1 : t;
                 var g1 = g === '' ? 1 : g;
 
-                var rows = m1 * r1 * t1 *g1;
+                this.rows = m1 * r1 * t1 *g1;
 
-                this.set_gain_noise(rows, m, r, t, g);
+                this.set_gain_noise(this.rows, m, r, t, g);
             },
             gain_num: function (newV){//监听data.gain_num
                 var patn = /^\d+$/;
@@ -207,35 +158,102 @@ $(function () {
                 var t1 = t == 0 ? 1 : t;
                 var g1 = g === '' ? 1 : g;
 
-                var rows = m1 * r1 * t1 *g1;
+                this.rows = m1 * r1 * t1 *g1;
 
-                this.set_gain_noise(rows, m, r, t, g);
+                this.set_gain_noise(this.rows, m, r, t, g);
             },
         },//watch 结束
         methods: {
             tt:function () {
-                layer.alert('nnn');
+                $.ajax({
+                    url:'test',
+                    type: 'post',
+                    data: {},
+                    success: function (info) {
+                        console.log(info);
+                    },
+                })
             },
             set_gain_noise: function (rows, m, r, t, g){//设置this.gain_noise对象
-                layer.alert(rows);
-                for (let i = 1; i <= rows; i++) //初始化this.gain_noise对象
+                
+                //this.gain_noise = {}; //每次生成先将此对象置为空
+
+                for (let i = 1; i <= rows; i++) //初始化this.gain_noise对象，i即为当前的行数
                 {
+                    //每行都是一个对象
                     if ( !this.gain_noise[i] )
                     {
                         this.gain_noise[i] = {gainMode:'', readOut_speed:'', transfer_speed:'', gain_gear:'', gainVal:'', noiseVal:''};
                     }
-                
+
+                    switch (m) 
+                    {
+                        case 0: //无增益模式被选中
+                            this.generate_table(i, r, t, g, m, rows);  break;
+                        case 1: //增益模式被选中一个
+                            this.gain_noise[i].gainMode = this.gainMode[0];
+                            this.generate_table(i, r, t, g, m, rows);  break;
+                        case 2: //增益模式被选中2个
+                            if ( i <= rows/2 ) //第一个增益模式，即生成表格的上半部分
+                            {
+                                this.gain_noise[i].gainMode = this.confOption.gainmode[0];
+                                this.generate_table(i, r, t, g, m, rows);
+                            }else if ( i > rows/2 ) //第2个增益模式，即生成表格的下半部分
+                            {
+                                this.generate_table(i, r, t, g, m, rows);
+                                this.gain_noise[i].gainMode = this.confOption.gainmode[1];
+                            }
+                           break;
+                    }
+                }
+                for (var p in this.gain_noise) //删除gain_noise中多于rows数量的行
+                {
+                    if ( p > rows ) delete this.gain_noise[p];
+                }
+            },//set_gain_noise 结束
+            generate_table: function (i, r, t, g, m, rows) { //生成 读出速度-转移速度-增益挡位
+                m = m ? m : 1; //若无增益模式被选中，将增益模式数目置为1
+
+                if( r > 0 ) //有读出速度
+                {
+                    t = t ? t : 1;
+                    g = g ? g : 1;
+                    var gt = g*t; //转移速度数目*增益挡位，得出每个读出速度要显示的行数
+
+                    for (let j = 1; j <= r; j++)
+                    {
+                        if ( ( i > (j-1)*gt ) && i <= j*gt ) this.gain_noise[i].readOut_speed = this.readoutspeed[j-1];
+                        
+                        if ( m == 2 ) //将表格下半部分减去半数表格行数的差值 比对后，即为表格下半部分的读出速度
+                        {
+                            if ( ( i-rows/2 > (j-1)*gt ) && i-rows/2 <= j*gt ) this.gain_noise[i].readOut_speed = this.readoutspeed[j-1];
+                        }
+                    }
                 }
 
-            },//set_gain_noise 结束
-            check_gain_noise:function (tip, n, k){//验证ccd 增益值及读出噪声值
-                switch (k) {
-                    case 1:
-                        layer.alert('增益'+n); break;
-                    case 2:
-                        layer.alert('噪声'+n); break;
+                if( t > 0 ) //有转移速度
+                {
+                    g = g ? g : 1;
+                    r = r ? r : 1;
+                    var rtm = r*t*m; //转移速度要循环的次数
+
+                    for (let k = 1; k <= rtm; k++)
+                    {
+                        let index = (k - 1) % t; //当前行数要对应显示的转移速度索引
+                        if ( ( i > (k-1)*g ) && i <= k*g ) this.gain_noise[i].transfer_speed = this.transferspeed[index]; 
+                    }
                 }
-            },//check_gain_noise()*/
+
+                if( g > 0 ) //有增益挡位
+                {
+                    var i_g = i%g; //当前行数对增益挡位取余，余数就是当前行的挡位值
+
+                    for (let p = 1; p <= g; p++)
+                    {
+                        this.gain_noise[i].gain_gear = i_g ? i_g : g;  //余数为零时，显示最大的挡位         
+                    }
+                }
+            },// generate_table() 结束
             delete_readOutSpeed: function (v) {//删除ccd 读出速度
                 this.r_spd--;
                 this.readoutspeed.splice(v-1, 1);
@@ -260,33 +278,6 @@ $(function () {
                     return false;
                 } 
             },//show_guide_tr() 结束
-            /*show_readOut: function (){
-                if ( this.r_spd < 1 ) //无读出速度这个选项
-                {
-                    return false;
-                }
-
-                //接下来，根据表格各字段所属列的数量，将需要在表格中显示的读出速度，拼装为一个数组：this.readout
-                var trans_num = this.t_spd == 0 ? 1 : this.t_spd; //转移速度的数目
-                var gain_Num = this.gain_num ? this.gain_num : 1; //增益挡位的值
-                var gainMode_num = this.gainMode.length == 0 ? 1 : this.gainMode.length; //被选中增益模式的数目
-                var total = trans_num * gain_Num * this.r_spd; //this.readout内元素总数
-                //var per_read_out_row = trans_num * gain_Num; //每个读出速度值要显示的行数
-
-                for (let i = 0; i < total_row; i++)
-                {
-                    const element = array[i];                    
-                }
-                // if ( gainMode_num == 1 ) //只有一种增益模式
-                // {
-
-                // }else if( gainMode_num == 2 ) //两种增益模式
-                // {
-
-                // }
-
-                return true;
-            },//show_readOut() 结束*/
             check_focus_val: function (tip, k, n){//验证转台：焦点类型-焦比-焦距
                 var msg = '';
                 var patn = /^\[\d+\.?\d? \d+\.?\d?\]$/; //匹配[2.3 5.2]
@@ -420,6 +411,16 @@ $(function () {
                                     that.ccd_config = info.ccd_data[0]; //将第一个ccd中的配置数据赋值给ccd_config
                                     
                                     that.gainMode = that.ccd_config.gainmode; //将增益模式赋给data.gainMode
+                                    that.readoutspeed = that.ccd_config.readoutspeed; //将读出速度数组赋给data.readoutspeed
+                                    if ( that.readoutspeed.length > 0 ) that.r_spd = that.readoutspeed.length; //显示读出速度input框
+                                    that.transferspeed = that.ccd_config.transferspeed; //将转移速度数组赋给data.transferspeed
+                                    if ( that.transferspeed.length > 0 ) that.t_spd = that.transferspeed.length; //显示转移速度input框
+                                    that.gain_num = that.ccd_config.gainnumber; //将增益挡位赋给data.gain_num
+                                    //接下来处理从数据库中gain_noise字段获取的json字符串
+                                    if ( that.ccd_config.gain_noise )
+                                    {
+                                        that.gain_noise = $.parseJSON( that.ccd_config.gain_noise );
+                                    }
 
                                     if (info.ccd_file)
                                     {
@@ -851,7 +852,7 @@ $(function () {
             },//check_devName() 结束
             check_bin: function (tip, v, e){//验证ccd bin
                 var msg = '';
-                var patn = /^\d+( \d+)*$/;
+                var patn = /^\d+ \d+$/;
                 if ( !patn.test(v) )
                 {
                     msg = 'bin输入有误';
@@ -909,7 +910,6 @@ $(function () {
                 if ( !$.isNumeric(v) || v > 50 || v < -196 )
                 {
                     msg = '最低制冷温度输入有误';
-            
                 }
 
                 if ( tip===true && msg !== '' )
@@ -925,13 +925,11 @@ $(function () {
                 {
                     msg = '最大曝光时间输入有误';
                     if ( v1 !== undefined ) msg = '最小曝光时间输入有误';
-            
                 }
 
                 if ( v1 !== undefined && v1 < v*1 )
                 {
                     msg = '最小曝光时间输入有误';
-            
                 }
 
                 if ( tip===true && msg !== '' )
@@ -1005,15 +1003,83 @@ $(function () {
 				}
 				return msg !== '' ? msg + '<br>' : '';
             },//check_emV() 结束
+            gain_noise_sbmt:function () {//提交保存 增益-噪声值到ccdconf表中的gain_noise字段内
+                var that = this; //存储vue的实例
+                var msg = '';
+           
+                if ( this.show_dev_form.teleid == '0' )  //未选择某个望远镜
+                {
+                    layer.alert('请选择您要配置的望远镜!', {shade:0,closeBtn:0});return;
+                }
+
+                //根据this.rows值 循环验证每条增益值、读出噪声值
+                for (let i = 1; i <= this.rows; i++)
+                {
+                    msg += this.check_gain_noise(false, i, 1); //验证增益值
+                    msg += this.check_gain_noise(false, i, 2); //验证噪声值
+                }
+
+                if ( msg !== '' )
+                {
+                    layer.alert(msg, {shade:0,closeBtn:0});return;
+                }
+                
+                //接下来将读出速度，转移速度，增益模式，增益挡位加入要提交的表单数据中
+                
+                //将读出速度，转移速度，增益模式，增益挡位加入要提交的表单数据中 结束
+                $.ajax({
+                    type: 'post',
+                    url: 'gain_noise',
+                    data : {
+                        gain_noise: that.gain_noise,
+                        teleid: this.show_dev_form.teleid,
+                        ccdno: this.show_dev_form.ccd_no,
+                    },
+                    success:  function (info) {
+                        if ( info.indexOf('{') == -1 ) //info 不是json数据
+                        {
+                            layer.alert(info, {
+                                shade:false,
+                                closeBtn:0,
+                                yes:function (n){
+                                    layer.close(n);
+                                    if (info.indexOf('登录') !== -1)
+                                    {
+                                        location.href = '/';
+                                    }
+                                },
+                            });
+                        }else{//解析 处理 json
+                            var info = $.parseJSON(info);
+        
+                            layer.alert(info.msg, {
+                                shade:false,
+                                closeBtn:0,
+                                yes:function (n){
+                                    layer.close(n);
+                                },
+                            });
+        
+                            that.ccd_config.attrmodifytime = info.attrmodifytime; //显示属性更新时间             
+
+                            if (info.file) that.ccd_file = info.file;
+                        }//解析 处理 json 结束
+                     },/*success方法结束 */
+                     error:  function () {
+                          layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0,});
+                     }
+                })/*ajax 结束*/
+            },//gain_noise_sbmt() 结束
             ccd_sbmt:function () {
                 var that = this; //存储vue的实例
                 var msg = '';
-                //console.log(this.ccd_config.readoutspeed.length);return;
+           
                 if ( this.show_dev_form.teleid == '0' )  //未选择某个望远镜
                 {
                     layer.alert('请选择您要配置的望远镜!', {shade:false,closeBtn:0});return;
                 }
                 
+                msg += this.check_ip(false, this.ccd_config.ip, this.$refs.ccdIp);
                 msg += this.check_devId(false, this.ccd_config.ccdid, this.$refs.ccdId, "ccd");
                 msg += this.check_devName(false, this.ccd_config.name, this.$refs.ccdName, "ccd");
                 msg += this.check_pixel(false, this.ccd_config.xpixel, this.$refs.ccdXpixel, "x");
@@ -1030,12 +1096,11 @@ $(function () {
                 msg += this.check_emV(false, this.ccd_config.emminvalue, this.$refs.emMinValue, this.ccd_config.emmaxvalue);
                 msg += this.check_version(false, this.ccd_config.attrversion, this.$refs.ccd_version, 2);
                 msg += this.check_bin(false, this.ccd_config.binarray, this.$refs.bin);
+
                 if ( this.ccd_config.type == '0' )              msg += '探测器类型未选择<br>';
                 if ( this.ccd_config.imagebits == '0' )         msg += '图像位数未选择<br>';
                 if ( this.ccd_config.coolermode == '0' )        msg += '制冷方式未选择<br>';
-                if ( this.ccd_config.readoutspeed.length < 1 )  msg += '读出速度模式未选择<br>';
                 if ( this.ccd_config.readoutmode.length < 1 )   msg += '读出模式未选择<br>';
-                if ( this.ccd_config.transferspeed.length < 1 ) msg += '转移速度模式未选择<br>';
                 if ( this.ccd_config.gainmode.length < 1 )      msg += '增益模式未选择<br>';
                 if ( this.ccd_config.shuttertype == '0' )       msg += '快门类型未选择<br>';
                 if ( this.ccd_config.shuttermode.length < 1)    msg += '快门模式未选择<br>';
@@ -1067,7 +1132,7 @@ $(function () {
 
                 if ( msg !== '' )
                 {
-                    layer.alert(msg, {shade:false,closeBtn:0});return;
+                    layer.alert(msg, {shade:0,closeBtn:0});return;
                 }
 
                 var postData = new FormData (this.$refs.ccd);
@@ -1129,6 +1194,74 @@ $(function () {
                 
 				return msg !== '' ? msg + '<br>' : '';
             },//check_ip() 结束
+            check_readOut:function(tip, v, n){//验证读出速度
+                var msg = '';
+                var ele, v1;
+                switch (n) {
+                    case 1:
+                        ele = 'readSpd'+v;
+                        v1 = this.readoutspeed[v-1];
+        
+                        if ( !$.isNumeric(v1) || v1 <= 0 )
+                        {
+                            msg = '读出速度输入有误';
+                            this.readoutspeed[v-1] = '';
+                        }
+        
+                        break;
+                    case 2:
+                        ele = 'transSpd'+v;
+                        v1 = this.transferspeed[v-1];
+        
+                        if ( !$.isNumeric(v1) || v1 <= 0 )
+                        {
+                            msg = '转移速度输入有误';
+                            this.transferspeed[v-1] = '';
+                        }
+
+                        break;
+                }
+
+                if ( tip===true && msg !== '' )
+                {
+                    layer.tips(msg, this.$refs[ele]);
+                }
+
+				return msg !== '' ? msg + '<br>' : '';
+            },//check_readOut 结束
+            check_gain_noise:function (tip, k, n){//验证增益值或读出噪声值
+                var msg = '';
+                var ele, v;
+                switch (n) {
+                    case 1:
+                        ele = 'gainV'+k;
+                        v = this.gain_noise[k].gainVal;
+    
+                        if ( !$.isNumeric(v) || v < 0 )
+                        {
+                            msg = '第' + k + '行增益值输入有误';
+                        }
+        
+                        break;
+                    case 2:
+                        ele = 'noiseV'+k;
+                        v = this.gain_noise[k].noiseVal;
+        
+                        if ( !$.isNumeric(v) || v < 0 )
+                        {
+                            msg = '第' + k + '行读出噪声值输入有误';
+                        }
+        
+                        break;
+                }
+               
+                if ( tip===true && msg !== '' )
+                {
+                    layer.tips(msg, this.$refs[ele]);
+                }
+
+				return msg !== '' ? msg + '<br>' : '';
+            },//check_gain_noise 结束
             check_num: function (tip, v, e, dev) {//验证各设备 数字类型的文本框
                 var msg = '';
                 
@@ -1147,6 +1280,8 @@ $(function () {
                             msg = '调焦器分辨率输入有误'; break;
                         case 'focus_S':
                             msg = '调焦器最大速度输入有误'; break;
+                        case 'readOut':
+                            msg = '读出速度输入有误'; break;
                     }
                 }
 

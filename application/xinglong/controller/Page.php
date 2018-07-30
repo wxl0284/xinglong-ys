@@ -209,14 +209,14 @@ class Page extends Base
             $ccd_data = Db::table('ccdconf')->where('teleid', $id)->order('ccdno asc')->select();
             $ccd_num = count ($ccd_data);  //已配置的ccd数量
 
-            if ( $ccd_num > 0 )  //循环遍历$ccd_data中的复选框配置数据
+            if ( $ccd_num > 0 )  //循环遍历$ccd_data中的复选框及增益-读出噪声（json字串）的配置数据
             {
                 for ($ccd_i = 0; $ccd_i < $ccd_num; $ccd_i++)
                 {
                     foreach ( $ccd_data[$ccd_i] as $v)
                     {
                         if ( is_string($ccd_data[$ccd_i]['readoutspeed']) )
-                        {//处理读出速度模式
+                        {//处理读出速度
                             $ccd_data[$ccd_i]['readoutspeed'] = explode('#', $ccd_data[$ccd_i]['readoutspeed']);
                         }else if( $ccd_data[$ccd_i]['readoutspeed'] === null ){
                             $ccd_data[$ccd_i]['readoutspeed'] = [];
@@ -230,7 +230,7 @@ class Page extends Base
                         }
 
                         if ( is_string($ccd_data[$ccd_i]['transferspeed']) )
-                        {//处理转移速度模式
+                        {//处理转移速度
                             $ccd_data[$ccd_i]['transferspeed'] = explode('#', $ccd_data[$ccd_i]['transferspeed']);
                         }else if( $ccd_data[$ccd_i]['transferspeed'] === null ){
                             $ccd_data[$ccd_i]['transferspeed'] = [];
@@ -263,9 +263,9 @@ class Page extends Base
                         }else if( $ccd_data[$ccd_i]['exposetriggermode'] === null ){
                             $ccd_data[$ccd_i]['exposetriggermode'] = [];
                         }
-                    }
-                }
-            }//循环遍历处理ccd配置中checkbox 结束 
+                    }//foreach 结束
+                }//for循环结束
+            }//循环遍历处理ccd配置中checkbox及增益-读出噪声（json字串）的 结束 
 
             $ccd_data['ccd_num'] = $ccd_num;
             $result['ccd_data'] = $ccd_data; //此$ccd_data中可能有多个配置数组

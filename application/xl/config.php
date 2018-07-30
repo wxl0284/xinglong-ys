@@ -1,7 +1,7 @@
 <?php
 //xinglong模块配置
 return [
-     'database'           => [
+    'database'           => [
         // 数据库类型
         'type'            => 'pgsql',    
         //'type'            => 'mysql',
@@ -25,5 +25,5 @@ return [
         // 数据库连接端口
         'hostport'        => '5432',    
         //'hostport'        => '3306',     
-    ],
+    ],	
 ];

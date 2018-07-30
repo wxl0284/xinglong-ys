@@ -81,6 +81,8 @@ Route::post('config$', 'xinglong/page/config');
 Route::post('gimbal_config$', 'xinglong/atconfig/gimbal_config');
 //ajax提交ccd配置数据 路由
 Route::post('ccd_config$', 'xinglong/atconfig/ccd_config');
+//ajax提交ccd之增益值和读出噪声值配置数据 路由
+Route::post('gain_noise$', 'xinglong/atconfig/gainNoiseConfig');
 //ajax提交滤光片配置数据 路由
 Route::post('filter_config$', 'xinglong/atconfig/filter_config');
 //ajax提交随动圆顶配置数据 路由
@@ -101,6 +103,7 @@ Route::get('test2/:at$', 'test/test/test2');
 //显示配置页面
 Route::get('test1$', 'test/test/test1');
 Route::get('test2/:at$', 'test/test/test2');
-//显示配置页面
-Route::get('test1$', 'test/test/test1');
+
+//测试 ccd 增益-读出速度表格的字段排序
+Route::post('test$', 'xl/test/test');
 /*如下为望远镜配置的示例 结束*/

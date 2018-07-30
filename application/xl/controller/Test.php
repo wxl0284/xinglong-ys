@@ -1,5 +1,5 @@
 <?php
-namespace app\xinglong\controller;
+namespace app\xl\controller;
 
 use think\Controller;
 use app\xinglong\model\User;
@@ -82,18 +82,19 @@ class Test extends Controller
 		$a['bb'] = 'bbbb';
 		Cache::set('name', $a);
 		return view('table/a'); */
-		$At60config = new At60config;
-		$configData = $At60config->all();
-		//halt($configData[0]);
-		if (empty($configData))
+		//$arr = ['name' => 'xxxx'];
+		$res = Db::table('ccdconf')->where('teleid', 16)->field('gain_noise')->find();
+		//halt($res);
+		
+		//$temp = $res['gain_noise'];
+		
+		$temp = json_decode ($res['gain_noise'], true);
+		foreach ($temp as $k => $v)
 		{
-			return '请先配置60CM望远镜!';
-		}else{
-			$At60config->save([
-				'attype' => '2',
-				'filtercanfindhome' => '6'
-			],['pk_at60config' => $configData[0]['pk_at60config']]);
+			$d[$k] = $v['gainVal'];
 		}
+		array_multisort ($d, SORT_DESC, $temp);
+		halt($temp);
 	}
 	
 	public function valid ()

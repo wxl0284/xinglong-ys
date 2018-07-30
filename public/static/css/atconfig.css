@@ -30,3 +30,5 @@ form.form input[type='button'] {font-size: 18px;font-weight:bold;}
 #inner_table1 td,#inner_table2 td,#inner_table3 td,#inner_table4 td {text-align:center;}
 
 #inner_table4 td {border:1px solid #7a7a7a;}
+
+.ccd_table_tr {background-color:#DCDCDC} /*ccd 增益-噪声表格 斑马线*/

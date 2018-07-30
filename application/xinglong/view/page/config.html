@@ -492,7 +492,7 @@
 						<td>读出速度（MHz）:&nbsp;<input type='button' value='增加' style='width:20%;font-size:1em;font-weight:normal;' @click='r_spd++;'></td>
 						<td  colspan="5" class='border_td'>
 							<span  v-for='v in r_spd'>
-								{{v}}:<input type='text' style='width:4.5%' name='readoutspeed[]' v-model.trim='readoutspeed[v-1]' >
+								{{v}}:<input type='text' style='width:4.5%'  :ref="'readSpd'+v" name='readoutspeed[]' v-model.trim='readoutspeed[v-1]' @blur='check_readOut(true, v, 1)'>
 								<span v-if='r_spd>=1'>&nbsp;<input type='button' style='width:4.5%;font-size:1em;font-weight:normal;' value='删除' @click='delete_readOutSpeed(v)'></span>
 							</span>
 							<span  v-if='r_spd==0'>无此配置</span>
@@ -502,7 +502,7 @@
 						<td>转移速度（MHz）:&nbsp;<input type='button' style='width:20%;font-size:1em;font-weight:normal;' value='增加' @click='t_spd++;'></td>
 						<td colspan="5" class='border_td'>
 							<span  v-for='v in t_spd'>
-								{{v}}:<input type='text' style='width:4.5%' name='transferspeed[]' v-model.trim='transferspeed[v-1]'>
+								{{v}}:<input type='text' :ref="'transSpd'+v" style='width:4.5%' name='transferspeed[]' v-model.trim='transferspeed[v-1]' @blur='check_readOut(true, v, 2)'>
 								<span v-if='t_spd>=1'>&nbsp;<input type='button' style='width:4.5%;font-size:1em;font-weight:normal;' value='删除' @click='delete_transferSpeed(v)'></span>
 							</span>
 							<span  v-if='t_spd==0'>无此配置</span>
@@ -511,7 +511,6 @@
 					<tr>
 						<td>增益模式:</td>
 						<td colspan="3" class="border_td" id='ccd_1gainmode'>
-							<!-- <span v-for='v in confOption.gainmode'>{{v}}<input type='checkbox' name='gainmode[]' :value='v' v-model='ccd_config.gainmode'>&nbsp;&nbsp;&nbsp;&nbsp;</span> -->
 							<span v-for='v in confOption.gainmode'>{{v}}<input type='checkbox' name='gainmode[]' :value='v' v-model='gainMode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 						<td>增益档位:</td>
@@ -523,50 +522,24 @@
 						<td colspan="6" style='text-align:center;padding:20px;'>
 							<table id='inner_table4'>
 								<tr>
-									<td v-if='gainMode.length>0'>增益模式</td> <td v-if='r_spd>0'>读出速度</td> <td v-if='t_spd>0'>转移速度</td> <td v-if='gain_num>0'>增益档位</td> <td>增益值</td> <td @click='tt'>读出噪声值</td>
+									<td>序号</td> <td v-if='gainMode.length>0'>增益模式</td> <td v-if='r_spd>0'>读出速度</td> <td v-if='t_spd>0'>转移速度</td> <td v-if='gain_num>0'>增益档位</td> <td>增益值</td> <td @click='tt'>读出噪声值</td>
 								</tr>
-								<tr>
-									<td></td>
-									<td >读出速度</td>
-									<td>转移速度</td>
-									<td>增益档位</td>
+								<tr v-for='(v, k) in gain_noise' :class='{ccd_table_tr: k%2==0}'>
+									<td>{{k}}</td>
+									<td v-if='gainMode.length>0'>{{gain_noise[k].gainMode}}</td>
+									<td v-if='readoutspeed.length>0'>{{gain_noise[k].readOut_speed}}</td>
+									<td v-if='transferspeed.length>0'>{{gain_noise[k].transfer_speed}}</td>
+									<td v-if='gain_num>0'>{{gain_noise[k].gain_gear}}</td>
 									<td>
-										<input type="text" name='"gainVal"+n' >
+										<input type="text" placeholder="数字" :ref='"gainV"+k' v-model.trim.number='gain_noise[k].gainVal' @blur='check_gain_noise(true, k, 1)'>
 									</td>
 									<td>
-										<input type="text" name='"noiseVal"+n' >
+										<input type="text" placeholder="数字" :ref='"noiseV"+k' v-model.trim.number='gain_noise[k].noiseVal' @blur='check_gain_noise(true, k, 2)'>
 									</td>
-									<!-- <td v-if='gainMode.length>0&&n<=row/gainMode.length'>{{gainMode[0]}}</td>
-									<td v-if='gainMode.length>0&&n>row/gainMode.length'>{{gainMode[gainMode.length-1]}}</td>
-									<td >读出速度</td>
-									<td v-if='t_spd>0'>转移速度</td>
-									<td v-if='gain_num>0'>增益档位</td>
-									<td>
-										<input type="text" name='"gainVal"+n' >
-									</td>
-									<td>
-										<input type="text" name='"noiseVal"+n' >
-									</td> -->
-									<!-- <td>
-										<input type="text" name='"gainVal"+n' @blur='check_gain_noise(true, n, 1)'>
-									</td>
-									<td>
-										<input type="text" name='"noiseVal"+n' @blur='check_gain_noise(true, n, 2)'>
-									</td> -->
-								</tr>
-							</table>
+								</tr>								
+							</table><br>
+							<input type="button" value="保存增益及噪声值" @click='gain_noise_sbmt'>
 						</td>
-						<!--  <td>{{v}}</td>
-							<td><input type="text" :ref='"focusR"+k' placeholder="[2.3 3.6]" :name='"focusRatio"+k' v-model.trim='gimbal_focus.postData[k].focusratio' @blur='check_focus_val(true,k,1)'></td>
-							<td><input type="text" :ref='"focusL"+k' placeholder="[2.3 3.6]" :name='"focusLeng"+k' v-model.trim='gimbal_focus.postData[k].focuslength' @blur='check_focus_val(true,k,2)'></td>
-							<td>增益值:</td>
-						<td>
-							<input type='text' id='ccdGainValueArray' name='gainvaluearray' v-model='ccd_config.gainvaluearray'>
-						</td>
-						<td>读出噪声值:</td>
-						<td>
-							<input type='text' id='ccdReadoutNoiseArray' name='readoutnoisearray' v-model='ccd_config.readoutnoisearray'>
-						</td> -->
 					</tr>
 					<tr>
 						<td>读出模式:</td>
