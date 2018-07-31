@@ -1003,6 +1003,51 @@ $(function () {
 				}
 				return msg !== '' ? msg + '<br>' : '';
             },//check_emV() 结束
+            gain_noise_sort:function (dev, order) {//ajax请求ccd增益、噪声值显示表格的各字段排序
+                $.ajax({
+                    type: 'post',
+                    url: 'gainNoiseSort',
+                    data : {
+                        field: dev,
+                        order: order,
+                        teleid: this.show_dev_form.teleid,
+                        ccdno: this.show_dev_form.ccd_no,
+                    },
+                    success:  function (info) {
+                        if ( info.indexOf('{') == -1 ) //info 不是json数据
+                        {
+                            layer.alert(info, {
+                                shade:0,
+                                closeBtn:0,
+                                yes:function (n){
+                                    layer.close(n);
+                                    if (info.indexOf('登录') !== -1)
+                                    {
+                                        location.href = '/';
+                                    }
+                                },
+                            });
+                        }else{//解析 处理 json
+                            // var info = $.parseJSON(info);
+        
+                            // layer.alert(info.msg, {
+                            //     shade:false,
+                            //     closeBtn:0,
+                            //     yes:function (n){
+                            //         layer.close(n);
+                            //     },
+                            // });
+        
+                            // that.ccd_config.attrmodifytime = info.attrmodifytime; //显示属性更新时间             
+
+                            // if (info.file) that.ccd_file = info.file;
+                        }//解析 处理 json 结束
+                     },/*success方法结束 */
+                     error:  function () {
+                          layer.alert('网络异常,请重新提交', {shade:0, closeBtn:0,});
+                     }
+                })
+            },//
             gain_noise_sbmt:function () {//提交保存 增益-噪声值到ccdconf表中的gain_noise字段内
                 var that = this; //存储vue的实例
                 var msg = '';
@@ -1025,7 +1070,38 @@ $(function () {
                 }
                 
                 //接下来将读出速度，转移速度，增益模式，增益挡位加入要提交的表单数据中
-                
+                var tempData = {}; //存储 读出速度，转移速度，增益模式，增益挡位
+                if ( this.readoutspeed.length > 0 ) //有读出速度
+                {
+                    tempData.readOut = {};
+                    for (let i = 0; i < this.readoutspeed.length; i++)
+                    {
+                        tempData.readOut[i] = this.readoutspeed[i];
+                    }
+                }
+
+                if ( this.transferspeed.length > 0 ) //有转移速度
+                {
+                    tempData.transfer = {};
+                    for (let i = 0; i < this.transferspeed.length; i++)
+                    {
+                        tempData.transfer[i] = this.transferspeed[i];
+                    }
+                }
+
+                if ( this.gainMode.length > 0 ) //有增益模式
+                {
+                    tempData.gain = {};
+                    for (let i = 0; i < this.gainMode.length; i++)
+                    {
+                        tempData.gain[i] = this.gainMode[i];
+                    }
+                }
+
+                if ( this.gain_num ) //有增益挡位
+                {
+                    tempData.gear = this.gain_num;
+                }
                 //将读出速度，转移速度，增益模式，增益挡位加入要提交的表单数据中 结束
                 $.ajax({
                     type: 'post',
@@ -1034,6 +1110,7 @@ $(function () {
                         gain_noise: that.gain_noise,
                         teleid: this.show_dev_form.teleid,
                         ccdno: this.show_dev_form.ccd_no,
+                        fourData: tempData
                     },
                     success:  function (info) {
                         if ( info.indexOf('{') == -1 ) //info 不是json数据
@@ -1066,7 +1143,7 @@ $(function () {
                         }//解析 处理 json 结束
                      },/*success方法结束 */
                      error:  function () {
-                          layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0,});
+                          layer.alert('网络异常,请重新提交', {shade:0, closeBtn:0,});
                      }
                 })/*ajax 结束*/
             },//gain_noise_sbmt() 结束

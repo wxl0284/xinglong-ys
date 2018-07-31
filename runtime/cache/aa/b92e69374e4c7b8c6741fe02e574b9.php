@@ -1,7 +1,7 @@
 <?php
 //000000003600
  exit();?>
-s:68330:"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+s:68392:"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
  <head> 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"> 
@@ -100,7 +100,7 @@ var ctxStatic = 'http://image.nmc.cn/static2';
    <ul> 
     <li><a href="/publish/weather-bulletin/index.htm" target="_self">天气公报</a></li> 
     <li><a href="/publish/weatherperday/index.htm" target="_self">每日天气提示</a></li> 
-    <li><a href="/publish/country/warning/downpour.html" target="_self">气象灾害预警</a></li> 
+    <li><a href="/publish/country/warning/megatemperature.html" target="_self">气象灾害预警</a></li> 
     <li><a href="/publish/precipitation/1-day.html" target="_self">1-7天降水量预报</a></li> 
     <li><a href="/publish/temperature/hight/24hour.html" target="_self">1-7天气温预报</a></li> 
     <li><a href="/publish/bulletin/swpc.html" target="_self">强对流天气预报</a></li> 
@@ -222,7 +222,7 @@ var ctxStatic = 'http://image.nmc.cn/static2';
     </div> 
     <div class="btitle">
      七天天气预报
-     <span>发布于：2018-07-25 08:00</span>
+     <span>发布于：2018-07-31 08:00</span>
     </div> 
     <div id="forecast" class="forecast"> 
      <div class="detail"> 
@@ -230,20 +230,20 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        <table> 
         <tbody>
          <tr> 
-          <td> <p class="dname">今天</p><br><p>星期三</p> </td> 
-          <td> 07月25日 </td> 
+          <td> <p class="dname">今天</p><br><p>星期二</p> </td> 
+          <td> 07月31日 </td> 
          </tr> 
          <tr> 
-          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/8.png"></td> 
-          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/night/2.png"></td> 
+          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png"></td> 
+          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/night/1.png"></td> 
          </tr> 
          <tr> 
-          <td class="wdesc">中雨</td> 
-          <td class="wdesc">阴</td> 
+          <td class="wdesc">晴</td> 
+          <td class="wdesc">多云</td> 
          </tr> 
          <tr> 
-          <td class="temp"> 26℃ </td> 
-          <td class="temp"> 17℃ </td> 
+          <td class="temp"> 32℃ </td> 
+          <td class="temp"> 22℃ </td> 
          </tr> 
          <tr> 
           <td class="direct">无持续风向</td> 
@@ -261,16 +261,16 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         今天
        </div> 
        <div class="week">
-        星期三
+        星期二
        </div> 
        <div class="wicon">
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/8.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
        </div> 
        <div class="wdesc">
-        中雨
+        晴
        </div> 
        <div class="temp">
-         26℃ 
+         32℃ 
        </div> 
        <div class="direct">
         无持续风向
@@ -285,20 +285,20 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        <table> 
         <tbody>
          <tr> 
-          <td> <p class="dname">明 天</p><br><p>星期四</p> </td> 
-          <td> 07月26日 </td> 
+          <td> <p class="dname">明 天</p><br><p>星期三</p> </td> 
+          <td> 08月01日 </td> 
          </tr> 
          <tr> 
-          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png"></td> 
+          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/4.png"></td> 
           <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/night/1.png"></td> 
          </tr> 
          <tr> 
-          <td class="wdesc">多云</td> 
+          <td class="wdesc">雷阵雨</td> 
           <td class="wdesc">多云</td> 
          </tr> 
          <tr> 
-          <td class="temp"> 30℃ </td> 
-          <td class="temp"> 18℃ </td> 
+          <td class="temp"> 33℃ </td> 
+          <td class="temp"> 22℃ </td> 
          </tr> 
          <tr> 
           <td class="direct">无持续风向</td> 
@@ -316,16 +316,16 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         明 天
        </div> 
        <div class="week">
-        星期四
+        星期三
        </div> 
        <div class="wicon">
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/4.png">
        </div> 
        <div class="wdesc">
-        多云
+        雷阵雨
        </div> 
        <div class="temp">
-         30℃ 
+         33℃ 
        </div> 
        <div class="direct">
         无持续风向
@@ -340,20 +340,20 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        <table> 
         <tbody>
          <tr> 
-          <td> <p class="dname">后 天</p><br><p>星期五</p> </td> 
-          <td> 07月27日 </td> 
+          <td> <p class="dname">后 天</p><br><p>星期四</p> </td> 
+          <td> 08月02日 </td> 
          </tr> 
          <tr> 
-          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png"></td> 
-          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/night/1.png"></td> 
+          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png"></td> 
+          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/night/0.png"></td> 
          </tr> 
          <tr> 
-          <td class="wdesc">阴</td> 
           <td class="wdesc">多云</td> 
+          <td class="wdesc">晴</td> 
          </tr> 
          <tr> 
-          <td class="temp"> 29℃ </td> 
-          <td class="temp"> 20℃ </td> 
+          <td class="temp"> 31℃ </td> 
+          <td class="temp"> 22℃ </td> 
          </tr> 
          <tr> 
           <td class="direct">无持续风向</td> 
@@ -371,16 +371,16 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         后 天
        </div> 
        <div class="week">
-        星期五
+        星期四
        </div> 
        <div class="wicon">
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
        </div> 
        <div class="wdesc">
-        阴
+        多云
        </div> 
        <div class="temp">
-         29℃ 
+         31℃ 
        </div> 
        <div class="direct">
         无持续风向
@@ -395,20 +395,20 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        <table> 
         <tbody>
          <tr> 
-          <td> 07月28日<p></p> </td> 
-          <td> 星期六 </td> 
+          <td> 08月03日<p></p> </td> 
+          <td> 星期五 </td> 
          </tr> 
          <tr> 
           <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png"></td> 
-          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/night/1.png"></td> 
+          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/night/0.png"></td> 
          </tr> 
          <tr> 
           <td class="wdesc">晴</td> 
-          <td class="wdesc">多云</td> 
+          <td class="wdesc">晴</td> 
          </tr> 
          <tr> 
-          <td class="temp"> 32℃ </td> 
-          <td class="temp"> 20℃ </td> 
+          <td class="temp"> 31℃ </td> 
+          <td class="temp"> 22℃ </td> 
          </tr> 
          <tr> 
           <td class="direct">无持续风向</td> 
@@ -423,7 +423,62 @@ var ctxStatic = 'http://image.nmc.cn/static2';
       </div> 
       <div class="day"> 
        <div class="date">
-        07月28日
+        08月03日
+       </div> 
+       <div class="week">
+        星期五
+       </div> 
+       <div class="wicon">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+       </div> 
+       <div class="wdesc">
+        晴
+       </div> 
+       <div class="temp">
+         31℃ 
+       </div> 
+       <div class="direct">
+        无持续风向
+       </div> 
+       <div class="wind">
+        微风
+       </div> 
+      </div> 
+     </div> 
+     <div class="detail"> 
+      <div class="today" style="margin-left:10px;"> 
+       <table> 
+        <tbody>
+         <tr> 
+          <td> 08月04日<p></p> </td> 
+          <td> 星期六 </td> 
+         </tr> 
+         <tr> 
+          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png"></td> 
+          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/night/1.png"></td> 
+         </tr> 
+         <tr> 
+          <td class="wdesc">晴</td> 
+          <td class="wdesc">多云</td> 
+         </tr> 
+         <tr> 
+          <td class="temp"> 32℃ </td> 
+          <td class="temp"> 19℃ </td> 
+         </tr> 
+         <tr> 
+          <td class="direct">无持续风向</td> 
+          <td class="direct">无持续风向</td> 
+         </tr> 
+         <tr> 
+          <td class="power">微风</td> 
+          <td class="power">微风</td> 
+         </tr> 
+        </tbody>
+       </table> 
+      </div> 
+      <div class="day"> 
+       <div class="date">
+        08月04日
        </div> 
        <div class="week">
         星期六
@@ -450,129 +505,19 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        <table> 
         <tbody>
          <tr> 
-          <td> 07月29日<p></p> </td> 
+          <td> 08月05日<p></p> </td> 
           <td> 星期日 </td> 
          </tr> 
          <tr> 
-          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png"></td> 
-          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/night/1.png"></td> 
+          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/4.png"></td> 
+          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/night/4.png"></td> 
          </tr> 
          <tr> 
-          <td class="wdesc">阴</td> 
-          <td class="wdesc">多云</td> 
+          <td class="wdesc">雷阵雨</td> 
+          <td class="wdesc">雷阵雨</td> 
          </tr> 
          <tr> 
-          <td class="temp"> 31℃ </td> 
-          <td class="temp"> 21℃ </td> 
-         </tr> 
-         <tr> 
-          <td class="direct">无持续风向</td> 
-          <td class="direct">无持续风向</td> 
-         </tr> 
-         <tr> 
-          <td class="power">微风</td> 
-          <td class="power">微风</td> 
-         </tr> 
-        </tbody>
-       </table> 
-      </div> 
-      <div class="day"> 
-       <div class="date">
-        07月29日
-       </div> 
-       <div class="week">
-        星期日
-       </div> 
-       <div class="wicon">
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
-       </div> 
-       <div class="wdesc">
-        阴
-       </div> 
-       <div class="temp">
-         31℃ 
-       </div> 
-       <div class="direct">
-        无持续风向
-       </div> 
-       <div class="wind">
-        微风
-       </div> 
-      </div> 
-     </div> 
-     <div class="detail"> 
-      <div class="today" style="margin-left:10px;"> 
-       <table> 
-        <tbody>
-         <tr> 
-          <td> 07月30日<p></p> </td> 
-          <td> 星期一 </td> 
-         </tr> 
-         <tr> 
-          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png"></td> 
-          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/night/0.png"></td> 
-         </tr> 
-         <tr> 
-          <td class="wdesc">晴</td> 
-          <td class="wdesc">晴</td> 
-         </tr> 
-         <tr> 
-          <td class="temp"> 31℃ </td> 
-          <td class="temp"> 17℃ </td> 
-         </tr> 
-         <tr> 
-          <td class="direct">无持续风向</td> 
-          <td class="direct">无持续风向</td> 
-         </tr> 
-         <tr> 
-          <td class="power">微风</td> 
-          <td class="power">微风</td> 
-         </tr> 
-        </tbody>
-       </table> 
-      </div> 
-      <div class="day"> 
-       <div class="date">
-        07月30日
-       </div> 
-       <div class="week">
-        星期一
-       </div> 
-       <div class="wicon">
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
-       </div> 
-       <div class="wdesc">
-        晴
-       </div> 
-       <div class="temp">
-         31℃ 
-       </div> 
-       <div class="direct">
-        无持续风向
-       </div> 
-       <div class="wind">
-        微风
-       </div> 
-      </div> 
-     </div> 
-     <div class="detail"> 
-      <div class="today" style="margin-left:10px;"> 
-       <table> 
-        <tbody>
-         <tr> 
-          <td> 07月31日<p></p> </td> 
-          <td> 星期二 </td> 
-         </tr> 
-         <tr> 
-          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png"></td> 
-          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/night/7.png"></td> 
-         </tr> 
-         <tr> 
-          <td class="wdesc">晴</td> 
-          <td class="wdesc">小雨</td> 
-         </tr> 
-         <tr> 
-          <td class="temp"> 31℃ </td> 
+          <td class="temp"> 30℃ </td> 
           <td class="temp"> 18℃ </td> 
          </tr> 
          <tr> 
@@ -588,19 +533,74 @@ var ctxStatic = 'http://image.nmc.cn/static2';
       </div> 
       <div class="day"> 
        <div class="date">
-        07月31日
+        08月05日
        </div> 
        <div class="week">
-        星期二
+        星期日
        </div> 
        <div class="wicon">
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/4.png">
        </div> 
        <div class="wdesc">
-        晴
+        雷阵雨
        </div> 
        <div class="temp">
-         31℃ 
+         30℃ 
+       </div> 
+       <div class="direct">
+        无持续风向
+       </div> 
+       <div class="wind">
+        微风
+       </div> 
+      </div> 
+     </div> 
+     <div class="detail"> 
+      <div class="today" style="margin-left:10px;"> 
+       <table> 
+        <tbody>
+         <tr> 
+          <td> 08月06日<p></p> </td> 
+          <td> 星期一 </td> 
+         </tr> 
+         <tr> 
+          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/4.png"></td> 
+          <td><img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/night/9.png"></td> 
+         </tr> 
+         <tr> 
+          <td class="wdesc">雷阵雨</td> 
+          <td class="wdesc">大雨</td> 
+         </tr> 
+         <tr> 
+          <td class="temp"> 28℃ </td> 
+          <td class="temp"> 16℃ </td> 
+         </tr> 
+         <tr> 
+          <td class="direct">无持续风向</td> 
+          <td class="direct">无持续风向</td> 
+         </tr> 
+         <tr> 
+          <td class="power">微风</td> 
+          <td class="power">微风</td> 
+         </tr> 
+        </tbody>
+       </table> 
+      </div> 
+      <div class="day"> 
+       <div class="date">
+        08月06日
+       </div> 
+       <div class="week">
+        星期一
+       </div> 
+       <div class="wicon">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/4.png">
+       </div> 
+       <div class="wdesc">
+        雷阵雨
+       </div> 
+       <div class="temp">
+         28℃ 
        </div> 
        <div class="direct">
         无持续风向
@@ -635,7 +635,7 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         23:00
        </div> 
        <div style="font-size: 12px;">
-        26日02:00
+        01日02:00
        </div> 
        <div style="font-size: 12px;">
         05:00
@@ -649,28 +649,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         天气现象
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/8.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/9.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/8.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+       </div> 
+       <div>
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
        </div> 
        <div>
         <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
-       </div> 
-       <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
        </div> 
       </div> 
       <div class="row wd"> 
@@ -678,28 +678,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         气温
        </div> 
        <div>
-         25.1℃ 
+         31.4℃ 
        </div> 
        <div>
-         25.4℃ 
+         31.8℃ 
+       </div> 
+       <div>
+         30.8℃ 
+       </div> 
+       <div>
+         26.7℃ 
+       </div> 
+       <div>
+         23.9℃ 
+       </div> 
+       <div>
+         22.2℃ 
+       </div> 
+       <div>
+         22.2℃ 
        </div> 
        <div>
          25.8℃ 
-       </div> 
-       <div>
-         19.7℃ 
-       </div> 
-       <div>
-         19.2℃ 
-       </div> 
-       <div>
-         18.8℃ 
-       </div> 
-       <div>
-         17.2℃ 
-       </div> 
-       <div>
-         22.3℃ 
        </div> 
       </div> 
       <div class="row js"> 
@@ -707,13 +707,13 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         降水
        </div> 
        <div>
-         3.9毫米 
+         无降水 
        </div> 
        <div>
-         15.4毫米 
+         无降水 
        </div> 
        <div>
-         4.8毫米 
+         无降水 
        </div> 
        <div>
          无降水 
@@ -736,28 +736,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         风速
        </div> 
        <div>
-         1.2米/秒 
+         1.5米/秒 
        </div> 
        <div>
-         1.7米/秒 
+         2.4米/秒 
        </div> 
        <div>
-         1.2米/秒 
+         1.9米/秒 
        </div> 
        <div>
-         1米/秒 
-       </div> 
-       <div>
-         1米/秒 
-       </div> 
-       <div>
-         0.2米/秒 
+         0.8米/秒 
        </div> 
        <div>
          0.5米/秒 
        </div> 
        <div>
-         1.5米/秒 
+         2米/秒 
+       </div> 
+       <div>
+         2.3米/秒 
+       </div> 
+       <div>
+         1米/秒 
        </div> 
       </div> 
       <div class="row windd"> 
@@ -765,7 +765,19 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         风向
        </div> 
        <div>
-         北风 
+         西风 
+       </div> 
+       <div>
+         西南风 
+       </div> 
+       <div>
+         西南风 
+       </div> 
+       <div>
+         西南风 
+       </div> 
+       <div>
+         西北风 
        </div> 
        <div>
          北风 
@@ -774,19 +786,7 @@ var ctxStatic = 'http://image.nmc.cn/static2';
          北风 
        </div> 
        <div>
-         北风 
-       </div> 
-       <div>
-         北风 
-       </div> 
-       <div>
-         北风 
-       </div> 
-       <div>
-         北风 
-       </div> 
-       <div>
-         北风 
+         东北风 
        </div> 
       </div> 
       <div class="row qy"> 
@@ -794,28 +794,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         气压
        </div> 
        <div>
-         979.3hPa 
-       </div> 
-       <div>
-         978.8hPa 
-       </div> 
-       <div>
-         978.5hPa 
-       </div> 
-       <div>
-         979.9hPa 
+         983.5hPa 
        </div> 
        <div>
          981.6hPa 
        </div> 
        <div>
-         981.7hPa 
+         980.8hPa 
        </div> 
        <div>
-         981.5hPa 
+         982.1hPa 
        </div> 
        <div>
-         984.3hPa 
+         983.1hPa 
+       </div> 
+       <div>
+         983.1hPa 
+       </div> 
+       <div>
+         983.1hPa 
+       </div> 
+       <div>
+         984hPa 
        </div> 
       </div> 
       <div class="row xdsd"> 
@@ -823,28 +823,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         相对湿度
        </div> 
        <div>
-         92% 
+         74.9% 
        </div> 
        <div>
-         95.1% 
+         71% 
        </div> 
        <div>
-         93.5% 
+         71.9% 
        </div> 
        <div>
-         94.8% 
+         76.9% 
        </div> 
        <div>
-         96.1% 
+         85.4% 
        </div> 
        <div>
-         90.6% 
+         95.2% 
        </div> 
        <div>
-         89.6% 
+         93.9% 
        </div> 
        <div>
-         85.9% 
+         82.3% 
        </div> 
       </div> 
       <div class="row yl"> 
@@ -852,28 +852,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         云量
        </div> 
        <div>
-         94.2% 
+         0% 
        </div> 
        <div>
-         76% 
+         0% 
        </div> 
        <div>
-         70% 
+         0.1% 
        </div> 
        <div>
-         24.3% 
+         2.1% 
        </div> 
        <div>
-         80% 
+         10.1% 
        </div> 
        <div>
-         80% 
+         10.1% 
        </div> 
        <div>
-         80% 
+         10.1% 
        </div> 
        <div>
-         80% 
+         10.1% 
        </div> 
       </div> 
       <div class="row njd"> 
@@ -932,7 +932,7 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         23:00
        </div> 
        <div style="font-size: 12px;">
-        27日02:00
+        02日02:00
        </div> 
        <div style="font-size: 12px;">
         05:00
@@ -943,16 +943,16 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         天气现象
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
-       </div> 
-       <div>
         <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
        </div> 
        <div>
         <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/4.png">
+       </div> 
+       <div>
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/4.png">
        </div> 
        <div>
         <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
@@ -972,28 +972,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         气温
        </div> 
        <div>
-         22.3℃ 
+         25.8℃ 
        </div> 
        <div>
-         26.5℃ 
+         32℃ 
        </div> 
        <div>
-         29.8℃ 
+         32.8℃ 
        </div> 
        <div>
-         27.8℃ 
+         31.1℃ 
        </div> 
        <div>
-         23.1℃ 
+         26.1℃ 
        </div> 
        <div>
-         19.3℃ 
+         23.8℃ 
        </div> 
        <div>
-         18.7℃ 
+         22.2℃ 
        </div> 
        <div>
-         18.2℃ 
+         22.5℃ 
        </div> 
       </div> 
       <div class="row js"> 
@@ -1007,10 +1007,10 @@ var ctxStatic = 'http://image.nmc.cn/static2';
          无降水 
        </div> 
        <div>
-         无降水 
+         0.2毫米 
        </div> 
        <div>
-         无降水 
+         0.1毫米 
        </div> 
        <div>
          无降水 
@@ -1030,28 +1030,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         风速
        </div> 
        <div>
-         1.5米/秒 
-       </div> 
-       <div>
-         2米/秒 
-       </div> 
-       <div>
-         2.5米/秒 
-       </div> 
-       <div>
-         2米/秒 
-       </div> 
-       <div>
-         0.7米/秒 
+         1米/秒 
        </div> 
        <div>
          1.9米/秒 
        </div> 
        <div>
-         0.3米/秒 
+         2.4米/秒 
        </div> 
        <div>
-         0.4米/秒 
+         2米/秒 
+       </div> 
+       <div>
+         1.2米/秒 
+       </div> 
+       <div>
+         0.1米/秒 
+       </div> 
+       <div>
+         0.2米/秒 
+       </div> 
+       <div>
+         0.3米/秒 
        </div> 
       </div> 
       <div class="row windd"> 
@@ -1059,22 +1059,22 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         风向
        </div> 
        <div>
-         北风 
-       </div> 
-       <div>
-         北风 
-       </div> 
-       <div>
-         北风 
-       </div> 
-       <div>
          东北风 
+       </div> 
+       <div>
+         南风 
+       </div> 
+       <div>
+         南风 
+       </div> 
+       <div>
+         南风 
        </div> 
        <div>
          东风 
        </div> 
        <div>
-         东北风 
+         东南风 
        </div> 
        <div>
          东北风 
@@ -1088,28 +1088,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         气压
        </div> 
        <div>
-         984.3hPa 
+         984hPa 
        </div> 
        <div>
-         984.2hPa 
+         983.8hPa 
+       </div> 
+       <div>
+         982hPa 
+       </div> 
+       <div>
+         981hPa 
+       </div> 
+       <div>
+         982.1hPa 
+       </div> 
+       <div>
+         983.2hPa 
        </div> 
        <div>
          982.8hPa 
        </div> 
        <div>
-         982.3hPa 
-       </div> 
-       <div>
-         983.6hPa 
-       </div> 
-       <div>
-         984hPa 
-       </div> 
-       <div>
-         984.5hPa 
-       </div> 
-       <div>
-         984.6hPa 
+         982.6hPa 
        </div> 
       </div> 
       <div class="row xdsd"> 
@@ -1117,28 +1117,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         相对湿度
        </div> 
        <div>
-         85.9% 
+         82.3% 
        </div> 
        <div>
-         66.6% 
+         70% 
        </div> 
        <div>
-         74.7% 
+         77.6% 
        </div> 
        <div>
-         75.1% 
+         78.5% 
        </div> 
        <div>
-         87.9% 
+         89.7% 
        </div> 
        <div>
-         98% 
+         94.2% 
        </div> 
        <div>
-         97.1% 
+         97.7% 
        </div> 
        <div>
-         95.2% 
+         99.6% 
        </div> 
       </div> 
       <div class="row yl"> 
@@ -1146,28 +1146,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         云量
        </div> 
        <div>
-         80% 
-       </div> 
-       <div>
-         17.3% 
-       </div> 
-       <div>
-         42.9% 
-       </div> 
-       <div>
-         45.4% 
-       </div> 
-       <div>
-         13.8% 
-       </div> 
-       <div>
-         23.2% 
-       </div> 
-       <div>
          10.1% 
        </div> 
        <div>
-         10.1% 
+         26.9% 
+       </div> 
+       <div>
+         70.8% 
+       </div> 
+       <div>
+         65% 
+       </div> 
+       <div>
+         23% 
+       </div> 
+       <div>
+         22.8% 
+       </div> 
+       <div>
+         16.5% 
+       </div> 
+       <div>
+         11.2% 
        </div> 
       </div> 
       <div class="row njd"> 
@@ -1226,7 +1226,7 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         23:00
        </div> 
        <div style="font-size: 12px;">
-        28日02:00
+        03日02:00
        </div> 
        <div style="font-size: 12px;">
         05:00
@@ -1240,16 +1240,7 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
-       </div> 
-       <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
-       </div> 
-       <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
-       </div> 
-       <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
        </div> 
        <div>
         <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
@@ -1259,6 +1250,15 @@ var ctxStatic = 'http://image.nmc.cn/static2';
        </div> 
        <div>
         <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
+       </div> 
+       <div>
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+       </div> 
+       <div>
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+       </div> 
+       <div>
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
        </div> 
       </div> 
       <div class="row wd"> 
@@ -1266,28 +1266,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         气温
        </div> 
        <div>
-         23.3℃ 
+         25.3℃ 
        </div> 
        <div>
-         26.5℃ 
+         30.4℃ 
        </div> 
        <div>
-         28.1℃ 
+         30.8℃ 
        </div> 
        <div>
-         28.8℃ 
+         30.5℃ 
        </div> 
        <div>
-         24.4℃ 
+         26.4℃ 
        </div> 
        <div>
-         22℃ 
+         22.2℃ 
        </div> 
        <div>
-         21.9℃ 
+         22.4℃ 
        </div> 
        <div>
-         20.2℃ 
+         22.6℃ 
        </div> 
       </div> 
       <div class="row js"> 
@@ -1324,28 +1324,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         风速
        </div> 
        <div>
-         0.9米/秒 
+         0.6米/秒 
        </div> 
        <div>
-         2米/秒 
+         1.6米/秒 
        </div> 
        <div>
-         2.6米/秒 
+         2.2米/秒 
+       </div> 
+       <div>
+         1.3米/秒 
+       </div> 
+       <div>
+         0.3米/秒 
+       </div> 
+       <div>
+         0.3米/秒 
+       </div> 
+       <div>
+         0.3米/秒 
        </div> 
        <div>
          1.5米/秒 
-       </div> 
-       <div>
-         1米/秒 
-       </div> 
-       <div>
-         0.1米/秒 
-       </div> 
-       <div>
-         0.7米/秒 
-       </div> 
-       <div>
-         0米/秒 
        </div> 
       </div> 
       <div class="row windd"> 
@@ -1356,25 +1356,25 @@ var ctxStatic = 'http://image.nmc.cn/static2';
          东北风 
        </div> 
        <div>
-         西北风 
-       </div> 
-       <div>
-         东南风 
+         南风 
        </div> 
        <div>
          南风 
        </div> 
        <div>
-         西南风 
+         南风 
        </div> 
        <div>
-         北风 
+         南风 
+       </div> 
+       <div>
+         南风 
+       </div> 
+       <div>
+         东南风 
        </div> 
        <div>
          东北风 
-       </div> 
-       <div>
-         西北风 
        </div> 
       </div> 
       <div class="row qy"> 
@@ -1382,28 +1382,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         气压
        </div> 
        <div>
-         985.9hPa 
-       </div> 
-       <div>
-         985.5hPa 
-       </div> 
-       <div>
-         983.8hPa 
-       </div> 
-       <div>
-         983.1hPa 
-       </div> 
-       <div>
-         983.7hPa 
-       </div> 
-       <div>
-         984.6hPa 
-       </div> 
-       <div>
-         983.9hPa 
-       </div> 
-       <div>
          983.4hPa 
+       </div> 
+       <div>
+         983hPa 
+       </div> 
+       <div>
+         981.5hPa 
+       </div> 
+       <div>
+         980.7hPa 
+       </div> 
+       <div>
+         981.4hPa 
+       </div> 
+       <div>
+         982.2hPa 
+       </div> 
+       <div>
+         982.1hPa 
+       </div> 
+       <div>
+         982.3hPa 
        </div> 
       </div> 
       <div class="row xdsd"> 
@@ -1411,28 +1411,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         相对湿度
        </div> 
        <div>
-         85.1% 
+         88.7% 
        </div> 
        <div>
-         76.1% 
+         69.5% 
        </div> 
        <div>
-         74.3% 
+         74.9% 
        </div> 
        <div>
-         75.5% 
+         75.1% 
        </div> 
        <div>
-         95.8% 
+         79% 
        </div> 
        <div>
-         95.8% 
+         82% 
        </div> 
        <div>
-         94.1% 
+         85.4% 
        </div> 
        <div>
-         93.1% 
+         87.5% 
        </div> 
       </div> 
       <div class="row yl"> 
@@ -1440,28 +1440,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         云量
        </div> 
        <div>
-         57% 
+         10.1% 
        </div> 
        <div>
-         80% 
-       </div> 
-       <div>
-         80% 
-       </div> 
-       <div>
-         80% 
-       </div> 
-       <div>
-         80% 
-       </div> 
-       <div>
-         38.4% 
+         36.3% 
        </div> 
        <div>
          10.1% 
        </div> 
        <div>
          10.1% 
+       </div> 
+       <div>
+         10.1% 
+       </div> 
+       <div>
+         8.2% 
+       </div> 
+       <div>
+         2% 
+       </div> 
+       <div>
+         0.3% 
        </div> 
       </div> 
       <div class="row njd"> 
@@ -1520,7 +1520,7 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         23:00
        </div> 
        <div style="font-size: 12px;">
-        29日02:00
+        04日02:00
        </div> 
        <div style="font-size: 12px;">
         05:00
@@ -1531,9 +1531,6 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         天气现象
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
-       </div> 
-       <div>
         <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
        </div> 
        <div>
@@ -1546,13 +1543,16 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+       </div> 
+       <div>
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
        </div> 
       </div> 
       <div class="row wd"> 
@@ -1560,28 +1560,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         气温
        </div> 
        <div>
-         24.2℃ 
+         24.4℃ 
        </div> 
        <div>
-         28.3℃ 
+         29.2℃ 
        </div> 
        <div>
-         31.8℃ 
+         30℃ 
        </div> 
        <div>
-         30.3℃ 
+         30.8℃ 
        </div> 
        <div>
-         28.8℃ 
+         26.6℃ 
        </div> 
        <div>
-         22.4℃ 
+         23.3℃ 
        </div> 
        <div>
-         20.2℃ 
+         22.2℃ 
        </div> 
        <div>
-         22℃ 
+         23.5℃ 
        </div> 
       </div> 
       <div class="row js"> 
@@ -1618,28 +1618,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         风速
        </div> 
        <div>
-         0.3米/秒 
+         0.8米/秒 
        </div> 
        <div>
          1.7米/秒 
        </div> 
        <div>
-         2.8米/秒 
-       </div> 
-       <div>
          2.6米/秒 
        </div> 
        <div>
-         0.9米/秒 
+         2.3米/秒 
        </div> 
        <div>
-         0.6米/秒 
+         1.2米/秒 
+       </div> 
+       <div>
+         0.5米/秒 
        </div> 
        <div>
          0.1米/秒 
        </div> 
        <div>
-         0.3米/秒 
+         1.5米/秒 
        </div> 
       </div> 
       <div class="row windd"> 
@@ -1647,28 +1647,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         风向
        </div> 
        <div>
-         北风 
+         东南风 
        </div> 
        <div>
-         西南风 
+         南风 
        </div> 
        <div>
-         西南风 
+         南风 
        </div> 
        <div>
-         西南风 
+         南风 
        </div> 
        <div>
-         西风 
+         南风 
        </div> 
        <div>
-         西北风 
+         南风 
        </div> 
        <div>
-         北风 
+         南风 
        </div> 
        <div>
-         北风 
+         东南风 
        </div> 
       </div> 
       <div class="row qy"> 
@@ -1676,28 +1676,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         气压
        </div> 
        <div>
-         984.3hPa 
+         983hPa 
        </div> 
        <div>
-         983.2hPa 
+         982.7hPa 
+       </div> 
+       <div>
+         981.2hPa 
+       </div> 
+       <div>
+         980.1hPa 
        </div> 
        <div>
          981.3hPa 
        </div> 
        <div>
-         980.2hPa 
+         982.8hPa 
        </div> 
        <div>
-         981.1hPa 
+         982.6hPa 
        </div> 
        <div>
-         982hPa 
-       </div> 
-       <div>
-         980.5hPa 
-       </div> 
-       <div>
-         979.9hPa 
+         982.7hPa 
        </div> 
       </div> 
       <div class="row xdsd"> 
@@ -1705,28 +1705,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         相对湿度
        </div> 
        <div>
-         89.2% 
+         82.3% 
        </div> 
        <div>
-         79.2% 
+         74.2% 
        </div> 
        <div>
-         79.5% 
+         81.9% 
        </div> 
        <div>
-         79.9% 
+         82.1% 
        </div> 
        <div>
-         83.9% 
+         91.2% 
        </div> 
        <div>
-         88.9% 
+         94.1% 
        </div> 
        <div>
-         93.5% 
+         99.4% 
        </div> 
        <div>
-         95.9% 
+         99.6% 
        </div> 
       </div> 
       <div class="row yl"> 
@@ -1734,7 +1734,7 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         云量
        </div> 
        <div>
-         10.1% 
+         0% 
        </div> 
        <div>
          10% 
@@ -1746,16 +1746,16 @@ var ctxStatic = 'http://image.nmc.cn/static2';
          10% 
        </div> 
        <div>
+         9.1% 
+       </div> 
+       <div>
+         3.1% 
+       </div> 
+       <div>
          10% 
        </div> 
        <div>
-         61.2% 
-       </div> 
-       <div>
-         73% 
-       </div> 
-       <div>
-         64.9% 
+         10% 
        </div> 
       </div> 
       <div class="row njd"> 
@@ -1814,7 +1814,7 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         23:00
        </div> 
        <div style="font-size: 12px;">
-        30日02:00
+        05日02:00
        </div> 
        <div style="font-size: 12px;">
         05:00
@@ -1825,19 +1825,19 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         天气现象
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
        </div> 
        <div>
         <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
@@ -1854,28 +1854,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         气温
        </div> 
        <div>
-         24.3℃ 
-       </div> 
-       <div>
-         30.1℃ 
-       </div> 
-       <div>
-         30.8℃ 
-       </div> 
-       <div>
-         28.3℃ 
-       </div> 
-       <div>
          24.6℃ 
        </div> 
        <div>
-         22.7℃ 
+         27.6℃ 
        </div> 
        <div>
-         21.8℃ 
+         31.8℃ 
        </div> 
        <div>
-         21.2℃ 
+         29.2℃ 
+       </div> 
+       <div>
+         26.6℃ 
+       </div> 
+       <div>
+         21.9℃ 
+       </div> 
+       <div>
+         19.2℃ 
+       </div> 
+       <div>
+         19.5℃ 
        </div> 
       </div> 
       <div class="row js"> 
@@ -1912,28 +1912,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         风速
        </div> 
        <div>
-         0.2米/秒 
-       </div> 
-       <div>
-         1.8米/秒 
+         0.9米/秒 
        </div> 
        <div>
          2.3米/秒 
        </div> 
        <div>
-         2.3米/秒 
+         2.7米/秒 
        </div> 
        <div>
-         1.3米/秒 
+         1.5米/秒 
+       </div> 
+       <div>
+         0.9米/秒 
        </div> 
        <div>
          0.3米/秒 
        </div> 
        <div>
-         0.1米/秒 
+         0米/秒 
        </div> 
        <div>
-         0.6米/秒 
+         0.9米/秒 
        </div> 
       </div> 
       <div class="row windd"> 
@@ -1941,10 +1941,13 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         风向
        </div> 
        <div>
-         北风 
+         南风 
        </div> 
        <div>
-         南风 
+         西南风 
+       </div> 
+       <div>
+         西南风 
        </div> 
        <div>
          南风 
@@ -1959,10 +1962,7 @@ var ctxStatic = 'http://image.nmc.cn/static2';
          东风 
        </div> 
        <div>
-         东南风 
-       </div> 
-       <div>
-         东北风 
+         东风 
        </div> 
       </div> 
       <div class="row qy"> 
@@ -1970,28 +1970,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         气压
        </div> 
        <div>
-         980.5hPa 
+         983.8hPa 
        </div> 
        <div>
-         980hPa 
+         983.6hPa 
        </div> 
        <div>
-         977.7hPa 
+         982.1hPa 
        </div> 
        <div>
-         977.6hPa 
+         981.5hPa 
        </div> 
        <div>
-         978.6hPa 
+         983hPa 
        </div> 
        <div>
-         979.4hPa 
+         983.9hPa 
        </div> 
        <div>
-         979.6hPa 
+         984hPa 
        </div> 
        <div>
-         980.3hPa 
+         984.1hPa 
        </div> 
       </div> 
       <div class="row xdsd"> 
@@ -1999,28 +1999,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         相对湿度
        </div> 
        <div>
-         87.7% 
+         91.2% 
        </div> 
        <div>
-         75.7% 
+         70.1% 
        </div> 
        <div>
-         82% 
+         75.8% 
        </div> 
        <div>
-         83.8% 
+         76.1% 
        </div> 
        <div>
-         86% 
+         83.7% 
        </div> 
        <div>
-         88.3% 
+         91.6% 
        </div> 
        <div>
-         93.5% 
+         89.9% 
        </div> 
        <div>
-         90.7% 
+         88.5% 
        </div> 
       </div> 
       <div class="row yl"> 
@@ -2028,28 +2028,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         云量
        </div> 
        <div>
-         57.7% 
+         4.6% 
        </div> 
        <div>
-         80% 
+         10% 
        </div> 
        <div>
-         80% 
+         10% 
        </div> 
        <div>
-         80% 
+         1.4% 
        </div> 
        <div>
-         80% 
+         0.1% 
        </div> 
        <div>
-         79.9% 
+         10.1% 
        </div> 
        <div>
-         25.4% 
+         17.8% 
        </div> 
        <div>
-         79.9% 
+         10.1% 
        </div> 
       </div> 
       <div class="row njd"> 
@@ -2108,7 +2108,7 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         23:00
        </div> 
        <div style="font-size: 12px;">
-        31日02:00
+        06日02:00
        </div> 
        <div style="font-size: 12px;">
         05:00
@@ -2122,25 +2122,25 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/4.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/4.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/1.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/4.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/4.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/4.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/4.png">
        </div> 
       </div> 
       <div class="row wd"> 
@@ -2148,28 +2148,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         气温
        </div> 
        <div>
-         24.6℃ 
+         22.5℃ 
        </div> 
        <div>
-         29.4℃ 
+         27.5℃ 
        </div> 
        <div>
-         30.8℃ 
+         29.5℃ 
        </div> 
        <div>
-         30.4℃ 
+         29.8℃ 
        </div> 
        <div>
-         23℃ 
+         24.5℃ 
        </div> 
        <div>
-         22.3℃ 
+         23.2℃ 
        </div> 
        <div>
-         19.8℃ 
+         21.1℃ 
        </div> 
        <div>
-         17.2℃ 
+         18.2℃ 
        </div> 
       </div> 
       <div class="row js"> 
@@ -2180,25 +2180,25 @@ var ctxStatic = 'http://image.nmc.cn/static2';
          无降水 
        </div> 
        <div>
-         无降水 
+         0.1毫米 
+       </div> 
+       <div>
+         0.4毫米 
        </div> 
        <div>
          无降水 
        </div> 
        <div>
-         无降水 
+         0.3毫米 
        </div> 
        <div>
-         无降水 
+         2.3毫米 
        </div> 
        <div>
-         无降水 
+         2.3毫米 
        </div> 
        <div>
-         无降水 
-       </div> 
-       <div>
-         无降水 
+         2.3毫米 
        </div> 
       </div> 
       <div class="row winds"> 
@@ -2206,28 +2206,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         风速
        </div> 
        <div>
-         0.6米/秒 
+         1.1米/秒 
        </div> 
        <div>
-         1.9米/秒 
+         1.6米/秒 
        </div> 
        <div>
-         2.9米/秒 
+         3米/秒 
        </div> 
        <div>
-         2.1米/秒 
+         2.7米/秒 
        </div> 
        <div>
-         0.7米/秒 
+         1米/秒 
        </div> 
        <div>
-         0.5米/秒 
+         0.2米/秒 
        </div> 
        <div>
-         0.3米/秒 
+         0.1米/秒 
        </div> 
        <div>
-         0.8米/秒 
+         1.5米/秒 
        </div> 
       </div> 
       <div class="row windd"> 
@@ -2235,16 +2235,7 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         风向
        </div> 
        <div>
-         东风 
-       </div> 
-       <div>
-         东风 
-       </div> 
-       <div>
-         南风 
-       </div> 
-       <div>
-         东风 
+         东北风 
        </div> 
        <div>
          南风 
@@ -2253,10 +2244,19 @@ var ctxStatic = 'http://image.nmc.cn/static2';
          东北风 
        </div> 
        <div>
-         西风 
+         南风 
        </div> 
        <div>
-         北风 
+         东北风 
+       </div> 
+       <div>
+         东风 
+       </div> 
+       <div>
+         东北风 
+       </div> 
+       <div>
+         东风 
        </div> 
       </div> 
       <div class="row qy"> 
@@ -2264,28 +2264,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         气压
        </div> 
        <div>
-         981.6hPa 
+         984.3hPa 
        </div> 
        <div>
-         981.9hPa 
+         983.3hPa 
        </div> 
        <div>
-         981hPa 
+         981.2hPa 
        </div> 
        <div>
-         980.7hPa 
+         980.5hPa 
        </div> 
        <div>
-         981.3hPa 
+         981.1hPa 
        </div> 
        <div>
-         981.3hPa 
+         981.2hPa 
        </div> 
        <div>
-         980.8hPa 
+         980hPa 
        </div> 
        <div>
-         980.2hPa 
+         979.7hPa 
        </div> 
       </div> 
       <div class="row xdsd"> 
@@ -2293,28 +2293,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         相对湿度
        </div> 
        <div>
-         79.1% 
+         87.1% 
        </div> 
        <div>
-         65.5% 
+         74.6% 
        </div> 
        <div>
-         76.1% 
+         81.7% 
        </div> 
        <div>
-         82.5% 
+         82.3% 
        </div> 
        <div>
-         89.6% 
+         82.3% 
        </div> 
        <div>
-         88.8% 
+         89.3% 
        </div> 
        <div>
-         99.6% 
+         86.6% 
        </div> 
        <div>
-         88.4% 
+         84.9% 
        </div> 
       </div> 
       <div class="row yl"> 
@@ -2322,28 +2322,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         云量
        </div> 
        <div>
+         59.8% 
+       </div> 
+       <div>
          14.1% 
        </div> 
        <div>
-         10% 
+         80.8% 
        </div> 
        <div>
-         10% 
+         19.7% 
        </div> 
        <div>
-         10% 
+         85.7% 
        </div> 
        <div>
-         10% 
+         73.7% 
        </div> 
        <div>
-         10% 
+         70% 
        </div> 
        <div>
-         3.1% 
-       </div> 
-       <div>
-         10% 
+         94.9% 
        </div> 
       </div> 
       <div class="row njd"> 
@@ -2402,7 +2402,7 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         23:00
        </div> 
        <div style="font-size: 12px;">
-        01日02:00
+        07日02:00
        </div> 
        <div style="font-size: 12px;">
         05:00
@@ -2413,19 +2413,16 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         天气现象
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/4.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
-       </div> 
-       <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/0.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/4.png">
        </div> 
        <div>
         <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/2.png">
@@ -2434,7 +2431,10 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/7.png">
        </div> 
        <div>
-        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/7.png">
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/8.png">
+       </div> 
+       <div>
+        <img src="http://image.nmc.cn/static2/site/nmc/themes/basic/weather/white/day/9.png">
        </div> 
       </div> 
       <div class="row wd"> 
@@ -2442,28 +2442,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         气温
        </div> 
        <div>
-         23℃ 
+         22.4℃ 
        </div> 
        <div>
          27.5℃ 
        </div> 
        <div>
-         30.8℃ 
+         27.8℃ 
        </div> 
        <div>
-         28.1℃ 
+         26.1℃ 
        </div> 
        <div>
-         25.5℃ 
+         23.6℃ 
        </div> 
        <div>
-         22℃ 
+         18.8℃ 
        </div> 
        <div>
-         19.1℃ 
+         17.9℃ 
        </div> 
        <div>
-         21.4℃ 
+         17℃ 
        </div> 
       </div> 
       <div class="row js"> 
@@ -2471,7 +2471,7 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         降水
        </div> 
        <div>
-         无降水 
+         2.3毫米 
        </div> 
        <div>
          无降水 
@@ -2480,19 +2480,19 @@ var ctxStatic = 'http://image.nmc.cn/static2';
          无降水 
        </div> 
        <div>
-         无降水 
+         0.3毫米 
        </div> 
        <div>
          无降水 
        </div> 
        <div>
-         无降水 
+         1.3毫米 
        </div> 
        <div>
-         0.4毫米 
+         6.9毫米 
        </div> 
        <div>
-         0.2毫米 
+         10.1毫米 
        </div> 
       </div> 
       <div class="row winds"> 
@@ -2500,28 +2500,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         风速
        </div> 
        <div>
-         0.6米/秒 
+         1.6米/秒 
        </div> 
        <div>
-         2米/秒 
+         0.5米/秒 
        </div> 
        <div>
-         2.6米/秒 
+         2.5米/秒 
        </div> 
        <div>
-         1.5米/秒 
+         1.6米/秒 
        </div> 
        <div>
          1.1米/秒 
        </div> 
        <div>
-         0.7米/秒 
+         0.4米/秒 
        </div> 
        <div>
-         0.3米/秒 
+         0.2米/秒 
        </div> 
        <div>
-         0.5米/秒 
+         0.9米/秒 
        </div> 
       </div> 
       <div class="row windd"> 
@@ -2529,22 +2529,22 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         风向
        </div> 
        <div>
-         北风 
+         东北风 
+       </div> 
+       <div>
+         西南风 
+       </div> 
+       <div>
+         南风 
+       </div> 
+       <div>
+         西南风 
+       </div> 
+       <div>
+         南风 
        </div> 
        <div>
          东南风 
-       </div> 
-       <div>
-         西南风 
-       </div> 
-       <div>
-         西南风 
-       </div> 
-       <div>
-         西南风 
-       </div> 
-       <div>
-         东风 
        </div> 
        <div>
          东风 
@@ -2558,28 +2558,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         气压
        </div> 
        <div>
-         980.3hPa 
+         980hPa 
        </div> 
        <div>
-         979.1hPa 
+         979hPa 
        </div> 
        <div>
-         977hPa 
+         977.2hPa 
        </div> 
        <div>
-         975.8hPa 
+         976hPa 
        </div> 
        <div>
-         975.8hPa 
+         976.2hPa 
        </div> 
        <div>
-         975.8hPa 
+         976.8hPa 
        </div> 
        <div>
-         974.8hPa 
+         977.1hPa 
        </div> 
        <div>
-         974.7hPa 
+         978.1hPa 
        </div> 
       </div> 
       <div class="row xdsd"> 
@@ -2587,28 +2587,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         相对湿度
        </div> 
        <div>
-         70.4% 
+         83.2% 
        </div> 
        <div>
-         75% 
+         69.5% 
        </div> 
        <div>
-         69.3% 
+         78.5% 
        </div> 
        <div>
-         81.1% 
+         82.1% 
        </div> 
        <div>
-         81.3% 
+         82.6% 
        </div> 
        <div>
-         81.5% 
+         83% 
        </div> 
        <div>
-         81% 
+         85.5% 
        </div> 
        <div>
-         80.6% 
+         91.2% 
        </div> 
       </div> 
       <div class="row yl"> 
@@ -2616,28 +2616,28 @@ var ctxStatic = 'http://image.nmc.cn/static2';
         云量
        </div> 
        <div>
-         0% 
+         70% 
        </div> 
        <div>
-         10% 
+         81.6% 
        </div> 
        <div>
-         10% 
+         99.8% 
        </div> 
        <div>
-         10% 
+         97.3% 
        </div> 
        <div>
-         0.3% 
+         94.7% 
        </div> 
        <div>
-         99.6% 
+         100% 
        </div> 
        <div>
-         95.9% 
+         100% 
        </div> 
        <div>
-         97.6% 
+         100% 
        </div> 
       </div> 
       <div class="row njd"> 
@@ -2778,6 +2778,6 @@ var ctxStatic = 'http://image.nmc.cn/static2';
 	document.write(unescape("%3Cspan id='cnzz_stat_icon_1254743953'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "w.cnzz.com/c.php%3Fid%3D1254743953' type='text/javascript'%3E%3C/script%3E"));
 </script>
   </div>   
-  <input type="hidden" name="页面生成时间" value="2018-07-25 08:03:01">
+  <input type="hidden" name="页面生成时间" value="2018-07-31 08:03:05">
  </body>
 </html>";

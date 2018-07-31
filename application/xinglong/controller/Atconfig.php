@@ -407,6 +407,7 @@ class Atconfig extends Base
         // }
 
         $postData = input();
+        //halt($postData);
         if ( !isset( $postData['gain_noise'], $postData['teleid'], $postData['ccdno'] ) || count($postData['gain_noise']) < 1 )
         {//表单数据内无gain_noise，或$postData['gain_noise']内无数据
             return '提交的增益-读出噪声数据有误';
@@ -416,9 +417,29 @@ class Atconfig extends Base
         $teleId =  Db::table('atlist')->column('id');
 
         if ( !in_array($postData['teleid'], $teleId) ) return '提交的增益-读出噪声数据有误';
-        //halt ($teleId);
+        //接下来 处理存储读出速度、转移速度、增益模式、增益挡位
+        if ( isset($postData['fourData']['readOut']) && count($postData['fourData']['readOut']) > 0  )
+        {
+           $postData['readoutspeed'] = implode ('#', $postData['fourData']['readOut']);
+        }
 
-        $postData['gain_noise'] = json_encode ($postData['gain_noise']);
+        if ( isset($postData['fourData']['transfer']) && count($postData['fourData']['transfer']) > 0 )
+        {
+           $postData['transferspeed'] = implode ('#', $postData['fourData']['transfer']);
+        }
+
+        if ( isset($postData['fourData']['gain']) && count($postData['fourData']['gain']) > 0 )
+        {
+           $postData['gainmode'] = implode ('#', $postData['fourData']['gain']);
+        }
+
+        if ( isset($postData['fourData']['gear']) )
+        {
+           $postData['gainnumber'] = $postData['fourData']['gear'];
+        }
+        //处理 存储读出速度、转移速度、增益模式、增益挡位 结束
+
+       $postData['gain_noise'] = json_encode ($postData['gain_noise']);
         
        $postData['attrmodifytime'] = date ('Y-m-d');   //属性更新时间
 
@@ -448,6 +469,35 @@ class Atconfig extends Base
         }
 
     }//将vue对象中gain_noise数据对象存入ccdconf表中gain_noise字段中 结束
+
+    //对ccd增益-读出噪声值表格相关字段 升序、降序排列
+    public function gainNoiseSort ()
+    {
+        //判断ajax 请求时 是否有权限
+        // if ($this->ajaxAuthErr == 1)
+        // {
+        //     return '您无权执行此操作!';
+        // }
+
+        $postData = input();
+
+        if ( count($postData) < 4 ) return '请求参数有误';
+
+        //看提交的teleid是否在atlist表内
+        $teleId =  Db::table('atlist')->column('id');
+
+        if ( !in_array($postData['teleid'], $teleId) ) return '请求参数有误';
+
+        //检查ccdconf表中是否已有需要排序的数据
+        $data = Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', $postData['ccdno'])->field('gain_noise')->find();
+
+        if ( !$data['gain_noise'] ) //未查询到gain_noise字段数据
+        {
+            return '未查询到配置数据';
+        }else{//有数据，根据提交参数对gain_noise字段数据排序后，返回给ajax排序后的json数据
+            return $this->sort_data ($data['gain_noise'], $postData['field'], $postData['order']);
+        }
+    }//对ccd增益-读出噪声值表格相关字段 升序、降序排列 结束
 
     /*获取滤光片配置项表单 存入表filterconf中*/
     public function filter_config()
@@ -950,4 +1000,17 @@ class Atconfig extends Base
             return json_encode ($result);
         }
     }/*获取导星望远镜配置项表单 存入表guideconf中 结束*/
+
+    //对ccd 增益-读出噪声值 页面表格相关字段进行排序，排序后返回json数据
+    protected function sort_data ($data, $col, $order)
+    {
+        switch ($col) {//根据提交的数据对相应列进行排序
+            case 'value':
+                # code...
+                break;
+            
+            default:
+                return '请求数据异常';  break;
+        }
+    }//对ccd 增益-读出噪声值 页面表格相关字段进行排序，排序后返回json数据 结束
 }

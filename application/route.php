@@ -83,6 +83,8 @@ Route::post('gimbal_config$', 'xinglong/atconfig/gimbal_config');
 Route::post('ccd_config$', 'xinglong/atconfig/ccd_config');
 //ajax提交ccd之增益值和读出噪声值配置数据 路由
 Route::post('gain_noise$', 'xinglong/atconfig/gainNoiseConfig');
+//ajax 对ccd增益-读出噪声表格各列排序 路由
+Route::post('gainNoiseSort$', 'xinglong/atconfig/gainNoiseSort');
 //ajax提交滤光片配置数据 路由
 Route::post('filter_config$', 'xinglong/atconfig/filter_config');
 //ajax提交随动圆顶配置数据 路由
