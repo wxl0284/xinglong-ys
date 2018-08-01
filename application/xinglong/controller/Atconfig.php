@@ -1005,12 +1005,110 @@ class Atconfig extends Base
     protected function sort_data ($data, $col, $order)
     {
         switch ($col) {//根据提交的数据对相应列进行排序
-            case 'value':
-                # code...
-                break;
+            case 'readOut'://对读出速度字段排序
+                //对$data排序
+                $temp = json_decode ($data, true); //将json数据转为数组
+               
+                foreach ($temp as $k => $v)
+                {
+                    $arr[$k] = $v['readOut_speed']; //获取读出速度这一列
+                }
+
+                if ( $order == 'asc' )
+                {
+                    array_multisort ($arr, SORT_ASC, $temp);
+                }elseif ( $order == 'desc' )
+                {
+                    array_multisort ($arr, SORT_DESC, $temp);
+                }
+                foreach ($temp as $k => $v) { //返回键名从1开始的数组
+                    $a[$k+1] = $temp[$k];
+                }
+                return json_encode($a, JSON_FORCE_OBJECT);  break;
+            case 'transfer'://对转移速度字段排序
+                //对$data排序
+                $temp = json_decode ($data, true); //将json数据转为数组
+  
+                foreach ($temp as $k => $v)
+                {
+                    $arr[$k] = $v['transfer_speed']; //获取转移速度这一列
+                }
+
+                if ( $order == 'asc' )
+                {
+                    array_multisort ($arr, SORT_ASC, $temp);
+                }elseif ( $order == 'desc' )
+                {
+                    array_multisort ($arr, SORT_DESC, $temp);
+                }
+               
+                foreach ($temp as $k => $v) { //返回键名从1开始的数组
+                    $a[$k+1] = $temp[$k];
+                }
+                return json_encode($a, JSON_FORCE_OBJECT);  break;
+            case 'gear'://对增益挡位字段排序
+                //对$data排序
+                $temp = json_decode ($data, true); //将json数据转为数组
+  
+                foreach ($temp as $k => $v)
+                {
+                    $arr[$k] = $v['gain_gear']; //获取增益挡位这一列
+                }
+
+                if ( $order == 'asc' )
+                {
+                    array_multisort ($arr, SORT_ASC, $temp);
+                }elseif ( $order == 'desc' )
+                {
+                    array_multisort ($arr, SORT_DESC, $temp);
+                }
+               
+                foreach ($temp as $k => $v) { //返回键名从1开始的数组
+                    $a[$k+1] = $temp[$k];
+                }
+                return json_encode($a, JSON_FORCE_OBJECT);  break;
+            case 'gain'://对增益值字段排序
+                //对$data排序
+                $temp = json_decode ($data, true); //将json数据转为数组
+    
+                foreach ($temp as $k => $v)
+                {
+                    $arr[$k] = $v['gainVal']; //获取增益值这一列
+                }
+
+                if ( $order == 'asc' )
+                {
+                    array_multisort ($arr, SORT_ASC, $temp);
+                }elseif ( $order == 'desc' )
+                {
+                    array_multisort ($arr, SORT_DESC, $temp);
+                }
             
-            default:
-                return '请求数据异常';  break;
+                foreach ($temp as $k => $v) { //返回键名从1开始的数组
+                    $a[$k+1] = $temp[$k];
+                }
+                return json_encode($a, JSON_FORCE_OBJECT);  break;
+            case 'noise'://对噪声值字段排序
+                //对$data排序
+                $temp = json_decode ($data, true); //将json数据转为数组
+    
+                foreach ($temp as $k => $v)
+                {
+                    $arr[$k] = $v['noiseVal']; //获取噪声值这一列
+                }
+
+                if ( $order == 'asc' )
+                {
+                    array_multisort ($arr, SORT_ASC, $temp);
+                }elseif ( $order == 'desc' )
+                {
+                    array_multisort ($arr, SORT_DESC, $temp);
+                }
+            
+                foreach ($temp as $k => $v) { //返回键名从1开始的数组
+                    $a[$k+1] = $temp[$k];
+                }
+                return json_encode($a, JSON_FORCE_OBJECT);  break;
         }
     }//对ccd 增益-读出噪声值 页面表格相关字段进行排序，排序后返回json数据 结束
 }

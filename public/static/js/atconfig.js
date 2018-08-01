@@ -1,5 +1,5 @@
 /*望远镜配置页面 js*/
-$(function () {        
+$(function () {
     //显示导航栏望远镜列表///////////////////////////////////// 
        var ul = $('#atListUl');
        $('#atList').hover(
@@ -60,7 +60,8 @@ $(function () {
                 readoutnoisearray:'', shuttermode:[], interfacetype:[], emmaxvalue:'', exposetriggermode:[],
                 emminvalue:'', attrversion:'' 
             }, //ccd的配置信息
-            ccd_file: {}, //ccd上传的文件
+            ccd_file: {}, //ccd_No1的上传的文件
+            ccd_files:{}, //当前望远镜的所有ccd的文件数据
             filter_slot:{//存储滤光片 各插槽一一对应的滤光片类型-名称-偏差值
                 slotData:{},//各插槽的滤光片类型-名称-偏差值
             },//filter_slot 结束
@@ -315,8 +316,30 @@ $(function () {
                 }
                 return msg !== '' ? msg + '<br>' : '';
             },//check_guideFocusL() 结束
-            change_ccd: function (n) {//切换要配置的ccd
-                //this.ccd_config = thi;
+            change_ccd: function (n) {//切换要配置的ccd，n为ccd的序号
+                if ( this.all_ccd_config[n-1] )  this.ccd_config = this.all_ccd_config[n-1]; //将被选中的ccd配置数据赋值给this.ccd_config
+
+                //处理第n个ccd的读出速度、转移速度、增益值、噪声值等的显示
+                this.gainMode = this.ccd_config.gainmode; //将增益模式赋给data.gainMode
+                this.readoutspeed = this.ccd_config.readoutspeed; //将读出速度数组赋给data.readoutspeed
+                if ( this.readoutspeed.length > 0 ) this.r_spd = this.readoutspeed.length; //显示读出速度input框
+                this.transferspeed = this.ccd_config.transferspeed; //将转移速度数组赋给data.transferspeed
+                if ( this.transferspeed.length > 0 ) this.t_spd = this.transferspeed.length; //显示转移速度input框
+                this.gain_num = this.ccd_config.gainnumber; //将增益挡位赋给data.gain_num
+                //接下来处理从数据库中gain_noise字段获取的json字符串
+                if ( this.ccd_config.gain_noise )
+                {
+                    this.gain_noise = $.parseJSON( this.ccd_config.gain_noise );
+                }
+                //处理第n个ccd的读出速度、转移速度、增益值、噪声值等的显示 结束
+
+                //然后将第n个ccd的上传文件数据赋值给ccd_file
+                if ( this.ccd_files[n] !== 0 ) //第n个ccd有上传文件
+                {
+                   this.ccd_file = this.ccd_files[n]; 
+                }else{//第n个ccd无上传文件
+                    this.ccd_file = {};
+                }
             },//change_ccd() 结束
             select_at:function (){
                 var index = layer.load(1); //显示加载图标
@@ -424,7 +447,8 @@ $(function () {
 
                                     if (info.ccd_file)
                                     {
-                                        if ( info.ccd_file[1] != 0 ) that.ccd_file = info.ccd_file[1];
+                                        if ( info.ccd_file[1] != 0 ) that.ccd_file = info.ccd_file[1]; //若ccd1有上传文件
+                                        that.ccd_files = info.ccd_file; //将返回的所有关于ccd文件的数据赋值给ccd_files
                                     }
                                 }//显示ccd 配置信息  结束
 
@@ -704,6 +728,7 @@ $(function () {
                     });
                 }//验证：每个被选择的焦点类型，其焦比、焦距是否输入正确 结束
     
+                msg += this.check_ip(false, this.gimbal_config.ip, this.$refs.gimbalIp);
                 msg += this.check_axisSpeed(false, this.gimbal_config.maxaxis1speed, this.$refs.axis1speed, 1);
 
                 msg += this.check_axisSpeed(false, this.gimbal_config.maxaxis2speed, this.$refs.axis2speed, 2);
@@ -1004,6 +1029,8 @@ $(function () {
 				return msg !== '' ? msg + '<br>' : '';
             },//check_emV() 结束
             gain_noise_sort:function (dev, order) {//ajax请求ccd增益、噪声值显示表格的各字段排序
+                var that = this; //存储vue的实例
+
                 $.ajax({
                     type: 'post',
                     url: 'gainNoiseSort',
@@ -1028,26 +1055,17 @@ $(function () {
                                 },
                             });
                         }else{//解析 处理 json
-                            // var info = $.parseJSON(info);
-        
-                            // layer.alert(info.msg, {
-                            //     shade:false,
-                            //     closeBtn:0,
-                            //     yes:function (n){
-                            //         layer.close(n);
-                            //     },
-                            // });
-        
-                            // that.ccd_config.attrmodifytime = info.attrmodifytime; //显示属性更新时间             
+                            var info = $.parseJSON(info);
 
-                            // if (info.file) that.ccd_file = info.file;
-                        }//解析 处理 json 结束
+                            //将排序后的gain_noise字段数据转为js对象后赋给that.gain_noise
+                            that.gain_noise = info;
+                        }
                      },/*success方法结束 */
                      error:  function () {
                           layer.alert('网络异常,请重新提交', {shade:0, closeBtn:0,});
                      }
-                })
-            },//
+                })//ajax结束
+            },//gain_noise_sort 结束
             gain_noise_sbmt:function () {//提交保存 增益-噪声值到ccdconf表中的gain_noise字段内
                 var that = this; //存储vue的实例
                 var msg = '';

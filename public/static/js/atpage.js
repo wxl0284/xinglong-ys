@@ -208,8 +208,9 @@
 				);
 				return final_gainMode;
 			}, /*ccd_gainMode 结束*/
-			readout_speed_Mode: function (){
-				var readout_speed_mode = this.ccd_config.readoutspeed.split('#');
+			readout_speed_Mode: function (){//处理 读出速度
+				return this.ccd_config.readoutspeed.split('#');
+				/*var readout_speed_mode = this.ccd_config.readoutspeed.split('#');
 				var final_readout_speed_mode = {
 					A: null, B: null, C:null
 				};
@@ -227,10 +228,11 @@
 						}
 					}
 				);
-				return final_readout_speed_mode;
+				return final_readout_speed_mode;*/
 			}, /*readout_speed_Mode 结束*/
-			transfer_speed_Mode: function (){
-				var transfer_speed_mode = this.ccd_config.transferspeed.split('#');
+			transfer_speed_Mode: function (){//处理 转移速度
+				return this.ccd_config.transferspeed.split('#');
+				/*var transfer_speed_mode = this.ccd_config.transferspeed.split('#');
 				var final_transfer_speed_mode = {
 					a: null, b: null };
 				transfer_speed_mode.filter(
@@ -244,7 +246,7 @@
 						}
 					}
 				);
-				return final_transfer_speed_mode;
+				return final_transfer_speed_mode;*/
 			}, /*transfer_speed_Mode 结束*/
 			shutter_Mode: function (){
 				var shutter_mode = this.ccd_config.shuttermode.split(', ');
@@ -264,9 +266,10 @@
 				);
 				return final_shutter_mode;
 			}, /*readout_speed_Mode 结束*/
-			/*filter_pos_list: function (){
-				return this.configData.filter.filtername.split('/');
-			}, filter_pos_list 结束*/
+			bin: function (){//处理ccd的bin
+				return this.ccd_config.binarray.split(' '); //以空格把binarray分割为数组:[4, 4]
+				
+			},//bin 结束
 		},/*computed 结束*/
 		methods: {
 			plan_click: function () {

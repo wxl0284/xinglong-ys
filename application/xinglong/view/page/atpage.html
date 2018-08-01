@@ -427,8 +427,8 @@
 				<span :class='{active: device_nav.ccd_command=="exposeParam"}' @click ='device_nav.ccd_command="exposeParam"' v-if='ccd_config.cansetexposureparam==1' >曝光策略</span>
 				<span :class='{active: device_nav.ccd_command=="start_expose"}' @click ='device_nav.ccd_command="start_expose"' v-if='ccd_config.canstartexposure==1' >开始曝光</span>
 				<span :class='{active: device_nav.ccd_command=="set_gain"}' @click ='device_nav.ccd_command="set_gain"' v-if='ccd_config.cansetgain==1' >设置增益</span>
-				<span :class='{active: device_nav.ccd_command=="readout_speed"}' @click ='device_nav.ccd_command="readout_speed"' v-if='ccd_config.cansetreadoutspeedmode==1'>读出速度模式</span>		
-				<span :class='{active: device_nav.ccd_command=="transfer_speed"}' @click ='device_nav.ccd_command="transfer_speed"' v-if='ccd_config.cansettransferspeedmode==1'>转移速度模式</span>
+				<span :class='{active: device_nav.ccd_command=="readout_speed"}' @click ='device_nav.ccd_command="readout_speed"' v-if='ccd_config.cansetreadoutspeedmode==1'>设置读出速度</span>		
+				<span :class='{active: device_nav.ccd_command=="transfer_speed"}' @click ='device_nav.ccd_command="transfer_speed"' v-if='ccd_config.cansettransferspeedmode==1'>设置转移速度</span>
 				<span :class='{active: device_nav.ccd_command=="set_bin"}' @click ='device_nav.ccd_command="set_bin"' v-if='ccd_config.cansetbin==1' >设置Bin</span>
 				<span :class='{active: device_nav.ccd_command=="set_roi"}' @click ='device_nav.ccd_command="set_roi"' v-if='ccd_config.cansetroi==1'>设置Roi</span>
 				<span :class='{active: device_nav.ccd_command=="set_shutter"}' @click ='device_nav.ccd_command="set_shutter"' v-if='ccd_config.cansetshutter==1'>设置快门</span>
@@ -552,30 +552,32 @@
 					<br><input type="button" class='margin_10' value="提交指令" @click='ccd_gain_sbmt' >
 				</form><!--设置增益 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "readout_speed"'><!--读出速度模式-->
-					读出速度模式：<select style="width:80px" v-model='ccd_form.readout_speed_form.readout_mode'>
+					读出速度（Mb/s）：<select style="width:80px" v-model='ccd_form.readout_speed_form.readout_mode'>
 						<option value="-1">请选择</option>
-						<option value="1" v-if='readout_speed_Mode.A'>A</option>
+						<option :value="k+1" v-for='(v, k) in readout_speed_Mode'>{{v}}</option>
+						<!--<option value="1" v-if='readout_speed_Mode.A'>A</option>
 						<option value="2" v-if='readout_speed_Mode.B'>B</option>
-						<option value="3" v-if='readout_speed_Mode.C'>C</option>
+						<option value="3" v-if='readout_speed_Mode.C'>C</option>-->
 					</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<input type="button" class='margin_10' value="提交指令" @click='readout_speed_sbmt' ><br>
 				</form><!--读出速度模式 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "transfer_speed"'><!--转移速度模式-->
-					转移速度模式：<select style="width:80px" v-model='ccd_form.transfer_speed_form.transfer_mode'>
+					转移速度（Mb/s）：<select style="width:80px" v-model='ccd_form.transfer_speed_form.transfer_mode'>
 						<option value="-1">请选择</option>
-						<option value="1" v-if='transfer_speed_Mode.a'>a</option>
-						<option value="2" v-if='transfer_speed_Mode.b'>b</option>
+						<option :value="k+1" v-for='(v, k) in transfer_speed_Mode'>{{v}}</option>
+						<!--<option value="1" v-if='transfer_speed_Mode.a'>a</option>
+						<option value="2" v-if='transfer_speed_Mode.b'>b</option>-->
 					</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<input type="button" class='margin_10' value="提交指令" @click='transfer_speed_sbmt' ><br>
 				</form><!--转移速度模式 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "set_bin"'><!--设置bin-->
 					BinX：<select style='width:60px;' v-model='ccd_form.set_bin_form.binX' >
 							<option value="-1">请选择</option>
-							<option :value="v" v-for="v in ccd_config.binarray*1" >{{v}}</option>
+							<option :value="v" v-for="v in bin[0]*1" >{{v}}</option>
 						</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					BinY：<select style='width:60px;' v-model='ccd_form.set_bin_form.binY' >
 							<option value="-1">请选择</option>
-							<option :value="v" v-for="v in ccd_config.binarray*1" >{{v}}</option>
+							<option :value="v" v-for="v in bin[1]*1" >{{v}}</option>
 						</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<input type="button" class='margin_10' value="提交指令" @click='set_bin_sbmt' ><br>
 				</form><!--设置bin 结束-->

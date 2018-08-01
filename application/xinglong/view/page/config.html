@@ -71,7 +71,7 @@
 				<table class="center_mrg">
 					<tr>
 						<td>转台ip:</td>
-						<td><input type='text' id='gimbalIp' name='ip' placeholder='ip地址' v-model.trim='gimbal_config.ip' ></td>
+						<td><input type='text' ref='gimbalIp' name='ip' placeholder='ip地址' v-model.trim='gimbal_config.ip' @blur='check_ip(true, gimbal_config.ip, $refs.gimbalIp)'></td>
 						<td>望远镜id:</td>
 						<td><input type='text' id='gimbalId' name='atid' readonly='readonly' v-model.trim='gimbal_config.atid' readonly='readonly'></td>
 						<td>望远镜名称:</td>
@@ -576,7 +576,7 @@
 						<td>
 							<label>是<input type='radio' id='ccdIsSupportFullFrame' name='issupportfullframe' value="1" v-model='ccd_config.issupportfullframe'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdIsSupportFullFrame-1' name='issupportfullframe' value="0" v-model='ccd_config.issupportfullframe'></label>	
+							<label>否<input type='radio' id='ccdIsSupportFullFrame-1' name='issupportfullframe' value="0" v-model='ccd_config.issupportfullframe' @click='ccd_config.cansetfullframe=0'></label>	
 						</td>
 					</tr>
 					<tr>
@@ -584,19 +584,19 @@
 						<td>
 							<label>是<input type='radio' id='ccdIsSupportEM' name='issupportem' value="1" v-model='ccd_config.issupportem'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdIsSupportEM-1' name='issupportem' value="0" v-model='ccd_config.issupportem'></label>
+							<label>否<input type='radio' id='ccdIsSupportEM-1' name='issupportem' value="0" v-model='ccd_config.issupportem' @click='ccd_config.cansetem=0'></label>
 						</td>
 						<td>支持CMOS noise filter:</td>
 						<td>
 							<label>是<input type='radio' id='ccdIsSupportsCmosNoiseFilter' name='issupportscmosnoisefilter' value="1" v-model='ccd_config.issupportscmosnoisefilter'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdIsSupportsCmosNoiseFilter-1' name='issupportscmosnoisefilter' value="0" v-model='ccd_config.issupportscmosnoisefilter'></label>
+							<label>否<input type='radio' id='ccdIsSupportsCmosNoiseFilter-1' name='issupportscmosnoisefilter' value="0" v-model='ccd_config.issupportscmosnoisefilter' @click='ccd_config.cannoisefilter=0'></label>
 						</td>
 						<td>支持base line:</td>
 						<td>
 							<label>是<input type='radio' id='ccdIsSupportBaseLine' name='issupportbaseline' value="1" v-model='ccd_config.issupportbaseline'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdIsSupportBaseLine-1' name='issupportbaseline' value="0" v-model='ccd_config.issupportbaseline'></label>
+							<label>否<input type='radio' id='ccdIsSupportBaseLine-1' name='issupportbaseline' value="0" v-model='ccd_config.issupportbaseline' @click='ccd_config.cansetbaseline=0'></label>
 						</td>
 					</tr>
 					<tr>
@@ -604,7 +604,7 @@
 						<td>
 							<label>是<input type='radio' id='ccdIsSupportOverScan' name='issupportoverscan' value="1" v-model='ccd_config.issupportoverscan'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdIsSupportOverScan-1' name='issupportoverscan' value="0" v-model='ccd_config.issupportoverscan'></label>
+							<label>否<input type='radio' id='ccdIsSupportOverScan-1' name='issupportoverscan' value="0" v-model='ccd_config.issupportoverscan' @click='ccd_config.cansetoverscan=0'></label>
 						</td>
 						<td>BIN:</td>
 						<td>
