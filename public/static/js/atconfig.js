@@ -388,7 +388,12 @@ $(function () {
                                     that.show_dev_form.show_gimbal = true; //显示gimbal配置表单
                                     if ( !info.gimbal_data.type ) info.gimbal_data.type = '0';
                                     
-                                    var gimbal_focus_conf = $.parseJSON(info.gimbal_data.focustype); //处理焦点类型-焦比-焦距
+                                    var gimbal_focus_conf = {focus:[],}; //初始化gimbal_focus_conf
+                                    if ( info.gimbal_data.focustype )
+                                    {
+                                        gimbal_focus_conf = $.parseJSON(info.gimbal_data.focustype); //处理焦点类型-焦比-焦距
+                                    }
+                                    
                               
                                     let focus_num = gimbal_focus_conf.focus.length;
                                     if ( focus_num > 0 ) //有焦点类型被选择
@@ -401,8 +406,12 @@ $(function () {
                                             that.gimbal_focus.postData[p[1]].focuslength = gimbal_focus_conf[p]['focusLeng'];
                                         }
                                     }//处理焦点类型-焦比-焦距 结束
-
-                                    that.gimbal_config = info.gimbal_data;
+                                 
+                                    //将转台配置数据赋值给gimbal_config,且避免将gimbal_config内原有的初始属性值给删了
+                                    for (let p in info.gimbal_data)
+                                    {
+                                        that.gimbal_config[p] = info.gimbal_data[p];                                
+                                    }
 
                                     if (info.gimbal_file)
                                     {
@@ -420,19 +429,14 @@ $(function () {
                                     if ( !info.ccd_data[0].coolermode ) info.ccd_data[0].coolermode = '0';
                                     if ( !info.ccd_data[0].gainnumber ) info.ccd_data[0].gainnumber = '0';
                                     if ( !info.ccd_data[0].shuttertype ) info.ccd_data[0].shuttertype = '0';
-                        
-                                    //接下来 初始化进行v-model数据绑定的 gain_noise.data 增益-读出噪声, 待修改
-                                    // that.r_spd = 3;
-                                    // that.r_spd = 3;
-                                    // that.gain_num = 3;
-                                    // that.gainMode = ['High Sensitivity', 'High Capacity'];
-                                    // for (let i = 0; i < 16; i++) {
-                                    //     that.gain_noise.data[i] = {gain:'', noise:''};
-                                    // }
-                                    //初始化进行v-model数据绑定的 gain_noise.data 增益-读出噪声, 待修改
 
-                                    that.ccd_config = info.ccd_data[0]; //将第一个ccd中的配置数据赋值给ccd_config
-                                    
+                                    //that.ccd_config = info.ccd_data[0]; //将第一个ccd中的配置数据赋值给ccd_config
+                                    //将ccd配置数据赋值给ccd_config,且避免将ccd_config内原有的初始属性值给删了
+                                    for (let p in info.ccd_data[0])
+                                    {
+                                        that.ccd_config[p] = info.ccd_data[0][p];                                
+                                    }
+
                                     that.gainMode = that.ccd_config.gainmode; //将增益模式赋给data.gainMode
                                     that.readoutspeed = that.ccd_config.readoutspeed; //将读出速度数组赋给data.readoutspeed
                                     if ( that.readoutspeed.length > 0 ) that.r_spd = that.readoutspeed.length; //显示读出速度input框
@@ -471,7 +475,12 @@ $(function () {
                                         }
                                     }//处理滤光片类型-滤光片名称-偏差值 结束
 
-                                    that.filter_config = info.filter_data;
+                                    //将filter配置数据赋值给filter_config,且避免将filter_config内原有的初始属性值给删了
+                                    for (let p in info.filter_data)
+                                    {
+                                        that.filter_config[p] = info.filter_data[p];                                
+                                    }
+                                    //that.filter_config = info.filter_data;
 
                                     if (info.filter_file)
                                     {
@@ -482,7 +491,13 @@ $(function () {
                                 if (info.focus_data) //在页面显示调焦器配置数据
                                 {
                                     that.show_dev_form.show_focus = true;  //将调焦器的选项勾选
-                                    that.focus_config = info.focus_data;
+                                    //将focus配置数据赋值给focus_config,且避免将focus_config内原有的初始属性值给删了
+                                    for (let p in info.focus_data)
+                                    {
+                                        that.focus_config[p] = info.focus_data[p];                                
+                                    }
+                                    //that.focus_config = info.focus_data;
+
                                     if (info.focus_file)
                                     {
                                         that.focus_file = info.focus_file;
@@ -494,7 +509,12 @@ $(function () {
                                     that.show_dev_form.show_sDome = true; //显示随动圆顶配置表单
                                     if ( !info.sDome_data.dometype ) info.sDome_data.dometype = '0';
 
-                                    that.sDome_config = info.sDome_data;
+                                    //that.sDome_config = info.sDome_data;
+                                    //将focus配置数据赋值给sDome_config,且避免将sDome_config内原有的初始属性值给删了
+                                    for (let p in info.sDome_data)
+                                    {
+                                       that.sDome_config[p] = info.sDome_data[p];                                
+                                    }
 
                                     if (info.sDome_file)
                                     {
@@ -507,7 +527,12 @@ $(function () {
                                     that.show_dev_form.show_oDome = true; //显示全开圆顶配置表单
                                     if ( !info.oDome_data.type ) info.oDome_data.type = '0';
 
-                                    that.oDome_config = info.oDome_data;
+                                    //that.oDome_config = info.oDome_data;
+                                    //将focus配置数据赋值给oDome_config,且避免将oDome_config内原有的初始属性值给删了
+                                    for (let p in info.oDome_data)
+                                    {
+                                       that.oDome_config[p] = info.oDome_data[p];                                
+                                    }
 
                                     if (info.oDome_file)
                                     {
@@ -533,7 +558,12 @@ $(function () {
                                         }
                                     }//处理焦点类型-焦距 结束
 
-                                    that.guide_config = info.guide_data;
+                                    //that.guide_config = info.guide_data;
+                                    //将focus配置数据赋值给oDome_config,且避免将oDome_config内原有的初始属性值给删了
+                                    for (let p in info.guide_data)
+                                    {
+                                        that.guide_config[p] = info.guide_data[p];                                
+                                    }
 
                                     if (info.guide_file)
                                     {
@@ -1196,7 +1226,7 @@ $(function () {
                 if ( this.ccd_config.imagebits == '0' )         msg += '图像位数未选择<br>';
                 if ( this.ccd_config.coolermode == '0' )        msg += '制冷方式未选择<br>';
                 if ( this.ccd_config.readoutmode.length < 1 )   msg += '读出模式未选择<br>';
-                if ( this.ccd_config.gainmode.length < 1 )      msg += '增益模式未选择<br>';
+                //if ( this.ccd_config.gainmode.length < 1 )      msg += '增益模式未选择<br>';
                 if ( this.ccd_config.shuttertype == '0' )       msg += '快门类型未选择<br>';
                 if ( this.ccd_config.shuttermode.length < 1)    msg += '快门模式未选择<br>';
                 if ( this.ccd_config.issupportfullframe === undefined ) msg += '支持帧转移未选择<br>';
@@ -1559,9 +1589,9 @@ $(function () {
                 if ( this.oDome_config.type === '0' ) msg += '全开圆顶类型未选择<br>';
                 msg += this.check_num(false, this.oDome_config.diameter, this.$refs.oDomeDiameter, 'oDome_D');
                 if ( this.oDome_config.canopendome === undefined ) msg += '支持打开圆顶未选择<br>';
-                if ( this.oDome_config.canconnect === undefined ) msg += '支持连接未选择';
                 msg += this.check_version(false, this.oDome_config.attrversion, this.$refs.odomeAttrversion, 5);
-
+                if ( this.oDome_config.canconnect === undefined ) msg += '支持连接未选择';
+                
                 if ( msg !== '')
                 {
                     layer.alert(msg, {shade:0, closeBtn:0}); return;
@@ -1843,72 +1873,4 @@ $(function () {
             },//focus_sbmt() 结束
         },//methods 结束
     });//vue 结束////////////////////
-    
-    /*ccd-No1 提交按钮 点击事件*/
-//     ccdBtn_1.click(function () {
-//         //检查望远镜下拉选择框 是否选择了某望远镜
-//         var atId = atNo.val();
-//         //检查是否选择了ccd的数量
-//         var ccd_Num = ccd_num.val();
-
-//         if ( atId == 0)
-//         {//未选择某个望远镜
-//             layer.alert('请选择您要配置的望远镜!', {shade:false, closeBtn:0});return;
-//         }
-
-//         if ( ccd_Num == 0)
-//         {//未选择ccd的数量
-//             layer.alert('请选择您ccd的数量!', {shade:false, closeBtn:0});return;
-//         }
-
-//         var ccd_1_Data = new FormData(ccd_1Form[0]);
-//         ccd_1_Data.append('teleid', atId); //将某望远镜的id 加入表单数据中
-//         ccd_1_Data.append('ccdno', '1'); //将此ccd的序号 加入表单数据中
-//         ccd_1_Data.append('ccd_num', ccd_Num); //将ccd的数量 加入表单数据中
-        
-//         //验证文本框类型、下拉框、复选框、单选框配置项 是否都已选择 
-//          if ( !ccd_select_valid (ccd_1_Data) )
-//          {
-//              return;
-//          }//验证文本框类型、下拉框、复选框、单选框配置项  是否都已选择 结束
-
-//         $.ajax({
-//             type: 'post',
-//             url: 'ccd_config',
-//             data : ccd_1_Data,
-//             processData : false,
-//             contentType : false,
-//             success:  function (info) {
-//                 if ( info.indexOf('{') == -1 ) //info 不是json数据
-//                 {
-//                     layer.alert(info, {
-//                         shade:false,
-//                         closeBtn:0,
-//                         yes:function (n){
-//                             layer.close(n);
-//                             if (info.indexOf('登录') !== -1)
-//                             {
-//                                 location.href = '/';
-//                             }
-//                         },
-//                     });
-//                 }else{//解析 处理 json
-//                     var info = $.parseJSON(info);
-//                     layer.alert(info.msg, {shade:false, closeBtn:0});
-//                     //console.log(info);return;
-//                     ccdAttrModifyTime.html(info.attrmodifytime); //显示属性更新时间
-//                     //在页面显示已上传的文件名
-//                     if ( info.file ) //有已上传的文件信息
-//                     {
-//                         show_file (ccdFile, info.file);
-//                     }else{
-//                         ccdFile.html('');
-//                     }
-//                 }//解析 处理 json 结束
-//              },
-//              error:  function () {
-// 	              layer.alert('网络异常,请重新提交', {shade:false, closeBtn:0});
-//              },
-//         })
-//     });/*ccd-No1 提交按钮 点击事件 结束*/
 })/*jquery 初始化函数 末尾*/

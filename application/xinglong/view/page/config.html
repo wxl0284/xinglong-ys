@@ -612,7 +612,7 @@
 								<option value="0">请选择</option>
 								<option :value="v" v-for='v in final_binArray'>{{v}}</option>
 							</select> -->
-							<input type='text' ref='bin' name='binarray' placeholder='1 2 4' v-model.trim='ccd_config.binarray' @blur='check_bin(true, ccd_config.binarray, $refs.bin)'>
+							<input type='text' ref='bin' name='binarray' placeholder='4 4' v-model.trim='ccd_config.binarray' @blur='check_bin(true, ccd_config.binarray, $refs.bin)'>
 						</td>
 						<td>支持开窗:</td>
 						<td>
@@ -911,7 +911,7 @@
 						<td>
 							<label>有<input type='radio' name='hasshade' value="1" v-model='sDome_config.hasshade'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>无<input type='radio' name='hasshade' value="0" v-model='sDome_config.hasshade'></label>
+							<label>无<input type='radio' name='hasshade' value="0" v-model='sDome_config.hasshade' @click='sDome_config.cansetshadeposition=0;sDome_config.cansetshadespeed=0;'></label>
 						</td>
 					</tr>
 					<tr>

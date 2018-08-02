@@ -73,7 +73,7 @@ class Page extends Base
         $atList = Db::table('atlist')->field('id, atname')->order('id asc')->select();
         if (!$atList)
         {//还未添加望远镜
-            $this->error('请先添加望远镜!');
+            $this->error('还未添加望远镜，3秒后自动跳转至添加望远镜页面!', 'xinglong/page/at_add');
         }
 
         $vars['atList'] = $atList;

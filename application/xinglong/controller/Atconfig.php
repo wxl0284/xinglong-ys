@@ -277,10 +277,20 @@ class Atconfig extends Base
        //根据提交上来的ccd数量（假如是1个ccd,则删除字段ccdno大于1的配置数据）
        //Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', '>', $postData['ccd_num'])->delete();
         
+        //判断ccd的id是否重复
+       if ( !isset($postData['ccdid']) || strlen($postData['ccdid']) === 0 )
+       {
+           return '提交的数据无id';
+       }
+
+       $dev_id_isSame = $this->devIdSame ($postData['ccdid']);
+       if ( $dev_id_isSame === true ) return 'ccd id重复或保存失败,请重新提交数据';
+       //判断ccd的id是否重复 结束
+
         $errMsg = '';  //定义错误提示
 
         $data = Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', $postData['ccdno'])->find();
-
+       
         if ( $data )
         {//已有配置数据 进行update
             $res = Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', $postData['ccdno'])->strict(false)->update($postData);
@@ -508,7 +518,17 @@ class Atconfig extends Base
         //     return '您无权执行此操作!';
         // }
 
-        $postData = input();
+       $postData = input();
+
+       //判断filter的id是否重复
+       if ( !isset($postData['filterid']) || strlen($postData['filterid']) === 0 )
+       {
+           return '提交的数据无id';
+       }
+
+       $dev_id_isSame = $this->devIdSame ($postData['filterid']);
+       if ( $dev_id_isSame === true ) return '滤光片id重复或保存失败,请重新提交数据';
+       //判断filter的id是否重复 结束
     
        $postData['attrmodifytime'] = date ('Y-m-d');   //属性更新时间
        //接下来处理 各插槽的 滤光片类型-名称-偏差值
@@ -633,6 +653,16 @@ class Atconfig extends Base
 
         $postData = input();
 
+        //判断随动圆顶的id是否重复
+       if ( !isset($postData['sdomeid']) || strlen($postData['sdomeid']) === 0 )
+       {
+           return '提交的数据无id';
+       }
+
+       $dev_id_isSame = $this->devIdSame ($postData['sdomeid']);
+       if ( $dev_id_isSame === true ) return '随动圆顶id重复或保存失败,请重新提交数据';
+       //判断随动圆顶的id是否重复 结束
+
        //属性更新时间
        $postData['attrmodifytime'] = date ('Y-m-d');
 
@@ -715,19 +745,17 @@ class Atconfig extends Base
         //     return '您无权执行此操作!';
         // }
 
-        //$postData = input('maxAxis3Speed');
-        //$file = request()->file('instruction');
-        //dump($postData);
-        //dump($file);
-        // $postData = input();
-
-        // if ( !isset($postData['maxAxis3Speed']) )
-        // {
-        //     $postData['maxAxis3Speed'] = null;
-        // }
-        // dump($postData['maxAxis3Speed']);
-
         $postData = input();
+
+        //判断全开圆顶的id是否重复
+       if ( !isset($postData['odomeid']) || strlen($postData['odomeid']) === 0 )
+       {
+           return '提交的数据无id';
+       }
+
+       $dev_id_isSame = $this->devIdSame ($postData['odomeid']);
+       if ( $dev_id_isSame === true ) return '全开圆顶id重复或保存失败,请重新提交数据';
+       //判断全开圆顶的id是否重复 结束
 
        //属性更新时间
        $postData['attrmodifytime'] = date ('Y-m-d');
@@ -811,19 +839,17 @@ class Atconfig extends Base
         //     return '您无权执行此操作!';
         // }
 
-        //$postData = input('maxAxis3Speed');
-        //$file = request()->file('instruction');
-        //dump($postData);
-        //dump($file);
-        // $postData = input();
-
-        // if ( !isset($postData['maxAxis3Speed']) )
-        // {
-        //     $postData['maxAxis3Speed'] = null;
-        // }
-        // dump($postData['maxAxis3Speed']);
-
         $postData = input();
+
+        //判断调焦器的id是否重复
+       if ( !isset($postData['focusid']) || strlen($postData['focusid']) === 0 )
+       {
+           return '提交的数据无id';
+       }
+
+       $dev_id_isSame = $this->devIdSame ($postData['focusid']);
+       if ( $dev_id_isSame === true ) return '调焦器id重复或保存失败,请重新提交数据';
+       //判断调焦器的id是否重复 结束
 
        //属性更新时间
        $postData['attrmodifytime'] = date ('Y-m-d');
@@ -908,7 +934,15 @@ class Atconfig extends Base
         // }
 
         $postData = input();
-        //halt($postData);
+        //判断导星望远镜的id是否重复
+        if ( !isset($postData['guidescopeid']) || strlen($postData['guidescopeid']) === 0 )
+        {
+            return '提交的数据无id';
+        }
+
+        $dev_id_isSame = $this->devIdSame ($postData['guidescopeid']);
+        if ( $dev_id_isSame === true ) return '导星镜id重复或保存失败,请重新提交数据';
+        //判断导星望远镜的id是否重复 结束
 
         //处理焦点类型--焦距
         $guide_focus_num = isset($postData['guide_focus']) ? count ($postData['guide_focus']) : 0; //被选择的
@@ -951,6 +985,7 @@ class Atconfig extends Base
         $dir = 'guideScope' . $postData['teleid']; //每个望远镜的每个设备建1个目录，如ccd1, focus2.....
         /*处理 说明文件*/
         $guideScopeFile = $this->request->file('specification'); //获取说明文件的上传数据
+       
         if ( $guideScopeFile !== null ) //有文件被上传
         {
             //将上传文件命名为: 说明文件
@@ -1111,4 +1146,25 @@ class Atconfig extends Base
                 return json_encode($a, JSON_FORCE_OBJECT);  break;
         }
     }//对ccd 增益-读出噪声值 页面表格相关字段进行排序，排序后返回json数据 结束
+
+    //判断各设备id是否重复
+    protected function devIdSame ($devId)
+    {
+        $ids = file_get_contents('devId.txt'); //获取devId.txt文件内的各设备id
+
+        if ( $ids === false ) return true; //打开文件失败，返回true
+
+        if ( strpos($ids, $devId) !== false ) //$devId在$ids内
+        {
+            return true;
+        }
+
+        $devId .= '#'; //子设备id连上'#'
+        $res = file_put_contents('devId.txt', $devId, FILE_APPEND | LOCK_EX); //写入文件
+
+        if ( $res === false ) //写入失败
+        {
+            return true;
+        }
+    }//判断各设备id是否重复 结束
 }

@@ -32,7 +32,7 @@ class Plan extends Base
 		
 		// 获取表单上传文件 
 		$file = request()->file('plan');
-	
+		//halt($file);
 		//上传文件验证
 		$result = $this->validate(
 				['file' => $file],
