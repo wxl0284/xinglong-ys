@@ -95,6 +95,8 @@ Route::post('oDome_config$', 'xinglong/atconfig/oDome_config');
 Route::post('focus_config$', 'xinglong/atconfig/focus_config');
 //ajax提交导星望远镜配置数据 路由
 Route::post('guideScope_config$', 'xinglong/atconfig/guideScope_config');
+//属性配置页面 下载说明文件 路由
+//Route::get('downloadfile/:filename', 'xinglong/atconfig/downLoadFlie');
 /*配置各望远镜固定属性 结束*/
 
 /*如下为望远镜配置的示例 路由*/

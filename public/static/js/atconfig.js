@@ -166,15 +166,59 @@ $(function () {
         },//watch 结束
         methods: {
             tt:function () {
-                $.ajax({
-                    url:'test',
-                    type: 'post',
-                    data: {},
-                    success: function (info) {
-                        console.log(info);
-                    },
-                })
+                
             },
+            downLoadFile:function (v, dev) {//各设备说明文件用ajax下载
+                var that = this; //存储vue的实例
+                var params = ''; //根据dev，组装url请求的参数:params
+
+                if ( dev === 'ccd' )
+                {
+                    params = 'fileName=' + v + '&dir=' + dev + this.show_dev_form.teleid + '_' + this.show_dev_form.ccd_no;
+                }else{
+                    params = 'fileName=' + v + '&dir=' + dev + this.show_dev_form.teleid;
+                }
+
+                var url = 'xinglong/atconfig/downLoadFlie?' + params;
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);    // 也可以使用POST方式，true表示异步
+                xhr.responseType = "blob";  // 返回类型blob
+                // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
+                xhr.onload = function () {// 请求完成
+                    if (this.status === 200)// 返回200
+                    {
+                        var blob = this.response;
+                        var reader = new FileReader();
+                        reader.readAsDataURL(blob);  // 转换为base64，可以直接放入a的href
+                        reader.onload = function (e) {
+                        that.$refs.down.download = v; //that.$refs.down 页面中一个a元素
+                        that.$refs.down.href = e.target.result;
+                        that.$refs.down.click();
+                        }
+                    }
+                };
+                xhr.send();  
+
+                /*var file = '说明书.docx';
+                var url = 'xinglong/atconfig/downLoadFlie?filename=' + file;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', url, true);    // 也可以使用POST方式，根据接口
+                xhr.responseType = "blob";  // 返回类型blob
+                // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
+                xhr.onload = function () {// 请求完成
+                  if (this.status === 200) {// 返回200
+                    var blob = this.response;
+                    var reader = new FileReader();
+                    reader.readAsDataURL(blob);  // 转换为base64，可以直接放入a的href
+                    reader.onload = function (e) {
+                      that.$refs.down.download = file; //that.$refs.down 页面中一个a元素
+                      that.$refs.down.href = e.target.result;
+                      that.$refs.down.click();
+                    }
+                  }
+                };
+                xhr.send();   // 发送ajax请求*/
+            },//downLoadFile 结束
             set_gain_noise: function (rows, m, r, t, g){//设置this.gain_noise对象
                 
                 //this.gain_noise = {}; //每次生成先将此对象置为空

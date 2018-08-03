@@ -387,8 +387,8 @@
 					</tr>
 					<tr>
 						<td>转台相关文件:</td>
-						<td id='gimbalFile' colspan="5" class="border_td">
-							<span v-for='v in gimbal_file'><a title="点击下载">{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						<td colspan="5" class="border_td">
+							<span v-for='v in gimbal_file'><a title="点击下载" @click='downLoadFile(v, "gimbal")'>{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 					</tr>
 				</table>
@@ -775,7 +775,7 @@
 					<tr>
 						<td>CCD-No{{show_dev_form.ccd_no}}相关文件:</td>
 						<td id='ccdFile' colspan="5" class="border_td">
-							<span v-for='v in ccd_file'><a title="点击下载">{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in ccd_file'><a title="点击下载" @click='downLoadFile(v, "ccd")'>{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 					</tr>
 				</table>
@@ -869,7 +869,7 @@
 						</td>
 						<td>滤光片相关文件:</td>
 						<td id='filterFile' colspan="2" class="border_td">
-							<span v-for='v in filter_file'><a title="点击下载">{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in filter_file'><a title="点击下载" @click='downLoadFile(v, "filter")'>{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 					</tr>
 				</table>
@@ -975,7 +975,7 @@
 						</td>
 						<td>随动圆顶相关文件:</td>
 						<td colspan="2" class="border_td" id='sDomeFile'>
-							<span v-for='v in sDome_file'><a title="点击下载">{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in sDome_file'><a title="点击下载" @click='downLoadFile(v, "sDome")'>{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 					</tr>
 				</table>
@@ -1037,7 +1037,7 @@
 					<tr>
 						<td>全开圆顶相关文件:</td>
 						<td class="border_td">
-							<span v-for='v in oDome_file'><a title="点击下载">{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in oDome_file'><a title="点击下载" @click='downLoadFile(v, "oDome")'>{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 					</tr>
 				</table>
@@ -1144,7 +1144,7 @@
 						</td>
 						<td>调焦器相关文件:</td>
 						<td colspan="2" class="border_td">
-							<span v-for='v in focus_file'><a title="点击下载">{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in focus_file'><a title="点击下载" @click='downLoadFile(v, "focus")'>{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 					</tr>
 				</table>
@@ -1239,13 +1239,14 @@
 						</td>
 						<td>导星望远镜相关文件:</td>
 						<td colspan="2" class="border_td">
-							<span v-for='v in guide_file'><a title="点击下载">{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in guide_file'><a title="点击下载" @click='downLoadFile(v, "guide")'>{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 					</tr>
 				</table>
 				<input id='guideScopeBtn' type='button' value="提交导星望远镜配置" @click='guide_sbmt'>
 			</form><!--导星望远镜固定属性配置项 结束-->
 		</div><!-- 所有配置项 结束 -->
+		<a ref='down'></a><!-- 用于下载各设备文件 -->
 	</div><!-- id='all' 结束 --><br><br>
 	<footer class='center clear'>
 		<span>中科院国家天文台兴隆观测基地</span>
