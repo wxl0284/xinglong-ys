@@ -17,11 +17,12 @@ class Base extends Controller
         //查询望远镜列表，并进行模板赋值
         $this->get_atList();
 
+        //$route = $this->request->routeInfo()['route'];
 
-
-        //$this->request->routeInfo()['route']; //获取路由
-        // echo $this->request->controller();
-        // echo $this->request->action();
+    //    $m = $this->request->module(); //模块
+    //    $c = $this->request->controller();  //控制器
+    //    $a = $this->request->action(); //方法
+    //    halt($m . '/' . $c . '/' . $a);
         //$this->success('新增成功', 'At60/index');
         //$this->redirect('At80/index');
         // $aa = $this->request->isAjax();

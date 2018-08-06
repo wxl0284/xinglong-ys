@@ -257,6 +257,7 @@ function GetJD ()
 	$usec = (float)$usec;  //微秒数(单位：秒)
 	
 	$h = $hms[0] + $hms[1]/60 + ($hms[1] + $usec)/3600;
+
 	$h = floatval ($h);
 	$ymd = ymd();
 	

@@ -11,6 +11,8 @@ class Page extends Base
     //根据at参数显示不同望远镜页面
     public function at_page($at)
     {
+        // $url = $this->request->path();
+        // halt($url);
         //根据$at获取相应望远镜的固定属性配置数据
         $config_data = $this->get_conf ($at);
         

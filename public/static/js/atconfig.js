@@ -172,14 +172,23 @@ $(function () {
                 var that = this; //存储vue的实例
                 var params = ''; //根据dev，组装url请求的参数:params
 
-                if ( dev === 'ccd' )
-                {
-                    params = 'fileName=' + v + '&dir=' + dev + this.show_dev_form.teleid + '_' + this.show_dev_form.ccd_no;
-                }else{
-                    params = 'fileName=' + v + '&dir=' + dev + this.show_dev_form.teleid;
+                /* if ( dev === 'ccd' )
+                 {
+                     params = 'fileName=' + v + '&dir=' + dev + this.show_dev_form.teleid + '_' + this.show_dev_form.ccd_no;
+                 }else{
+                     params = 'fileName=' + v + '&dir=' + dev + this.show_dev_form.teleid;
                 }
 
-                var url = 'xinglong/atconfig/downLoadFlie?' + params;
+                var url = 'xinglong/atconfig/downLoadFlie?' + params;*/
+
+                 if ( dev === 'ccd' )
+                {
+                    params = dev + this.show_dev_form.teleid + '_' + this.show_dev_form.ccd_no + '/' + v;
+                }else{
+                    params = dev + this.show_dev_form.teleid + '/' + v;
+                }
+
+                var url = '/download/' + params;
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', url, true);    // 也可以使用POST方式，true表示异步
                 xhr.responseType = "blob";  // 返回类型blob
@@ -191,14 +200,13 @@ $(function () {
                         var reader = new FileReader();
                         reader.readAsDataURL(blob);  // 转换为base64，可以直接放入a的href
                         reader.onload = function (e) {
-                        that.$refs.down.download = v; //that.$refs.down 页面中一个a元素
-                        that.$refs.down.href = e.target.result;
-                        that.$refs.down.click();
+                            that.$refs.down.download = v; //that.$refs.down 页面中一个a元素
+                            that.$refs.down.href = e.target.result;
+                            that.$refs.down.click();
                         }
                     }
                 };
                 xhr.send();  
-
                 /*var file = '说明书.docx';
                 var url = 'xinglong/atconfig/downLoadFlie?filename=' + file;
                 var xhr = new XMLHttpRequest();
