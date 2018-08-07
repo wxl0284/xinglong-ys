@@ -1053,17 +1053,22 @@ class Atconfig extends Base
 
      //各设备文件下载 ，此方法用路由请求
      public function downLoadFlie ($dir, $filename)
-     {       
-         header("Content-type:application/octet-stream"); //设置内容类型
-         //$fileName = $params['fileName'];
-         $file = $this->file_path  . DS . $dir . DS . $filename;
-         $file = iconv('UTF-8', 'GBK', $file); //将整个路径转为GBK字符集
-         header("Content-Disposition:attachment;filename = ". $filename); //下载弹框的默认文件名
-         header('Content-Transfer-Encoding: binary'); //设置传输方式
+     {  
+        //判断ajax 请求时 是否有权限
+        // if ($this->ajaxAuthErr == 1)
+        // {
+        //     return '您无权执行此操作!';
+        // }
+     
+        header("Content-type:application/octet-stream"); //设置内容类型
+        $file = $this->file_path  . DS . $dir . DS . $filename;
+        $file = iconv('UTF-8', 'GBK', $file); //将整个路径转为GBK字符集
+        header("Content-Disposition:attachment;filename = ". $filename); //下载弹框的默认文件名
+        header('Content-Transfer-Encoding: binary'); //设置传输方式
         //header("Accept-ranges:bytes");
-         header("Content-length:".filesize($file)); //获取文件字节数
-         //header("Accept-length:".filesize($file));
-         readfile($file);
+        header("Content-length:".filesize($file)); //获取文件字节数
+        //header("Accept-length:".filesize($file));
+        readfile($file);
      }//各设备文件下载 结束
 
     //对ccd 增益-读出噪声值 页面表格相关字段进行排序，排序后返回json数据

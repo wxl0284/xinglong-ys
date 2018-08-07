@@ -197,16 +197,25 @@ $(function () {
                     if (this.status === 200)// 返回200
                     {
                         var blob = this.response;
+
+                        if ( blob.size < 30 ) //服务器返回的是错误提示，而不是文件的二进制数据
+                        {
+                            layer.alert('您无权限下载!', {shade:0, closeBtn:0});return;
+                        }
+
                         var reader = new FileReader();
                         reader.readAsDataURL(blob);  // 转换为base64，可以直接放入a的href
                         reader.onload = function (e) {
+                            console.log(e.target);return;
                             that.$refs.down.download = v; //that.$refs.down 页面中一个a元素
                             that.$refs.down.href = e.target.result;
                             that.$refs.down.click();
                         }
+                    }else if (this.status >= 400) {
+                        layer.alert('网络异常!', {shade:0, closeBtn:0});
                     }
                 };
-                xhr.send();  
+                xhr.send();  //发送请求
                 /*var file = '说明书.docx';
                 var url = 'xinglong/atconfig/downLoadFlie?filename=' + file;
                 var xhr = new XMLHttpRequest();
