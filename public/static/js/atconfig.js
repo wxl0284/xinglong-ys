@@ -206,7 +206,6 @@ $(function () {
                         var reader = new FileReader();
                         reader.readAsDataURL(blob);  // 转换为base64，可以直接放入a的href
                         reader.onload = function (e) {
-                            console.log(e.target);return;
                             that.$refs.down.download = v; //that.$refs.down 页面中一个a元素
                             that.$refs.down.href = e.target.result;
                             that.$refs.down.click();

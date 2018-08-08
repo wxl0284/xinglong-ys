@@ -1033,24 +1033,6 @@ class Atconfig extends Base
         }
     }/*获取导星望远镜配置项表单 存入表guideconf中 结束*/
 
-    //各设备文件下载
-   /* public function downLoadFlie ()  //原来此方法未设置路由进行请求时
-    {
-
-        $params = input (); //获取请求参数
-       
-        header("Content-type:application/octet-stream"); //设置内容类型
-        $fileName = $params['fileName'];
-        $file = $this->file_path  . DS . $params['dir'] . DS . $params['fileName'];
-        $file = iconv('UTF-8', 'GBK', $file); //将整个路径转为GBK字符集
-        header("Content-Disposition:attachment;filename = ". $fileName); //下载弹框的默认文件名
-        header('Content-Transfer-Encoding: binary'); //设置传输方式
-       //header("Accept-ranges:bytes");
-        header("Content-length:".filesize($file)); //获取文件字节数
-        //header("Accept-length:".filesize($file));
-        readfile($file);
-    }//各设备文件下载 结束*/
-
      //各设备文件下载 ，此方法用路由请求
      public function downLoadFlie ($dir, $filename)
      {  
