@@ -166,7 +166,9 @@ $(function () {
         },//watch 结束
         methods: {
             tt:function () {
-                
+                // var temp = this.gain_noise[1];
+                // this.gain_noise[1] = this.gain_noise[3];
+                // this.gain_noise[3] = temp;;
             },
             downLoadFile:function (v, dev) {//各设备说明文件用ajax下载
                 var that = this; //存储vue的实例
@@ -244,7 +246,7 @@ $(function () {
                     //每行都是一个对象
                     if ( !this.gain_noise[i] )
                     {
-                        this.gain_noise[i] = {gainMode:'', readOut_speed:'', transfer_speed:'', gain_gear:'', gainVal:'', noiseVal:''};
+                        this.gain_noise[i] = {gainMode:'', readOut_speed:'', transfer_speed:'', gain_gear:'', gainVal:0, noiseVal:0};
                     }
 
                     switch (m) 
@@ -1118,7 +1120,7 @@ $(function () {
 				}
 				return msg !== '' ? msg + '<br>' : '';
             },//check_emV() 结束
-            gain_noise_sort:function (dev, order) {//ajax请求ccd增益、噪声值显示表格的各字段排序
+            gain_noise_sort:function (dev, order) {//ajax请求ccd增益、噪声值显示表格的各字段排序,通过php对数据排序，暂被gain_noise_sort1()替代
                 var that = this; //存储vue的实例
 
                 $.ajax({
@@ -1156,6 +1158,95 @@ $(function () {
                      }
                 })//ajax结束
             },//gain_noise_sort 结束
+            gain_noise_sort1:function (v, order){//对ccd增益-噪声值各字段排序
+                //首先看表格中行数是否大于2，小于2则不用排序
+                if ( this.rows < 3 )
+                {
+                    layer.alert('无须排序或缺少数据', {shade:0,closeBtn:0}); return;
+                }
+                //开始冒泡排序
+                switch (v)
+                {
+                    case 'readOut_speed': //对读出速度排序
+                        if ( order === 'asc' ) //升序
+                        {
+                            this.sort_field (this.rows, 'readOut_speed', 'asc');
+                        }else if ( order === 'desc' ) //降序
+                        {
+                            this.sort_field (this.rows, 'readOut_speed', 'desc');
+                        }
+                        break;
+                    case 'transfer_speed': //对读出速度排序
+                        if ( order === 'asc' ) //升序
+                        {
+                            this.sort_field (this.rows, 'transfer_speed', 'asc');
+                        }else if ( order === 'desc' ) //降序
+                        {
+                            this.sort_field (this.rows, 'transfer_speed', 'desc');
+                        }
+                        break;
+                    case 'gain_gear': //对读出速度排序
+                        if ( order === 'asc' ) //升序
+                        {
+                            this.sort_field (this.rows, 'gain_gear', 'asc');
+                        }else if ( order === 'desc' ) //降序
+                        {
+                            this.sort_field (this.rows, 'gain_gear', 'desc');
+                        }
+                        break;
+                    case 'gainVal': //对读出速度排序
+                        if ( order === 'asc' ) //升序
+                        {
+                            this.sort_field (this.rows, 'gainVal', 'asc');
+                        }else if ( order === 'desc' ) //降序
+                        {
+                            this.sort_field (this.rows, 'gainVal', 'desc');
+                        }
+                        break;
+                    case 'noiseVal': //对读出速度排序
+                        if ( order === 'asc' ) //升序
+                        {
+                            this.sort_field (this.rows, 'noiseVal', 'asc');
+                        }else if ( order === 'desc' ) //降序
+                        {
+                            this.sort_field (this.rows, 'noiseVal', 'desc');
+                        }
+                        break;
+                }
+                
+            },//gain_noise_sort1() 结束
+            sort_field:function (rows, v, order){//对增益-噪声值的某列进行排序
+                var temp;
+                if ( order === 'asc' ) //升序
+                {
+                    for (let i = 1; i < rows; i++)
+                    {
+                        for (let j = 1; j <= rows-i; j++)
+                        {
+                            if ( this.gain_noise[j][v] > this.gain_noise[j+1][v] )
+                            {
+                                temp = this.gain_noise[j];
+                                this.gain_noise[j] = this.gain_noise[j+1];
+                                this.gain_noise[j+1] = temp;
+                            }
+                        }                    
+                    }
+                }else if (  order === 'desc') //降序
+                {
+                    for (let i = 1; i < rows; i++)
+                    {
+                        for (let j = 1; j <= rows-i; j++)
+                        {
+                            if ( this.gain_noise[j][v] < this.gain_noise[j+1][v] )
+                            {
+                                temp = this.gain_noise[j];
+                                this.gain_noise[j] = this.gain_noise[j+1];
+                                this.gain_noise[j+1] = temp;
+                            }
+                        }                    
+                    }
+                }
+            },//sort_field 结束
             gain_noise_sbmt:function () {//提交保存 增益-噪声值到ccdconf表中的gain_noise字段内
                 var that = this; //存储vue的实例
                 var msg = '';

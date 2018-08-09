@@ -492,7 +492,7 @@
 						<td>读出速度（MHz）:&nbsp;<input type='button' value='增加' style='width:20%;font-size:1em;font-weight:normal;' @click='r_spd++;'></td>
 						<td  colspan="5" class='border_td'>
 							<span  v-for='v in r_spd'>
-								{{v}}:<input type='text' style='width:4.5%'  :ref="'readSpd'+v" name='readoutspeed[]' v-model.trim='readoutspeed[v-1]' @blur='check_readOut(true, v, 1)'>
+								{{v}}:<input type='text' style='width:4.5%'  :ref="'readSpd'+v" name='readoutspeed[]' v-model.number.trim='readoutspeed[v-1]' @blur='check_readOut(true, v, 1)'>
 								<span v-if='r_spd>=1'>&nbsp;<input type='button' style='width:4.5%;font-size:1em;font-weight:normal;' value='删除' @click='delete_readOutSpeed(v)'></span>
 							</span>
 							<span  v-if='r_spd==0'>无此配置</span>
@@ -502,7 +502,7 @@
 						<td>转移速度（MHz）:&nbsp;<input type='button' style='width:20%;font-size:1em;font-weight:normal;' value='增加' @click='t_spd++;'></td>
 						<td colspan="5" class='border_td'>
 							<span  v-for='v in t_spd'>
-								{{v}}:<input type='text' :ref="'transSpd'+v" style='width:4.5%' name='transferspeed[]' v-model.trim='transferspeed[v-1]' @blur='check_readOut(true, v, 2)'>
+								{{v}}:<input type='text' :ref="'transSpd'+v" style='width:4.5%' name='transferspeed[]' v-model.number.trim='transferspeed[v-1]' @blur='check_readOut(true, v, 2)'>
 								<span v-if='t_spd>=1'>&nbsp;<input type='button' style='width:4.5%;font-size:1em;font-weight:normal;' value='删除' @click='delete_transferSpeed(v)'></span>
 							</span>
 							<span  v-if='t_spd==0'>无此配置</span>
@@ -524,24 +524,24 @@
 								<tr>
 									<td>序号</td> <td v-if='gainMode.length>0'>增益模式</td>
 									<td v-if='r_spd>0' class="pos_r">读出速度
-										<img class='pos_a' src="/static/images-1/up.png" style='top:15%;left:68%;' @click='gain_noise_sort("readOut", "asc")'>
-										<img class='pos_a' src="/static/images-1/down.png" style='top:-38%;left:82%;' @click='gain_noise_sort("readOut", "desc")'>
+										<img class='pos_a' src="/static/images-1/up.png" style='top:15%;left:68%;' @click='gain_noise_sort1("readOut_speed", "asc")'>
+										<img class='pos_a' src="/static/images-1/down.png" style='top:-38%;left:82%;' @click='gain_noise_sort1("readOut_speed", "desc")'>
 									</td>
 									<td v-if='t_spd>0' class="pos_r">转移速度
-										<img class='pos_a' src="/static/images-1/up.png" style='top:15%;left:68%;' @click='gain_noise_sort("transfer", "asc")'>
-										<img class='pos_a' src="/static/images-1/down.png" style='top:-38%;left:82%;' @click='gain_noise_sort("transfer", "desc")'>
+										<img class='pos_a' src="/static/images-1/up.png" style='top:15%;left:68%;' @click='gain_noise_sort1("transfer_speed", "asc")'>
+										<img class='pos_a' src="/static/images-1/down.png" style='top:-38%;left:82%;' @click='gain_noise_sort1("transfer_speed", "desc")'>
 									</td>
 									<td v-if='gain_num>0' class="pos_r">增益档位
-										<img class='pos_a' src="/static/images-1/up.png" style='top:15%;left:68%;' @click='gain_noise_sort("gear", "asc")'>
-										<img class='pos_a' src="/static/images-1/down.png" style='top:-38%;left:82%;' @click='gain_noise_sort("gear", "desc")'>
+										<img class='pos_a' src="/static/images-1/up.png" style='top:15%;left:68%;' @click='gain_noise_sort1("gain_gear", "asc")'>
+										<img class='pos_a' src="/static/images-1/down.png" style='top:-38%;left:82%;' @click='gain_noise_sort1("gain_gear", "desc")'>
 									</td>
 									<td class="pos_r">增益值
-										<img class='pos_a' src="/static/images-1/up.png" style='top:15%;left:68%;' @click='gain_noise_sort("gain", "asc")'>
-										<img class='pos_a' src="/static/images-1/down.png" style='top:-38%;left:82%;' @click='gain_noise_sort("gain", "desc")'>
+										<img class='pos_a' src="/static/images-1/up.png" style='top:15%;left:68%;' @click='gain_noise_sort1("gainVal", "asc")'>
+										<img class='pos_a' src="/static/images-1/down.png" style='top:-38%;left:82%;' @click='gain_noise_sort1("gainVal", "desc")'>
 									</td>
 									<td @click='tt' class="pos_r">读出噪声值
-										<img class='pos_a' src="/static/images-1/up.png" style='top:15%;left:68%;' @click='gain_noise_sort("noise", "asc")'>
-										<img class='pos_a' src="/static/images-1/down.png" style='top:-38%;left:82%;' @click='gain_noise_sort("noise", "desc")'>
+										<img class='pos_a' src="/static/images-1/up.png" style='top:15%;left:68%;' @click='gain_noise_sort1("noiseVal", "asc")'>
+										<img class='pos_a' src="/static/images-1/down.png" style='top:-38%;left:82%;' @click='gain_noise_sort1("noiseVal", "desc")'>
 									</td>
 								</tr>
 								<tr v-for='(v, k) in gain_noise' :class='{ccd_table_tr: k%2==0}'>

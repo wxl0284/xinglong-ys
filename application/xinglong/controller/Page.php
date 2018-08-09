@@ -973,9 +973,7 @@ class Page extends Base
         //halt($atData);
         //查转台配置数据
         $gimbal = Db::table('gimbalconf')->where('teleid', $at)->find();
-        $gimbal['longitude'] = $atData['longitude']; //经度
-        $gimbal['latitude'] = $atData['latitude']; //纬度
-        $gimbal['aperture'] = $atData['aperture']; //口径
+        
         if ( $gimbal )
         {
             //处理焦点类型-焦比-焦距
@@ -993,6 +991,10 @@ class Page extends Base
             $gimbal['focusratio'] = implode (', ', $gimbal['focusratio']);
             $gimbal['focuslength'] = implode (', ', $gimbal['focuslength']);
             //处理焦点类型-焦比-焦距 结束
+            $gimbal['longitude'] = $atData['longitude']; //经度
+            $gimbal['latitude'] = $atData['latitude']; //纬度
+            $gimbal['aperture'] = $atData['aperture']; //口径
+            
             $result['gimbal'] = $gimbal;
             $result['has_gimbal'] = 1; //表示有转台的配置数据 
         }
