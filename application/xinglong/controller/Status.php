@@ -76,7 +76,12 @@ class Status extends Base
         $gimbal_table = 'at' . $at . 'gimbalstatus';   //at 转台状态表
         $gimbalStatus = Db::table($gimbal_table)->order('id desc')->find();
 		
-		$status['UTC'] = date('Y-m-d H:i:s', $gimbalStatus['sec']);
+		if ( !$gimbalStatus['sec'] )
+		{
+			$status['UTC'] = '未获取到';
+		}else{
+			$status['UTC'] = date('Y-m-d H:i:s', $gimbalStatus['sec']);
+		}
         //60cm望远镜 当前状态信息/////////////////////////////
         switch ($gimbalStatus['curstatus'])
         {

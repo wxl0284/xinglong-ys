@@ -182,7 +182,7 @@
 						}
 						
 						table.datagrid({
-								data: arr,
+							data: arr,
 						});
 						
 						editRow = undefined; //否则 导入后无法插入新行
@@ -311,6 +311,7 @@
 		
 		editRow = undefined;  //将editRow 置为初始的undefined
 		planErr = 0;	//将提交计划的错误标识改为0
+		table.datagrid('enableDnd'); //编辑保存后启用拖放
 	}
 
 	//datagrid 属性////////////////////////////////////////
@@ -350,9 +351,8 @@
 	{filterId:'R',name:'R'},
 	{filterId:'I',name:'I'},
 	];*/
-	
+
 	$(function(){
-		//var table_w = ( $(window).width() ) * 0.889546;
 		var table_w = ( $('#planInfo').width() ) * 1;
 		table.datagrid({
 			width: table_w,
@@ -363,15 +363,27 @@
 			singleSelect:false,
 			striped: true,
 			rownumbers:true,
+			dropAccept:'tr.datagrid-row', //哪些行允许被拖拽
+			dragSelection: true, //拖拽所有选中的行，false只能拖拽单行
+			//在双击一个单元格的时候开始编辑并生成编辑器，然后定位到编辑器的输入框上
+			onDblClickCell: function(index,field,value){
+				if (editRow == undefined && field != 'id') {
+					table.datagrid('beginEdit', index); //对点击行 进行编辑
+					var ed = table.datagrid('getEditor', {index:index,field:field});
+					$(ed.target).focus();
+					editRow = index;
+				}
+			},
+			onBeforeDrag: function(row){//解决拖放于编辑的冲突问题
+				console.log(editRow);
+		　　　　if(editRow !== undefined) return false; //如果处于编辑状态 拒绝拖动
+			},
+			onLoadSuccess: function(){//上传计划数据后启用拖放
+				table.datagrid('enableDnd'); //启用拖放
+			},
 			/*idField: 'id',
 			fitColumns:false,
-			dropAccept:'tbody tr',
-			singleSelect:true,
-			dragSelection: true,
-			onLoadSuccess: function(){
-				$(this).datagrid('enableDnd'); //启用拖放
-			},*/
-
+			,*/
 			columns:[[
 			{field:'id', title:'id', checkbox:true, rowspan:2},
 			{field:'target',  title:'目标名称', width:table_w*0.118666667,rowspan:2,
@@ -547,15 +559,6 @@
 				},
 			},
 		]],
-		//在双击一个单元格的时候开始编辑并生成编辑器，然后定位到编辑器的输入框上
-		onDblClickCell: function(index,field,value){
-			if (editRow == undefined && field != 'id') {
-				table.datagrid('beginEdit', index); //对点击行 进行编辑
-				var ed = table.datagrid('getEditor', {index:index,field:field});
-				$(ed.target).focus();
-				editRow = index;
-			}	
-		},
 	});/*table.datagrid() 结束*/
 }) //jquery 结束编辑
 	//自定义的函数

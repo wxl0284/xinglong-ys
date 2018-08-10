@@ -308,7 +308,7 @@ class Plan extends Base
 			}
 
 			//验证 滤光片
-			$filter = strtoupper ($postData['planData'][$i]['filter']);
+			$filter = $postData['planData'][$i]['filter'];
 	
 			//if ( !preg_match('/^[0-9]$/', $filter) && !in_array($filter, $filter_option) )
 			if ( !in_array($filter, $filter_option) )

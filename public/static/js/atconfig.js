@@ -17,6 +17,7 @@ $(function () {
     var vm = new Vue ({ //vue 开始
         el: '#all',
         data: {
+            update_gain_noise:0,
             rows:1, //ccd 增益值及读出噪声值输入表格的行数
             r_spd:0, //ccd 读出速度的数目
             readoutspeed:[], //ccd 读出速度
@@ -174,16 +175,7 @@ $(function () {
                 var that = this; //存储vue的实例
                 var params = ''; //根据dev，组装url请求的参数:params
 
-                /* if ( dev === 'ccd' )
-                 {
-                     params = 'fileName=' + v + '&dir=' + dev + this.show_dev_form.teleid + '_' + this.show_dev_form.ccd_no;
-                 }else{
-                     params = 'fileName=' + v + '&dir=' + dev + this.show_dev_form.teleid;
-                }
-
-                var url = 'xinglong/atconfig/downLoadFlie?' + params;*/
-
-                 if ( dev === 'ccd' )
+                if ( dev === 'ccd' )
                 {
                     params = dev + this.show_dev_form.teleid + '_' + this.show_dev_form.ccd_no + '/' + v;
                 }else{
@@ -1176,7 +1168,7 @@ $(function () {
                             this.sort_field (this.rows, 'readOut_speed', 'desc');
                         }
                         break;
-                    case 'transfer_speed': //对读出速度排序
+                    case 'transfer_speed': //对转移速度排序
                         if ( order === 'asc' ) //升序
                         {
                             this.sort_field (this.rows, 'transfer_speed', 'asc');
@@ -1185,7 +1177,7 @@ $(function () {
                             this.sort_field (this.rows, 'transfer_speed', 'desc');
                         }
                         break;
-                    case 'gain_gear': //对读出速度排序
+                    case 'gain_gear': //对增益挡位排序
                         if ( order === 'asc' ) //升序
                         {
                             this.sort_field (this.rows, 'gain_gear', 'asc');
@@ -1194,7 +1186,7 @@ $(function () {
                             this.sort_field (this.rows, 'gain_gear', 'desc');
                         }
                         break;
-                    case 'gainVal': //对读出速度排序
+                    case 'gainVal': //对增益值排序
                         if ( order === 'asc' ) //升序
                         {
                             this.sort_field (this.rows, 'gainVal', 'asc');
@@ -1203,7 +1195,7 @@ $(function () {
                             this.sort_field (this.rows, 'gainVal', 'desc');
                         }
                         break;
-                    case 'noiseVal': //对读出速度排序
+                    case 'noiseVal': //对噪声值排序
                         if ( order === 'asc' ) //升序
                         {
                             this.sort_field (this.rows, 'noiseVal', 'asc');
@@ -1213,7 +1205,6 @@ $(function () {
                         }
                         break;
                 }
-                
             },//gain_noise_sort1() 结束
             sort_field:function (rows, v, order){//对增益-噪声值的某列进行排序
                 var temp;
@@ -1231,6 +1222,7 @@ $(function () {
                             }
                         }                    
                     }
+                    this.update_gain_noise++; //跟新vue的一个数据,跟新vue的一个数据,此数据绑定到页面最后a元素的id,作用是更新页面
                 }else if (  order === 'desc') //降序
                 {
                     for (let i = 1; i < rows; i++)
@@ -1245,6 +1237,7 @@ $(function () {
                             }
                         }                    
                     }
+                    this.update_gain_noise++; //跟新vue的一个数据,此数据绑定到页面最后a元素的id,作用是更新页面
                 }
             },//sort_field 结束
             gain_noise_sbmt:function () {//提交保存 增益-噪声值到ccdconf表中的gain_noise字段内
