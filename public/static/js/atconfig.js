@@ -192,9 +192,11 @@ $(function () {
                     {
                         var blob = this.response;
 
-                        if ( blob.size < 30 ) //服务器返回的是错误提示，而不是文件的二进制数据
+                        if ( blob.size < 30 && blob.size > 1 ) //服务器返回的是错误提示，而不是文件的二进制数据
                         {
                             layer.alert('您无权限下载!', {shade:0, closeBtn:0});return;
+                        }else if ( blob.size == 1 ){
+                            layer.alert('下载的文件不存在!', {shade:0, closeBtn:0});return;
                         }
 
                         var reader = new FileReader();

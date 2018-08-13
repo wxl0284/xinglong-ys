@@ -137,7 +137,7 @@
 	//赤纬 的js事件//////////////////////////////////
 //观测计划的赤经和赤纬 js事件//////////////////////////////
 	var table = $('#dg'); //定义全局table 变量
-	var editRow = undefined;  //全局开关, 编辑
+	var editRow = undefined;  //全局开关, 编辑的行
 	var planForm = $('#imptPlan');
 	
 //导入计划文件 上传////////////////////////////////////////////
@@ -195,66 +195,7 @@
 	            },
 			});
 		});
-	}
-	
-	//添加计划 /////////////////////////////////
-	/*function addPlan ()
-	{
-		if (editRow == undefined)
-		{
-			var plans = table.datagrid('getRows');
-			var n = plans.length;
-			table.datagrid('insertRow', {
-			index:n,
-			row:{},
-			});
-			//将第一行设为 可编辑
-			table.datagrid('beginEdit', n);
-			editRow = n;
-		}
-		
-	}
-	
-	//编辑计划 /////////////////////////////////
-	function editPlan ()
-	{
-		var rows = table.datagrid('getSelections');
-		if(rows.length == 1)
-		{
-			if(editRow != undefined)
-			{
-				table.datagrid('endEdit', editRow);
-				editRow = undefined;
-				table.datagrid('unselectRow', index);
-			}
-			
-			if(editRow == undefined)
-			{
-				//获取当前选中的行索引
-				var index = table.datagrid('getRowIndex', rows[0]);
-				table.datagrid('beginEdit', index);
-				table.datagrid('unselectRow', index);
-				editRow = index;
-			}
-		}else{
-			$.messager.alert('警告', '请选择一行做编辑', 'warning');
-		}
-	}
-	
-	//保存编辑 /////////////////////////////////
-	function savePlan ()
-	{
-		//将第一行设为 结束编辑
-		table.datagrid('endEdit', editRow);
-		var res = table.datagrid('validateRow', editRow); //验证编辑的行
-		if (!res)
-		{
-			alert('请检查第' + (editRow+1) + '行数据!');return;
-			
-		}
-		table.datagrid('enableDnd');//编辑保存后启用拖放
-
-	}*/
+	}//导入计划文件 上传 结束            //////////////////
 	
 	//添加计划 /////////////////////////////////////
 	function addPlan ()
@@ -351,20 +292,24 @@
 	{filterId:'R',name:'R'},
 	{filterId:'I',name:'I'},
 	];*/
-
+	var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true 是 ,false 否
+	
 	$(function(){
 		var table_w = ( $('#planInfo').width() ) * 1;
 		table.datagrid({
+			idField: 'id',
 			width: table_w,
 			height:400,
 			toolbar: '#toolbar',
-			checkOnSelect:true,
+			checkOnSelect:false,
 			selectOnCheck:true,
 			singleSelect:false,
 			striped: true,
 			rownumbers:true,
+			remoteSort: false,
 			dropAccept:'tr.datagrid-row', //哪些行允许被拖拽
 			dragSelection: true, //拖拽所有选中的行，false只能拖拽单行
+			
 			//在双击一个单元格的时候开始编辑并生成编辑器，然后定位到编辑器的输入框上
 			onDblClickCell: function(index,field,value){
 				if (editRow == undefined && field != 'id') {
@@ -374,16 +319,28 @@
 					editRow = index;
 				}
 			},
-			onBeforeDrag: function(row){//解决拖放于编辑的冲突问题
-				console.log(editRow);
+			onBeforeDrag: function(row){//解决拖放与编辑的冲突问题
 		　　　　if(editRow !== undefined) return false; //如果处于编辑状态 拒绝拖动
 			},
 			onLoadSuccess: function(){//上传计划数据后启用拖放
 				table.datagrid('enableDnd'); //启用拖放
 			},
-			/*idField: 'id',
-			fitColumns:false,
-			,*/
+			/*如下代码 解决 单击一行就选中的问题，使仅在点击复选框时才选中*/
+			onClickCell: function (rowIndex, field, value) {
+				IsCheckFlag = false;
+			},
+			onSelect: function (rowIndex, rowData) {
+				if (!IsCheckFlag) {
+					IsCheckFlag = true;
+					table.datagrid("unselectRow", rowIndex);
+				}
+			},                    
+			onUnselect: function (rowIndex, rowData) {
+				if (!IsCheckFlag) {
+					IsCheckFlag = true;
+					table.datagrid("selectRow", rowIndex);
+				}
+			},/*解决 单击一行就选中的问题 结束*/
 			columns:[[
 			{field:'id', title:'id', checkbox:true, rowspan:2},
 			{field:'target',  title:'目标名称', width:table_w*0.118666667,rowspan:2,
@@ -411,7 +368,7 @@
 					},
 				},
 			},
-			{title:'赤经', colspan:5, width:table_w*0.1375,halign:'center'},
+			{title:'赤经', colspan:5, width:table_w*0.1375,halign:'center',},
 			{title:'赤纬', colspan:5, width:table_w*0.1375,halign:'center'},
 			{field:'epoch', title:'历元',  width:table_w*0.055, rowspan:2,
 				formatter:function(value){
@@ -462,7 +419,6 @@
 					}
 					return value;
 				},
-				
 				editor:{
 					type:'combobox',
 					options:{
@@ -562,14 +518,91 @@
 	});/*table.datagrid() 结束*/
 }) //jquery 结束编辑
 	//自定义的函数
-	function getrow(target){
+	function getrow(target)
+	{
 		var tr = $(target).closest('tr.datagrid-row');
 		return parseInt(tr.attr('datagrid-row-index'));
 	}
-	function delPlan1(target){
+
+	function delPlan1(target) //删除行
+	{
 		table.datagrid('deleteRow', getrow(target));
 		editRow = undefined;
-}
+	}
+
+	/*对计划排序*/
+	var sortData = $('#sortPlan');
+
+	sortData.change(function () {
+		var plan = table.datagrid('getRows');//所有的计划数据
+		var plan_num = plan.length;
+		if ( plan_num < 3 ) 
+		{
+			layer.alert('数据无须排序', {shade:0,closeBtn:0});return;
+		}
+		
+		var field = $(this).val();
+		switch (field)
+		{
+			case '1':
+				field = 'rightAscension'; break;
+			case '2':
+				field = 'declination'; break;
+			default:
+				layer.alert('请选择要排序的列', {shade:0,closeBtn:0}); return;
+		}
+		var sortOrder = $('#sortPlanOrder').val();
+		sort_plan (plan, plan_num, field, sortOrder);
+	});/*对计划排序 结束*/
+
+	/*对观测计划排序*/
+	function sort_plan (plan, num, field, order)
+	{
+		var temp,d1,d2;
+
+		for (let i = 0; i < num-1; i++)
+		{
+			for (let j = 0; j < num-i-1; j++)
+			{
+				d1 = plan[j][field+1]*1 + plan[j][field+2]*1/60 + plan[j][field+3]*1/3600;
+				d2 = plan[j+1][field+1]*1 + plan[j+1][field+2]*1/60 + plan[j+1][field+3]*1/3600;
+
+				if ( order === 'asc' )
+				{
+					if ( d1 > d2 )
+					{
+						temp = plan[j];
+						plan[j] = plan[j+1];
+						plan[j+1] = temp;
+					}
+				}else if ( order === 'desc' )
+				{
+					if ( d1 < d2 )
+					{
+						temp = plan[j];
+						plan[j] = plan[j+1];
+						plan[j+1] = temp;
+					}
+				}
+				
+			}                    
+		}
+		table.datagrid({ data: plan });
+	}/*对观测计划排序 结束*/
+
+	/*高亮正在执行的计划 (h-1)即为正在执行的行 只需 获取h的值即可*/
+	var h = 0;
+
+	// $('#h').click(function () {//此代码要根据后台数据来执行
+	// 	h = 3;
+	// 	table.datagrid({
+	// 		rowStyler: function (index, row) {
+	// 			if( index == h ){
+	// 				return 'background-color:#18fd65;';
+	// 			}
+	// 		},
+	// 	})
+	// })/*高亮正在执行的计划 结束*/
 
 //观测计划的 开始 停止 下一个按钮////////////////////////////
 //观测计划的开始 按钮//////////////////////////////////

@@ -1042,15 +1042,21 @@ class Atconfig extends Base
         //     return '您无权执行此操作!';
         // }
      
-        header("Content-type:application/octet-stream"); //设置内容类型
         $file = $this->file_path  . DS . $dir . DS . $filename;
         $file = iconv('UTF-8', 'GBK', $file); //将整个路径转为GBK字符集
-        header("Content-Disposition:attachment;filename = ". $filename); //下载弹框的默认文件名
-        header('Content-Transfer-Encoding: binary'); //设置传输方式
-        //header("Accept-ranges:bytes");
-        header("Content-length:".filesize($file)); //获取文件字节数
-        //header("Accept-length:".filesize($file));
-        readfile($file);
+        if ( file_exists($file) )
+        {
+            header("Content-type:application/octet-stream"); //设置内容类型
+            header("Content-Disposition:attachment;filename = ". $filename); //下载弹框的默认文件名
+            header('Content-Transfer-Encoding: binary'); //设置传输方式
+            //header("Accept-ranges:bytes");
+            header("Content-length:".filesize($file)); //获取文件字节数
+            //header("Accept-length:".filesize($file));
+            readfile($file);
+        }else{
+            return 0;
+        }
+        
      }//各设备文件下载 结束
 
     //对ccd 增益-读出噪声值 页面表格相关字段进行排序，排序后返回json数据
