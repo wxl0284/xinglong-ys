@@ -19,26 +19,7 @@ class Atconfig extends Base
         //     return '您无权执行此操作!';
         // }
 
-        //$postData = input('maxAxis3Speed');
-        //$file = request()->file('instruction');
-        //dump($postData);
-        //dump($file);
-        // $postData = input();
-
-        // if ( !isset($postData['maxAxis3Speed']) )
-        // {
-        //     $postData['maxAxis3Speed'] = null;
-        // }
-        // dump($postData['maxAxis3Speed']);
-
-        //处理表单数据，如果表单中：无某项数据或某项数据为空字符串，则将$postData中某项数据置为NULL
-        // if ( $postData['ip'] === '')
-        // {
-        //     $postData['ip'] = null;
-        // }
         $postData = input();
-        //halt($postData);
-        //halt(isset($postData['maxaxis3speed']));
         
         //处理表单数据，若无轴3，则轴3相关input框禁用，则将$postData轴3相关之置为空字符串
         if ( $postData['haveaxis3'] == 0 && !isset($postData['maxaxis3speed']) )
@@ -150,17 +131,17 @@ class Atconfig extends Base
             $fileName = '出厂测试报告';
             $fileName = iconv ('UTF-8', 'GBK', $fileName);
             //如果已有此名字的文件，则先删除
-            if ( file_exists($this->file_path . "/$dir/$fileName") )
+            /*if ( file_exists($this->file_path . "/$dir/$fileName") )
             {
                 $delReport = unlink($this->file_path ."/$dir/$fileName");
                 if ($delRport === false)
                 {
                     return "删除原{$fileName}失败!";
                 }
-            }
+            }*/
         
             //将新上传的测试报告移至指定目录
-            $info = $reportFile->move($this->file_path."/$dir", $fileName);
+            $info = $reportFile->move($this->file_path."/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
                 $errMsg += "{$fileName}上传失败!<br>";
@@ -174,18 +155,9 @@ class Atconfig extends Base
             //将上传文件命名为: 说明书
             $fileName = '说明书';
             $fileName = iconv ('UTF-8', 'GBK', $fileName);
-            //如果已有此名字的文件，则先删除
-            if ( file_exists($this->file_path . "/$dir/$fileName") )
-            {
-                $delReport = unlink($this->file_path . "/$dir/$fileName");
-                if ( $delRport === false )
-                {
-                    return "删除原{$fileName}失败!";
-                }
-            }
 
             //将新上传的说明书移至指定目录
-            $info = $instruFile->move($this->file_path . "/$dir", $fileName);
+            $info = $instruFile->move($this->file_path . "/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
                 $errMsg += "{$fileName}上传失败!";
@@ -313,18 +285,9 @@ class Atconfig extends Base
             //将上传文件命名为: 量子效率曲线
             $fileName = '量子效率曲线';
             $fileName = iconv ('UTF-8', 'GBK', $fileName);
-            //如果已有此名字的文件，则先删除
-            if ( file_exists($this->file_path . "/$dir/$fileName") )
-            {
-                $delReport = unlink($this->file_path ."/$dir/$fileName");
-                if ($delRport === false)
-                {
-                    return "删除原{$fileName}文件失败!";
-                }
-            }
         
             //将新上传的量子效率曲线移至指定目录
-            $info = $qecurveFile->move($this->file_path."/$dir", $fileName);
+            $info = $qecurveFile->move($this->file_path."/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
                 $errMsg += "上传{$fileName}失败!<br>";
@@ -338,18 +301,9 @@ class Atconfig extends Base
             //将上传文件命名为: 出厂测试报告
             $fileName = '出厂测试报告';
             $fileName = iconv ('UTF-8', 'GBK', $fileName);
-            //如果已有此名字的文件，则先删除
-            if ( file_exists($this->file_path . "/$dir/$fileName") )
-            {
-                $delReport = unlink($this->file_path . "/$dir/$fileName");
-                if ( $delRport === false )
-                {
-                    return "删除原{$fileName}失败!";
-                }
-            }
 
             //将新上传的出厂测试报告移至指定目录
-            $info = $reportFile->move($this->file_path . "/$dir", $fileName);
+            $info = $reportFile->move($this->file_path . "/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
                 $errMsg += "{$fileName}上传失败!";
@@ -363,18 +317,9 @@ class Atconfig extends Base
             //将上传文件命名为: 说明书
             $fileName = '说明书';
             $fileName = iconv ('UTF-8', 'GBK', $fileName);
-            //如果已有此名字的文件，则先删除
-            if ( file_exists($this->file_path . "/$dir/$fileName") )
-            {
-                $delReport = unlink($this->file_path . "/$dir/$fileName");
-                if ( $delRport === false )
-                {
-                    return "删除原{$fileName}失败!";
-                }
-            }
 
             //将新上传的说明书移至指定目录
-            $info = $reportFile->move($this->file_path . "/$dir", $fileName);
+            $info = $reportFile->move($this->file_path . "/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
                 $errMsg += "{$fileName}上传失败!";
@@ -481,8 +426,8 @@ class Atconfig extends Base
 
     }//将vue对象中gain_noise数据对象存入ccdconf表中gain_noise字段中 结束
 
-    //对ccd增益-读出噪声值表格相关字段 升序、降序排列
-    public function gainNoiseSort ()
+    //对ccd增益-读出噪声值表格相关字段 升序、降序排列 此方法暂不使用
+   /* public function gainNoiseSort ()
     {
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
@@ -508,7 +453,7 @@ class Atconfig extends Base
         }else{//有数据，根据提交参数对gain_noise字段数据排序后，返回给ajax排序后的json数据
             return $this->sort_data ($data['gain_noise'], $postData['field'], $postData['order']);
         }
-    }//对ccd增益-读出噪声值表格相关字段 升序、降序排列 结束
+    }//对ccd增益-读出噪声值表格相关字段 升序、降序排列 结束*/
 
     /*获取滤光片配置项表单 存入表filterconf中*/
     public function filter_config()
@@ -597,18 +542,9 @@ class Atconfig extends Base
             //将上传文件命名为: 说明文件
             $fileName = '说明文件';
             $fileName = iconv ('UTF-8', 'GBK', $fileName);
-            //如果已有此名字的文件，则先删除
-            if ( file_exists($this->file_path . "/$dir/$fileName") )
-            {
-                $delReport = unlink($this->file_path ."/$dir/$fileName");
-                if ($delRport === false)
-                {
-                    return "删除原{$fileName}文件失败!";
-                }
-            }
         
             //将新上传的说明文件移至指定目录
-            $info = $filterFile->move($this->file_path . "/$dir", $fileName);
+            $info = $filterFile->move($this->file_path . "/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
                 $errMsg += "上传{$fileName}失败!<br>";
@@ -690,18 +626,9 @@ class Atconfig extends Base
             //将上传文件命名为: 说明文件
             $fileName = '说明文件';
             $fileName = iconv ('UTF-8', 'GBK', $fileName);
-            //如果已有此名字的文件，则先删除
-            if ( file_exists($this->file_path . "/$dir/$fileName") )
-            {
-                $delReport = unlink($this->file_path ."/$dir/$fileName");
-                if ($delRport === false)
-                {
-                    return "删除原{$fileName}文件失败!";
-                }
-            }
         
             //将新上传的说明文件移至指定目录
-            $info = $sDomeFile->move($this->file_path . "/$dir", $fileName);
+            $info = $sDomeFile->move($this->file_path . "/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
                 $errMsg += "上传{$fileName}失败!<br>";
@@ -783,18 +710,9 @@ class Atconfig extends Base
             //将上传文件命名为: 说明文件
             $fileName = '说明文件';
             $fileName = iconv ('UTF-8', 'GBK', $fileName);
-            //如果已有此名字的文件，则先删除
-            if ( file_exists($this->file_path . "/$dir/$fileName") )
-            {
-                $delReport = unlink($this->file_path ."/$dir/$fileName");
-                if ($delRport === false)
-                {
-                    return "删除原{$fileName}文件失败!";
-                }
-            }
         
             //将新上传的说明文件移至指定目录
-            $info = $oDomeFile->move($this->file_path . "/$dir", $fileName);
+            $info = $oDomeFile->move($this->file_path . "/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
                 $errMsg += "上传{$fileName}失败!<br>";
@@ -876,18 +794,9 @@ class Atconfig extends Base
             //将上传文件命名为: 说明文件
             $fileName = '说明文件';
             $fileName = iconv ('UTF-8', 'GBK', $fileName);
-            //如果已有此名字的文件，则先删除
-            if ( file_exists($this->file_path . "/$dir/$fileName") )
-            {
-                $delReport = unlink($this->file_path ."/$dir/$fileName");
-                if ($delRport === false)
-                {
-                    return "删除原{$fileName}文件失败!";
-                }
-            }
         
             //将新上传的说明文件移至指定目录
-            $info = $focusFile->move($this->file_path . "/$dir", $fileName);
+            $info = $focusFile->move($this->file_path . "/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
                 $errMsg += "上传{$fileName}失败!<br>";
@@ -988,18 +897,9 @@ class Atconfig extends Base
             //将上传文件命名为: 说明文件
             $fileName = '说明文件';
             $fileName = iconv ('UTF-8', 'GBK', $fileName);
-            //如果已有此名字的文件，则先删除
-            if ( file_exists($this->file_path . "/$dir/$fileName") )
-            {
-                $delReport = unlink($this->file_path ."/$dir/$fileName");
-                if ($delRport === false)
-                {
-                    return "删除原{$fileName}文件失败!";
-                }
-            }
         
             //将新上传的说明文件移至指定目录
-            $info = $guideScopeFile->move($this->file_path . "/$dir", $fileName);
+            $info = $guideScopeFile->move($this->file_path . "/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
                 $errMsg += "上传{$fileName}失败!<br>";
@@ -1059,8 +959,8 @@ class Atconfig extends Base
         
      }//各设备文件下载 结束
 
-    //对ccd 增益-读出噪声值 页面表格相关字段进行排序，排序后返回json数据
-    protected function sort_data ($data, $col, $order)
+    //对ccd 增益-读出噪声值 页面表格相关字段进行排序，排序后返回json数据 此方法暂不使用
+    /*protected function sort_data ($data, $col, $order)
     {
         switch ($col) {//根据提交的数据对相应列进行排序
             case 'readOut'://对读出速度字段排序
@@ -1168,7 +1068,7 @@ class Atconfig extends Base
                 }
                 return json_encode($a, JSON_FORCE_OBJECT);  break;
         }
-    }//对ccd 增益-读出噪声值 页面表格相关字段进行排序，排序后返回json数据 结束
+    }//对ccd 增益-读出噪声值 页面表格相关字段进行排序，排序后返回json数据 结束*/
 
     //判断各设备id是否重复
     protected function devIdSame ($devId)

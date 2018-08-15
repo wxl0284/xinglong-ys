@@ -630,27 +630,68 @@ class Page extends Base
     //删除望远镜 
     public function at_delete ($atid)
     {
-        //首先删除望远镜列表中相应数据
-        $res = Db::table('atlist')->where('atid', $atid)->delete();
-        if ($res)
-        {
-            $this->success ('删除成功!', '/atlist');
-        }else{
-            $this->error ('删除失败!');
-        }
-        //然后开始事务 去删除此atid关联的此望远镜其他数据
-        /*
+        $err = 0;//标记错误
         Db::startTrans();
-        
-        //删除其他表相关数据
-        if ($res && 其他表删除ok)
-        {
-            Db::commit();
-        }else{
-            Db::rollback();
-        }
-        */
 
+        $res = Db::table('atlist')->where('id', $atid)->delete();
+        //接下来 删除其他表（gimbalconf,ccdconf,filterconf,focusconf,sdomeconf, odomeconf, guideconf）相关数据
+        $gimbal = Db::table('gimbalconf')->where('teleid', $atid)->find();
+        if ($gimbal) //此望远镜配置了转台数据
+        {
+            $r = Db::table('gimbalconf')->where('teleid', $atid)->delete();
+            if ( !$r ) $err = 1;
+        }
+
+        $ccd = Db::table('ccdconf')->where('teleid', $atid)->find();
+        if ($ccd) //此望远镜配置了ccd数据
+        {
+            $r = Db::table('ccdconf')->where('teleid', $atid)->delete();
+            if ( !$r ) $err = 1;
+        }
+
+        $filter = Db::table('filterconf')->where('teleid', $atid)->find();
+        if ($filter) //此望远镜配置了滤光片数据
+        {
+            $r = Db::table('filterconf')->where('teleid', $atid)->delete();
+            if ( !$r ) $err = 1;
+        }
+
+        $focus = Db::table('focusconf')->where('teleid', $atid)->find();
+        if ($focus) //此望远镜配置了调焦器数据
+        {
+            $r = Db::table('focusconf')->where('teleid', $atid)->delete();
+            if ( !$r ) $err = 1;
+        }
+
+        $sdome = Db::table('sdomeconf')->where('teleid', $atid)->find();
+        if ($sdome) //此望远镜配置了随动圆顶数据
+        {
+            $r = Db::table('sdomeconf')->where('teleid', $atid)->delete();
+            if ( !$r ) $err = 1;
+        }
+
+        $odome = Db::table('odomeconf')->where('teleid', $atid)->find();
+        if ($odome) //此望远镜配置了全开圆顶数据
+        {
+            $r = Db::table('odomeconf')->where('teleid', $atid)->delete();
+            if ( !$r ) $err = 1;
+        }
+
+        $guide = Db::table('guideconf')->where('teleid', $atid)->find();
+        if ($guide) //此望远镜配置了导星镜数据
+        {
+            $r = Db::table('guideconf')->where('teleid', $atid)->delete();
+            if ( !$r ) $err = 1;
+        }
+         
+        if (!$res || $err === 1 )
+        {
+            Db::rollback();// 回滚事务
+            $this->error ('删除失败!');
+        }else{
+            Db::commit();// 提交事务
+            $this->success ('删除成功!', '/atlist');
+        }
     }//删除望远镜  结束
 
     //显示首页

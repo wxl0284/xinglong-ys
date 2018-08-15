@@ -278,7 +278,7 @@ function ModifiedJulianDay ($year, $mon, $day, $hour)
 		$year --;
 	}
 	
-	if($a <= 15821004.1)
+	if( ($a-15821004.1) <= 0 )
 	{
 		$b = intval (($year + 4716)/4 - 1179 - 2);
 	}else{
@@ -654,7 +654,7 @@ function MoonTopocentricPos(&$ra, &$dec, $mjd)
 	
 	$ra = $ra - $mpar * $rho * cos($gclat/180*pi()) * sin($ha/180*pi()) / cos($dec/180*pi()) / 15.0;
 	
-	if(abs($g) >= 0.0001)
+	if( ( abs($g)-0.0001 ) >= 0 )
 	{
 		$dec = $dec - $mpar * $rho * sin($gclat/180*pi()) * sin(($g-$dec)/180*pi()) / sin($g/180*pi());
 
@@ -714,7 +714,7 @@ function MoonPosition(&$r, &$ra, &$dec, $mjd)
 	
 	$F = ReduceAngle($Lm - $N);	// 月亮升交角距
 
-	while(abs($E0 - $E1) > 0.005) 
+	while( ( abs($E0 - $E1) - 0.005 ) > 0 ) 
 	{
 		$E0 = $E1;
 		
