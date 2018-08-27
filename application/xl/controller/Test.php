@@ -83,8 +83,18 @@ class Test extends Controller
 		Cache::set('name', $a);
 		return view('table/a'); */
 		//$arr = ['name' => 'xxxx'];
-		$a = input ();
-		halt($a);
+		$res = Db::table('ccdconf')->where('teleid', 16)->field('gain_noise')->find();
+		//halt($res);
+		
+		//$temp = $res['gain_noise'];
+		
+		$temp = json_decode ($res['gain_noise'], true);
+		foreach ($temp as $k => $v)
+		{
+			$d[$k] = $v['gainVal'];
+		}
+		array_multisort ($d, SORT_DESC, $temp);
+		halt($temp);
 	}
 	
 	public function valid ()
