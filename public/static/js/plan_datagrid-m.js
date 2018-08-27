@@ -317,6 +317,8 @@
 					var ed = table.datagrid('getEditor', {index:index,field:field});
 					$(ed.target).focus();
 					editRow = index;
+				}else{
+					layer.alert('请先保存已编辑的计划', {shade:0, closeBtn:0});
 				}
 			},
 			onBeforeDrag: function(row){//解决拖放与编辑的冲突问题
@@ -328,6 +330,7 @@
 			/*如下代码 解决 单击一行就选中的问题，使仅在点击复选框时才选中*/
 			onClickCell: function (rowIndex, field, value) {
 				IsCheckFlag = false;
+			
 			},
 			onSelect: function (rowIndex, rowData) {
 				if (!IsCheckFlag) {
@@ -340,6 +343,9 @@
 					IsCheckFlag = true;
 					table.datagrid("selectRow", rowIndex);
 				}
+			},
+			onClickRow:function (rowIndex, rowData) {
+				table.datagrid('unselectRow', rowIndex); //点击一行时，不让此行背景变黄色
 			},/*解决 单击一行就选中的问题 结束*/
 			columns:[[
 			{field:'id', title:'id', checkbox:true, rowspan:2},
