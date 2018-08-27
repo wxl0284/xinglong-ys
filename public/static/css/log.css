@@ -1,0 +1,40 @@
+/*登录页样式 */
+* {margin:0;padding:0;}
+
+.displayNo {display:none;}
+
+.display {display:block;}
+
+#background {width:100%;margin:0 auto;}
+		
+#back {position:relative; margin:0 auto;width:100%;}
+
+#rect {position:absolute;width:60.76%;top:15.76%;left:19.61%;}
+
+#logo {position:absolute;width:32.08%;top:26%;left:33.96%;}
+
+#p2 {margin-top:3%;}
+
+#fm {position:absolute; top:40%;left:34.5%;width:31.25%;}
+
+#img1 {width:100%;}  
+
+#img2 {width:100%;} 
+
+#ipt1 {border:none;width:60%; position:absolute; top:14%; left:22%;height:22px;} 
+
+#img1_1 {position:absolute; top:13%; left:4%;}
+
+#ipt2 {border:none;width:60%; position:absolute; top:68%; left:22%;height:22px;}
+
+#img1_2 {position:absolute; top:65%; left:4%;}
+
+#btn {width:12.78%;	text-align:center;
+	position:absolute; top:63%; left:43.5%;
+	color:#fff;font-size:18px;}
+
+#btn img {width:100%;}
+
+#btn div {position:absolute;top:31.5%;left:39.5%;}
+
+#btn div a {text-align:center; color:#fff;font-size:18px;text-decoration:none;}

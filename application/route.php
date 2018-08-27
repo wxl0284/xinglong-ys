@@ -101,13 +101,5 @@ Route::get('download/:dir/:filename$', 'xinglong/atconfig/downLoadFlie');
 
 /*如下为望远镜配置的示例 路由*/
 //测试首页 
-Route::get('test$', 'test/test/test');
-//显示不同的望远镜
-Route::get('test2/:at$', 'test/test/test2');
-//显示配置页面
-Route::get('test1$', 'test/test/test1');
-Route::get('test2/:at$', 'test/test/test2');
-
-//测试 ccd 增益-读出速度表格的字段排序
-Route::post('test$', 'xl/test/test');
+Route::get('test$', 'xl/test/test');
 /*如下为望远镜配置的示例 结束*/

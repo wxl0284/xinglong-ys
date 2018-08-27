@@ -1,0 +1,34 @@
+/*******以上为公共头样式 以下为具体页面样式 各配置页基本通用**********/
+footer {position:fixed; bottom: 0px; width:100%;}
+
+/* hr {width:96%;}
+form.form span {width:296px;display:inline-block;text-align: left; line-height:26px;}
+form.form span input,form.form span select{min-width:150px;} */
+form.form {text-align: center;}
+
+form.form table td {width:192px;text-align: left; line-height:26px;}
+
+form.form table input, form.form table select{width:150px;}
+
+form.form table input[type='radio'], form.form table input[type='checkbox'] {width:20px;}
+
+form.form table input[type='file'] {width:195px;}
+
+form.form input[type='button'] {font-size: 18px;font-weight:bold;}
+
+#atSelect table {width: 96%; margin: 0 auto;}
+
+#atSelect td {width: 11.583333%;text-align: left; font-weight: normal;}
+
+#atSelect td select {width: 22%;}
+
+#atSelect button {width: 10%;font-size: 18px;}
+
+/*转台的焦点类型 焦比 焦距 表格 样式*/
+#inner_table1,#inner_table2,#inner_table3,#inner_table4 {border:1px solid #7a7a7a;border-collapse:collapse;width:100%}
+
+#inner_table1 td,#inner_table2 td,#inner_table3 td,#inner_table4 td {text-align:center;}
+
+#inner_table4 td {border:1px solid #7a7a7a;}
+
+.ccd_table_tr {background-color:#DCDCDC} /*ccd 增益-噪声表格 斑马线*/
