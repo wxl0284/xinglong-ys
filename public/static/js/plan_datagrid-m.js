@@ -3,7 +3,8 @@
 	//赤经 的js事件//////////////////////////////////
 	//赤经之小时 js事件
 	//console.log(configData.ccd[0].lowcoolert);
-	$('#planInfo').on('keyup', 'td[field="rightAscension1"] input.textbox-text', function () {
+	var planInfo = $('#planInfo');
+	planInfo.on('keyup', 'td[field="rightAscension1"] input.textbox-text', function () {
 		var that = $(this);
 		var patn = /^\d{2}$/;
 		var v = $.trim(that.val());
@@ -15,7 +16,7 @@
 	});
 	
 	//赤经之小时 blur事件
-	$('#planInfo').on('blur', 'td[field="rightAscension1"] input.textbox-text', function () {
+	planInfo.on('blur', 'td[field="rightAscension1"] input.textbox-text', function () {
 		var that = $(this);
 		var patn = /^\d{1,2}$/;
 		var v = $.trim(that.val());
@@ -31,7 +32,7 @@
 	});
 	
 	//赤经之分钟 js事件
-	$('#planInfo').on('keyup', 'td[field="rightAscension2"] input.textbox-text', function () {
+	planInfo.on('keyup', 'td[field="rightAscension2"] input.textbox-text', function () {
 		var that = $(this);
 		var patn = /^\d{2}$/;
 		var v = $.trim(that.val());
@@ -42,7 +43,7 @@
 	})
 	
 	//赤经之分钟 blur事件
-	$('#planInfo').on('blur', 'td[field="rightAscension2"] input.textbox-text', function () {
+	planInfo.on('blur', 'td[field="rightAscension2"] input.textbox-text', function () {
 		var that = $(this);
 		var patn = /^\d{1,2}$/;
 		var v = $.trim(that.val());
@@ -59,7 +60,7 @@
 	})
 	
 	//赤经之秒 js事件
-	$('#planInfo').on('blur', 'td[field="rightAscension3"] input.textbox-text', function () {
+	planInfo.on('blur', 'td[field="rightAscension3"] input.textbox-text', function () {
 		var that = $(this);
 		var v = $.trim($(this).val());
 		if (!$.isNumeric(v) || v >= 60 || v < 0)
@@ -71,7 +72,7 @@
 	
 	//赤纬 的js事件//////////////////////////////////
 	//赤纬之小时 js事件
-	$('#planInfo').on('keyup', 'td[field="declination1"] input.textbox-text', function () {
+	planInfo.on('keyup', 'td[field="declination1"] input.textbox-text', function () {
 		var that = $(this);
 		var v = $.trim(that.val());
 		v_R = v.replace(/-/, ''); //将-替换为空字符
@@ -82,7 +83,7 @@
 	});
 	
 	//赤纬之小时 blur事件
-	$('#planInfo').on('blur', 'td[field="declination1"] input.textbox-text', function () {
+	planInfo.on('blur', 'td[field="declination1"] input.textbox-text', function () {
 		var that = $(this);
 		var v = $.trim(that.val());
 		var patn = /^-?\d{1,2}$/;
@@ -99,7 +100,7 @@
 	});
 	
 	//赤纬之分钟 js事件
-	$('#planInfo').on('keyup', 'td[field="declination2"] input.textbox-text', function () {
+	planInfo.on('keyup', 'td[field="declination2"] input.textbox-text', function () {
 		var that = $(this);
 		var patn = /^\d{2}$/;
 		var v = $.trim(that.val());
@@ -110,7 +111,7 @@
 	})
 	
 	//赤纬之分钟 blur事件
-	$('#planInfo').on('blur', 'td[field="declination2"] input.textbox-text', function () {
+	planInfo.on('blur', 'td[field="declination2"] input.textbox-text', function () {
 		var that = $(this);
 		var v = $.trim(that.val());
 		var patn = /^\d{1,2}$/;
@@ -126,7 +127,7 @@
 	});
 	
 	//赤纬之秒 js事件
-	$('#planInfo').on('blur', 'td[field="declination3"] input.textbox-text', function () {
+	planInfo.on('blur', 'td[field="declination3"] input.textbox-text', function () {
 		var that = $(this);
 		var v = $.trim(that.val());
 		if (!$.isNumeric(v) || v >= 60 || v < 0)
@@ -305,7 +306,7 @@
 			selectOnCheck:true,
 			singleSelect:false,
 			striped: true,
-			rownumbers:true,
+			rownumbers:true,			
 			remoteSort: false,
 			dropAccept:'tr.datagrid-row', //哪些行允许被拖拽
 			dragSelection: true, //拖拽所有选中的行，false只能拖拽单行
@@ -332,14 +333,12 @@
 				IsCheckFlag = false;
 			},
 			onSelect: function (rowIndex, rowData) {
-				//console.log('s');
 				if (!IsCheckFlag) {
 					IsCheckFlag = true;
 					table.datagrid("unselectRow", rowIndex);
 				}
 			},                    
 			onUnselect: function (rowIndex, rowData) {
-				//console.log('unS');
 				if (!IsCheckFlag) {
 					IsCheckFlag = true;
 					table.datagrid("selectRow", rowIndex);

@@ -129,6 +129,7 @@ nav span {background-color:#ECEEE6;}/*指令按钮导航栏 未点击 样式*/
 .datagrid-cell-c1-c4 {padding:0;} /*观测计划的表格的：时分秒中间':' 去除其padding*/
 
 #planInfo tbody div.datagrid-cell-group {min-width:30px;} /*观测计划的表格的：表头之赤经、赤纬 显示bug*/
+#planInfo div.datagrid-view1 { pointer-events: none;} /*禁用计划表格的行号点击事件*/
 
 div.datagrid-view2 div.datagrid-header td {text-align: center;}  /*观测计划的表格的：表头各字段居中*/
 /*观测计划模式：单选钮和按钮的样式 结束*/
