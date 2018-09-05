@@ -2,34 +2,42 @@
 //观测计划的赤经和赤纬 js事件//////////////////////////////
 	//赤经 的js事件//////////////////////////////////
 	//赤经之小时 js事件
-	//console.log(configData.ccd[0].lowcoolert);
 	var planInfo = $('#planInfo');
-	planInfo.on('keyup', 'td[field="rightAscension1"] input.textbox-text', function () {
+	//var code = 0; //存储键盘码
+	planInfo.on('keyup', 'td[field="rightAscension1"] input.textbox-text', function (e) {
 		var that = $(this);
+		// console.log($.trim(that.val()));
+		// code = e.keyCode;
+		
+		var parent_td_rightAscension1 = that.closest('td[field="rightAscension1"]'); //当前input的父元素:td[field="rightAscension1"]
+		var td_rightAscension2 = parent_td_rightAscension1.siblings('td[field="rightAscension2"]'); //同辈的：td[field="rightAscension2"]
 		var patn = /^\d{2}$/;
 		var v = $.trim(that.val());
 		//v_R = v.replace(/(-|\+)/g, ''); //将+或-替换为空字符
-		if (patn.test(v))
+	
+		if ( patn.test(v) && v <= 24 && v >= 0 )
 		{
-			that.blur();
+			td_rightAscension2.find('input.textbox-text').focus();
+		}else{
+			layer.tips('参数超限', that, {tips : 1,tipsMore: true});
 		}
 	});
 	
-	//赤经之小时 blur事件
-	planInfo.on('blur', 'td[field="rightAscension1"] input.textbox-text', function () {
-		var that = $(this);
-		var patn = /^\d{1,2}$/;
-		var v = $.trim(that.val());
-		var parent_td_rightAscension1 = that.closest('td[field="rightAscension1"]'); //当前input的父元素:td[field="rightAscension1"]
-		var td_rightAscension2 = parent_td_rightAscension1.siblings('td[field="rightAscension2"]'); //同辈的：td[field="rightAscension2"]
+	// //赤经之小时 blur事件
+	// planInfo.on('blur', 'td[field="rightAscension1"] input.textbox-text', function () {
+	// 	var that = $(this);
+	// 	var patn = /^\d{1,2}$/;
+	// 	var v = $.trim(that.val());
+	// 	var parent_td_rightAscension1 = that.closest('td[field="rightAscension1"]'); //当前input的父元素:td[field="rightAscension1"]
+	// 	var td_rightAscension2 = parent_td_rightAscension1.siblings('td[field="rightAscension2"]'); //同辈的：td[field="rightAscension2"]
 		
-		if (!patn.test(v) || v >= 24 || v < 0)
-		{
-			layer.tips('参数超限', that, {tips : 1,tipsMore: true});
-		}else{//focus进入到分钟的input
-			td_rightAscension2.find('input.textbox-text').focus();
-		}
-	});
+	// 	if (!patn.test(v) || v >= 24 || v < 0)
+	// 	{
+	// 		layer.tips('参数超限', that, {tips : 1,tipsMore: true});
+	// 	}else{//focus进入到分钟的input
+	// 		td_rightAscension2.find('input.textbox-text').focus();
+	// 	}
+	// });
 	
 	//赤经之分钟 js事件
 	planInfo.on('keyup', 'td[field="rightAscension2"] input.textbox-text', function () {
@@ -54,7 +62,7 @@
 		{
 			layer.tips('参数超限', that, {tips: 1, tipsMore: true});
 		}else{//focus进入到秒的input
-			td_rightAscension3.find('input.validatebox-text').focus();
+			td_rightAscension3.find('input.datagrid-editable-input').focus();
 		}
 	
 	})
@@ -122,7 +130,7 @@
 		{
 			layer.tips('参数超限', that, {tips : 1,tipsMore: true});
 		}else{//focus进入到秒的input
-			td_declination3.find('input.validatebox-text').focus();
+			td_declination3.find('input.datagrid-editable-input').focus();
 		}
 	});
 	
@@ -188,6 +196,7 @@
 						
 						editRow = undefined; //否则 导入后无法插入新行
 						planErr = 0; //将提交计划的错误标识 改为0
+						table.datagrid('enableDnd');
 					}
 					
 				},
@@ -196,64 +205,34 @@
 	            },
 			});
 		});
-	}//导入计划文件 上传 结束            //////////////////
+	}//导入计划文件 上传 结束 //////////////////
 	
-	//添加计划 /////////////////////////////////////
-	function addPlan ()
-	{
-		if (editRow == undefined)
-		{
-			//获取被选中的行
-			var selectRows = table.datagrid('getSelections');
-			var num = selectRows.length;
-			
-			if (num == 0)
-			{//未选中任一行 直接添加一个新行
-				var plans = table.datagrid('getRows');
-				var n = plans.length;
-				table.datagrid('insertRow', {
-				index:n, //在最后面新加一空行
-				row:{},
-				});
-				//将此新加的一行设为可编辑
-				table.datagrid('beginEdit', n);
-				editRow = n;
-			}else if (num > 1){//选中的多于1行
-				layer.alert('添加时:只能选择一条数据!', {shade:false, closeBtn:0});return;
-			}else if (num == 1){
-				var num = table.datagrid('getRowIndex', selectRows[0]);
-				table.datagrid('insertRow', {
-					index : num + 1, //在选中行后面 新加一空行
-					row:{},
-				});
-				
-				//将此新加的一行设为可编辑
-				table.datagrid('beginEdit', num + 1);
-				editRow = num + 1;
-			}
-			//滚动至新插入的行那里
-			table.datagrid('scrollTo', editRow);
-		}else{
-			layer.alert('请先保存编辑的第'+ (editRow+1) +'条数据!', {shade:false, closeBtn:0});return;
-		}
-		
-	}//添加计划  结束/////////////////////////////////////
-	
-	//保存编辑 /////////////////////////////////
+	//保存编辑（同时保存所有被添加和编辑的计划） /////////////////////////////////
 	function savePlan ()
 	{
-		//将编辑行设为 结束编辑
+		var msg = '';
 		table.datagrid('endEdit', editRow);
-		var res = table.datagrid('validateRow', editRow); //验证编辑的行
-		if (!res)
+		table.datagrid('unselectRow', editRow);
+
+		//验证计划数据
+		var plans = table.datagrid ('getRows');
+		var n = plans.length
+
+		if ( n > 0 )
 		{
-			layer.alert('请检查第' + (editRow+1) + '行必填数据!', {shade:false, closeBtn:0}); return;
-			
+			msg += plan_valid (plans, n);
 		}
-		
-		editRow = undefined;  //将editRow 置为初始的undefined
-		planErr = 0;	//将提交计划的错误标识改为0
-		table.datagrid('enableDnd'); //编辑保存后启用拖放
+
+		if ( msg !== '' )
+		{
+			editRow = undefined;
+			layer.alert(msg, {shade:false, closeBtn:0});
+			table.datagrid('enableDnd'); //编辑保存后启用拖放
+		}else{
+			editRow = undefined;  //将editRow 置为初始的undefined
+			planErr = 0;	//将提交计划的错误标识改为0
+			table.datagrid('enableDnd'); //编辑保存后启用拖放
+		}
 	}
 
 	//datagrid 属性////////////////////////////////////////
@@ -286,19 +265,12 @@
 		filterData[filterData_i].name = plan_filter_option[filterData_i];
 	}
 
-	/*var filterData = [
-	{filterId:'U',name:'U'},
-	{filterId:'B',name:'B'},
-	{filterId:'V',name:'V'},
-	{filterId:'R',name:'R'},
-	{filterId:'I',name:'I'},
-	];*/
 	var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true 是 ,false 否
 	
 	$(function(){
 		var table_w = ( $('#planInfo').width() ) * 1;
 		table.datagrid({
-			idField: 'id',
+			//idField: 'id', //不注释的话，getChecked方法会有bug
 			width: table_w,
 			height:400,
 			toolbar: '#toolbar',
@@ -309,48 +281,51 @@
 			rownumbers:true,			
 			remoteSort: false,
 			dropAccept:'tr.datagrid-row', //哪些行允许被拖拽
+			//dropAccept:'tr.datagrid-row.datagrid-row-checked', //哪些行允许被拖拽
 			dragSelection: true, //拖拽所有选中的行，false只能拖拽单行
-			
 			//在双击一个单元格的时候开始编辑并生成编辑器，然后定位到编辑器的输入框上
 			onDblClickCell: function(index,field,value){
-				if (editRow == undefined && field != 'id') {
+				if ( field != 'id' && field != 'del' ) {
+					table.datagrid('endEdit', editRow); //结束前一行编辑状态
+					table.datagrid('unselectRow', editRow); //结束前一行编辑状态
 					table.datagrid('beginEdit', index); //对点击行 进行编辑
 					var ed = table.datagrid('getEditor', {index:index,field:field});
 					$(ed.target).focus();
 					editRow = index;
-				}else{
-					layer.alert('请先保存已编辑的计划', {shade:0, closeBtn:0});
+					table.datagrid('enableDnd'); //启用拖放
 				}
+			},		
+			onBeforeDrag: function( row ){//解决拖放与编辑的冲突问题
+		　　　　 if(editRow !== undefined) return false; //如果处于编辑状态 拒绝拖动
 			},
-			onBeforeDrag: function(row){//解决拖放与编辑的冲突问题
-		　　　　if(editRow !== undefined) return false; //如果处于编辑状态 拒绝拖动
+			onDrop: function (targetRow,sourceRow,point){//拖动释放时
+				table.datagrid('clearSelections'); //清空被选中的行
+				table.datagrid('clearChecked'); //清空被选中的行
 			},
 			onLoadSuccess: function(){//上传计划数据后启用拖放
 				table.datagrid('enableDnd'); //启用拖放
 			},
 			/*如下代码 解决 单击一行就选中的问题，使仅在点击复选框时才选中*/
 			onClickCell: function (rowIndex, field, value) {
-				IsCheckFlag = false;
+					IsCheckFlag = false;
 			},
 			onSelect: function (rowIndex, rowData) {
-				if (!IsCheckFlag) {
+				if (IsCheckFlag === false) {
 					IsCheckFlag = true;
-					table.datagrid("unselectRow", rowIndex);
+					table.datagrid("checkRow", rowIndex);
 				}
 			},                    
 			onUnselect: function (rowIndex, rowData) {
-				if (!IsCheckFlag) {
+				if (IsCheckFlag === false) {
 					IsCheckFlag = true;
-					table.datagrid("selectRow", rowIndex);
+					table.datagrid("uncheckRow", rowIndex);
+					table.datagrid("unselectRow", rowIndex);
 				}
 			},/*解决 单击一行就选中的问题 结束*/
 			columns:[[
 			{field:'id', title:'id', checkbox:true, rowspan:2},
 			{field:'target',  title:'目标名称', width:table_w*0.118666667,rowspan:2,
-				editor:{
-					type:'validatebox',
-					options:{required:true,missingMessage:'目标名必填!'},
-				},
+				editor:{ type:'text' },
 			},
 			{field:'type', title:'目标类型', width:table_w*0.0653333333,rowspan:2,
 				formatter:function(value){
@@ -359,15 +334,12 @@
 					}
 					return value;
 				},
-				
 				editor:{
 					type:'combobox',
 					options:{
 						valueField:'typeId',
 						textField:'name',
 						data:targetType,
-						required:true,
-						missingMessage:'目标类型必选!'
 					},
 				},
 			},
@@ -386,34 +358,18 @@
 					options:{
 						valueField:'epochId',
 						textField:'name',
-						data:epochData,
-						required:true,
-						missingMessage:'历元必选!'
+						data:epochData
 					},
 				},
 			},
-			{field:'exposureTime', title:'曝光时间',  width:table_w*0.059,rowspan:2,
-				editor:{
-					type:'numberbox',
-					options:{
-						required:true,
-						missingMessage:'曝光时间必填!'
-					},
-				},
+			{field:'exposureTime', title:'曝光时间<br>（秒）',  width:table_w*0.059,rowspan:2,
+				editor:{ type:'text' },
 			},
-			{field:'delayTime', title:'delayTime', width:table_w*0.069166667, rowspan:2,
-				editor:{
-					type:'numberbox',
-				},
+			{field:'delayTime', title:'delayTime<br>（秒）', width:table_w*0.069166667, rowspan:2,
+				editor:{ type:'text' },
 			},
 			{field:'exposureCount', title:'曝光数量', width:table_w*0.059, rowspan:2, 
-				editor:{
-					type:'numberbox',
-					options:{
-						required:true,
-						missingMessage:'曝光数量必填!'
-					},
-				},
+				editor:{ type:'text' },
 			},
 			{field:'filter', title:'滤光片',  width:table_w*0.045666667, rowspan:2,
 				formatter:function(value){
@@ -427,9 +383,7 @@
 					options:{
 						valueField:'filterId',
 						textField:'name',
-						data:filterData,
-						required:true,
-						missingMessage:'滤光片必选!'
+						data:filterData
 					},
 				},
 			},
@@ -444,102 +398,107 @@
 				},
 			},
 			{field:'readout', title:'读出速度', width:table_w*0.059166667, rowspan:2,
-				editor:{
-					type:'numberbox',
-					options:{
-						required:true,
-						missingMessage:'读出速度必填!'
-					},
-				},
+				editor:{ type:'numberbox' },
 			},
-			{field:'del', title:'删除',  width:table_w*0.031266666, rowspan:2,
+			{field:'del', title:'增&nbsp;&nbsp;|&nbsp;&nbsp;删',  width:table_w*0.051266666, rowspan:2,
 				formatter:function(value,row,index){
-					return '<a onclick="delPlan1(this)">删除</a> ';
+					return '<a onclick="add(this)">增&nbsp;&nbsp;</a>|<a onclick="delPlan1(this)">&nbsp;&nbsp;删</a>  ';
 				}
 			},
 		],[
 			{field:'rightAscension1', width:table_w*0.0325, title:'时',
-				editor:{
-					type:'numberbox',
-					options:{required:true,missingMessage:'时,必填!'},
-				},
+				editor:{ type:'numberbox' },
 			},
 			{field:'c1', width:table_w*0.013,
 				formatter:function(value,row,index){
 					return ':';
 				}
 			},
-		
 			{field:'rightAscension2',  width:table_w*0.0325,title:'分',
-				editor:{
-					type:'numberbox',
-					options:{required:true,missingMessage:'分,必填!'},
-				},
+				editor:{ type:'numberbox' },
 			},
 			{field:'c2', width:table_w*0.013,
 				formatter:function(value,row,index){
 					return ':';
 				}
 			},
-			{field:'rightAscension3', width:table_w*0.063333333,title:'秒',
-				editor:{
-					type:'validatebox',
-					options:{required:true,missingMessage:'秒,必填!'},
-				},
+			{field:'rightAscension3', width:table_w*0.053333333,title:'秒',
+				editor:{ type:'text' }
 			},
 	
 			{field:'declination1', width:table_w*0.0325, title:'时',
-				editor:{
-					type:'numberbox',
-					options:{required:true,missingMessage:'时,必填!'},
-				},
+				editor:{ type:'numberbox' }
 			},
 			{field:'c3', width:table_w*0.013,
 				formatter:function(value,row,index){
 					return ':';
 				}
 			},
-	
 			{field:'declination2', width:table_w*0.0325, title:'分',
-				editor:{
-					type:'numberbox',
-					options:{required:true,missingMessage:'分,必填!'},
-				},
+				editor:{ type:'numberbox' },
 			},
 			{field:'c4', width:table_w*0.013,
 				formatter:function(value,row,index){
 					return ':';
 				}
 			},
-			{field:'declination3', width:table_w*0.063333333,title:'秒',
-				editor:{
-					type:'validatebox',
-					options:{required:true,missingMessage:'秒,必填!'},
-				},
+			{field:'declination3', width:table_w*0.053333333,title:'秒',
+				editor:{ type:'text'	}
 			},
 		]],
 	});/*table.datagrid() 结束*/
 }) //jquery 结束编辑
+
 	//自定义的函数
-	function getrow(target)
+	function getrow(target) //获取点击行的索引
 	{
 		var tr = $(target).closest('tr.datagrid-row');
 		return parseInt(tr.attr('datagrid-row-index'));
 	}
 
 	function delPlan1(target) //删除行
+	{	
+		table.datagrid('endEdit', editRow); //结束编辑状态
+		var rowIndex = getrow(target);
+		table.datagrid('uncheckRow', rowIndex); //取消勾选
+		table.datagrid('unselectRow', rowIndex); //取消选中
+		table.datagrid('deleteRow', rowIndex);
+		table.datagrid('enableDnd');
+	}
+
+	function delAll(target) //删除全部行
 	{
-		table.datagrid('deleteRow', getrow(target));
+		table.datagrid({ data:[] });
 		editRow = undefined;
+	}
+
+	function add(target) //增加计划行
+	{	
+		var rowIndex = getrow(target); //当前行索引
+		table.datagrid('unselectRow', rowIndex); //取消选中
+		table.datagrid('endEdit', editRow);
+		table.datagrid('unselectRow', editRow); //取消选中
+			
+		table.datagrid('insertRow', {
+			index : rowIndex+1, //在选中行后面 新加一空行
+			row:{},
+		});
+		
+		table.datagrid('beginEdit', rowIndex+1); //将此新加的一行设为可编辑
+
+		editRow = rowIndex +1;
+		table.datagrid('enableDnd'); //启用拖放
 	}
 
 	/*对计划排序*/
 	var sortData = $('#sortPlan');
 
 	sortData.change(function () {
+		table.datagrid('endEdit', editRow); //结束编辑状态
+		table.datagrid('unselectRow', editRow); //结束编辑状态
 		var plan = table.datagrid('getRows');//所有的计划数据
 		var plan_num = plan.length;
-		if ( plan_num < 3 ) 
+		if ( plan_num < 1 ) 
 		{
 			layer.alert('数据无须排序', {shade:0,closeBtn:0});return;
 		}
@@ -611,16 +570,17 @@
 //观测计划的开始 按钮//////////////////////////////////
 	var planStart = $('#planStart'); //计划开始 按钮
 	var planStop = $('#planStop'); //计划停止 按钮
+	var modeSpan = $('#modeSpan');
 	var planErr = 0; //观测计划发送时的错误标识
 	$('#planModes').on('click', 'button', function () {
-		
+		var self = $(this);
 		//获取模式值
-		var modeVal = $('#modeSpan').val();
-		var option = $(this).attr('id');
-		var btnText = $(this).html();
-		var rows = table.datagrid('getSelections');
+		var modeVal = modeSpan.val();
+		var option = self.attr('id');
+		var btnText = self.html();
+		var rows = table.datagrid('getChecked');
 		var index = table.datagrid('getRowIndex', rows[0]);
-	
+
 		if(index < 0){
 			index = 0;
 		}
@@ -686,19 +646,15 @@
 //保存并提交计划 ////////////////////////////////////////////
 	function submitPlan ()
 	{
+		table.datagrid('endEdit', editRow);
+		table.datagrid('unselectRow', editRow);
+		table.datagrid('enableDnd'); //启用拖放
 		var plans = table.datagrid('getRows');	//选中所有记录
-		
 		var n = plans.length;
 		if ( n< 1) 
 		{
 			planErr = 1;
 			layer.alert('请先导入计划或添加计划!', {shade:false, closeBtn:0});
-		}
-		
-		if (!valid())	//执行验证
-		{
-			planErr = 1;
-			layer.alert('请先保存计划或检查第' + (editRow+1) + '行必填数据!', {shade:false, closeBtn:0});
 		}
 
 		var msg = plan_valid(plans, n);  //js验证数据
@@ -755,10 +711,11 @@
 	* 参数： n 计划的条数
 	* return： 错误提示
 	*/
+
 	function plan_valid(plans, n)
 	{
 		var msg = ''; //错误提示
-		var plan_types = []
+		
 		for(var i = 0; i < n; i++)
 		{
 			var plan_target = $.trim( plans[i].target );
@@ -778,7 +735,6 @@
 
 			var asc1 = $.trim( plans[i].rightAscension1 )*1;
 			patn  = /^\d{1,2}$/;
-			
 			if ( !patn.test(asc1) || asc1 > 24 || asc1 < 0 )
 			{
 				msg += '第' + (i+1) + '条赤经小时参数超限!<br>';
@@ -895,7 +851,7 @@
 	}/*plan_valid  结束*/
 	
 //数据验证函数 /////////////////////////////////////////////
-	function valid ()
+	/*function valid ()
 	{
 		if (editRow === undefined)
 		{//从未进行编辑某一行
@@ -907,16 +863,7 @@
 		{//编辑行 必填项有未填写的数据
 			return false;			
 		}
-	}
-	
-	$('#tst').click(function () {
-		/* tstdata = table.datagrid('clearSelections');
-		var n = tstdata.length;
-		
-		console.log(tstdata); */
-		//让正在执行的计划那行 执行mouseover(),此处eq()的2 就是正执行的行索引
-		
-	})
+	}*/
 //数据验证函数 结束////////////////////////////////////////
 
 /*******实时获取 获取正在执行的计划*******/
@@ -976,5 +923,13 @@ var get_plan_i = 0;
  function plan_executing (){ //显示正在执行的计划
 	get_plan();
 	//get_plan_i = setInterval (get_plan, 5000);
+ }
+
+ function test () {
+	var d  = table.datagrid('getChecked');
+	console.log(d);
+	console.log('----');
+	d  = table.datagrid('getSelections');
+	console.log(d);
  }
 /*******实时获取 获取正在执行的计划 结束*******/

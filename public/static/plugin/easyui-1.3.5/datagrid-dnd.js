@@ -177,6 +177,29 @@
 						}
 						this.pageY = e.pageY;
 					},
+					onEndDrag: function(e){
+						var dd = $(this).data('draggable').droppables.filter(function(){
+							var dropObj = $(this);
+							if (dropObj.droppable('options').disabled){return false;}
+							if (dropObj.hasClass('datagrid-row') && !dropObj.hasClass('datagrid-row-over')){
+								return false;
+							}
+							var p2 = dropObj.offset();
+							if (e.pageX > p2.left && e.pageX < p2.left + dropObj.outerWidth()
+									&& e.pageY > p2.top && e.pageY < p2.top + dropObj.outerHeight()){
+								return true;
+							} else {
+								return false;
+							}
+						});
+						var trs = dd.filter(function(){
+							return $(this).hasClass('datagrid-row');
+						});
+						if (trs.length){
+							dd = trs;
+						}
+						$(this).data('draggable').droppables = dd;
+					},
 					onStopDrag:function(){
 						enableDroppable(disabledDroppingRows);
 						disabledDroppingRows = [];

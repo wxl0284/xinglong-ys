@@ -1918,17 +1918,14 @@
 }
 .datagrid-row-over,
 .datagrid-header td.datagrid-header-over {
-  background:  #ffe48d;
+  background: #eaf2ff;
   color: #000000;
   cursor: default;
 }
-.datagrid-row-selected {
+.datagrid-row-checked {
   background: #ffe48d;
   color: #000000;
 }
-tr.datagrid-row-selected.datagrid-row-over {
-  background:  #18fd65;
-}/*被选择且鼠标悬停的tr样式 自己加上的*/
 .datagrid-row-editing .textbox,
 .datagrid-row-editing .textbox-text {
   -moz-border-radius: 0 0 0 0;

@@ -275,6 +275,17 @@
 			plan_click: function () {
 				this.device_nav.dev_click = 'plan';
 				planInfo.removeClass('displayNo');
+				if ( table.datagrid('getRows').length < 1 )
+				{
+					table.datagrid('insertRow', {
+						index : 0, 
+						row:{},
+					});
+					
+					table.datagrid('beginEdit', 0); //将此新加的一行设为可编辑
+					editRow = 0;
+					table.datagrid('enableDnd');
+				}
 			},
 			gimbal_click: function () {
 				this.device_nav.dev_click = 'gimbal';

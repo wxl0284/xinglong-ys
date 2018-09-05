@@ -956,21 +956,22 @@
 			 </table>
 			<div id="toolbar">
 			<a class="easyui-linkbutton" iconCls="icon-more" plain="true" onclick="importPlan()">导入计划</a>
-			<a class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="addPlan()">添加计划</a>
 			<a class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="savePlan()">保存</a>
 			<a class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="submitPlan()">提交计划</a>
+			<a class="easyui-linkbutton" iconCls="icon-clear" plain="true" onclick="delAll()">全部删除</a>
 			<a class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="plan_executing()">正执行的计划列表</a>
+			<a class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="test()">haha</a>
            </div>
 		   <!--观测计划的模式按钮-->
 		   <div id='planModes' class='pos_a'>
+				<select id="sortPlanOrder" class='pos_r' style='left:-36%'>
+					<option value="asc">升序</option>
+					<option value="desc">降序</option>
+				</select>
 				<select id="sortPlan" class='pos_r' style='left:-36%'>
 					<option value="-1">排序的列</option>
 					<option value="1">赤经</option>
 					<option value="2">赤纬</option>
-				</select>
-				<select id="sortPlanOrder" class='pos_r' style='left:-36%'>
-					<option value="asc">升序</option>
-					<option value="desc">降序</option>
 				</select>
 				<!--<div id='h'>亮起来</div>-->
 			  执行模式:<select id='modeSpan'>
@@ -983,6 +984,7 @@
 					<button id='planStart'>开始</button>
 					<button id='planStop'>停止</button>
 				</div>
+				
 		   </div>
 		   <!--观测计划的模式按钮 结束-->
 		   <form id='imptPlan' style='display:none;' enctype='multipart/form-data'>

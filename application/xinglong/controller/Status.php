@@ -171,34 +171,26 @@ class Status extends Base
 
         $status['trackObjectName'] = $gimbalStatus['trackObjectName']; //目标名
 
-        //获取跟踪目标类型
-        // switch ($gimbalStatus['trackType'])
-        // {
-        //     case 0:
-        //         $status['trackType'] = '恒星';
-        //         break;
-        //     case 1:
-        //         $status['trackType'] = '太阳';
-        //         break;
-        //     case 2:
-        //         $status['trackType'] = '月亮';
-        //         break;
-        //     case 3:
-        //         $status['trackType'] = '彗星';
-        //         break;
-        //     case 4:
-        //         $status['trackType'] = '行星';
-        //         break;
-        //     case 5:
-        //         $status['trackType'] = '卫星';
-        //         break;
-        //     case 6:
-        //         $status['trackType'] = '固定位置';
-        //         break;
-		// 	default:
-		// 		$status['trackType'] = '未获取到';
-        //         break;	
-        // }
+        
+        switch ($gimbalStatus['trackType'])  //获取跟踪目标类型
+        {
+            case 0:
+                $status['trackType'] = '恒星'; break;
+            case 1:
+                $status['trackType'] = '太阳'; break;
+            case 2:
+                $status['trackType'] = '月亮'; break;
+            case 3:
+                $status['trackType'] = '彗星'; break;
+            case 4:
+                $status['trackType'] = '行星'; break;
+            case 5:
+                $status['trackType'] = '卫星'; break;
+            case 6:
+                $status['trackType'] = '固定位置'; break;
+			default:
+				$status['trackType'] = '未获取到';   break;	
+        }
         
         if (is_numeric($gimbalStatus['targetRightAscension']))  //目标赤经
         {
