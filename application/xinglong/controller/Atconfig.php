@@ -53,13 +53,11 @@ class Atconfig extends Base
         if ( $data )
         {   //已有配置数据 进行update，使用事务，同时对atlist表的数据进行操作
             //获取$postData中望远镜属性数据 存入新数组
-            $at_data['atid'] = $postData['atid'];
             $at_data['atname'] = $postData['atname'];
             $at_data['address'] = $postData['address'];
             $at_data['longitude'] = $postData['longitude'];
             $at_data['latitude'] = $postData['latitude'];
             $at_data['altitude'] = $postData['altitude'];
-            $at_data['aperture'] = $postData['aperture'];
             
             //开启事务 同时操作atlist表 和 gimbalconf表
             Db::startTrans();
@@ -78,13 +76,11 @@ class Atconfig extends Base
         }else{//还无配置数据 进行insert
             //$res = Db::table('gimbalconf')->insert($postData);
             //获取$postData中望远镜属性数据 存入新数组
-            $at_data['atid'] = $postData['atid'];
             $at_data['atname'] = $postData['atname'];
             $at_data['address'] = $postData['address'];
             $at_data['longitude'] = $postData['longitude'];
             $at_data['latitude'] = $postData['latitude'];
             $at_data['altitude'] = $postData['altitude'];
-            $at_data['aperture'] = $postData['aperture'];
 
             //开启事务 同时操作atlist表 和 gimbalconf表
             Db::startTrans();

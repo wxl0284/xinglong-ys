@@ -47,7 +47,7 @@ $(function () {
             },//gimbal_focus 结束
             confOption: {BinArray:['']},
             gimbal_config: {
-                ip:'', type: '0', focustype: [], focusratio: '0', focuslength:'', maxaxis1speed:'', maxaxis2speed:'',
+                ip:'', atname:'', address:'', longitude:0, latitude:0, altitude:0, type: '0', focustype: [], focusratio: '0', focuslength:'', maxaxis1speed:'', maxaxis2speed:'',
                 maxaxis1speed:'', maxaxis1acceleration:'', maxaxis2acceleration:'', maxaxis3acceleration:'',
                 axis1parkposition:'', axis2parkposition:'', axis3parkposition:'', minelevation:'', numtemperaturesensor:'',
                 numhumiditysensor:'', attrversion:''
@@ -170,6 +170,72 @@ $(function () {
                 // var temp = this.gain_noise[1];
                 // this.gain_noise[1] = this.gain_noise[3];
                 // this.gain_noise[3] = temp;;
+            },
+            check_atName: function (tip, v, e,) {//验证望远镜名称
+                var msg = '';
+                if ( v.length < 1 )
+                {
+                    msg = '望远镜名称输入有误';
+                }
+
+                if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, e);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+            },
+            check_Address: function (tip, v, e,) {//验证隶属观测站
+                var msg = '';
+                if ( v.length < 1 )
+                {
+                    msg = '隶属观测站输入有误';
+                }
+
+                if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, e);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+            },
+            check_JW: function (tip, v, JW, e) {//验证 经纬度
+                var msg = '';
+
+                switch (JW)
+                {
+                    case 'J':
+                        if ( !$.isNumeric(v) || v < -180 || v > 180 )
+                        {
+                            msg = '经度输入有误';
+                        }
+                        break;
+                    case 'W':
+                        if ( !$.isNumeric(v) || v < -90 || v > 90 )
+                        {
+                            msg = '纬度输入有误';
+                        }
+                        break;
+                    default:
+                        msg = '经纬度数据异常';  break;
+                }
+
+                if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, e);
+				}
+				return msg !== '' ? msg + '<br>' : '';
+            },
+            check_altitude: function (tip, v, e) {//验证海拔
+                var msg = '';
+                if ( !$.isNumeric(v) || v > 6000 || v < -1000 )
+                {
+                    msg = '海拔输入有误';
+                }
+
+                if ( tip===true && msg !== '' )
+				{
+					layer.tips(msg, e);
+				}
+				return msg !== '' ? msg + '<br>' : '';
             },
             downLoadFile:function (v, dev) {//各设备说明文件用ajax下载
                 var that = this; //存储vue的实例
@@ -796,7 +862,12 @@ $(function () {
                     layer.alert('请选择您要配置的望远镜!', {shade:false,closeBtn:0});return;
                 }
 
-                var msg = '';
+                var msg = ''; //错误提示
+                msg += this.check_atName(false, this.gimbal_config.atname);
+                msg += this.check_Address(false, this.gimbal_config.address);
+                msg += this.check_JW(false, this.gimbal_config.longitude, "J");
+                msg += this.check_JW(false, this.gimbal_config.latitude, "W");
+                msg += this.check_altitude(false, this.gimbal_config.altitude);
                 if ( this.gimbal_config.type === '0' )  msg += '类型未选择<br>';
 
                 if ( this.gimbal_focus.focustype.length == 0 )  msg += '焦点类型未选择<br>';

@@ -73,23 +73,23 @@
 						<td>转台ip:</td>
 						<td><input type='text' ref='gimbalIp' name='ip' placeholder='ip地址' v-model.trim='gimbal_config.ip' @blur='check_ip(true, gimbal_config.ip, $refs.gimbalIp)'></td>
 						<td>望远镜id:</td>
-						<td><input type='text' id='gimbalId' name='atid' readonly='readonly' v-model.trim='gimbal_config.atid' readonly='readonly'></td>
+						<td>{{gimbal_config.atid}}</td>
 						<td>望远镜名称:</td>
-						<td><input type='text' id='gimbalName' name='atname' v-model.trim='gimbal_config.atname' readonly='readonly'></td>
+						<td><input type='text' ref='gimbalName' name='atname' v-model.trim='gimbal_config.atname' @blur='check_atName(true, gimbal_config.atname, $refs.gimbalName)'></td>
 					</tr>
 					<tr>
 						<td>隶属观测站:</td>
-						<td><input type='text' id='gimbalAddress' name='address' placeholder='兴隆观测基地' v-model.trim='gimbal_config.address' readonly='readonly'></td>
-						<td>经度:</td>
-						<td><input type='text' id='gimbalLongitude' name='longitude' placeholder='-180.0~+180.0' v-model.trim='gimbal_config.longitude' readonly='readonly'></td>
-						<td>纬度:</td>
-						<td><input type='text' id='gimbalLatitude' name='latitude' placeholder='-90.0~+90.0' v-model.trim='gimbal_config.latitude' readonly='readonly'></td>
+						<td><input type='text' ref='gimbalAddress' name='address' v-model.trim='gimbal_config.address' @blur='check_Address(true, gimbal_config.address, $refs.gimbalAddress)'></td>
+						<td>经度（°）:</td>
+						<td><input type='text' ref='gimbalLongitude' name='longitude' v-model.trim='gimbal_config.longitude' @blur='check_JW(true, gimbal_config.longitude, "J", $refs.gimbalLongitude)'></td>
+						<td>纬度（°）:</td>
+						<td><input type='text' ref='gimbalLatitude' name='latitude' v-model.trim='gimbal_config.latitude' @blur='check_JW(true, gimbal_config.latitude, "W", $refs.gimbalLatitude)'></td>
 					</tr>
 					<tr>
-						<td>海拔高度:</td>
-						<td><input type='text' id='gimbalAltitude' name='altitude' placeholder='国家天文台兴隆观测基地' v-model.trim='gimbal_config.altitude' readonly='readonly'></td>
-						<td>口径:</td>
-						<td><input type='text' id='gimbalAperture' name='aperture' placeholder='216.0' v-model.trim='gimbal_config.aperture' readonly='readonly'></td>
+						<td>海拔高度（m）:</td>
+						<td><input type='text' ref='gimbalAltitude' name='altitude' placeholder="-1000~6000" v-model.trim='gimbal_config.altitude' @blur='check_altitude(true, gimbal_config.altitude, $refs.gimbalAltitude) '></td>
+						<td>口径（cm）:</td>
+						<td>{{gimbal_config.aperture}}</td>
 						<td>类型:</td>
 						<td>
 							<select id='gimbalType' name='type' v-model='gimbal_config.type'>
