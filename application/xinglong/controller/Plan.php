@@ -490,7 +490,7 @@ class Plan extends Base
             udpSendPlan($sendMsg, $this->ip, $this->port); //无返回值
 		}//给中控 发送数据 结束///////////////
 
-		// 把计划数据写入表plandata中
+		/*// 把计划数据写入表plandata中
 		$plan_data_json = json_encode ($postData['planData']); //将提交上来的计划数据转为json字串
 		$data = [
 			'atuser' => $this->user,
@@ -503,7 +503,7 @@ class Plan extends Base
 		if (!$res)
 		{
 			return '观测计划缓存失败, 请重新提交观测计划!';
-		}
+		}*/
 
 		return '观测计划发送完毕!';
     } //获取计划数据 验证并发送计划数据 结束////////////////////////////////////////
@@ -593,7 +593,20 @@ class Plan extends Base
 				break;
 		}
 
-		try{
+		$sql = 'select tag from ' . $plan_table . ' where "user" ='. "'". $this->user. "'" . ' order by id desc limit 1';
+		$exetue = Db::query($sql);
+		//halt($exetue);
+		//$plan_data = Db::table('plandata')->where('atuser', $this->user)->where('at', $at)->order('id', 'desc')->field('plan')->find();
+		//halt($plan_data);
+		if ( $exetue )
+		{
+			return 'tagOk#' . $exetue[0]['tag']; //返回tag, 'tagOk'用来供前端判断
+			//return $plan_data['plan']. '#' . $exetue[0]['tag']; //将计划的json数据连接上#tag
+			//return '{}' . '#' . $exetue[0]['tag']; //将计划的json数据连接上#tag
+		}else{
+			return '无正执行计划!';
+		}
+		/*try{
 			//Db::table($plan_table)->where('user', $this->user)->order('id', 'desc')->field('tag')->find();
 			//如果此用户用正在执行的计划，
 			//........
@@ -602,16 +615,18 @@ class Plan extends Base
 			$exetue = Db::query($sql);
 			//halt($exetue);
 			//$plan_data = Db::table('plandata')->where('atuser', $this->user)->where('at', $at)->order('id', 'desc')->field('plan')->find();
-			if ( $exetue )
+			//halt($plan_data);
+			if ( $exetue && $plan_data )
 			{
-				//return $plan_data['plan']. '#' . $exetue ['tag']; //将计划的json数据连接上#tag
-				return '{}' . '#' . $exetue[0]['tag']; //将计划的json数据连接上#tag
+				return $plan_data['plan']. '#' . '2'; //将计划的json数据连接上#tag
+				//return $plan_data['plan']. '#' . $exetue[0]['tag']; //将计划的json数据连接上#tag
+				//return '{}' . '#' . $exetue[0]['tag']; //将计划的json数据连接上#tag
 			}else{
 				return '无正执行计划!';
 			}
 		}catch(\Exception $e){
 			return '查询正在执行计划遇异常!';
-		}
+		}*/
 	}
 	/****ajax 请求  是否有观测计划在执行 结束*******/
 }

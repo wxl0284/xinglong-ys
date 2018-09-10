@@ -157,7 +157,7 @@
 							data: arr,
 						});
 						
-						editRow = undefined; //否则 导入后无法插入新行
+						editRow = undefined; //否则 无法拖动
 						planErr = 0; //将提交计划的错误标识 改为0
 						checked = []; //清空被选中的行索引
 						table.datagrid('enableDnd');
@@ -262,66 +262,30 @@
 		　　　　 if(editRow !== undefined) return false; //如果处于编辑状态 拒绝拖动
 			},
 			onBeforeDrop: function( dtargetRow,sourceRow,point ){//判断是否连续选中，或拖动的行是否被选中
-				var sourceIndex = -1;
-				if ( sourceRow.length === undefined )
-				{//要拖动的行 未被选中，且是一条, 点击一行为被选中的行（sourceRow是一个对象）
-					sourceIndex = table.datagrid('getRowIndex', sourceRow);
-				}
-
-				if ( ( sourceIndex !== -1 && checked.indexOf(sourceIndex) === -1 ) || checked.length < 1 )
-				{//若没有选中任一行或者要拖动的行未被选中，则不拖动
-					layer.alert('拖动的行必须连续且被选中', {shade:0, closeBtn:0}); return false;
-				}
-				//判断 被选中的行是否是连续的 若不连续 拒绝拖动
-				checked.sort(); //升序排列
-				var n = checked.length;
-				if ( n > 1 && ( checked[n-1] - checked[0] ) > (n-1) ) //被选中的行不连续
+				if ( sourceRow.length === undefined ) //拖动的是一行，啥也不做
 				{
-					layer.alert('拖动的行必须连续且被选中', {shade:0, closeBtn:0}); return false;
+
+				}else{
+					checked = []; //首先把checked清空
+					sourceRow.filter(function (v) {
+						var index = table.datagrid("getRowIndex", v);
+						checked.push(index);
+					})
+
+					checked.sort(); //升序排列
+					var n = checked.length;
+					if ( n > 1 && ( checked[n-1] - checked[0] ) > (n-1) ) //被选中的行不连续
+					{
+						layer.alert('拖动多行时必须连续选中', {shade:0, closeBtn:0}); return false;
+					}
 				}
 			},
 			onDrop: function (targetRow,sourceRow,point){//拖动到目标行释放时
-				sourceRow.filter( function (v) {
-					checked.shift(); //把checked原来元素逐一弹出
-				});
+				checked = []; //清空checked
 				table.datagrid('acceptChanges');
 			},
 			onLoadSuccess: function(){//上传计划数据后启用拖放
 				table.datagrid('enableDnd'); //启用拖放
-			},
-			/*如下代码 解决 单击一行就选中的问题，使仅在点击复选框时才选中*/
-			// onClickCell: function (rowIndex, field, value) {
-			// 	IsCheckFlag = false;
-			// },
-			onCheck: function (rowIndex, rowData) {
-				checked.push(rowIndex);
-				console.log(checked);
-				// if (IsCheckFlag === false) {
-				// 	IsCheckFlag = true;
-				// 	table.datagrid("checkRow", rowIndex);
-				// }
-			},              
-			onUncheck: function (rowIndex, rowData) {
-				checked.splice( checked.indexOf(rowIndex), 1);
-				console.log(checked);
-				// if (IsCheckFlag === false) {
-				// 	IsCheckFlag = true;
-				// 	table.datagrid("uncheckRow", rowIndex);
-				// 	table.datagrid("unselectRow", rowIndex);
-				// }
-			},/*解决 单击一行就选中的问题 结束*/
-			onCheckAll: function (allRows) {//逐一将行索引存入checked
-				var n = allRows.length;
-				if ( n > 0 )
-				{
-					checked =[];
-					allRows.filter(function (i, k) {
-						checked.push(k);
-					})
-				}
-			},
-			onUncheckAll: function (allRows) {//逐一将行索引存入checked
-				checked = []; //清空checked
 			},
 			columns:[[
 			{field:'id', title:'id', checkbox:true, rowspan:2},
@@ -564,26 +528,13 @@
 		table.datagrid({ data: plan });
 	}/*对观测计划排序 结束*/
 
-	/*高亮正在执行的计划 (h-1)即为正在执行的行 只需 获取h的值即可*/
-	var h = 0;
-
-	// $('#h').click(function () {//此代码要根据后台数据来执行
-	// 	h = 3;
-	// 	table.datagrid({
-	// 		rowStyler: function (index, row) {
-	// 			if( index == h ){
-	// 				return 'background-color:#18fd65;';
-	// 			}
-	// 		},
-	// 	})
-	// })/*高亮正在执行的计划 结束*/
-
 //观测计划的 开始 停止 下一个按钮////////////////////////////
 //观测计划的开始 按钮//////////////////////////////////
 	var planStart = $('#planStart'); //计划开始 按钮
 	var planStop = $('#planStop'); //计划停止 按钮
 	var modeSpan = $('#modeSpan');
 	var planErr = 0; //观测计划发送时的错误标识
+	var checked_plans = []; //被选中的计划的行索引
 	$('#planModes').on('click', 'button', function () {
 		var self = $(this);
 		//获取模式值
@@ -609,6 +560,20 @@
 		} */
 		if (planErr === 0)
 		{
+			/*开始执行前 将所有计划数据和被checked的行索引存入浏览器本地存储*/
+			checked_plans = []; //每次执行计划前都将checked_plans清空
+			var all_plans = JSON.stringify( table.datagrid('getRows') ); //转为字符串
+			localStorage.setItem ('all_plans', all_plans); //将字符串存入all_plans变量内
+		
+			if ( rows.length > 0 )
+			{
+				rows.filter(function (v) {
+					
+					checked_plans.push ( table.datagrid('getRowIndex', v) );
+				})
+			}
+
+			/*开始执行前 将所有计划数据和被checked的行索引存入浏览器本地存储 结束*/
 			$.ajax({
 				type : 'post',
 				url : '/plan',
@@ -649,7 +614,6 @@
 	            },
 			});
 		}
-	
 	});
 	//观测计划的开始 按钮 结束/////////////////////////////
 //观测计划的 开始 停止 下一个按钮 结束//////////////////////////////
@@ -879,7 +843,8 @@
 //数据验证函数 结束////////////////////////////////////////
 
 /*******实时获取 获取正在执行的计划*******/
-function get_plan () {
+
+/*function get_plan () {
 	$.ajax({
 		url: '/plan',
 		type: 'post',
@@ -899,15 +864,15 @@ function get_plan () {
 						}
 						if ( info.indexOf('无正执行计划') !== -1 )
 						{
-							//clearInterval(get_plan_i); //清楚定时器
+							clearInterval(get_plan_i); //清楚定时器
 						}
 					},
 				});
 			}else{
 				var info = info.split('#'); //将计划数据与tag组成的字符串从其中的'#'分割为数组
 				var plan_tag = info[1];
-				/*var plan = $.parseJSON(info[0]);
-
+				
+				var plan = $.parseJSON(info[0]);
 				var arr = [];
 				var ii = 0;
 				for (var p in plan)
@@ -918,31 +883,89 @@ function get_plan () {
 
 				table.datagrid({
 						data: arr,
-				}); */
-				
+				});
+				table.datagrid('enableDnd');
 				//editRow = undefined; //否则 导入后无法插入新行
 				planErr = 0; //将提交计划的错误标识 改为0
 				
 				table.datagrid('scrollTo', plan_tag-1); //滚动到第tag行
-				table.datagrid('highlightRow', plan_tag-1); //高亮第tag行		
+				table.datagrid({
+					rowStyler: function (index, row) {
+						if( index == (plan_tag-1) ){
+							return 'background-color:#18fd65;';
+						}
+					},
+				})
+			}
+		},//success 方法结束
+	})/*ajax 结束
+}//get_plan()  结束*/
+
+//var get_plan_i = setInterval (get_plan, 60000); //定时执行get_plan() 60秒执行一次查询，否则浏览器卡顿
+//var get_plan_i = 0;
+ function plan_executing ()
+ { //显示正在执行的计划
+	//console.log ( localStorage.getItem('all_plas') );
+	var all_plans = localStorage.getItem('all_plans');
+	var parsed_all_plans = JSON.parse ( all_plans );
+	var all_plans_num = parsed_all_plans.length;
+
+	if (  all_plans !== null &&  all_plans_num > 0 )
+	{
+		table.datagrid({ data: parsed_all_plans }); //在表格中显示本地存储的计划数据
+		editRow = undefined; //否则，无法拖动
+	}else{
+		layer.alert('无计划被执行', {shade:0, closeBtn:0}); return;
+	}
+
+	//然后将被选中的计划，逐一选中
+	if ( checked_plans.length > 0 )
+	{
+		checked_plans.filter(function (v) {
+			table.datagrid('checkRow', v); //逐一选中计划
+		})
+	}
+
+	//然后去请求中控 查看每个望远镜中正在执行的计划之tag,然后标绿
+	$.ajax({
+		url: '/plan',
+		type: 'post',
+		data: {at: at, command: 'get_plan', at_aperture:aperture},
+		success: function (info) {
+			if ( info.indexOf('tagOk') !== -1 )
+			{//查到了tag字段
+				var plan_tag = info.split('#')[1];
+				table.datagrid('scrollTo', plan_tag-1); //滚动到第tag行
+				table.datagrid({
+					rowStyler: function (index, row) {
+						if( index == (plan_tag-1) ){
+							return 'background-color:#18fd65;';
+						}
+					},
+				})
+			}else{
+				layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if ( info.indexOf('登录') !== -1 )
+						{
+							location.href = '/';
+						}
+					},
+				});
 			}
 		},//success 方法结束
 	})/*ajax 结束*/
-}
-
-//var get_plan_i = setInterval (get_plan, 60000); //定时执行get_plan() 60秒执行一次查询，否则浏览器卡顿
-var get_plan_i = 0;
- function plan_executing (){ //显示正在执行的计划
-	get_plan();
-	//get_plan_i = setInterval (get_plan, 5000);
- }
+ }/*plan_executing() 结束*/
 
  function test () {
-	// var d  = table.datagrid('getChecked');
-	// console.log(d);
-	// console.log('----');
-	// d  = table.datagrid('getSelections');
-	// console.log(d);
+	var d  = table.datagrid('getChecked');
+	console.log(d);
+	console.log('----');
+	d  = table.datagrid('getSelections');
+	console.log(d);
 	console.log(checked);
  }
 /*******实时获取 获取正在执行的计划 结束*******/
