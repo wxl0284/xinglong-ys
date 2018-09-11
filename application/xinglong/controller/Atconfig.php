@@ -45,10 +45,23 @@ class Atconfig extends Base
         //属性更新时间
         $postData['attrmodifytime'] = date ('Y-m-d');
 
-        //定义错误提示
-        $errMsg = '';
+        $errMsg = ''; //定义错误提示
 
         $data = Db::table('gimbalconf')->where('teleid', $postData['teleid'])->find();
+
+        //检查转台ip与其他设备ip是否重复
+        $ips = Db::table('devipid')->where('teleid', '<>', $postData['teleid'])->column('ip');
+        
+        if ( $ips )
+        {
+            if ( in_array($postData['ip'], $ips) )
+            {
+                return '转台ip与其他设备ip重复';
+            }
+        }else{
+            return '验证转台ip是否重复失败，请重新提交';
+        }
+        //检查转台ip与其他设备ip是否重复 结束
 
         if ( $data )
         {   //已有配置数据 进行update，使用事务，同时对atlist表的数据进行操作
@@ -58,14 +71,15 @@ class Atconfig extends Base
             $at_data['longitude'] = $postData['longitude'];
             $at_data['latitude'] = $postData['latitude'];
             $at_data['altitude'] = $postData['altitude'];
-            
-            //开启事务 同时操作atlist表 和 gimbalconf表
+
+            //开启事务 同时操作atlist表 和 gimbalconf 和 devipid表
             Db::startTrans();
 
-            $atlist_res = Db::table('atlist')->where('id', $postData['teleid'])->update($at_data);
+            $atlist_res = Db::table('atlist')->where('id', $postData['teleid'])->strict(false)->update($at_data);
             $gimbal_res = Db::table('gimbalconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
+            $ipid_res = Db::table('devipid')->where('teleid', $postData['teleid'])->strict(false)->update($postData['ip']);
             
-            if ( $atlist_res && $gimbal_res ) //若同时更新ok
+            if ( $atlist_res && $gimbal_res && $ipid_res ) //若同时更新ok
             {
                 Db::commit(); //执行提交
                 $res = true;
@@ -73,8 +87,7 @@ class Atconfig extends Base
                 Db::rollback();
                 $res = false;
             }
-        }else{//还无配置数据 进行insert
-            //$res = Db::table('gimbalconf')->insert($postData);
+        }else{//还无配置数据 进行insert        
             //获取$postData中望远镜属性数据 存入新数组
             $at_data['atname'] = $postData['atname'];
             $at_data['address'] = $postData['address'];
@@ -87,9 +100,9 @@ class Atconfig extends Base
 
             $atlist_res = Db::table('atlist')->where('id', $postData['teleid'])->strict(false)->update($at_data);
             $gimbal_res = Db::table('gimbalconf')->strict(false)->insert($postData);
-
-            //若同时执行ok 
-            if ( $atlist_res && $gimbal_res )
+            $ipid_res = Db::table('devipid')->strict(false)->insert( ['ip' => $postData['ip']] );
+ 
+            if ( $atlist_res && $gimbal_res && $ipid_res ) //若同时执行ok 
             {
                 Db::commit(); //执行提交
                 $res = true;
@@ -187,8 +200,7 @@ class Atconfig extends Base
         }
     }/*获取转台配置项表单 存入atlist表和gimbalconf中 结束*/
 
-    /*获取ccd配置项表单 存入表ccdconf中*/
-    public function ccd_config()
+    public function ccd_config() /*获取ccd配置项表单 存入表ccdconf中*/
     {
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
@@ -255,15 +267,40 @@ class Atconfig extends Base
         {//已有配置数据 进行update
             $res = Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', $postData['ccdno'])->strict(false)->update($postData);
         }else{//还无配置数据 进行insert
+            //验证及判断ccd的ip是否重复
+            if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
+            {//未提交ip,或者IP不符合ipv4和ipv6
+                $errMsg += 'CCD ip输入有误<br>';
+            }
+            
+            $ip_isSame = $this->devIdSame ($postData['ip']);
+            if ( $ip_isSame === true )
+            {
+                $errMsg .= 'cdip 重复';
+            }
+            //验证及判断gimbal的ip是否重复 结束
+            return $errMsg;
             //判断ccd的id是否重复
             if ( !isset($postData['ccdid']) || strlen($postData['ccdid']) === 0 )
             {
-                return '提交的数据无id';
+                $errMsg += 'CCD id提交失败<br>';
             }
 
             $dev_id_isSame = $this->devIdSame ($postData['ccdid']);
-            if ( $dev_id_isSame === true ) return 'ccd id重复或保存失败,请重新提交数据';
+            if ( $dev_id_isSame === true ) $errMsg += 'ccd id重复或保存失败,请重新提交数据<br>';
             //判断ccd的id是否重复 结束
+
+            //判断ccd的名称是否重复
+            if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
+            {
+                $errMsg += 'CCD名称提交失败<br>';
+            }
+            
+            $dev_id_isSame = $this->devIdSame ($postData['name']);
+            if ( $dev_id_isSame === true ) $errMsg += 'ccd名称重复或保存失败,请重新提交数据<br>';
+            
+            if ( $errMsg !== '' ) return $errMsg;
+            //判断ccd的名称是否重复 结束
             $res = Db::table('ccdconf')->strict(false)->insert($postData);
         }
 
@@ -404,21 +441,14 @@ class Atconfig extends Base
             $res = Db::table('ccdconf')->strict(false)->insert($postData);
         }
 
-        $errMsg = ''; //错误信息
-
         if ( !$res )
         {
-            $errMsg = '增益值-读出噪声值存储失败!';
+            return '增益值-读出噪声值存储失败!';
         }
 
-        if ($errMsg !== '')
-        {
-            return $errMsg;
-        }else{
-            $result['msg'] = '增益值-读出噪声值配置ok!';
-            $result['attrmodifytime'] = $postData['attrmodifytime'];
-            return json_encode ($result);
-        }
+        $result['msg'] = '增益值-读出噪声值配置ok!';
+        $result['attrmodifytime'] = $postData['attrmodifytime'];
+        return json_encode ($result);
 
     }//将vue对象中gain_noise数据对象存入ccdconf表中gain_noise字段中 结束
 
@@ -451,8 +481,7 @@ class Atconfig extends Base
         }
     }//对ccd增益-读出噪声值表格相关字段 升序、降序排列 结束*/
 
-    /*获取滤光片配置项表单 存入表filterconf中*/
-    public function filter_config()
+    public function filter_config() /*获取滤光片配置项表单 存入表filterconf中*/
     {
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
@@ -461,41 +490,40 @@ class Atconfig extends Base
         // }
 
        $postData = input();
-    
+       
+       $errMsg = ''; //定义错误提示
+       
        $postData['attrmodifytime'] = date ('Y-m-d');   //属性更新时间
        //接下来处理 各插槽的 滤光片类型-名称-偏差值
        if ( !isset($postData['numberoffilter']) || $postData['numberoffilter'] < 1 )
        {
-           return '未填写插槽数目';
+            $errMsg += '未填写插槽数目<br>';
        }
 
        $filter_type_data = Db::table('confoption')->where('conf', 'FilterSystem')->select();
        
        $filter_type_data = array_column($filter_type_data, 'conf_val'); //获取confoption表中的滤光片类型
-      
-       $slot_err = ''; //记录错误提示
 
        for ( $slot_i = 0; $slot_i < $postData['numberoffilter']; $slot_i++ ) //逐一检查每个插槽的 滤光片类型-名称-偏差值
        {
             //首先检查滤光片类型
             if ( !in_array( $postData['filterType'][$slot_i],  $filter_type_data)  )
             {
-                $slot_err .= '插槽' . ($slot_i+1) . '滤光片类型有误';
+                $errMsg += '插槽' . ($slot_i+1) . '滤光片类型有误<br>';
             }
             //检查滤光片名称
             if ( preg_match('/[\x{4e00}-\x{9af5} 0-9]/u', $postData['filterName'][$slot_i]) || $postData['filterName'][$slot_i] === '' )
             {
-                $slot_err .= '插槽' . ($slot_i+1) . '滤光片名称有误';
+                $errMsg += '插槽' . ($slot_i+1) . '滤光片名称有误<br>';
             }
             //检查焦距偏差值
             if ( !preg_match('/\d+/', $postData['filterComp'][$slot_i]) || $postData['filterComp'][$slot_i] < 1 )
             {
-                $slot_err .= '插槽' . ($slot_i+1) . '焦距偏差值有误';
+                $errMsg += '插槽' . ($slot_i+1) . '焦距偏差值有误<br>';
             }
        }
 
-       if ( $slot_err !== '' ) return $slot_err;
-
+       if ( $errMsg !== '' ) return $errMsg;
        $slot_temp['slot_num'] = $postData['numberoffilter'];
        $slot_temp['filterType'] = $postData['filterType'];
        $slot_temp['filterName'] = $postData['filterName'];
@@ -503,9 +531,6 @@ class Atconfig extends Base
 
        $postData['filtersystem'] = json_encode ($slot_temp);
        //处理 各插槽的 滤光片类型-名称-偏差值 结束
-        
-       //定义错误提示
-        $errMsg = '';
 
         $data = Db::table('filterconf')->where('teleid', $postData['teleid'])->find();
 
@@ -513,15 +538,37 @@ class Atconfig extends Base
         {//已有配置数据 进行update
             $res = Db::table('filterconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
         }else{//还无配置数据 进行insert
+            //验证及判断filter的ip是否重复
+            if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
+            {//未提交ip,或者IP不符合ipv4和ipv6
+                $errMsg += '滤光片ip输入有误<br>';
+            }
+
+            $ip_isSame = $this->devIdSame ($postData['ip']);
+            if ( $ip_isSame === true ) $errMsg += '滤光片ip重复或保存失败,请重新提交数据<br>';
+            //验证及判断filter的ip是否重复 结束
+
             //判断filter的id是否重复
             if ( !isset($postData['filterid']) || strlen($postData['filterid']) === 0 )
             {
-                return '提交的数据无id';
+                $errMsg += '滤光片id提交失败<br>';
             }
 
             $dev_id_isSame = $this->devIdSame ($postData['filterid']);
-            if ( $dev_id_isSame === true ) return '滤光片id重复或保存失败,请重新提交数据';
+            if ( $dev_id_isSame === true ) $errMsg += '滤光片id重复或保存失败,请重新提交数据<br>';
             //判断filter的id是否重复 结束
+
+             //判断filter的名称是否重复
+             if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
+             {
+                 $errMsg += '滤光片id提交失败<br>';
+             }
+ 
+             $dev_id_isSame = $this->devIdSame ($postData['name']);
+             if ( $dev_id_isSame === true ) $errMsg += '滤光片名称重复或保存失败,请重新提交数据<br>';
+             //判断filter的名称是否重复 结束
+
+            if ( $errMsg !== '' ) return $errMsg;
             $res = Db::table('filterconf')->strict(false)->insert($postData);
         }
 
@@ -574,8 +621,7 @@ class Atconfig extends Base
         }
     }/*获取滤光片配置项表单 存入表filterconf中 结束*/
 
-    /*获取随动圆顶配置项表单 存入表sdomeconf中*/
-    public function slaveDome_config()
+    public function slaveDome_config()  /*获取随动圆顶配置项表单 存入表sdomeconf中*/
     {
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
@@ -585,28 +631,48 @@ class Atconfig extends Base
 
         $postData = input();
 
-       //属性更新时间
-       $postData['attrmodifytime'] = date ('Y-m-d');
+        $postData['attrmodifytime'] = date ('Y-m-d'); //属性更新时间
 
-        //定义错误提示
-        $errMsg = '';
+        $errMsg = ''; //定义错误提示
 
         $data = Db::table('sdomeconf')->where('teleid', $postData['teleid'])->find();
 
         if ( $data )
         {//已有配置数据 进行update
-            $res = Db::table('sdomeconf')->where('teleid', $postData['teleid'])->update($postData);
+            $res = Db::table('sdomeconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
         }else{//还无配置数据 进行insert
+            //验证及判断slaveDome的ip是否重复
+            if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
+            {//未提交ip,或者IP不符合ipv4和ipv6
+                $errMsg += '随动圆顶ip输入有误<br>';
+            }
+
+            $ip_isSame = $this->devIdSame ($postData['ip']);
+            if ( $ip_isSame === true ) $errMsg += '随动圆顶ip重复或保存失败,请重新提交数据<br>';
+            //验证及判断slaveDome的ip是否重复 结束
+
             //判断随动圆顶的id是否重复
             if ( !isset($postData['sdomeid']) || strlen($postData['sdomeid']) === 0 )
             {
-                return '提交的数据无id';
+                $errMsg += '随动圆顶id提交失败<br>';
             }
 
             $dev_id_isSame = $this->devIdSame ($postData['sdomeid']);
-            if ( $dev_id_isSame === true ) return '随动圆顶id重复或保存失败,请重新提交数据';
+            if ( $dev_id_isSame === true ) $errMsg += '随动圆顶id重复或保存失败,请重新提交数据<br>';
             //判断随动圆顶的id是否重复 结束
-            $res = Db::table('sdomeconf')->insert($postData);
+
+            //判断随动圆顶的名称是否重复
+            if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
+            {
+                $errMsg += '随动圆顶名称提交失败<br>';
+            }
+
+            $dev_id_isSame = $this->devIdSame ($postData['name']);
+            if ( $dev_id_isSame === true ) $errMsg += '随动圆顶名称重复或保存失败,请重新提交数据<br>';
+            //判断随动圆顶的名称是否重复 结束
+
+            if ( $errMsg !== '' ) return $errMsg;
+            $res = Db::table('sdomeconf')->strict(false)->insert($postData);
         }
 
         if ( !$res )
@@ -658,8 +724,7 @@ class Atconfig extends Base
         }
     }/*获取随动圆顶配置项表单 存入表sdomeconf中 结束*/
 
-    /*获取全开圆顶配置项表单 存入表odomeconf中*/
-    public function oDome_config()
+    public function oDome_config()   /*获取全开圆顶配置项表单 存入表odomeconf中*/
     {
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
@@ -669,28 +734,48 @@ class Atconfig extends Base
 
         $postData = input();
 
-       //属性更新时间
-       $postData['attrmodifytime'] = date ('Y-m-d');
+        $postData['attrmodifytime'] = date ('Y-m-d');  //属性更新时间
 
-        //定义错误提示
-        $errMsg = '';
+        $errMsg = '';  //定义错误提示
 
         $data = Db::table('odomeconf')->where('teleid', $postData['teleid'])->find();
 
         if ( $data )
         {//已有配置数据 进行update
-            $res = Db::table('odomeconf')->where('teleid', $postData['teleid'])->update($postData);
+            $res = Db::table('odomeconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
         }else{//还无配置数据 进行insert
+            //验证及判断全开圆顶的ip是否重复
+            if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
+            {//未提交ip,或者IP不符合ipv4和ipv6
+                $errMsg += '全开圆顶ip输入有误<br>';
+            }
+
+            $ip_isSame = $this->devIdSame ($postData['ip']);
+            if ( $ip_isSame === true ) $errMsg += '全开圆顶ip重复或保存失败,请重新提交数据<br>';
+            //验证及判断全开圆顶的ip是否重复 结束
+
             //判断全开圆顶的id是否重复
             if ( !isset($postData['odomeid']) || strlen($postData['odomeid']) === 0 )
             {
-                return '提交的数据无id';
+                $errMsg +=  '全开圆顶id提交失败<br>';
             }
 
             $dev_id_isSame = $this->devIdSame ($postData['odomeid']);
-            if ( $dev_id_isSame === true ) return '全开圆顶id重复或保存失败,请重新提交数据';
+            if ( $dev_id_isSame === true ) $errMsg += '全开圆顶id重复或保存失败,请重新提交数据<br>';
             //判断全开圆顶的id是否重复 结束
-            $res = Db::table('odomeconf')->insert($postData);
+
+            //判断全开圆顶的名称是否重复
+            if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
+            {
+                $errMsg +=  '全开圆顶名称提交失败<br>';
+            }
+
+            $dev_id_isSame = $this->devIdSame ($postData['name']);
+            if ( $dev_id_isSame === true ) $errMsg += '全开圆顶名称重复或保存失败,请重新提交数据<br>';
+            //判断全开圆顶的名称是否重复 结束
+
+            if ( $errMsg !== '' ) return $errMsg;
+            $res = Db::table('odomeconf')->strict(false)->insert($postData);
         }
 
         if ( !$res )
@@ -741,9 +826,8 @@ class Atconfig extends Base
             return json_encode ($result);
         }
     }/*获取全开圆顶配置项表单 存入表odomeconf中 结束*/
-
-    /*获取调焦器配置项表单 存入表odomeconf中*/
-    public function focus_config()
+    
+    public function focus_config() /*获取调焦器配置项表单 存入表focusconf中*/
     {
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
@@ -753,28 +837,48 @@ class Atconfig extends Base
 
         $postData = input();
 
-       //属性更新时间
-       $postData['attrmodifytime'] = date ('Y-m-d');
+        $postData['attrmodifytime'] = date ('Y-m-d');   //属性更新时间
 
-        //定义错误提示
-        $errMsg = '';
+        $errMsg = '';   //定义错误提示
 
         $data = Db::table('focusconf')->where('teleid', $postData['teleid'])->find();
 
         if ( $data )
         {//已有配置数据 进行update
-            $res = Db::table('focusconf')->where('teleid', $postData['teleid'])->update($postData);
+            $res = Db::table('focusconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
         }else{//还无配置数据 进行insert
-             //判断调焦器的id是否重复
+            //验证及判断调焦器的ip是否重复
+            if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
+            {//未提交ip,或者IP不符合ipv4和ipv6
+                $errMsg += '调焦器ip输入有误<br>';
+            }
+
+            $ip_isSame = $this->devIdSame ($postData['ip']);
+            if ( $ip_isSame === true ) $errMsg += '调焦器ip重复或保存失败,请重新提交数据<br>';
+            //验证及判断调焦器的ip是否重复 结束
+
+            //判断调焦器的id是否重复
             if ( !isset($postData['focusid']) || strlen($postData['focusid']) === 0 )
             {
-                return '提交的数据无id';
+                $errMsg += '调焦器id提交失败<br>';
             }
 
             $dev_id_isSame = $this->devIdSame ($postData['focusid']);
-            if ( $dev_id_isSame === true ) return '调焦器id重复或保存失败,请重新提交数据';
+            if ( $dev_id_isSame === true ) $errMsg += '调焦器id重复或保存失败,请重新提交数据<br>';
             //判断调焦器的id是否重复 结束
-            $res = Db::table('focusconf')->insert($postData);
+
+            //判断调焦器的名称是否重复
+            if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
+            {
+                $errMsg += '调焦器名称提交失败<br>';
+            }
+
+            $dev_id_isSame = $this->devIdSame ($postData['name']);
+            if ( $dev_id_isSame === true ) $errMsg += '调焦器名称重复或保存失败,请重新提交数据<br>';
+            //判断调焦器名称是否重复 结束
+
+            if ( $errMsg !== '' ) return $errMsg;
+            $res = Db::table('focusconf')->strict(false)->insert($postData);
         }
 
         if ( !$res )
@@ -836,10 +940,11 @@ class Atconfig extends Base
         // }
 
         $postData = input();
+        $errMsg = ''; //定义错误提示
 
         //处理焦点类型--焦距
         $guide_focus_num = isset($postData['guide_focus']) ? count ($postData['guide_focus']) : 0; //被选择的
-        if ( $guide_focus_num == 0 ) return '您未选择焦点类型';
+        if ( $guide_focus_num == 0 )  $errMsg += '您未选择焦点类型<br>';
         
         for ( $g_i = 0; $g_i < $postData['focus_n']; $g_i++)
         { //将焦距数据整理为一个数组[ 'v0'=>'11', 'v1'=>'22' ]
@@ -848,18 +953,16 @@ class Atconfig extends Base
                 $focus_temp['v'.$g_i] = [ 'focusLeng' => $postData['focusLeng'.$g_i] ];
             }elseif ( isset( $postData['focusLeng'.$g_i] ) && !(is_numeric($postData['focusLeng'.$g_i]) && $postData['focusLeng'.$g_i] > 0) )
             {
-                return $postData['guide_focus'][$g_i] . ': 焦距输入有误';
+                $errMsg += $postData['guide_focus'][$g_i] . ': 焦距输入有误<br>';
             }
         }
 
+        if ( $errMsg !== '' ) return $errMsg;
         $focus_temp['focus'] = $postData['guide_focus'];
 
         $postData['focuslength'] = json_encode ($focus_temp); //将整理后的数组转为json字串，存入focustype字段
-       //属性更新时间
-       $postData['attrmodifytime'] = date ('Y-m-d');
-
-        //定义错误提示
-        $errMsg = '';
+       
+        $postData['attrmodifytime'] = date ('Y-m-d');  //属性更新时间
 
         $data = Db::table('guideconf')->where('teleid', $postData['teleid'])->find();
 
@@ -867,15 +970,37 @@ class Atconfig extends Base
         {//已有配置数据 进行update
             $res = Db::table('guideconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
         }else{//还无配置数据 进行insert
+            //验证及判断导星镜的ip是否重复
+            if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
+            {//未提交ip,或者IP不符合ipv4和ipv6
+                $errMsg += '导星镜ip输入有误<br>';
+            }
+
+            $ip_isSame = $this->devIdSame ($postData['ip']);
+            if ( $ip_isSame === true ) $errMsg += '导星镜ip重复或保存失败,请重新提交数据<br>';
+            //验证及判断导星镜的ip是否重复 结束
+
             //判断导星望远镜的id是否重复
             if ( !isset($postData['guidescopeid']) || strlen($postData['guidescopeid']) === 0 )
             {
-                return '提交的数据无id';
+                $errMsg += '导星镜id提交失败';
             }
 
             $dev_id_isSame = $this->devIdSame ($postData['guidescopeid']);
-            if ( $dev_id_isSame === true ) return '导星镜id重复或保存失败,请重新提交数据';
+            if ( $dev_id_isSame === true ) $errMsg +=  '导星镜id重复或保存失败,请重新提交数据';
             //判断导星望远镜的id是否重复 结束
+
+            //判断导星望远镜的名称是否重复
+            if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
+            {
+                $errMsg += '导星镜名称提交失败';
+            }
+
+            $dev_id_isSame = $this->devIdSame ($postData['name']);
+            if ( $dev_id_isSame === true ) $errMsg +=  '导星镜名称重复或保存失败,请重新提交数据';
+            //判断导星望远镜的名称是否重复 结束
+
+            if ( $errMsg !== '' ) return $errMsg;
             $res = Db::table('guideconf')->strict(false)->insert($postData);
         }
 
@@ -931,7 +1056,7 @@ class Atconfig extends Base
 
      //各设备文件下载 ，此方法用路由请求
      public function downLoadFlie ($dir, $filename)
-     {  
+     {
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {
@@ -1067,7 +1192,7 @@ class Atconfig extends Base
     }//对ccd 增益-读出噪声值 页面表格相关字段进行排序，排序后返回json数据 结束*/
 
     //判断各设备id是否重复
-    protected function devIdSame ($devId)
+    /*protected function devIdSame ($devId)
     {
         $ids = file_get_contents('devId.txt'); //获取devId.txt文件内的各设备id
 
@@ -1085,5 +1210,5 @@ class Atconfig extends Base
         {
             return true;
         }
-    }//判断各设备id是否重复 结束
+    }*///判断各设备id是否重复 结束
 }

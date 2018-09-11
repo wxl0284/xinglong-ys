@@ -1,0 +1,17 @@
+CREATE TABLE "at60slavedomestatus" (
+  "id" BIGSERIAL NOT NULL PRIMARY KEY,
+  "sec" INTEGER NOT NULL,
+  "msec" INTEGER NOT NULL,
+  "curstatus" INTEGER NOT NULL,
+  "lastStatus" INTEGER NOT NULL,
+  "warning" INTEGER NOT NULL,
+  "error" INTEGER NOT NULL,
+  "errorString" TEXT NOT NULL,
+  "scuttleStatus" SMALLINT NOT NULL,
+  "shadeStatus" SMALLINT NOT NULL,
+  "domePosition" DOUBLE PRECISION NOT NULL,
+  "scuttlePercent" DOUBLE PRECISION NOT NULL,
+  "shadePosition" DOUBLE PRECISION NOT NULL,
+  "targetDomePosition" DOUBLE PRECISION NOT NULL,
+  "targetScuttlePosition" DOUBLE PRECISION NOT NULL,
+  "targetShadePosition" DOUBLE PRECISION NOT NULL);

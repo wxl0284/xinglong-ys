@@ -1523,8 +1523,9 @@ $(function () {
             },//ccd_sbmt() 结束
             check_ip:function (tip, v, e) {//验证各设备ip
                 var msg = '';
-                var patn = /^([A-Za-z0-9]+\.?:?)+$/;
-                if ( !patn.test(v) )
+                var ipv4 = /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
+                var ipv6 = /^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/;
+                if ( !ipv4.test(v) && !ipv6.test(v) ) //既不满足ipv4,也不满足ipv6
                 {
                     msg = 'ip输入有误';
                 }

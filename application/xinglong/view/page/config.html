@@ -153,15 +153,15 @@
 						</td>
 					</tr>
 					<tr>
-						<td>轴1复位位置:</td>
+						<td>轴1复位位置（°）:</td>
 						<td>
 							<input type='text' ref='axis1Park' name='axis1parkposition' placeholder='0-360' v-model.trim='gimbal_config.axis1parkposition' @blur='check_axisPark(true, gimbal_config.axis1parkposition, $refs.axis1Park, 1)'>
 						</td>
-						<td>轴2复位位置:</td>
+						<td>轴2复位位置（°）:</td>
 						<td>
 							<input type='text' ref='axis2Park' name='axis2parkposition' placeholder='0-360' v-model.trim='gimbal_config.axis2parkposition' @blur='check_axisPark(true, gimbal_config.axis2parkposition, $refs.axis2Park, 2)'>
 						</td>
-						<td>轴3复位位置:</td>
+						<td>轴3复位位置（°）:</td>
 						<td>
 							<input type='text' ref='axis3Park' name='axis3parkposition' placeholder='0-360' v-model.trim='gimbal_config.axis3parkposition' :disabled='gimbal_config.haveaxis3==0' @blur='check_axisPark(true, gimbal_config.axis3parkposition, $refs.axis3Park, 3)'>
 						</td>
