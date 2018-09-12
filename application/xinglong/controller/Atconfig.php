@@ -18,7 +18,6 @@ class Atconfig extends Base
         // {
         //     return '您无权执行此操作!';
         // }
-
         $postData = input();
         
         //处理表单数据，若无轴3，则轴3相关input框禁用，则将$postData轴3相关之置为空字符串
@@ -47,37 +46,43 @@ class Atconfig extends Base
 
         $errMsg = ''; //定义错误提示
 
-        $data = Db::table('gimbalconf')->where('teleid', $postData['teleid'])->find();
-
         //检查转台ip与其他设备ip是否重复
-        $ips = Db::table('devipid')->where('teleid', '<>', $postData['teleid'])->column('ip');
-        
-        if ( $ips )
-        {
-            if ( in_array($postData['ip'], $ips) )
-            {
-                return '转台ip与其他设备ip重复';
-            }
-        }else{
-            return '验证转台ip是否重复失败，请重新提交';
+        if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
+        {//未提交ip,或者IP不符合ipv4和ipv6
+            $errMsg .= '转台ip输入有误<br>';
         }
-        //检查转台ip与其他设备ip是否重复 结束
+    
+        if ( $errMsg !== '' ) return $errMsg;
+
+        $data = Db::table('gimbalconf')->where('teleid', $postData['teleid'])->find();
 
         if ( $data )
         {   //已有配置数据 进行update，使用事务，同时对atlist表的数据进行操作
-            //获取$postData中望远镜属性数据 存入新数组
+            //获取$postData中望远镜属性数据 存入新数组，用以更新atlist表
             $at_data['atname'] = $postData['atname'];
             $at_data['address'] = $postData['address'];
             $at_data['longitude'] = $postData['longitude'];
             $at_data['latitude'] = $postData['latitude'];
             $at_data['altitude'] = $postData['altitude'];
 
+            //判断转台IP是否被其他设备占用
+            //首先 查到此望远镜转台在表devipid中的主键id
+            $id = Db::table('devipid')->where('dev', 'gimbal')->where('teleid', $postData['teleid'])->field('id')->find();
+            //然后 在表devipid中查所有不是此id的数据
+            $ips = Db::table('devipid')->where('id', '<>', $id['id'])->column ('ip');
+         
+            if ( $ips && in_array($postData['ip'], $ips))
+            {
+                return '转台ip与其他设备ip重复';
+            }
+            //判断转台IP是否被其他设备占用 结束
+
             //开启事务 同时操作atlist表 和 gimbalconf 和 devipid表
             Db::startTrans();
 
             $atlist_res = Db::table('atlist')->where('id', $postData['teleid'])->strict(false)->update($at_data);
             $gimbal_res = Db::table('gimbalconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
-            $ipid_res = Db::table('devipid')->where('teleid', $postData['teleid'])->strict(false)->update($postData['ip']);
+            $ipid_res = Db::table('devipid')->where('teleid', $postData['teleid'])->where('dev', 'gimbal')->strict(false)->update( [ 'ip'=>$postData['ip'] ]);
             
             if ( $atlist_res && $gimbal_res && $ipid_res ) //若同时更新ok
             {
@@ -87,20 +92,32 @@ class Atconfig extends Base
                 Db::rollback();
                 $res = false;
             }
-        }else{//还无配置数据 进行insert        
-            //获取$postData中望远镜属性数据 存入新数组
+        }else{//还无配置数据 进行insert       
+            //获取$postData中望远镜属性数据 存入新数组 用以更新atlist表
             $at_data['atname'] = $postData['atname'];
             $at_data['address'] = $postData['address'];
             $at_data['longitude'] = $postData['longitude'];
             $at_data['latitude'] = $postData['latitude'];
             $at_data['altitude'] = $postData['altitude'];
 
+            //判断转台IP是否被其他设备占用
+            $ips = Db::table('devipid')->where('ip', $postData['ip'])->find();
+            if ( $ips )
+            {
+                return '转台ip与其他设备ip重复';
+            }
+            //判断转台IP是否被其他设备占用 结束
+
             //开启事务 同时操作atlist表 和 gimbalconf表
             Db::startTrans();
 
             $atlist_res = Db::table('atlist')->where('id', $postData['teleid'])->strict(false)->update($at_data);
             $gimbal_res = Db::table('gimbalconf')->strict(false)->insert($postData);
-            $ipid_res = Db::table('devipid')->strict(false)->insert( ['ip' => $postData['ip']] );
+            $ipid_res = Db::table('devipid')->strict(false)
+                        ->insert( ['ip' => $postData['ip'],
+                                    'teleid' => $postData['teleid'],
+                                    'dev' => 'gimbal',
+                                    'devnum' => '1' ] ); //默认给转台的序号置为1
  
             if ( $atlist_res && $gimbal_res && $ipid_res ) //若同时执行ok 
             {
@@ -114,7 +131,7 @@ class Atconfig extends Base
 
         if ( !$res )
         {
-            $errMsg += '转台配置存数据库失败!<br>';
+            $errMsg .= '转台配置存数据库失败!<br>';
         }
         //处理上传文件
         $dir = 'gimbal' . $postData['teleid']; //每个望远镜的每个设备建1个目录，如gimbal1, gimbal2.....
@@ -153,7 +170,7 @@ class Atconfig extends Base
             $info = $reportFile->move($this->file_path."/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
-                $errMsg += "{$fileName}上传失败!<br>";
+                $errMsg .= "{$fileName}上传失败!<br>";
             }
         }/*处理测试报告 结束*/
 
@@ -169,7 +186,7 @@ class Atconfig extends Base
             $info = $instruFile->move($this->file_path . "/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
-                $errMsg += "{$fileName}上传失败!";
+                $errMsg .= "{$fileName}上传失败!";
             }
         }/*处理说明书 结束*/
 
@@ -261,52 +278,117 @@ class Atconfig extends Base
 
         $errMsg = '';  //定义错误提示
 
+        if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
+        {//未提交ip,或者IP不符合ipv4和ipv6
+            $errMsg .= 'CCD ip输入有误<br>';
+        }
+   
+        if ( !isset($postData['ccdid']) || strlen($postData['ccdid']) === 0 )
+        {
+            $errMsg .= 'CCD id提交失败<br>';
+        }
+
+        //判断ccd的名称是否重复
+        if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
+        {
+            $errMsg .= 'CCD名称提交失败<br>';
+        }
+
+        if ( $errMsg !== '' ) return $errMsg;
+
         $data = Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', $postData['ccdno'])->find();
        
         if ( $data )
         {//已有配置数据 进行update
-            $res = Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', $postData['ccdno'])->strict(false)->update($postData);
-        }else{//还无配置数据 进行insert
-            //验证及判断ccd的ip是否重复
-            if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
-            {//未提交ip,或者IP不符合ipv4和ipv6
-                $errMsg += 'CCD ip输入有误<br>';
-            }
-            
-            $ip_isSame = $this->devIdSame ($postData['ip']);
-            if ( $ip_isSame === true )
-            {
-                $errMsg .= 'cdip 重复';
-            }
-            //验证及判断gimbal的ip是否重复 结束
-            return $errMsg;
-            //判断ccd的id是否重复
-            if ( !isset($postData['ccdid']) || strlen($postData['ccdid']) === 0 )
-            {
-                $errMsg += 'CCD id提交失败<br>';
-            }
+            //检查ccd的ip id 名称是否重复
+            //首先 查到当前设备在表devipid中的主键
+            $id = Db::table('devipid')->where('teleid', $postData['teleid'])->where('dev', 'ccd')->where('devnum', $postData['ccdno'])->field('id')->find();
+            //然后 在表devipid中查不是此id对应的数据
+            $ips = Db::table('devipid')->where('id', '<>', $id['id'])->select();
 
-            $dev_id_isSame = $this->devIdSame ($postData['ccdid']);
-            if ( $dev_id_isSame === true ) $errMsg += 'ccd id重复或保存失败,请重新提交数据<br>';
-            //判断ccd的id是否重复 结束
-
-            //判断ccd的名称是否重复
-            if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
+            if ( $ips )
             {
-                $errMsg += 'CCD名称提交失败<br>';
+                if ( in_array( $postData['ip'], array_column($ips, 'ip') )  )
+                {
+                    $errMsg .= 'ccd的ip与其他设备重复<br>';
+                }
+
+                if ( in_array( $postData['ccdid'], array_column($ips, 'devid') )  )
+                {
+                    $errMsg .= 'ccd的id与其他设备重复<br>';
+                }
+
+                if ( in_array( $postData['name'], array_column($ips, 'devname') )  )
+                {
+                    $errMsg .= 'ccd的名称与其他设备重复<br>';
+                }
             }
-            
-            $dev_id_isSame = $this->devIdSame ($postData['name']);
-            if ( $dev_id_isSame === true ) $errMsg += 'ccd名称重复或保存失败,请重新提交数据<br>';
-            
+            //检查ccd的ip id 名称是否重复 结束
             if ( $errMsg !== '' ) return $errMsg;
-            //判断ccd的名称是否重复 结束
-            $res = Db::table('ccdconf')->strict(false)->insert($postData);
+            //开启事务 同时操作ccdconf 和 devipid表
+            Db::startTrans();
+            $ccd_res = Db::table('ccdconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
+            $ipid_res = Db::table('devipid')->where('teleid', $postData['teleid'])
+                        ->strict(false)->update(
+                            [ 'ip'=>$postData['ip'],
+                              'devid'=>$postData['ccdid'],
+                              'devname'=>$postData['name'] ] );
+
+            if ( $ccd_res && $ipid_res ) //若同时更新ok
+            {
+                Db::commit(); //执行提交
+                $res = true;
+            }else{
+                Db::rollback();
+                $res = false;
+            }
+        }else{//还无配置数据 进行insert
+            //检查当前设备Ip id 名称是否重复
+            $ips =  Db::table('devipid')->select();
+            if ( $ips )
+            {
+                if ( in_array( $postData['ip'], array_column($ips, 'ip') )  )
+                {
+                    $errMsg .= 'ccd的ip与其他设备重复<br>';
+                }
+
+                if ( in_array( $postData['ccdid'], array_column($ips, 'devid') )  )
+                {
+                    $errMsg .= 'ccd的id与其他设备重复<br>';
+                }
+
+                if ( in_array( $postData['name'], array_column($ips, 'devname') )  )
+                {
+                    $errMsg .= 'ccd的名称与其他设备重复<br>';
+                }
+            }
+            //检查当前设备Ip id 名称是否重复 结束
+            if ( $errMsg !== '' ) return $errMsg;
+            //开启事务 同时操作ccdconf 和 devipid表
+            Db::startTrans();
+            $ccd_res = Db::table('ccdconf')->strict(false)->insert($postData);
+            $ipid_res = Db::table('devipid')->strict(false)
+                        ->insert(
+                            ['ip'=>$postData['ip'],
+                            'devid'=>$postData['ccdid'],
+                            'devname'=>$postData['name'],
+                            'teleid'=>$postData['teleid'],
+                            'dev'=>'ccd',
+                            'devnum'=>$postData['ccdno'] ] );
+
+            if ( $ccd_res && $ipid_res ) //若同时更新ok
+            {
+            Db::commit(); //执行提交
+            $res = true;
+            }else{
+            Db::rollback();
+            $res = false;
+            }
         }
 
         if ( !$res )
         {
-            $errMsg += 'ccd配置存数据库失败!<br>';
+            $errMsg .= 'ccd配置存数据库失败!<br>';
         }
        
         //处理上传文件, 每个望远镜的每个设备建1个目录，如ccd1, focus2.....
@@ -323,7 +405,7 @@ class Atconfig extends Base
             $info = $qecurveFile->move($this->file_path."/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
-                $errMsg += "上传{$fileName}失败!<br>";
+                $errMsg .= "上传{$fileName}失败!<br>";
             }
         }/*处理量子效率曲线 结束*/
 
@@ -339,7 +421,7 @@ class Atconfig extends Base
             $info = $reportFile->move($this->file_path . "/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
-                $errMsg += "{$fileName}上传失败!";
+                $errMsg .= "{$fileName}上传失败!";
             }
         }/*处理出厂测试报告 结束*/
 
@@ -355,7 +437,7 @@ class Atconfig extends Base
             $info = $reportFile->move($this->file_path . "/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
-                $errMsg += "{$fileName}上传失败!";
+                $errMsg .= "{$fileName}上传失败!";
             }
         }/*处理说明书 结束*/
 
@@ -497,7 +579,7 @@ class Atconfig extends Base
        //接下来处理 各插槽的 滤光片类型-名称-偏差值
        if ( !isset($postData['numberoffilter']) || $postData['numberoffilter'] < 1 )
        {
-            $errMsg += '未填写插槽数目<br>';
+            $errMsg .= '未填写插槽数目<br>';
        }
 
        $filter_type_data = Db::table('confoption')->where('conf', 'FilterSystem')->select();
@@ -509,21 +591,60 @@ class Atconfig extends Base
             //首先检查滤光片类型
             if ( !in_array( $postData['filterType'][$slot_i],  $filter_type_data)  )
             {
-                $errMsg += '插槽' . ($slot_i+1) . '滤光片类型有误<br>';
+                $errMsg .= '插槽' . ($slot_i+1) . '滤光片类型有误<br>';
             }
             //检查滤光片名称
             if ( preg_match('/[\x{4e00}-\x{9af5} 0-9]/u', $postData['filterName'][$slot_i]) || $postData['filterName'][$slot_i] === '' )
             {
-                $errMsg += '插槽' . ($slot_i+1) . '滤光片名称有误<br>';
+                $errMsg .= '插槽' . ($slot_i+1) . '滤光片名称有误<br>';
             }
             //检查焦距偏差值
             if ( !preg_match('/\d+/', $postData['filterComp'][$slot_i]) || $postData['filterComp'][$slot_i] < 1 )
             {
-                $errMsg += '插槽' . ($slot_i+1) . '焦距偏差值有误<br>';
+                $errMsg .= '插槽' . ($slot_i+1) . '焦距偏差值有误<br>';
             }
        }
 
+        //检查滤光片的ip、id、名称与其他设备是否重复
+        if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
+        {//未提交ip,或者IP不符合ipv4和ipv6
+            $errMsg .= '滤光片ip输入有误<br>';
+        }
+   
+        if ( !isset($postData['filterid']) || strlen($postData['filterid']) === 0 )
+        {
+            $errMsg .= '滤光片id提交失败<br>';
+        }
+
+        //判断滤光片的名称是否重复
+        if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
+        {
+            $errMsg .= '滤光片名称提交失败<br>';
+        }
+
+        $ips = Db::table('devipid')->where('teleid', '<>', $postData['teleid'])->select();
+        
+        if ( $ips )
+        {
+            if ( isset($postData['ip']) && in_array( $postData['ip'], array_column($ips, 'ip') ) )
+            {
+                $errMsg .= '滤光片ip与其他设备ip重复<br>';
+            }
+
+            if ( isset($postData['filterid']) && in_array( $postData['filterid'], array_column($ips, 'devid') ) )
+            {
+                $errMsg .= '滤光片id与其他设备id重复<br>';
+            }
+
+            if ( isset($postData['name']) && in_array( $postData['name'], array_column($ips, 'devname') ) )
+            {
+                $errMsg .= '滤光片名称与其他设备名称重复';
+            }
+        }
+        //检查滤光片的ip、id、名称与其他设备是否重复 结束
+
        if ( $errMsg !== '' ) return $errMsg;
+
        $slot_temp['slot_num'] = $postData['numberoffilter'];
        $slot_temp['filterType'] = $postData['filterType'];
        $slot_temp['filterName'] = $postData['filterName'];
@@ -536,45 +657,39 @@ class Atconfig extends Base
 
         if ( $data )
         {//已有配置数据 进行update
-            $res = Db::table('filterconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
-        }else{//还无配置数据 进行insert
-            //验证及判断filter的ip是否重复
-            if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
-            {//未提交ip,或者IP不符合ipv4和ipv6
-                $errMsg += '滤光片ip输入有误<br>';
-            }
+            //开启事务 同时操作filterconf 和 devipid表
+            Db::startTrans();
+            $filter_res = Db::table('filterconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
+            $ipid_res = Db::table('devipid')->where('teleid', $postData['teleid'])->strict(false)->update( ['ip'=>$postData['ip'], 'devid'=>$postData['filterid'], 'devname'=>$postData['name'] ] );
 
-            $ip_isSame = $this->devIdSame ($postData['ip']);
-            if ( $ip_isSame === true ) $errMsg += '滤光片ip重复或保存失败,请重新提交数据<br>';
-            //验证及判断filter的ip是否重复 结束
-
-            //判断filter的id是否重复
-            if ( !isset($postData['filterid']) || strlen($postData['filterid']) === 0 )
+            if ( $filter_res && $ipid_res ) //若同时更新ok
             {
-                $errMsg += '滤光片id提交失败<br>';
+                Db::commit(); //执行提交
+                $res = true;
+            }else{
+                Db::rollback();
+                $res = false;
             }
+        }else{//还无配置数据 进行insert
+            //开启事务 同时操作filterconf 和 devipid表
+            halt('insert');
+            Db::startTrans();
+            $filter_res = Db::table('filterconf')->strict(false)->insert($postData);
+            $ipid_res = Db::table('devipid')->strict(false)->insert( ['ip'=>$postData['ip'], 'devid'=>$postData['filterid'], 'devname'=>$postData['name'],'teleid'=>$postData['teleid'] ] );
 
-            $dev_id_isSame = $this->devIdSame ($postData['filterid']);
-            if ( $dev_id_isSame === true ) $errMsg += '滤光片id重复或保存失败,请重新提交数据<br>';
-            //判断filter的id是否重复 结束
-
-             //判断filter的名称是否重复
-             if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
-             {
-                 $errMsg += '滤光片id提交失败<br>';
-             }
- 
-             $dev_id_isSame = $this->devIdSame ($postData['name']);
-             if ( $dev_id_isSame === true ) $errMsg += '滤光片名称重复或保存失败,请重新提交数据<br>';
-             //判断filter的名称是否重复 结束
-
-            if ( $errMsg !== '' ) return $errMsg;
-            $res = Db::table('filterconf')->strict(false)->insert($postData);
+            if ( $filter_res && $ipid_res ) //若同时更新ok
+            {
+                Db::commit(); //执行提交
+                $res = true;
+            }else{
+                Db::rollback();
+                $res = false;
+            }
         }
 
         if ( !$res )
         {
-            $errMsg += '滤光片配置存数据库失败!<br>';
+            $errMsg .= '滤光片配置存数据库失败!<br>';
         }
         //处理上传文件
         $dir = 'filter' . $postData['teleid']; //每个望远镜的每个设备建1个目录，如ccd1, focus2.....
@@ -590,7 +705,7 @@ class Atconfig extends Base
             $info = $filterFile->move($this->file_path . "/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
-                $errMsg += "上传{$fileName}失败!<br>";
+                $errMsg .= "上传{$fileName}失败!<br>";
             }
         }/*处理说明文件 结束*/
 
@@ -635,49 +750,84 @@ class Atconfig extends Base
 
         $errMsg = ''; //定义错误提示
 
-        $data = Db::table('sdomeconf')->where('teleid', $postData['teleid'])->find();
+        //验证及判断slaveDome的ip是否重复
+        if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
+        {//未提交ip,或者IP不符合ipv4和ipv6
+            $errMsg .= '随动圆顶ip输入有误<br>';
+        }
 
+        //判断随动圆顶的id是否重复
+        if ( !isset($postData['sdomeid']) || strlen($postData['sdomeid']) === 0 )
+        {
+            $errMsg .= '随动圆顶id提交失败<br>';
+        }
+
+        //判断随动圆顶的名称是否重复
+        if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
+        {
+            $errMsg .= '随动圆顶名称提交失败<br>';
+        }
+
+        //检查随动圆顶ip id 名称与其他设备是否重复
+        $ips = Db::table('devipid')->where('teleid', '<>', $postData['teleid'])->select();
+
+        if ( $ips )
+        {
+            if ( isset($postData['ip']) && in_array( $postData['ip'], array_column($ips, 'ip') ) )
+            {
+                $errMsg .= '随动圆顶ip与其他设备ip重复';
+            }
+
+            if ( isset($postData['sdomeid']) && in_array( $postData['sdomeid'], array_column($ips, 'devid') ) )
+            {
+                $errMsg .= '随动圆顶id与其他设备id重复';
+            }
+
+            if ( isset($postData['name']) && in_array( $postData['name'], array_column($ips, 'devname') ) )
+            {
+                $errMsg .= '随动圆顶名称与其他设备名称重复';
+            }
+        }
+        //检查随动圆顶ip id 名称与其他设备是否重复 结束
+
+        if ( $errMsg !== '' ) return $errMsg;
+
+        $data = Db::table('sdomeconf')->where('teleid', $postData['teleid'])->find();
+        
         if ( $data )
         {//已有配置数据 进行update
-            $res = Db::table('sdomeconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
+            //开启事务 同时操作sdomeconf 和 devipid表
+            Db::startTrans();
+            $sdome_res = Db::table('sdomeconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
+            $ipid_res = Db::table('devipid')->where('teleid', $postData['teleid'])->strict(false)->update( ['ip'=>$postData['ip'], 'devid'=>$postData['sdomeid'], 'devname'=>$postData['name'] ] );
+
+            if ( $sdome_res && $ipid_res ) //若同时更新ok
+            {
+                Db::commit(); //执行提交
+                $res = true;
+            }else{
+                Db::rollback();
+                $res = false;
+            }
         }else{//还无配置数据 进行insert
-            //验证及判断slaveDome的ip是否重复
-            if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
-            {//未提交ip,或者IP不符合ipv4和ipv6
-                $errMsg += '随动圆顶ip输入有误<br>';
-            }
+            //开启事务 同时操作sdomeconf 和 devipid表
+            Db::startTrans();
+            $sdome_res = Db::table('sdomeconf')->strict(false)->insert($postData);
+            $ipid_res = Db::table('devipid')->strict(false)->insert( ['ip'=>$postData['ip'], 'devid'=>$postData['sdomeid'], 'devname'=>$postData['name'], 'teleid'=>$postData['teleid'] ] );
 
-            $ip_isSame = $this->devIdSame ($postData['ip']);
-            if ( $ip_isSame === true ) $errMsg += '随动圆顶ip重复或保存失败,请重新提交数据<br>';
-            //验证及判断slaveDome的ip是否重复 结束
-
-            //判断随动圆顶的id是否重复
-            if ( !isset($postData['sdomeid']) || strlen($postData['sdomeid']) === 0 )
+            if ( $sdome_res && $ipid_res ) //若同时更新ok
             {
-                $errMsg += '随动圆顶id提交失败<br>';
+                Db::commit(); //执行提交
+                $res = true;
+            }else{
+                Db::rollback();
+                $res = false;
             }
-
-            $dev_id_isSame = $this->devIdSame ($postData['sdomeid']);
-            if ( $dev_id_isSame === true ) $errMsg += '随动圆顶id重复或保存失败,请重新提交数据<br>';
-            //判断随动圆顶的id是否重复 结束
-
-            //判断随动圆顶的名称是否重复
-            if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
-            {
-                $errMsg += '随动圆顶名称提交失败<br>';
-            }
-
-            $dev_id_isSame = $this->devIdSame ($postData['name']);
-            if ( $dev_id_isSame === true ) $errMsg += '随动圆顶名称重复或保存失败,请重新提交数据<br>';
-            //判断随动圆顶的名称是否重复 结束
-
-            if ( $errMsg !== '' ) return $errMsg;
-            $res = Db::table('sdomeconf')->strict(false)->insert($postData);
         }
 
         if ( !$res )
         {
-            $errMsg += '随动圆顶配置存数据库失败!<br>';
+            $errMsg .= '随动圆顶配置存数据库失败!<br>';
         }
         //处理上传文件
         $dir = 'sDome' . $postData['teleid']; //每个望远镜的每个设备建1个目录，如ccd1, focus2.....
@@ -693,7 +843,7 @@ class Atconfig extends Base
             $info = $sDomeFile->move($this->file_path . "/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
-                $errMsg += "上传{$fileName}失败!<br>";
+                $errMsg .= "上传{$fileName}失败!<br>";
             }
         }/*处理说明文件 结束*/
 
@@ -738,49 +888,84 @@ class Atconfig extends Base
 
         $errMsg = '';  //定义错误提示
 
+        //验证及判断全开圆顶的ip是否重复
+        if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
+        {//未提交ip,或者IP不符合ipv4和ipv6
+            $errMsg .= '全开圆顶ip输入有误<br>';
+        }
+
+        //判断全开圆顶的id是否重复
+        if ( !isset($postData['odomeid']) || strlen($postData['odomeid']) === 0 )
+        {
+            $errMsg .=  '全开圆顶id提交失败<br>';
+        }
+
+        //判断全开圆顶的名称是否重复
+        if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
+        {
+            $errMsg .=  '全开圆顶名称提交失败<br>';
+        }
+
+        //检查全开圆顶ip id 名称与其他设备是否重复
+        $ips = Db::table('devipid')->where('teleid', '<>', $postData['teleid'])->select();
+
+        if ( $ips )
+        {
+            if ( isset($postData['ip']) && in_array( $postData['ip'], array_column($ips, 'ip') ) )
+            {
+                $errMsg .= '全开圆顶ip与其他设备ip重复';
+            }
+
+            if ( isset($postData['odomeid']) && in_array( $postData['odomeid'], array_column($ips, 'devid') ) )
+            {
+                $errMsg .= '全开圆顶id与其他设备id重复';
+            }
+
+            if ( isset($postData['name']) && in_array( $postData['name'], array_column($ips, 'devname') ) )
+            {
+                $errMsg .= '全开圆顶名称与其他设备名称重复';
+            }
+        }
+        //检查全开圆顶ip id 名称与其他设备是否重复 结束
+
+        if ( $errMsg !== '' ) return $errMsg;
+
         $data = Db::table('odomeconf')->where('teleid', $postData['teleid'])->find();
 
         if ( $data )
         {//已有配置数据 进行update
-            $res = Db::table('odomeconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
+            //开启事务 odomeconf 和 devipid表
+            Db::startTrans();
+            $odome_res = Db::table('odomeconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
+            $ipid_res = Db::table('devipid')->where('teleid', $postData['teleid'])->strict(false)->update( ['ip'=>$postData['ip'], 'devid'=>$postData['odomeid'], 'devname'=>$postData['name'] ] );
+
+            if ( $odome_res && $ipid_res ) //若同时更新ok
+            {
+                Db::commit(); //执行提交
+                $res = true;
+            }else{
+                Db::rollback();
+                $res = false;
+            }
         }else{//还无配置数据 进行insert
-            //验证及判断全开圆顶的ip是否重复
-            if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
-            {//未提交ip,或者IP不符合ipv4和ipv6
-                $errMsg += '全开圆顶ip输入有误<br>';
-            }
+            //开启事务 同时操作sdomeconf 和 devipid表
+            Db::startTrans();
+            $odome_res = Db::table('odomeconf')->strict(false)->insert($postData);
+            $ipid_res = Db::table('devipid')->strict(false)->insert( ['ip'=>$postData['ip'], 'devid'=>$postData['odomeid'], 'devname'=>$postData['name'], 'teleid'=>$postData['teleid'] ] );
 
-            $ip_isSame = $this->devIdSame ($postData['ip']);
-            if ( $ip_isSame === true ) $errMsg += '全开圆顶ip重复或保存失败,请重新提交数据<br>';
-            //验证及判断全开圆顶的ip是否重复 结束
-
-            //判断全开圆顶的id是否重复
-            if ( !isset($postData['odomeid']) || strlen($postData['odomeid']) === 0 )
+            if ( $odome_res && $ipid_res ) //若同时更新ok
             {
-                $errMsg +=  '全开圆顶id提交失败<br>';
+                Db::commit(); //执行提交
+                $res = true;
+            }else{
+                Db::rollback();
+                $res = false;
             }
-
-            $dev_id_isSame = $this->devIdSame ($postData['odomeid']);
-            if ( $dev_id_isSame === true ) $errMsg += '全开圆顶id重复或保存失败,请重新提交数据<br>';
-            //判断全开圆顶的id是否重复 结束
-
-            //判断全开圆顶的名称是否重复
-            if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
-            {
-                $errMsg +=  '全开圆顶名称提交失败<br>';
-            }
-
-            $dev_id_isSame = $this->devIdSame ($postData['name']);
-            if ( $dev_id_isSame === true ) $errMsg += '全开圆顶名称重复或保存失败,请重新提交数据<br>';
-            //判断全开圆顶的名称是否重复 结束
-
-            if ( $errMsg !== '' ) return $errMsg;
-            $res = Db::table('odomeconf')->strict(false)->insert($postData);
         }
 
         if ( !$res )
         {
-            $errMsg += '全开圆顶配置存数据库失败!<br>';
+            $errMsg .= '全开圆顶配置存数据库失败!<br>';
         }
         //处理上传文件
         $dir = 'oDome' . $postData['teleid']; //每个望远镜的每个设备建1个目录，如ccd1, focus2.....
@@ -796,7 +981,7 @@ class Atconfig extends Base
             $info = $oDomeFile->move($this->file_path . "/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
-                $errMsg += "上传{$fileName}失败!<br>";
+                $errMsg .= "上传{$fileName}失败!<br>";
             }
         }/*处理说明文件 结束*/
 
@@ -841,49 +1026,84 @@ class Atconfig extends Base
 
         $errMsg = '';   //定义错误提示
 
+        //验证及判断调焦器的ip是否重复
+        if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
+        {//未提交ip,或者IP不符合ipv4和ipv6
+            $errMsg .= '调焦器ip输入有误<br>';
+        }
+
+        //判断调焦器的id是否重复
+        if ( !isset($postData['focusid']) || strlen($postData['focusid']) === 0 )
+        {
+            $errMsg .= '调焦器id提交失败<br>';
+        }
+
+        //判断调焦器的名称是否重复
+        if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
+        {
+            $errMsg .= '调焦器名称提交失败<br>';
+        }
+
+        //检查调焦器ip id 名称与其他设备是否重复
+        $ips = Db::table('devipid')->where('teleid', '<>', $postData['teleid'])->select();
+
+        if ( $ips )
+        {
+            if ( isset($postData['ip']) && in_array( $postData['ip'], array_column($ips, 'ip') ) )
+            {
+                $errMsg .= '调焦器ip与其他设备ip重复';
+            }
+
+            if ( isset($postData['focusid']) && in_array( $postData['focusid'], array_column($ips, 'devid') ) )
+            {
+                $errMsg .= '调焦器id与其他设备id重复';
+            }
+
+            if ( isset($postData['name']) && in_array( $postData['name'], array_column($ips, 'devname') ) )
+            {
+                $errMsg .= '调焦器名称与其他设备名称重复';
+            }
+        }
+        //检查调焦器ip id 名称与其他设备是否重复 结束
+
+        if ( $errMsg !== '' ) return $errMsg;
+
         $data = Db::table('focusconf')->where('teleid', $postData['teleid'])->find();
 
         if ( $data )
         {//已有配置数据 进行update
-            $res = Db::table('focusconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
+            //开启事务 同时操作focusconf 和 devipid表
+            Db::startTrans();
+            $focus_res = Db::table('focusconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
+            $ipid_res = Db::table('devipid')->where('teleid', $postData['teleid'])->strict(false)->update( ['ip'=>$postData['ip'], 'devid'=>$postData['focusid'], 'devname'=>$postData['name'] ] );
+
+            if ( $focus_res && $ipid_res ) //若同时更新ok
+            {
+                Db::commit(); //执行提交
+                $res = true;
+            }else{
+                Db::rollback();
+                $res = false;
+            }
         }else{//还无配置数据 进行insert
-            //验证及判断调焦器的ip是否重复
-            if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
-            {//未提交ip,或者IP不符合ipv4和ipv6
-                $errMsg += '调焦器ip输入有误<br>';
-            }
+            //开启事务 同时操作focusconf 和 devipid表
+            Db::startTrans();
+            $focus_res = Db::table('focusconf')->strict(false)->insert($postData);
+            $ipid_res = Db::table('devipid')->strict(false)->insert( ['ip'=>$postData['ip'], 'devid'=>$postData['focusid'], 'devname'=>$postData['name'], 'teleid'=>$postData['teleid'] ] );
 
-            $ip_isSame = $this->devIdSame ($postData['ip']);
-            if ( $ip_isSame === true ) $errMsg += '调焦器ip重复或保存失败,请重新提交数据<br>';
-            //验证及判断调焦器的ip是否重复 结束
-
-            //判断调焦器的id是否重复
-            if ( !isset($postData['focusid']) || strlen($postData['focusid']) === 0 )
+            if ( $focus_res && $ipid_res ) //若同时更新ok
             {
-                $errMsg += '调焦器id提交失败<br>';
+                Db::commit(); //执行提交
+                $res = true;
+            }else{
+                Db::rollback();
+                $res = false;
             }
-
-            $dev_id_isSame = $this->devIdSame ($postData['focusid']);
-            if ( $dev_id_isSame === true ) $errMsg += '调焦器id重复或保存失败,请重新提交数据<br>';
-            //判断调焦器的id是否重复 结束
-
-            //判断调焦器的名称是否重复
-            if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
-            {
-                $errMsg += '调焦器名称提交失败<br>';
-            }
-
-            $dev_id_isSame = $this->devIdSame ($postData['name']);
-            if ( $dev_id_isSame === true ) $errMsg += '调焦器名称重复或保存失败,请重新提交数据<br>';
-            //判断调焦器名称是否重复 结束
-
-            if ( $errMsg !== '' ) return $errMsg;
-            $res = Db::table('focusconf')->strict(false)->insert($postData);
         }
 
         if ( !$res )
         {
-            $errMsg += '调焦器配置存数据库失败!<br>';
+            $errMsg .= '调焦器配置存数据库失败!<br>';
         }
         //处理上传文件
         $dir = 'focus' . $postData['teleid']; //每个望远镜的每个设备建1个目录，如ccd1, focus2.....
@@ -899,7 +1119,7 @@ class Atconfig extends Base
             $info = $focusFile->move($this->file_path . "/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
-                $errMsg += "上传{$fileName}失败!<br>";
+                $errMsg .= "上传{$fileName}失败!<br>";
             }
         }/*处理说明文件 结束*/
 
@@ -944,7 +1164,7 @@ class Atconfig extends Base
 
         //处理焦点类型--焦距
         $guide_focus_num = isset($postData['guide_focus']) ? count ($postData['guide_focus']) : 0; //被选择的
-        if ( $guide_focus_num == 0 )  $errMsg += '您未选择焦点类型<br>';
+        if ( $guide_focus_num == 0 )  $errMsg .= '您未选择焦点类型<br>';
         
         for ( $g_i = 0; $g_i < $postData['focus_n']; $g_i++)
         { //将焦距数据整理为一个数组[ 'v0'=>'11', 'v1'=>'22' ]
@@ -953,11 +1173,50 @@ class Atconfig extends Base
                 $focus_temp['v'.$g_i] = [ 'focusLeng' => $postData['focusLeng'.$g_i] ];
             }elseif ( isset( $postData['focusLeng'.$g_i] ) && !(is_numeric($postData['focusLeng'.$g_i]) && $postData['focusLeng'.$g_i] > 0) )
             {
-                $errMsg += $postData['guide_focus'][$g_i] . ': 焦距输入有误<br>';
+                $errMsg .= $postData['guide_focus'][$g_i] . ': 焦距输入有误<br>';
             }
         }
 
+        if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
+        {//未提交ip,或者IP不符合ipv4和ipv6
+            $errMsg .= '导星镜ip输入有误<br>';
+        }
+
+        if ( !isset($postData['guidescopeid']) || strlen($postData['guidescopeid']) === 0 )
+        {
+            $errMsg .= '导星镜id提交失败';
+        }
+
+        //判断导星望远镜的名称是否重复
+        if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
+        {
+            $errMsg .= '导星镜名称提交失败';
+        }
+
+        //检查导星望远镜ip id 名称与其他设备是否重复
+        $ips = Db::table('devipid')->where('teleid', '<>', $postData['teleid'])->select();
+
+        if ( $ips )
+        {
+            if ( isset($postData['ip']) && in_array( $postData['ip'], array_column($ips, 'ip') ) )
+            {
+                $errMsg .= '导星镜ip与其他设备ip重复';
+            }
+
+            if ( isset($postData['guidescopeid']) && in_array( $postData['guidescopeid'], array_column($ips, 'devid') ) )
+            {
+                $errMsg .= '导星镜id与其他设备id重复';
+            }
+
+            if ( isset($postData['name']) && in_array( $postData['name'], array_column($ips, 'devname') ) )
+            {
+                $errMsg .= '导星镜名称与其他设备名称重复';
+            }
+        }
+        //检查导星镜ip id 名称与其他设备是否重复 结束
+
         if ( $errMsg !== '' ) return $errMsg;
+
         $focus_temp['focus'] = $postData['guide_focus'];
 
         $postData['focuslength'] = json_encode ($focus_temp); //将整理后的数组转为json字串，存入focustype字段
@@ -968,45 +1227,38 @@ class Atconfig extends Base
 
         if ( $data )
         {//已有配置数据 进行update
-            $res = Db::table('guideconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
+            //开启事务 同时操作guideconf 和 devipid表
+            Db::startTrans();
+            $guide_res = Db::table('gimbalconf')->where('teleid', $postData['teleid'])->strict(false)->update($postData);
+            $ipid_res = Db::table('devipid')->where('teleid', $postData['teleid'])->strict(false)->update( ['ip'=>$postData['ip'], 'devid'=>$postData['guidescopeid'], 'devname'=>$postData['name'] ] );
+
+            if ( $guide_res && $ipid_res ) //若同时更新ok
+            {
+                Db::commit(); //执行提交
+                $res = true;
+            }else{
+                Db::rollback();
+                $res = false;
+            }
         }else{//还无配置数据 进行insert
-            //验证及判断导星镜的ip是否重复
-            if ( !isset($postData['ip']) || ( !preg_match('/^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/', $postData['ip']) && !preg_match('/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/', $postData['ip'])) )
-            {//未提交ip,或者IP不符合ipv4和ipv6
-                $errMsg += '导星镜ip输入有误<br>';
-            }
+            //开启事务 同时操作guideconf 和 devipid表
+            Db::startTrans();
+            $guide_res = Db::table('gimbalconf')->strict(false)->insert($postData);
+            $ipid_res = Db::table('devipid')->strict(false)->insert( ['ip'=>$postData['ip'], 'devid'=>$postData['guidescopeid'], 'devname'=>$postData['name'], 'teleid'=>$postData['teleid'] ] );
 
-            $ip_isSame = $this->devIdSame ($postData['ip']);
-            if ( $ip_isSame === true ) $errMsg += '导星镜ip重复或保存失败,请重新提交数据<br>';
-            //验证及判断导星镜的ip是否重复 结束
-
-            //判断导星望远镜的id是否重复
-            if ( !isset($postData['guidescopeid']) || strlen($postData['guidescopeid']) === 0 )
+            if ( $guide_res && $ipid_res ) //若同时更新ok
             {
-                $errMsg += '导星镜id提交失败';
+                Db::commit(); //执行提交
+                $res = true;
+            }else{
+                Db::rollback();
+                $res = false;
             }
-
-            $dev_id_isSame = $this->devIdSame ($postData['guidescopeid']);
-            if ( $dev_id_isSame === true ) $errMsg +=  '导星镜id重复或保存失败,请重新提交数据';
-            //判断导星望远镜的id是否重复 结束
-
-            //判断导星望远镜的名称是否重复
-            if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
-            {
-                $errMsg += '导星镜名称提交失败';
-            }
-
-            $dev_id_isSame = $this->devIdSame ($postData['name']);
-            if ( $dev_id_isSame === true ) $errMsg +=  '导星镜名称重复或保存失败,请重新提交数据';
-            //判断导星望远镜的名称是否重复 结束
-
-            if ( $errMsg !== '' ) return $errMsg;
-            $res = Db::table('guideconf')->strict(false)->insert($postData);
         }
 
         if ( !$res )
         {
-            $errMsg += '导星望远镜配置存数据库失败!<br>';
+            $errMsg .= '导星望远镜配置存数据库失败!<br>';
         }
         //处理上传文件
         $dir = 'guideScope' . $postData['teleid']; //每个望远镜的每个设备建1个目录，如ccd1, focus2.....
@@ -1023,7 +1275,7 @@ class Atconfig extends Base
             $info = $guideScopeFile->move($this->file_path . "/$dir", $fileName, true);
             if (!$info) //移动文件失败
             {
-                $errMsg += "上传{$fileName}失败!<br>";
+                $errMsg .= "上传{$fileName}失败!<br>";
             }
         }/*处理说明文件 结束*/
 

@@ -243,6 +243,8 @@ CREATE TABLE plandata(
 CREATE TABLE devipid(
      "id" serial PRIMARY KEY,
      "teleid" character varying(20),/*对应atlist表中的id字段*/
+     "dev" character varying(100), /*设备名称（如 gimbal,ccd）*/
+	 "devnum" character varying(100), /*设备序号（用于区别同类的多个设备：如：1表示1号ccd）*/
      "ip" character varying(200),/*设备ip地址*/
      "devid" character varying,/*设备id*/
      "devname" character varying/*设备名称*/
