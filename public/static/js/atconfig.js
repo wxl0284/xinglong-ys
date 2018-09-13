@@ -540,6 +540,10 @@ $(function () {
                                         that.gimbal_file = info.gimbal_file;
                                     }
                                 }//显示转台配置信息  结束
+                                else
+                                {
+                                    that.show_dev_form.show_gimbal = false; //显示gimbal配置表单
+                                }
 
                                 if ( info.ccd_data.ccd_num > 0 ) //在页面显示ccd的配置数据
                                 {   //console.log(info.ccd_file); return;
@@ -577,9 +581,13 @@ $(function () {
                                         that.ccd_files = info.ccd_file; //将返回的所有关于ccd文件的数据赋值给ccd_files
                                     }
                                 }//显示ccd 配置信息  结束
+                                else
+                                {
+                                    that.show_dev_form.show_ccd = false; //不显示ccd配置表单
+                                }
 
                                 if (info.filter_data) //在页面显示滤光片的配置数据
-                                {   //console.log(info.filter_data);
+                                {//console.log(info.filter_data);
                                     that.show_dev_form.show_filter = true; //显示filter配置表单
                                     if ( !info.filter_data.filtershape ) info.filter_data.type = '0';
                                     
@@ -609,6 +617,10 @@ $(function () {
                                         that.filter_file = info.filter_file;
                                     }
                                 }//显示滤光片配置信息  结束
+                                else
+                                {
+                                    that.show_dev_form.show_filter = false; //不显示filter配置表单
+                                }
 
                                 if (info.focus_data) //在页面显示调焦器配置数据
                                 {
@@ -625,6 +637,10 @@ $(function () {
                                         that.focus_file = info.focus_file;
                                     }
                                 }/*在页面显示调焦器的配置数据 结束*/
+                                else
+                                {
+                                    that.show_dev_form.show_focus = false;  //不显示调焦器配置表单
+                                }
 
                                 if (info.sDome_data) //在页面显示随动圆顶的配置数据
                                 {   //console.log(info.filter_data);
@@ -643,9 +659,13 @@ $(function () {
                                         that.sDome_file = info.sDome_file;
                                     }
                                 }//显示随动圆顶配置信息  结束
+                                else
+                                {
+                                    that.show_dev_form.show_sDome = false; //不显示随动圆顶配置表单
+                                }
 
                                 if (info.oDome_data) //在页面显示全开圆顶的配置数据
-                                {   //console.log(info.filter_data);
+                                {
                                     that.show_dev_form.show_oDome = true; //显示全开圆顶配置表单
                                     if ( !info.oDome_data.type ) info.oDome_data.type = '0';
 
@@ -661,12 +681,15 @@ $(function () {
                                         that.oDome_file = info.oDome_file;
                                     }
                                 }//显示全开圆顶配置信息  结束
+                                else
+                                {
+                                    that.show_dev_form.show_oDome = false; //不显示全开圆顶配置表单
+                                }
 
                                 if (info.guide_data) //在页面显示导星镜的配置数据
-                                {   //console.log(info.filter_data);
+                                {
                                     that.show_dev_form.show_guide = true; //显示导星镜配置表单
 
-                                    //var gimbal_focus_conf = $.parseJSON(info.gimbal_data.focustype); //处理焦点类型-焦比-焦距
                                     var guide_focus_conf = $.parseJSON(info.guide_data.focuslength); //处理焦点类型-焦距
                               
                                     let focus_num = guide_focus_conf.focus.length;
@@ -692,12 +715,16 @@ $(function () {
                                         that.guide_file = info.guide_file;
                                     }
                                 }//显示导星镜配置信息  结束
+                                else
+                                {
+                                    that.show_dev_form.show_guide = false; //不显示导星镜配置表单
+                                }
 
-                                layer.close(index);  //关闭加载图标
+                                layer.close(index);  //关闭 加载图标
                             }
                         },//success 结束
                         error:  function () {
-                            layer.alert('网络异常,请再次选择!', {shade:false, closeBtn:0});
+                            layer.alert('网络异常,请重新选择望远镜!', {shade:false, closeBtn:0});
                             layer.close(index);  //关闭加载提示
                         },
                     });//ajax 结束

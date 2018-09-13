@@ -627,14 +627,16 @@ class Page extends Base
 
     }//执行编辑望远镜数据 结束
 
-    //删除望远镜 
-    public function at_delete ($atid)
+    public function at_delete ($atid)  //删除望远镜 
     {
         $err = 0;//标记错误
         Db::startTrans();
 
         $res = Db::table('atlist')->where('id', $atid)->delete();
-        //接下来 删除其他表（gimbalconf,ccdconf,filterconf,focusconf,sdomeconf, odomeconf, guideconf）相关数据
+        /*
+        接下来 删除其他表（gimbalconf,ccdconf,filterconf,focusconf,sdomeconf, odomeconf, 
+        guideconf, devipid及保存上传文件的目录）相关数据
+        */
         $gimbal = Db::table('gimbalconf')->where('teleid', $atid)->find();
         if ($gimbal) //此望远镜配置了转台数据
         {
@@ -683,6 +685,20 @@ class Page extends Base
             $r = Db::table('guideconf')->where('teleid', $atid)->delete();
             if ( !$r ) $err = 1;
         }
+
+        $ipid = Db::table('devipid')->where('teleid', $atid)->find();
+        if ($ipid) //删除IP id 设备名称
+        {
+            $r = Db::table('devipid')->where('teleid', $atid)->delete();
+            if ( !$r ) $err = 1;
+        }
+
+        //接下来 删除存储当前望远镜上传文件的目录
+        //定义存储上传文件的路径
+        protected $file_path = ROOT_PATH . 'public' . DS . 'uploads';
+
+        $dir = 'gimbal' . $postData['teleid']; 
+        //接下来 删除存储当前望远镜上传文件的目录 结束
          
         if (!$res || $err === 1 )
         {
