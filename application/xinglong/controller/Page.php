@@ -629,9 +629,15 @@ class Page extends Base
 
     public function at_delete ($atid)  //删除望远镜 
     {
-        $err = 0;//标记错误
-        Db::startTrans();
+        if ( !preg_match('/^\d+$/') )
+        {
+            $this->error ('删除失败!');
+        }
 
+        $err = 0;//标记错误
+        $upload_path =  ROOT_PATH . 'public' . DS . 'uploads'; //上传文件存放的目录
+
+        Db::startTrans(); //开始事务
         $res = Db::table('atlist')->where('id', $atid)->delete();
         /*
         接下来 删除其他表（gimbalconf,ccdconf,filterconf,focusconf,sdomeconf, odomeconf, 
@@ -643,6 +649,11 @@ class Page extends Base
             $r = Db::table('gimbalconf')->where('teleid', $atid)->delete();
             if ( !$r ) $err = 1;
         }
+
+        //删除转台文件所在目录
+        $gimbal_dir = $upload_path . '/' . 'gimbal' .  $atid;
+        $this->remove_dir( $gimbal_dir );
+        //删除转台文件所在目录 结束
 
         $ccd = Db::table('ccdconf')->where('teleid', $atid)->find();
         if ($ccd) //此望远镜配置了ccd数据
@@ -695,9 +706,9 @@ class Page extends Base
 
         //接下来 删除存储当前望远镜上传文件的目录
         //定义存储上传文件的路径
-        protected $file_path = ROOT_PATH . 'public' . DS . 'uploads';
+        
 
-        $dir = 'gimbal' . $postData['teleid']; 
+        //$dir = 'gimbal' . $postData['teleid']; 
         //接下来 删除存储当前望远镜上传文件的目录 结束
          
         if (!$res || $err === 1 )
@@ -710,8 +721,46 @@ class Page extends Base
         }
     }//删除望远镜  结束
 
-    //显示首页
-    public function front ()
+    /*
+    *remove_dir() 删除各设备上传文件的目录及其中文件
+    *参数：$dir 要删除的目录
+    *返回值：true 表示删除ok; false 表示删除失败
+    */
+    protected function remove_dir ($dir)
+    {
+        //判断 目录是否存在
+        if ( is_dir($dir) === false ) //无此目录
+        {
+            return true;
+        }
+
+        $h = opendir($dir);
+        $err = 0;
+
+        while( false !== ( $file = readdir($h) ) )
+        {
+            if ( ( $file != '.' ) && ( $file != '..' ) )
+            {
+                $file = iconv ('UTF-8', 'GBK', $file);
+                $file = $dir . '/' . $file;
+                $res = unlink($file);
+                if ( $res === false ) ++ $err;
+            }
+        }
+        closedir($h);
+        $res = rmdir($dir);
+        if ( $res === false ) ++ $err;
+
+        if ( $err > 0 )
+        {
+            return false;
+        }else
+        {
+            return true;
+        }
+    }//remove_dir() 结束
+   
+    public function front () //显示首页
     {
         //获取天气预报数据////////////////////////////////////////
         if ($weathStr = Cache::get('weather'))
