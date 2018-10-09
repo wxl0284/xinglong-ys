@@ -152,7 +152,7 @@ function udpSendPlan ($sendMsg = '', $ip, $port)
 */
 function data2Time ($data)
 {
-	if ($data >= 0)
+	/*if ($data >= 0)
 	{
 		$sign = '+';
 	}else{
@@ -181,7 +181,45 @@ function data2Time ($data)
 		$sec = '0' . $sec;
 	}
 	
-	return $res = $sign . $hour . ':' . $min . ':' . $sec;
+	return $res = $sign . $hour . ':' . $min . ':' . $sec;*/
+
+	if ($data >= 0)
+	{
+		$sign = '+';
+	}else{
+		$sign = '-';
+		$data = -1 * $data;
+	}
+	
+	$hour = (int) $data;
+	$msc = (int) ( ($data - $hour)*3600*1000 );
+	$min = (int) ( $msc/60000 );
+	$sec = (int) ( ($msc-$min*60000)/1000 );
+	$msec = '' . ($msc - $min * 60000 - $sec * 1000)/1000;
+	
+	if ( !isset($msec[2]) )
+	{
+		$msec[2] = '0';
+	}
+
+	$msec = $msec[2];
+
+	if($hour < 10)
+	{
+		$hour = '0' . $hour;
+	}
+	
+	if($min < 10)
+	{
+		$min = '0' . $min;
+	}
+	
+	if($sec < 10)
+	{
+		$sec = '0' . $sec;
+	}
+	
+	return $sign . $hour . ':' . $min . ':' . $sec . '.' . $msec;
 }
 
 //数据库的时角/恒星时/赤经/赤纬 转为时间 的函数///////////////////

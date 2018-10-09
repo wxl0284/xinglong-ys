@@ -562,8 +562,8 @@
 		{
 			/*开始执行前 将所有计划数据和被checked的行索引存入浏览器本地存储*/
 			checked_plans = []; //每次执行计划前都将checked_plans清空
-			var all_plans = JSON.stringify( table.datagrid('getRows') ); //转为字符串
-			localStorage.setItem ('all_plans', all_plans); //将字符串存入all_plans变量内
+			var plans_data = JSON.stringify( table.datagrid('getRows') ); //转为字符串
+			localStorage.setItem (all_plans, plans_data); //将字符串存入all_plans变量内
 		
 			if ( rows.length > 0 )
 			{
@@ -618,7 +618,7 @@
 	//观测计划的开始 按钮 结束/////////////////////////////
 //观测计划的 开始 停止 下一个按钮 结束//////////////////////////////
 
-
+var all_plans = aperture + 'all_plans';
 //保存并提交计划 ////////////////////////////////////////////
 	function submitPlan ()
 	{
@@ -639,7 +639,10 @@
 		{
 			layer.alert(msg, {shade:false, closeBtn:0});return;
 		}
-		
+		/*将计划数据存入本地*/
+		var all_plans_data = JSON.stringify( table.datagrid('getRows') ); //转为字符串
+		localStorage.setItem (all_plans, all_plans_data); //将字符串存入all_plans变量内
+		/*将计划数据存入本地 结束*/
 		if (planErr === 0)  //ajax 发送数据到后台
 		{
 			$.ajax({
@@ -906,11 +909,17 @@
  function plan_executing ()
  { //显示正在执行的计划
 	//console.log ( localStorage.getItem('all_plas') );
-	var all_plans = localStorage.getItem('all_plans');
-	var parsed_all_plans = JSON.parse ( all_plans );
-	var all_plans_num = parsed_all_plans.length;
+	var plans_data = localStorage.getItem(all_plans);
+	var parsed_all_plans = JSON.parse ( plans_data );
 
-	if (  all_plans !== null &&  all_plans_num > 0 )
+	var all_plans_num = 0; //已保存的计划条数
+	
+	if ( parsed_all_plans )
+	{
+		all_plans_num = parsed_all_plans.length;
+	}
+
+	if (  plans_data !== null &&  all_plans_num > 0 )
 	{
 		table.datagrid({ data: parsed_all_plans }); //在表格中显示本地存储的计划数据
 		editRow = undefined; //否则，无法拖动
@@ -960,7 +969,29 @@
 	})/*ajax 结束*/
  }/*plan_executing() 结束*/
 
- function test () {
+ /*导入已提交的计划数据*/
+ function importData ()
+ {
+	var plans_data = localStorage.getItem(all_plans);
+	var parsed_all_plans = JSON.parse ( plans_data );
+	var all_plans_num = 0; //已保存的计划条数
+
+	if ( parsed_all_plans )
+	{
+		all_plans_num = parsed_all_plans.length;
+	}
+
+	if (  plans_data !== null &&  all_plans_num > 0 )
+	{
+		table.datagrid({ data: parsed_all_plans }); //在表格中显示本地存储的计划数据
+		editRow = undefined; //否则，无法拖动
+	}else{
+		layer.alert('已提交计划数据为空', {shade:0, closeBtn:0}); return;
+	}
+ }/*导入已提交的计划数据 importData () 结束*/
+
+ function test ()
+ {
 	var d  = table.datagrid('getChecked');
 	console.log(d);
 	console.log('----');

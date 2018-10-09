@@ -85,7 +85,7 @@ class Page extends Base
 
     //ajax请求 判断14个动态增减的固定是否已添加够 并获取相应望远镜的配置数据/////////
     public function config()
-    {//halt(input());
+    {
         //首先判断是否有权限执行
        /* if ($this->ajaxAuthErr == 1)
         {//无权执行
@@ -100,9 +100,9 @@ class Page extends Base
         */
         $confOption = Db::table('confoption')->group('conf')->field('conf')->select();
         $confNum = count($confOption);  //动态增减的固定属性的数量
-        
+   
         $errMsg = '';  //错误提示
-        if ( $confNum < 14 )    //不够14个时
+        if ( $confNum < 15 )    //不够14个时
         {//逐一判断缺少了哪个固定属性
             if ( !in_array(['conf' => 'focustype'], $confOption) )
             {//缺少了'焦点类型'
@@ -158,7 +158,11 @@ class Page extends Base
             }
             if ( !in_array(['conf' => 'opticalStructure'], $confOption) )
             {//缺少了'导星镜焦点类型'
-                $errMsg .= '固定属性还须添加：导星镜焦点类型!';
+                $errMsg .= '固定属性还须添加：导星镜焦点类型!<br>';
+            }
+            if ( !in_array(['conf' => 'bin'], $confOption) )
+            {//缺少了'导星镜焦点类型'
+                $errMsg .= '固定属性还须添加：ccd之BIN!';
             }
         }/*检查判断数据表'confoption'内14个动态增减的固定属性  结束*/
        
@@ -167,7 +171,7 @@ class Page extends Base
             return $errMsg;
         }else{//获取相应望远镜的配置数据，以json格式返回
             /*1、获取动态增减的固定属性数据*/
-            $result['confOption'] = $this->get_14confOption ();            
+            $result['confOption'] = $this->get_15confOption ();            
             /*获取动态增减的固定属性数据 结束*/
 
             /*查转台的配置数据 需要查atlist表、gimbalconf表*/
@@ -629,13 +633,13 @@ class Page extends Base
 
     public function at_delete ($atid)  //删除望远镜 
     {
-        if ( !preg_match('/^\d+$/') )
+        if ( !preg_match('/^\d+$/', $atid) )
         {
             $this->error ('删除失败!');
         }
 
         $err = 0;//标记错误
-        $upload_path =  ROOT_PATH . 'public' . DS . 'uploads'; //上传文件存放的目录
+        $upload_path =  ROOT_PATH . 'public' . '/' . 'uploads'; //上传文件存放的目录
 
         Db::startTrans(); //开始事务
         $res = Db::table('atlist')->where('id', $atid)->delete();
@@ -652,7 +656,9 @@ class Page extends Base
 
         //删除转台文件所在目录
         $gimbal_dir = $upload_path . '/' . 'gimbal' .  $atid;
-        $this->remove_dir( $gimbal_dir );
+        $remove = $this->remove_dir( $gimbal_dir );
+        
+        if ( $remove === false ) $err = 1; //删除失败
         //删除转台文件所在目录 结束
 
         $ccd = Db::table('ccdconf')->where('teleid', $atid)->find();
@@ -662,12 +668,28 @@ class Page extends Base
             if ( !$r ) $err = 1;
         }
 
+        //循环删除存储ccd上传文件的目录（ccd目前最多5个，即循环5次删除ccd19_2 ccd19_2 ...）
+        $ccd_dir = $upload_path . '/' . 'ccd' .  $atid;
+        for ($ccd_i = 1; $ccd_i <= 5 ; $ccd_i++)
+        { 
+            $remove = $this->remove_dir( $ccd_dir .'_'. $ccd_i );
+            if ( $remove === false )  $err = 1; //删除失败
+        }
+        //循环删除存储ccd上传文件的目录 结束
+
         $filter = Db::table('filterconf')->where('teleid', $atid)->find();
         if ($filter) //此望远镜配置了滤光片数据
         {
             $r = Db::table('filterconf')->where('teleid', $atid)->delete();
             if ( !$r ) $err = 1;
         }
+
+        //删除滤光片文件所在目录
+        $filter_dir = $upload_path . '/' . 'filter' .  $atid;
+        $remove = $this->remove_dir( $filter_dir );
+        
+        if ( $remove === false ) $err = 1; //删除失败
+        //删除滤光片文件所在目录 结束
 
         $focus = Db::table('focusconf')->where('teleid', $atid)->find();
         if ($focus) //此望远镜配置了调焦器数据
@@ -676,12 +698,26 @@ class Page extends Base
             if ( !$r ) $err = 1;
         }
 
+        //删除调焦器文件所在目录
+        $focus_dir = $upload_path . '/' . 'focus' .  $atid;
+        $remove = $this->remove_dir( $focus_dir );
+        
+        if ( $remove === false ) $err = 1; //删除失败
+        //删除调焦器文件所在目录 结束
+
         $sdome = Db::table('sdomeconf')->where('teleid', $atid)->find();
         if ($sdome) //此望远镜配置了随动圆顶数据
         {
             $r = Db::table('sdomeconf')->where('teleid', $atid)->delete();
             if ( !$r ) $err = 1;
         }
+
+        //删除随动圆顶文件所在目录
+        $sdome_dir = $upload_path . '/' . 'sDome' .  $atid;
+        $remove = $this->remove_dir( $sdome_dir );
+        
+        if ( $remove === false ) $err = 1; //删除失败
+        //删除随动圆顶文件所在目录 结束
 
         $odome = Db::table('odomeconf')->where('teleid', $atid)->find();
         if ($odome) //此望远镜配置了全开圆顶数据
@@ -690,6 +726,13 @@ class Page extends Base
             if ( !$r ) $err = 1;
         }
 
+        //删除全开圆顶文件所在目录
+        $odome_dir = $upload_path . '/' . 'oDome' .  $atid;
+        $remove = $this->remove_dir( $odome_dir );
+        
+        if ( $remove === false ) $err = 1; //删除失败
+        //删除全开圆顶文件所在目录 结束
+
         $guide = Db::table('guideconf')->where('teleid', $atid)->find();
         if ($guide) //此望远镜配置了导星镜数据
         {
@@ -697,27 +740,27 @@ class Page extends Base
             if ( !$r ) $err = 1;
         }
 
+        //删除导星镜文件所在目录
+        $guide_dir = $upload_path . '/' . 'guideScope' .  $atid;
+        $remove = $this->remove_dir( $guide_dir );
+        
+        if ( $remove === false )  $err = 1;//删除失败
+        //删除导星镜文件所在目录 结束
+
         $ipid = Db::table('devipid')->where('teleid', $atid)->find();
         if ($ipid) //删除IP id 设备名称
         {
             $r = Db::table('devipid')->where('teleid', $atid)->delete();
             if ( !$r ) $err = 1;
         }
-
-        //接下来 删除存储当前望远镜上传文件的目录
-        //定义存储上传文件的路径
-        
-
-        //$dir = 'gimbal' . $postData['teleid']; 
-        //接下来 删除存储当前望远镜上传文件的目录 结束
          
-        if (!$res || $err === 1 )
+        if (!$res || $err > 0 )
         {
             Db::rollback();// 回滚事务
-            $this->error ('删除失败!');
+            $this->error ('删除望远镜失败!');
         }else{
             Db::commit();// 提交事务
-            $this->success ('删除成功!', '/atlist');
+            $this->success ('删除望远镜成功!', '/atlist');
         }
     }//删除望远镜  结束
 
@@ -736,15 +779,18 @@ class Page extends Base
 
         $h = opendir($dir);
         $err = 0;
-
+       
         while( false !== ( $file = readdir($h) ) )
         {
             if ( ( $file != '.' ) && ( $file != '..' ) )
             {
-                $file = iconv ('UTF-8', 'GBK', $file);
+                //$encode = mb_detect_encoding($file, 'auto'); //检测文件名的字符集
+               // halt($encode);
                 $file = $dir . '/' . $file;
+                //$file = iconv ('UTF-8', 'GBK', $file);
+                //$file = mb_convert_encoding ($file, 'GBK', 'UTF-8');
                 $res = unlink($file);
-                if ( $res === false ) ++ $err;
+                if ( $res === false ) ++ $err; //删除文件失败
             }
         }
         closedir($h);
@@ -753,10 +799,10 @@ class Page extends Base
 
         if ( $err > 0 )
         {
-            return false;
+            return false; //删除操作失败
         }else
         {
-            return true;
+            return true; //删除操作ok
         }
     }//remove_dir() 结束
    
@@ -1058,7 +1104,7 @@ class Page extends Base
     // }/*验证望远镜名 口径 结束*/
 
     /*获取19个动态增减的固定属性 数据*/
-    protected function get_14confOption ()
+    protected function get_15confOption ()
     {
         /*获取所有配置选项 */
         $confOption = Db::table('confoption')->field('conf, conf_val')->select();

@@ -218,9 +218,7 @@ class Atconfig extends Base
     }/*获取转台配置项表单 存入atlist表和gimbalconf中 结束*/
 
     public function ccd_config() /*获取ccd配置项表单 存入表ccdconf中*/
-    {   $fileName = iconv ('UTF-8', 'GBK', '哈');
-        $res = rmdir ( $this->file_path . '/' . $fileName  );
-        halt($res);
+    {   
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {
@@ -235,6 +233,12 @@ class Atconfig extends Base
        {
            $postData['readoutmode'] = implode ('#', $postData['readoutmode']);
        }/*处理 读出模式 结束*/
+
+       /*处理 bin*/
+       if ( isset($postData['binarray']) ) //有此数据
+       {
+           $postData['binarray'] = implode ('#', $postData['binarray']);
+       }/*处理 bin 结束*/
 
        /*处理 读出速度*/
        if ( isset($postData['readoutspeed']) ) //有此数据
@@ -1292,7 +1296,7 @@ class Atconfig extends Base
 
     /*获取导星望远镜配置项表单 存入表guideconf中 结束*/
     public function guideScope_config()
-    {
+    {  
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {

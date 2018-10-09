@@ -35,7 +35,109 @@ $(function () {
         var confVal = $.trim( input.val() );
 
         //执行验证 输入不合格 直接return
-        if( conf == 'focustype')
+        switch (conf)
+        {
+            case 'focustype':
+                if ( string_valid (confVal) === false )
+                {
+                    layer.alert('焦点类型输入不合法', {shade:false}); return;
+                }
+                break;
+            case 'imageBits':
+                if ( imageBits_valid (confVal) === false )
+                {
+                    layer.alert('图像位数输入不合法', {shade:false}); return;
+                }
+                break;
+            case 'coolerMode':
+                if ( string_valid (confVal) === false )
+                {
+                    layer.alert('制冷方式输入不合法', {shade:false}); return;
+                }
+                break;
+            case 'readoutMode':
+                if ( string_valid (confVal) === false )
+                {
+                    layer.alert('读出模式输入不合法', {shade:false}); return;
+                }
+                break;
+            case 'ShutterType':
+                if ( string_valid (confVal) === false )
+                {
+                    layer.alert('快门类型输入不合法', {shade:false}); return;
+                }
+                break;
+            case 'ShutterMode':
+                if ( string_valid (confVal) === false )
+                {
+                    layer.alert('快门模式输入不合法', {shade:false}); return;
+                }
+                break;
+            case 'InterfaceType':
+                if ( string_valid (confVal) === false )
+                {
+                    layer.alert('ccd接口类型输入不合法', {shade:false}); return;
+                }
+                break;
+            case 'ExposeTriggerMode':
+                if ( string_valid (confVal) === false )
+                {
+                    layer.alert('曝光触发模式输入不合法', {shade:false}); return;
+                }
+                break;
+            case 'FilterSystem':
+                if ( string_valid (confVal) === false )
+                {
+                    layer.alert('滤光片类型输入不合法', {shade:false}); return;
+                }
+                break;
+            case 'FilterShape':
+                if ( string_valid (confVal) === false )
+                {
+                    layer.alert('滤光片形状输入不合法', {shade:false}); return;
+                }
+                break;
+            case 'slaveDomeType':
+                if ( string_valid (confVal) === false )
+                {
+                    layer.alert('随动圆顶类型输入不合法', {shade:false}); return;
+                }
+                break;
+            case 'openDomeType':
+                if ( string_valid (confVal) === false )
+                {
+                    layer.alert('全开圆顶类型输入不合法', {shade:false}); return;
+                }
+                break;
+            case 'opticalStructure':
+                if ( string_valid (confVal) === false )
+                {
+                    layer.alert('导星镜焦点类型输入不合法', {shade:false}); return;
+                }
+                break;
+            case 'bin':
+                if ( bin_valid (confVal) === false )
+                {
+                    layer.alert('Bin输入不合法', {shade:false}); return;
+                }
+                break;
+            case 'gimbaltype':
+                if ( string_valid (confVal) === false )
+                {
+                    layer.alert('转台类型输入不合法', {shade:false}); return;
+                }
+                break;
+            case 'ccdType':
+                if ( string_valid (confVal) === false )
+                {
+                    layer.alert('CCD探测器类型输入不合法', {shade:false}); return;
+                }
+                break;
+            default:
+            layer.alert('输入有误', {shade:false});return;
+        }//执行验证 输入不合格 结束
+
+        /*if( conf == 'focustype')
         {
             if ( focustype_valid(confVal) === false)  //验证 焦点类型
             {
@@ -106,8 +208,23 @@ $(function () {
             {
                 layer.alert('导星镜焦点类型输入不合法', {shade:false}); return;
             }
-        }
-        //执行验证 结束//////////////
+        }else if( conf == 'bin' ){
+            if ( bin_valid(confVal) === false)  //验证 bin
+            {
+                layer.alert('Bin输入不合法', {shade:false}); return;
+            }
+        }else if( conf == 'gimbaltype' ){
+            if ( gimbtype_valid(confVal) === false)  //验证 转台类型
+            {
+                layer.alert('转台类型输入不合法', {shade:false}); return;
+            }
+        }else if( conf == 'ccdType' ){
+            if ( ccdType_valid(confVal) === false)  //验证 ccd探测器类型
+            {
+                layer.alert('ccd探测器类型输入格式错误', {shade:false}); return;
+            }
+        }*///执行验证 结束//////////////
+        
         //执行Ajax 提交数据
         $.ajax({
             url: '/conf_option_add',
@@ -130,36 +247,19 @@ $(function () {
                 });
             },
             error:  function () {
-              layer.alert('网络异常,请再次连接！', {shade:false});
+              layer.alert('网络异常,请再次连接！', {shade:false, closeBtn:0});
             },
         })//ajax 结束
         
     })//全部固定属性的提交按钮 绑定点击事件 结束
 
-    //验证焦点类型
-    function focustype_valid (v)
+    function string_valid (v) //验证 字符串（只能输入字母、数字、汉字、'-'、' '及拉丁字符如（ö））
     {
-        //输入格式为[xxx xxx1]
-        var patn = /^\[\w+ \w+\]$/;
-        if ( !patn.test(v) )
-        {
-            return false;
-        }
-    }//验证焦点类型 结束
+        var patn = /^[\.a-zA-Z0-9\u4e00-\u9fa5]+ ?-?\.?[\.a-zA-Z0-9\u4e00-\u9fa5]+$/;
+        if ( !patn.test(v) )  return false;
+    }//验证 字符串 结束
 
-    //验证焦比
-    // function focusratio_valid (v)
-    // {
-    //     //输入格式为[12.1 18.1]
-    //     var patn = /^\[[0-9.]+ [0-9.]+\]$/;
-    //     if ( !patn.test(v) )
-    //     {
-    //         return false;
-    //     }
-    // }//验证焦比 结束
-
-    //验证图像位数
-    function imageBits_valid (v)
+    function imageBits_valid (v)  //验证图像位数
     {
         //输入格式为正整数
         var patn = /^[1-9]+$/;
@@ -169,8 +269,37 @@ $(function () {
         }
     }//验证图像位数 结束
 
-    //验证制冷方式
-    function coolerMode_valid (v)
+    /*function ccdType_valid (v)  //验证 ccd探测器类型
+    {
+        //输入格式为 字母 数字 汉字 - 和空格
+        var patn = /^[a-zA-Z0-9-\u4e00-\u9fa5]+ ?[a-zA-Z0-9-\u4e00-\u9fa5]+$/;
+        if ( !patn.test(v) )
+        {
+            return false;
+        }
+    }//验证 ccd探测器类型 结束
+
+    function gimbtype_valid (v) //验证转台类型
+    {
+        //输入格式为字母数字汉字及-
+        var patn = /^[a-zA-Z0-9-\u4e00-\u9fa5]+$/;
+        if ( !patn.test(v) )
+        {
+            return false;
+        }
+    }//验证转台类型 结束
+
+    function focustype_valid (v)//验证焦点类型
+    {
+        //输入格式为[xxx xxx1]
+        var patn = /^\[\w+ \w+\]$/;
+        if ( !patn.test(v) )
+        {
+            return false;
+        }
+    }//验证焦点类型 结束
+
+    function coolerMode_valid (v)  //验证制冷方式
     {
         //输入格式为汉字
         var patn = /^[\u4e00-\u9fa5-]{2,}$/;
@@ -180,8 +309,7 @@ $(function () {
         }
     }//验证制冷方式 结束
 
-    //验证读出模式
-    function readoutMode_valid (v)
+    function readoutMode_valid (v) //验证读出模式
     {
         //输入格式为汉字 包含’支持‘
         //var patn = /^支持[\u4e00-\u9fa5]+读出$/;
@@ -191,8 +319,7 @@ $(function () {
         }
     }//验证读出模式 结束
 
-    //验证增益模式
-    function gainmode_valid (v)
+    function gainmode_valid (v) //验证增益模式
     {
         //输入格式High Capacity
         var patn = /^\w+ \w+$/;
@@ -202,8 +329,7 @@ $(function () {
         }
     }//验证增益模式 结束
 
-    //验证快门类型
-    function ShutterType_valid (v)
+    function ShutterType_valid (v)  //验证快门类型
     {
         //输入格式 机械快门
         var patn = /^[\u4e00-\u9fa5]+快门$/;
@@ -213,8 +339,7 @@ $(function () {
         }
     }//验证快门类型 结束
 
-    //验证快门模式
-    function ShutterMode_valid (v)
+    function ShutterMode_valid (v)   //验证快门模式
     {
         //输入格式 支持GlobalShutter
         //var patn = /^支持\w+$/;
@@ -224,8 +349,7 @@ $(function () {
         }
     }//验证快门模式 结束
 
-    //验证ccd接口类型
-    function InterfaceType_valid (v)
+    function InterfaceType_valid (v) //验证ccd接口类型
     {
         //输入格式 支持CameraLink
         //var patn = /^支持\w+(\w|.)*$/;
@@ -235,8 +359,7 @@ $(function () {
         }
     }//验证ccd接口类型 结束
 
-    //验证曝光触发模式
-    function ExposeTriggerMode_valid (v)
+    function ExposeTriggerMode_valid (v)  //验证曝光触发模式
     {
         //输入格式 支持硬件触发
         var patn = /^支持\S+触发$/;
@@ -246,8 +369,7 @@ $(function () {
         }
     }//验证曝光触发模式 结束
 
-    //验证滤光片类型
-    function FilterSystem_valid (v)
+    function FilterSystem_valid (v) //验证滤光片类型
     {
         //输入格式 Johnshon-Bessel
         var patn = /^\S(\S| )*$/;
@@ -257,8 +379,7 @@ $(function () {
         }
     }//验证滤光片类型 结束
 
-    //验证滤光片形状
-    function FilterShape_valid (v)
+    function FilterShape_valid (v)  //验证滤光片形状
     {
         //输入格式 圆形
         var patn = /^[\u4e00-\u9fa5]形$/;
@@ -277,7 +398,22 @@ $(function () {
         {
             return false;
         }
-    }//验证随动及全开圆顶类型，导星镜焦点类型 结束
+    }//验证随动及全开圆顶类型，导星镜焦点类型 结束*/
+
+    
+    function bin_valid (v)  //验证bin
+    {
+        //输入格式 2*2
+        var patn = /^\d+\*\d+$/;
+    
+        if ( patn.test(v) )
+        {
+            var arr = v.split('*');
+            if  ( arr[0] !== arr[1] || arr[0] < 1 ) return false;
+        }else{
+            return false;
+        }
+    }//验证bin 结束
 
     //给table表内所有的查看配置项的a元素 绑定click事件
     var aElemt = $('#tbl td a');
@@ -396,7 +532,7 @@ $(function () {
                     });
                 },
                 error: function (){
-                    layer.alert('网络异常，请重新操作!', {shade:false});
+                    layer.alert('网络异常，请重新操作!', {shade:false, closeBtn:0});
                 }
             });//ajax结束
             layer.close(index);

@@ -118,7 +118,7 @@ class Status extends Base
             case 16:
                 $status['curstatus'] = '等待变速跟踪';break;
             case 17:
-                $status['curstatus'] = '等待变速跟踪';break;
+                $status['curstatus'] = '变速跟踪中';break;
             case 18:
                 $status['curstatus'] = '指向中';break;
             case 19:

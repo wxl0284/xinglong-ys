@@ -702,11 +702,38 @@ class Ccd extends Base
     protected function set_bin ($postData, $param)  /*设置Bin*/
     {
         $res = Db::table('ccdconf')->where('teleid', $postData['at'])->where('ccdno', $this->ccdNo)->field('binarray')->find(); //获取该望远镜的ccdconf表中的:bin值
+        if ( !$res )
+        {
+            return '验证bin参数失败';
+        }
 
-        if ( $postData['binX'] > $res['binarray'] || $postData['binY'] > $res['binarray'])
+        $temp = explode('#', $res['binarray']); //将2*2#4*4分开成为数组
+        //halt($postData);
+        if ( !in_array($postData['bin'], $temp) )
         {
             return 'bin值参数超限!';
         }
+        //然后 将$postData['bin'], 分解为$postData['binX']和$postData['binY']
+        $postData['binX'] = $postData['binY'] = $postData['bin'][0]; //即第一个字符，且$postData['binX']等于$postData['binY'] 
+        //然后 将$postData['bin'], 分解为$postData['binX']和$postData['binY'] 结束
+
+        /*$bin_num = count($temp);
+        /*$temp_arr = [];
+
+        foreach ($temp as $v)
+        {
+            $temp_arr[] = $v[0]; //将字符串'2*2'的第一个字符放入此数组
+        }
+
+        if ( ( $postData['binX'] > $bin_num -1 || $postData['binX'] < 0 ) || ( $postData['binY'] > $bin_num -1 || $postData['binX'] < 0 ) )
+        {
+            return 'bin值参数超限!';
+        }
+
+        if ( $postData['binX'] !==  $postData['binY'] )
+        {
+            return 'binX与binY不一致!';
+        }*/
         
         $sendMsg = pack ('L2', $postData['binX'], $postData['binY']);
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);

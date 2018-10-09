@@ -94,12 +94,7 @@
 						<td>
 							<select id='gimbalType' name='type' v-model='gimbal_config.type'>
 								<option value="0">请选择</option>
-								<option value="赤道式-德国">赤道式-德国</option>
-								<option value="赤道式-叉式">赤道式-叉式</option>
-								<option value="赤道式-英式">赤道式-英式</option>
-								<option value="赤道式-轭式">赤道式-轭式</option>
-								<option value="赤道式-摇篮式">赤道式-摇篮式</option>
-								<option value="地平式">地平式</option>
+								<option :value="v" v-for='v in confOption.gimbaltype'>{{v}}</option>
 							</select>
 						</td>
 					</tr>
@@ -422,10 +417,7 @@
 						<td>
 						  <select id='ccdType' name='type' v-model='ccd_config.type'>
 							<option value="0">请选择</option>
-							<option value="CCD">CCD</option>
-							<option value="FullFrame CCD">FullFrame CCD</option>
-							<option value="EMCCD">EMCCD</option>
-							<option value="sCMOS">sCMOS</option>
+							<option :value="v" v-for='v in confOption.ccdType'>{{v}}</option>
 						  </select>
 						</td>
 						<td>x像素:</td>
@@ -511,7 +503,8 @@
 					<tr>
 						<td>增益模式:</td>
 						<td colspan="3" class="border_td" id='ccd_1gainmode'>
-							<span v-for='v in confOption.gainmode'>{{v}}<input type='checkbox' name='gainmode[]' :value='v' v-model='gainMode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span>High Sensitivity<input type='checkbox' name='gainmode[]' value='High Sensitivity' v-model='gainMode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span>High Capacity<input type='checkbox' name='gainmode[]' value='High Capacity' v-model='gainMode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</td>
 						<td>增益档位:</td>
 						<td>
@@ -568,6 +561,12 @@
 						</td>
 					</tr>
 					<tr>
+						<td>BIN:</td>
+							<td colspan="5" class="border_td">
+								<span v-for='v in confOption.bin'>{{v}}<input type='checkbox' name='binarray[]' :value='v' v-model='ccd_config.binarray'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							</td>
+					</tr>
+					<tr>
 						<td>快门模式:</td>
 						<td colspan="3" class="border_td" id='ccd_1ShutterMode'>
 							<span v-for='v in confOption.ShutterMode'>{{v}}<input type='checkbox' name='shuttermode[]' :value='v' v-model='ccd_config.shuttermode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -605,14 +604,6 @@
 							<label>是<input type='radio' id='ccdIsSupportOverScan' name='issupportoverscan' value="1" v-model='ccd_config.issupportoverscan'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>否<input type='radio' id='ccdIsSupportOverScan-1' name='issupportoverscan' value="0" v-model='ccd_config.issupportoverscan' @click='ccd_config.cansetoverscan=0'></label>
-						</td>
-						<td>BIN:</td>
-						<td>
-							<!-- <select id='ccd_1BinArray' name='binarray' v-model='ccd_config.binarray'>
-								<option value="0">请选择</option>
-								<option :value="v" v-for='v in final_binArray'>{{v}}</option>
-							</select> -->
-							<input type='text' ref='bin' name='binarray' placeholder='4 4' v-model.trim='ccd_config.binarray' @blur='check_bin(true, ccd_config.binarray, $refs.bin)'>
 						</td>
 						<td>支持开窗:</td>
 						<td>

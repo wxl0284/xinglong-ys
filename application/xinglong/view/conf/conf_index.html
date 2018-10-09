@@ -2,21 +2,30 @@
 <html lang="en">
 <head>
     <meta charset='utf-8'>
-    <title>固定属性选项</title>
-     {load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
-     {load href='/static/plugin/layer/layer.js'}
-     {load href='/static/css/common-1.css'}
-     {load href='/static/css/conf_index.css'}
-     {load href='/static/js/conf_index.js'}
-     <!--  {load href='/static/plugin/easyui-1.3.5/themes/icon.css'}
-     {load href='/static/plugin/easyui-1.3.5/themes/default/easyui.css'}
-     {load href='/static/plugin/easyui-1.3.5/jquery.easyui.min.js'}
-     {load href='/static/plugin/easyui-1.3.5/locale/easyui-lang-zh_CN.js'} -->
+    <title>增删固定属性</title>
+    {load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
+    {load href='/static/plugin/layer/layer.js'}
+    {load href='/static/css/common-1.css'}
+    {load href='/static/css/conf_index.css'}
+    {load href='/static/js/conf_index.js'}
+    <!--  {load href='/static/plugin/easyui-1.3.5/themes/icon.css'}
+    {load href='/static/plugin/easyui-1.3.5/themes/default/easyui.css'}
+    {load href='/static/plugin/easyui-1.3.5/jquery.easyui.min.js'}
+    {load href='/static/plugin/easyui-1.3.5/locale/easyui-lang-zh_CN.js'} -->
 </head>
 <body>
 	{include file="common/common"/}
     <div id='all'>
 		<table id='tbl' class="center_mrg">
+            <tr>
+                <td>
+                    转台类型：<input type="text">
+                    <input type="button" id='gimbaltypeBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href="#" id='gimbaltype'>查看：转台类型</a>
+                </td>
+            </tr>
             <tr>
                 <td>
                     焦点类型：<input type="text" placeholder="格式:[xx xx1]">
@@ -37,6 +46,15 @@
             </tr>
             <tr>
                 <td>
+                    CCD探测器类型：<input type="text">
+                    <input type="button" id='ccdTypeBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href="#" id='ccdType'>查看：CCD探测器类型</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     制冷方式：<input type="text" placeholder="格式:液氮制冷">
                     <input type="button" id='coolerModeBtn' value="确认提交">
                 </td>
@@ -46,20 +64,29 @@
             </tr>
             <tr>
                 <td>
-                    读出模式：<input type="text" placeholder="单门读出">
+                    读出模式：<input type="text" placeholder="格式:单门读出">
                     <input type="button" id='readoutModeBtn' value="确认提交">
                 </td>
                 <td>
                     <a href="#" id='readoutMode'>查看：读出模式</a>
                 </td>
             </tr>
-            <tr>
+            <!-- <tr>
                 <td>
                     增益模式：<input type="text" placeholder="格式:High Capacity">
                     <input type="button" id='gainmodeBtn' value="确认提交">
                 </td>
                 <td>
                     <a href="#" id='gainmode'>查看：增益模式</a>
+                </td>
+            </tr> -->
+            <tr>
+                <td>
+                    Bin：<input type="text" placeholder="格式:2*2">
+                    <input type="button" id='binBtn' value="确认提交">
+                </td>
+                <td>
+                    <a href="#" id='bin'>查看：Bin</a>
                 </td>
             </tr>
             <tr>

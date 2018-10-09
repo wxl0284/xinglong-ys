@@ -118,7 +118,7 @@
 					transfer_mode:'-1', command:'transfer_speed', at:at, at_aperture: aperture
 				},
 				set_bin_form: {
-					binX:'-1', binY: '-1', command:'set_bin', at:at, at_aperture: aperture
+					bin:'-1', command:'set_bin', at:at, at_aperture: aperture
 				},
 				set_roi_form: {
 					startX:0, startY: 0, imageW:0, imageH:0, command:'set_roi', at:at, at_aperture: aperture
@@ -267,8 +267,13 @@
 				return final_shutter_mode;
 			}, /*readout_speed_Mode 结束*/
 			bin: function (){//处理ccd的bin
-				return this.ccd_config.binarray.split(' '); //以空格把binarray分割为数组:[4, 4]
-				
+				return this.ccd_config.binarray.split('#');
+				/*var temp = this.ccd_config.binarray.split('#'); ////以'#'把binarray分割为数组:['2*2', '4*4']
+				var bin_arr = [];
+				temp.filter(function (v) {
+					bin_arr.push( v.substr(0,1) ); //取'2*2'这个字符串的第一个字符, 放入数组bin_arr中
+				});
+				return bin_arr;*/
 			},//bin 结束
 		},/*computed 结束*/
 		methods: {
@@ -1379,15 +1384,24 @@
 			},/*transfer_speed_sbmt 结束*/
 			set_bin_sbmt:function () {
 				var msg = '';
-				if ( this.ccd_form.set_bin_form.binX == -1 )
+				if ( this.ccd_form.set_bin_form.bin == -1 )
+				{
+					msg += 'bin未选择!<br>';
+				}
+				/*if ( this.ccd_form.set_bin_form.binX == -1 )
 				{
 					msg += 'binX未选择!<br>';
 				}
 
 				if ( this.ccd_form.set_bin_form.binY == -1 )
 				{
-					msg += 'binY未选择!';
+					msg += 'binY未选择!<br>';
 				}
+
+				if ( this.ccd_form.set_bin_form.binY !== this.ccd_form.set_bin_form.binX )
+				{
+					msg += 'binX与binY不一致!';
+				}*/
 				
 				if ( msg !== '' )
 				{

@@ -45,7 +45,7 @@ $(function () {
                 focustype:[],
                 postData:{},//转台焦点类型须提交的数据
             },//gimbal_focus 结束
-            confOption: {BinArray:['']},
+            //confOption: {BinArray:['']},
             gimbal_config: {
                 ip:'', atname:'', address:'', longitude:0, latitude:0, altitude:0, type: '0', focustype: [], focusratio: '0', focuslength:'', maxaxis1speed:'', maxaxis2speed:'',
                 maxaxis1speed:'', maxaxis1acceleration:'', maxaxis2acceleration:'', maxaxis3acceleration:'',
@@ -55,7 +55,7 @@ $(function () {
             gimbal_file: {}, //转台上传的文件
             ccd_config: {
                 type: '0', imagebits: '0', coolermode: '0', gainnumber: '0', shuttertype: '0',
-                binarray: '', ip:'', ccdid:'', name:'', xpixel:'', ypixel:'', xpixelsize:'', ypixelsize:'',
+                binarray: [], ip:'', ccdid:'', name:'', xpixel:'', ypixel:'', xpixelsize:'', ypixelsize:'',
                 sensorname:'', lowcoolert:'', maxexposuretime:'', minexposuretime:'', exposuretimeration:'', 
                 fullwelldepth:'', readoutspeed:[], readoutmode:[], transferspeed:[], gainmode:[], gainvaluearray:'',
                 readoutnoisearray:'', shuttermode:[], interfacetype:[], emmaxvalue:'', exposetriggermode:[],
@@ -93,10 +93,6 @@ $(function () {
             focus_file: {}, //调焦器 上传的文件
         },//data 结束
         computed: {
-            final_binArray: function (){
-                var temp = this.confOption.BinArray[0];
-                return temp.replace('[', '').replace(']', '').split(' '); //即：[ "1", "2", "3", "4" ]
-            },
         },//computed 结束
         watch: {
             readoutspeed: function (newV){//监听readoutspeed
@@ -319,12 +315,12 @@ $(function () {
                         case 2: //增益模式被选中2个
                             if ( i <= rows/2 ) //第一个增益模式，即生成表格的上半部分
                             {
-                                this.gain_noise[i].gainMode = this.confOption.gainmode[0];
+                                this.gain_noise[i].gainMode = 'High Sensitivity';
                                 this.generate_table(i, r, t, g, m, rows);
                             }else if ( i > rows/2 ) //第2个增益模式，即生成表格的下半部分
                             {
                                 this.generate_table(i, r, t, g, m, rows);
-                                this.gain_noise[i].gainMode = this.confOption.gainmode[1];
+                                this.gain_noise[i].gainMode = 'High Capacity';
                             }
                            break;
                     }
@@ -1059,20 +1055,6 @@ $(function () {
 				}
 				return msg !== '' ? msg + '<br>' : '';
             },//check_devName() 结束
-            check_bin: function (tip, v, e){//验证ccd bin
-                var msg = '';
-                var patn = /^\d+ \d+$/;
-                if ( !patn.test(v) )
-                {
-                    msg = 'bin输入有误';
-                }
-
-                if ( tip===true && msg !== '' )
-				{
-					layer.tips(msg, e);
-				}
-				return msg !== '' ? msg + '<br>' : '';
-            },//check_bin() 结束
             check_pixel: function (tip, v, e, n) {//验证 ccd x、y像素数目
                 var msg = '';
                 var patn = /^\d+$/;
@@ -1464,11 +1446,11 @@ $(function () {
                 msg += this.check_emV(false, this.ccd_config.emmaxvalue, this.$refs.emMaxValue);
                 msg += this.check_emV(false, this.ccd_config.emminvalue, this.$refs.emMinValue, this.ccd_config.emmaxvalue);
                 msg += this.check_version(false, this.ccd_config.attrversion, this.$refs.ccd_version, 2);
-                msg += this.check_bin(false, this.ccd_config.binarray, this.$refs.bin);
 
                 if ( this.ccd_config.type == '0' )              msg += '探测器类型未选择<br>';
                 if ( this.ccd_config.imagebits == '0' )         msg += '图像位数未选择<br>';
                 if ( this.ccd_config.coolermode == '0' )        msg += '制冷方式未选择<br>';
+                if ( this.ccd_config.binarray.length < 1 )   msg += 'Bin未选择<br>';
                 if ( this.ccd_config.readoutmode.length < 1 )   msg += '读出模式未选择<br>';
                 //if ( this.ccd_config.gainmode.length < 1 )      msg += '增益模式未选择<br>';
                 if ( this.ccd_config.shuttertype == '0' )       msg += '快门类型未选择<br>';

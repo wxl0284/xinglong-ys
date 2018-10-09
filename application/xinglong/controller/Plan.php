@@ -359,7 +359,7 @@ class Plan extends Base
 			return $errMsg;
 		}
         
-       //接下来 给中控 发送数据 ///////////////
+       /*//接下来 给中控 发送数据 ///////////////
 		//首先执行一个停止的指令
 		
 		$this->msg = 9; //指令类型
@@ -375,6 +375,9 @@ class Plan extends Base
 		$sendMsg = $headInfo . $sendMsg;
 		udpSend($sendMsg, $this->ip, $this->port);
 		//停止指令 发送完毕
+
+		sleep (1); //1秒后，再发送计划数据，保证停止指令执行后，再接受计划数据并执行*/
+
 		//接下来开始给中控发送计划数据
 		$this->msg = 8; $length =28 + 208;
 	   
