@@ -31,9 +31,9 @@ class Atconfig extends Base
         //处理焦点类型-焦比-焦距
         $gimbal_focus_num = isset($postData['gimbal_focus']) ? count ($postData['gimbal_focus']) : 0; //被选择的
         if ( $gimbal_focus_num == 0 ) return '您未选择焦点类型';
-        //halt($postData['focus_n']);
+        //halt($postData);
         for ( $f_i = 0; $f_i < $postData['focus_n']; $f_i++)
-        { //将焦比-焦距数据整理为一个数组[ 'v0'=>['focusRatio'=>'[1 2]', 'focusLeng'=>'[1 2]'], 'v1'=>['focusRatio'=>'[1 2]', 'focusLeng'=>'[1 2]'] ]
+        { //将焦比-焦距数据整理为一个数组[ 'v0'=>['focusRatio'=>'1.2', 'focusLeng'=>'1.3'], 'v1'=>['focusRatio'=>'1.4', 'focusLeng'=>'1.5'] ]
             if ( isset( $postData['focusRatio'.$f_i], $postData['focusLeng'.$f_i] ) ) 
             {
                 $focus_temp['v'.$f_i] = [ 'focusRatio' => $postData['focusRatio'.$f_i], 'focusLeng' => $postData['focusLeng'.$f_i] ];

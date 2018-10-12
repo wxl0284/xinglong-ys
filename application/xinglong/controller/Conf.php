@@ -26,60 +26,60 @@ class Conf extends Base
         {
             return '数据提交失败,请重新提交!';
         }
-
-        /*验证表单数据*/
-        switch ( $postData['conf'] )  
+        
+        //验证表单数据 
+        switch ( $postData['conf'] ) 
         {
             case 'gimbaltype':   //验证 转台类型
-                if ( !$this->check_gimbaltype($postData['conf_val']) )     return '转台类型格式错误';
+                if ( !$this->check_string($postData['conf_val']) )     return '转台类型格式错误';
                 break;
             case 'focustype':   //验证 焦点类型
-                if ( !$this->check_focustype($postData['conf_val']) )     return '焦点类型格式错误';
+                if ( !$this->check_string($postData['conf_val']) )     return '焦点类型格式错误';
                 break;
             case 'imageBits': //验证 图像位数
                 if ( !$this->check_imageBits($postData['conf_val']) )     return '图像位数格式错误';
                 break;
             case 'coolerMode': //验证 制冷方式
-                if ( !$this->check_coolerMode($postData['conf_val']) )    return '制冷方式格式错误';
+                if ( !$this->check_string($postData['conf_val']) )    return '制冷方式格式错误';
                 break;
             case 'readoutMode': //验证 读出模式
-                if ( !$this->check_readoutMode($postData['conf_val']) )   return '读出模式格式错误';
+                if ( !$this->check_string($postData['conf_val']) )   return '读出模式格式错误';
                 break;
             /*case 'gainmode': //验证 增益模式
                 if ( !$this->check_gainmode($postData['conf_val']) )   return '增益模式格式错误';
                 break;*/
             case 'ShutterType': //验证 快门类型
-                if ( !$this->check_ShutterType($postData['conf_val']) )   return '快门类型格式错误';
+                if ( !$this->check_string($postData['conf_val']) )   return '快门类型格式错误';
                 break;
             case 'ShutterMode': //验证 快门模式
-                if ( !$this->check_ShutterMode($postData['conf_val']) )   return '快门模式格式错误';
+                if ( !$this->check_string($postData['conf_val']) )   return '快门模式格式错误';
                 break;
             case 'InterfaceType': //验证 ccd接口类型
-                if ( !$this->check_InterfaceType($postData['conf_val']) )   return 'ccd接口类型格式错误';
+                if ( !$this->check_string($postData['conf_val']) )   return 'ccd接口类型格式错误';
                 break;
             case 'ExposeTriggerMode': //验证 曝光触发模式
-                if ( !$this->check_ExposeTriggerMode($postData['conf_val']) )   return '曝光触发模式格式错误';
+                if ( !$this->check_string($postData['conf_val']) )   return '曝光触发模式格式错误';
                 break;
             case 'FilterSystem': //验证 滤光片类型
-                if ( !$this->check_FilterSystem($postData['conf_val']) )   return '滤光片类型格式错误';
+                if ( !$this->check_string($postData['conf_val']) )   return '滤光片类型格式错误';
                 break;
             case 'FilterShape': //验证 滤光片形状
-                if ( !$this->check_FilterShape($postData['conf_val']) )   return '滤光片形状格式错误';
+                if ( !$this->check_string($postData['conf_val']) )   return '滤光片形状格式错误';
                 break;
             case 'slaveDomeType': //验证 随动圆顶类型
-                if ( !$this->check_slaveDomeType($postData['conf_val']) )   return '随动圆顶类型格式错误';
+                if ( !$this->check_string($postData['conf_val']) )   return '随动圆顶类型格式错误';
                 break;
             case 'openDomeType': //验证 全开圆顶类型
-                if ( !$this->check_slaveDomeType($postData['conf_val']) )   return '全开圆顶类型格式错误';
+                if ( !$this->check_string($postData['conf_val']) )   return '全开圆顶类型格式错误';
                 break;
             case 'opticalStructure': //验证 导星镜焦点类型
-                if ( !$this->check_slaveDomeType($postData['conf_val']) )   return '导星镜焦点类型格式错误';
+                if ( !$this->check_string($postData['conf_val']) )   return '导星镜焦点类型格式错误';
                 break;
             case 'bin': //验证 Bin
                 if ( !$this->check_bin($postData['conf_val']) )   return 'Bin格式错误';
                 break;
             case 'ccdType': //验证 ccd探测器类型
-                if ( !$this->check_ccdType($postData['conf_val']) )   return 'ccd探测器类型格式错误';
+                if ( !$this->check_string($postData['conf_val']) )   return 'ccd探测器类型格式错误';
                 break;
             default:
                 return '提交数据有误';  break;
@@ -190,7 +190,17 @@ class Conf extends Base
         return $conf;
     }//根据表单数据 判断是哪个固定属性 结束
 
-    protected function check_ccdType ($val) /*验证ccd探测器类型(须字母 数字 - 汉字 空格)*/
+    protected function check_string ($val) /*验证 字符串（只能输入字母、数字、汉字、'-'、' '及拉丁字符如（ö））*/
+    {
+        if ( !preg_match('/^[\.a-zA-Z0-9\x{4e00}-\x{9af5}]+ ?-?_?\.*[\.a-zA-Z0-9-\x{4e00}-\x{9af5}]+$/u', $val) )
+        {
+            return false;
+        }else{
+            return true;
+        }
+    }/*验证 字符串 结束*/
+
+   /* protected function check_ccdType ($val)验证ccd探测器类型(须字母 数字 - 汉字 空格)
     {
         if ( !preg_match('/^[a-zA-Z0-9-\x{4e00}-\x{9af5}]+ ?[a-zA-Z0-9-\x{4e00}-\x{9af5}]+$/u', $val) )
         {
@@ -200,7 +210,7 @@ class Conf extends Base
         }
     }/*验证ccd探测器类型 结束*/
 
-    protected function check_gimbaltype ($val) /*验证转台类型(须字母 数字 - 汉字)*/
+    /*protected function check_gimbaltype ($val) 验证转台类型(须字母 数字 - 汉字)
     {
         if ( !preg_match('/^[a-zA-Z0-9-\x{4e00}-\x{9af5}]+$/u', $val) )
         {
@@ -210,7 +220,7 @@ class Conf extends Base
         }
     }/*验证转台类型 结束*/
 
-    protected function check_focustype ($val) /*验证 焦点类型*/
+    /*protected function check_focustype ($val) 验证 焦点类型
     {
         if ( !preg_match('/^\[\w+ \w+\]$/', $val) )
         {
@@ -220,7 +230,7 @@ class Conf extends Base
         }
     }/*验证 焦点类型 结束*/
 
-    protected function check_imageBits ($val) /*验证 图像位数*/
+   protected function check_imageBits ($val) //验证 图像位数
     {
         if ( !preg_match('/^[1-9]+$/', $val) )
         {
@@ -230,7 +240,7 @@ class Conf extends Base
         }
     }/*验证 图像位数 结束*/
 
-    /*验证 制冷方式*/
+    /*验证 制冷方式
     protected function check_coolerMode ($val)
     {
         if ( !preg_match('/^[\x{4e00}-\x{9af5}-]+$/u', $val) )
@@ -241,7 +251,7 @@ class Conf extends Base
         }
     }/*验证 制冷方式 结束*/
 
-    protected function check_readoutMode ($val) /*验证 读出模式*/
+    /*protected function check_readoutMode ($val) 验证 读出模式
     {
         //if ( !preg_match('/^支持[\x{4e00}-\x{9af5}]+读出$/u', $val) )
         if ( strlen($val) < 1 )
@@ -262,7 +272,7 @@ class Conf extends Base
         }
     }*//*验证 增益模式 结束*/
 
-    protected function check_ShutterType ($val) /*验证 快门类型*/
+    /*protected function check_ShutterType ($val) /*验证 快门类型
     {
         if ( !preg_match('/^[\x{4e00}-\x{9af5}]+快门$/u', $val) )
         {
@@ -272,7 +282,7 @@ class Conf extends Base
         }
     }/*验证 快门类型 结束*/
 
-    protected function check_ShutterMode ($val)  /*验证 快门模式*/
+    /*protected function check_ShutterMode ($val)  /*验证 快门模式
     {
         //if ( !preg_match('/^支持\w+$/', $val) )
         if ( strlen($val) < 1 )
@@ -283,7 +293,7 @@ class Conf extends Base
         }
     }/*验证 快门模式 结束*/
 
-    protected function check_InterfaceType ($val)  /*验证 ccd接口类型*/
+    /*protected function check_InterfaceType ($val)  /*验证 ccd接口类型
     {
         //if ( !preg_match('/^支持\w+(\w|.)*$/', $val) )
         if ( strlen($val) < 1 )
@@ -294,7 +304,7 @@ class Conf extends Base
         }
     }/*验证 ccd接口类型 结束*/
  
-    protected function check_ExposeTriggerMode ($val)   /*验证 曝光触发模式*/
+    /*protected function check_ExposeTriggerMode ($val)   /*验证 曝光触发模式
     {
         if ( !preg_match('/^支持\S+触发$/', $val) )
         {
@@ -304,7 +314,7 @@ class Conf extends Base
         }
     }/*验证 曝光触发模式 结束*/
 
-    protected function check_FilterSystem ($val)   /*验证 滤光片类型*/
+    /*protected function check_FilterSystem ($val)   /*验证 滤光片类型
     {
         if ( !preg_match('/^\S(\S| )*$/', $val) )
         {
@@ -314,7 +324,7 @@ class Conf extends Base
         }
     }/*验证 滤光片类型 结束*/
 
-    protected function check_FilterShape ($val) /*验证 滤光片形状*/
+    /*protected function check_FilterShape ($val) /*验证 滤光片形状
     {
         if ( !preg_match('/^[\x{4e00}-\x{9af5}]+形$/u', $val) )
         {
@@ -324,7 +334,7 @@ class Conf extends Base
         }
     }/*验证 滤光片形状 结束*/
 
-    /*验证随动及全开圆顶类型，导星镜焦点类型*/
+    /*验证随动及全开圆顶类型，导星镜焦点类型
     protected function check_slaveDomeType ($val)
     {
         //输入格式 圆形

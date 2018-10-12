@@ -136,94 +136,6 @@ $(function () {
             default:
             layer.alert('输入有误', {shade:false});return;
         }//执行验证 输入不合格 结束
-
-        /*if( conf == 'focustype')
-        {
-            if ( focustype_valid(confVal) === false)  //验证 焦点类型
-            {
-                layer.alert('焦点类型输入不合法', {shade:false});return;
-            }
-        }else if( conf == 'imageBits' ){
-            if ( imageBits_valid(confVal) === false)  //验证 图像位数
-            {
-                layer.alert('图像位数输入不合法', {shade:false}); return;
-            }
-        }else if( conf == 'coolerMode' ){
-            if ( coolerMode_valid(confVal) === false)  //验证 制冷方式
-            {
-                layer.alert('制冷方式输入不合法', {shade:false});return;
-            }
-        }else if( conf == 'readoutMode' ){
-            if ( readoutMode_valid(confVal) === false)  //验证 读出模式
-            {
-                layer.alert('读出模式输入不合法', {shade:false});  return;
-            }
-        }else if( conf == 'gainmode' ){
-            if ( gainmode_valid(confVal) === false)  //验证 增益模式
-            {
-                layer.alert('增益模式输入不合法', {shade:false}); return;
-            }
-        }else if( conf == 'ShutterType' ){
-            if ( ShutterType_valid(confVal) === false)  //验证 快门类型
-            {
-                layer.alert('快门类型输入不合法', {shade:false}); return;
-            }
-        }else if( conf == 'ShutterMode' ){
-            if ( ShutterMode_valid(confVal) === false)  //验证 快门模式
-            {
-                layer.alert('快门模式输入不合法', {shade:false}); return;
-            }
-        }else if( conf == 'InterfaceType' ){
-            if ( InterfaceType_valid(confVal) === false)  //验证 ccd接口类型
-            {
-                layer.alert('ccd接口类型输入不合法', {shade:false}); return;
-            }
-        }else if( conf == 'ExposeTriggerMode' ){
-            if ( ExposeTriggerMode_valid(confVal) === false)  //验证 曝光触发模式
-            {
-                layer.alert('曝光触发模式输入不合法', {shade:false}); return;
-            }
-        }else if( conf == 'FilterSystem' ){
-            if ( FilterSystem_valid(confVal) === false)  //验证 滤光片类型
-            {
-                layer.alert('滤光片类型输入不合法', {shade:false}); return;
-            }
-        }else if( conf == 'FilterShape' ){
-            if ( FilterShape_valid(confVal) === false)  //验证 滤光片形状
-            {
-                layer.alert('滤光片形状输入不合法', {shade:false}); return;
-            }
-        }else if( conf == 'slaveDomeType' ){
-            if ( slaveDomeType_valid(confVal) === false)  //验证 随动圆顶类型
-            {
-                layer.alert('随动圆顶类型输入不合法', {shade:false}); return;
-            }
-        }else if( conf == 'openDomeType' ){
-            if ( slaveDomeType_valid(confVal) === false)  //验证 全开圆顶类型
-            {
-                layer.alert('全开圆顶类型输入不合法', {shade:false}); return;
-            }
-        }else if( conf == 'opticalStructure' ){
-            if ( slaveDomeType_valid(confVal) === false)  //验证 导星镜焦点类型
-            {
-                layer.alert('导星镜焦点类型输入不合法', {shade:false}); return;
-            }
-        }else if( conf == 'bin' ){
-            if ( bin_valid(confVal) === false)  //验证 bin
-            {
-                layer.alert('Bin输入不合法', {shade:false}); return;
-            }
-        }else if( conf == 'gimbaltype' ){
-            if ( gimbtype_valid(confVal) === false)  //验证 转台类型
-            {
-                layer.alert('转台类型输入不合法', {shade:false}); return;
-            }
-        }else if( conf == 'ccdType' ){
-            if ( ccdType_valid(confVal) === false)  //验证 ccd探测器类型
-            {
-                layer.alert('ccd探测器类型输入格式错误', {shade:false}); return;
-            }
-        }*///执行验证 结束//////////////
         
         //执行Ajax 提交数据
         $.ajax({
@@ -255,7 +167,7 @@ $(function () {
 
     function string_valid (v) //验证 字符串（只能输入字母、数字、汉字、'-'、' '及拉丁字符如（ö））
     {
-        var patn = /^[\.a-zA-Z0-9\u4e00-\u9fa5]+ ?-?\.?[\.a-zA-Z0-9\u4e00-\u9fa5]+$/;
+        var patn = /^[\.a-zA-Z0-9\u4e00-\u9fa5]+ ?-?_?\.*[\.a-zA-Z0-9\u4e00-\u9fa5]+$/;
         if ( !patn.test(v) )  return false;
     }//验证 字符串 结束
 
@@ -502,11 +414,10 @@ $(function () {
 
     //ajax 删除固定属性的可选项值
     winTable.on('click', 'a.delete', function () {
-     
-        var confId = $(this).attr('confId');
+        var that = $(this);
+        var confId = that.attr('confId');
         //被选中删除的数据元素
-        var td = $(this).parent();
-        var tr = td.parent();
+        var tr = that.parent().parent();
 
         layer.confirm('确定删除？', {icon: 3, title:'提示'}, function(index){
             //执行ajax
@@ -517,7 +428,15 @@ $(function () {
                     id: confId,
                 },
                 success: function (info){
-                    tr.remove();
+                    tr.remove(); //删除当前记录行
+                    //接下来 刷新余下的记录行号
+                    var all_tr = $('tr.append'); //剩余记录
+                    if ( all_tr.length > 0 )
+                    {
+                        all_tr.each(function (i) {
+                            this.childNodes[1].innerHTML = i + 1;
+                        })
+                    }//刷新余下的记录行号 ok
                     
                     layer.alert(info, {
                         shade:false,

@@ -35,6 +35,8 @@ input.command {width:103px; margin-right:7px;}  /*input框公共样式*/
 
 .click {color:red;}
 
+.right {text-align: right}
+
 li {list-style-type:none;}
 
 .border {border: 1px solid #ccc;}

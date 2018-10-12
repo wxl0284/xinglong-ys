@@ -102,8 +102,12 @@ class Page extends Base
         $confNum = count($confOption);  //动态增减的固定属性的数量
    
         $errMsg = '';  //错误提示
-        if ( $confNum < 15 )    //不够14个时
+        if ( $confNum < 16 )    //不够16个时
         {//逐一判断缺少了哪个固定属性
+            if ( !in_array(['conf' => 'gimbaltype'], $confOption) )
+            {//缺少了'焦点类型'
+                $errMsg .= '固定属性还须添加：转台类型!<br>';
+            }
             if ( !in_array(['conf' => 'focustype'], $confOption) )
             {//缺少了'焦点类型'
                 $errMsg .= '固定属性还须添加：焦点类型!<br>';
@@ -161,17 +165,17 @@ class Page extends Base
                 $errMsg .= '固定属性还须添加：导星镜焦点类型!<br>';
             }
             if ( !in_array(['conf' => 'bin'], $confOption) )
-            {//缺少了'导星镜焦点类型'
+            {//缺少了 bin
                 $errMsg .= '固定属性还须添加：ccd之BIN!';
             }
-        }/*检查判断数据表'confoption'内14个动态增减的固定属性  结束*/
+        }/*检查判断数据表'confoption'内16个动态增减的固定属性  结束*/
        
         if ($errMsg != '')
         {//还须添加固定属性
             return $errMsg;
         }else{//获取相应望远镜的配置数据，以json格式返回
             /*1、获取动态增减的固定属性数据*/
-            $result['confOption'] = $this->get_15confOption ();            
+            $result['confOption'] = $this->get_16confOption ();            
             /*获取动态增减的固定属性数据 结束*/
 
             /*查转台的配置数据 需要查atlist表、gimbalconf表*/
@@ -1103,8 +1107,8 @@ class Page extends Base
     //     }
     // }/*验证望远镜名 口径 结束*/
 
-    /*获取19个动态增减的固定属性 数据*/
-    protected function get_15confOption ()
+    /*获取16个动态增减的固定属性 数据*/
+    protected function get_16confOption ()
     {
         /*获取所有配置选项 */
         $confOption = Db::table('confoption')->field('conf, conf_val')->select();

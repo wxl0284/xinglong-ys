@@ -45,7 +45,9 @@ $(function () {
                 focustype:[],
                 postData:{},//转台焦点类型须提交的数据
             },//gimbal_focus 结束
-            //confOption: {BinArray:['']},
+            confOption: {//动态增减的16个固定属性选项
+
+            },//动态增减的16个固定属性选项
             gimbal_config: {
                 ip:'', atname:'', address:'', longitude:0, latitude:0, altitude:0, type: '0', focustype: [], focusratio: '0', focuslength:'', maxaxis1speed:'', maxaxis2speed:'',
                 maxaxis1speed:'', maxaxis1acceleration:'', maxaxis2acceleration:'', maxaxis3acceleration:'',
@@ -399,9 +401,9 @@ $(function () {
             },//show_guide_tr() 结束
             check_focus_val: function (tip, k, n){//验证转台：焦点类型-焦比-焦距
                 var msg = '';
-                var patn = /^\[\d+\.?\d? \d+\.?\d?\]$/; //匹配[2.3 5.2]
                 var ele = ''; //输入框
-                if ( !patn.test(this.gimbal_focus.postData[k].focusratio) )
+
+                if ( !$.isNumeric(this.gimbal_focus.postData[k].focusratio) || this.gimbal_focus.postData[k].focusratio < 0 )
                 {
                     switch (n)
                     {
@@ -512,8 +514,8 @@ $(function () {
                                         gimbal_focus_conf = $.parseJSON(info.gimbal_data.focustype); //处理焦点类型-焦比-焦距
                                     }
                                     
-                              
                                     let focus_num = gimbal_focus_conf.focus.length;
+                                    
                                     if ( focus_num > 0 ) //有焦点类型被选择
                                     {
                                         that.gimbal_focus.focustype = gimbal_focus_conf.focus;
