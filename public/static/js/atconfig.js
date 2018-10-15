@@ -13,6 +13,9 @@ $(function () {
             function (){ configList.show(); }, 
            function (){ configList.hide(); } 
        );
+/************* 读取16个动态增减的配置数据 *************/
+var share_conf_data = localStorage.getItem('share_conf_data');
+
 /************* vue 开始 *************/
     var vm = new Vue ({ //vue 开始
         el: '#all',
@@ -96,6 +99,9 @@ $(function () {
         },//data 结束
         computed: {
         },//computed 结束
+        mounted: function () {
+            //将share_conf_data 赋给confOption
+        },
         watch: {
             readoutspeed: function (newV){//监听readoutspeed
                 var r = newV.length, //r: 读出速度的数目

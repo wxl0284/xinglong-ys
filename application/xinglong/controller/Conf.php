@@ -97,7 +97,13 @@ class Conf extends Base
         $res = Db::table('confoption')->insert($postData);
         if ($res)
         {
-            return $conf . '新增ok!';
+            /*读取最新的固定属性 返回给页面，来存入浏览器本地存储*/
+            $conf_data = $this->get_all_conf();
+            //然后 转为json格式 强制转为对象格式
+            $conf_data = json_encode ( $conf_data, JSON_FORCE_OBJECT );
+            /*读取最新的固定属性 返回给页面，来存入浏览器本地存储 结束*/
+            
+            return $conf . '新增ok!' . '#'. $conf_data;
         }else{
             return $conf . '新增失败!';
         }
@@ -138,7 +144,13 @@ class Conf extends Base
         $res = Db::table('confoption')->delete($id);
         if ($res)
         {
-            return '删除成功!'; 
+            /*读取最新的固定属性 返回给页面，来存入浏览器本地存储*/
+            $conf_data = $this->get_all_conf();
+            //然后 转为json格式 强制转为对象格式
+            $conf_data = json_encode ( $conf_data, JSON_FORCE_OBJECT );
+            /*读取最新的固定属性 返回给页面，来存入浏览器本地存储 结束*/
+            
+            return $conf . '删除成功!' . '#'. $conf_data;
         }else{
             return '删除失败';
         }
@@ -362,4 +374,23 @@ class Conf extends Base
             return false;
         }
     }/*验证bin 结束*/
+
+    /*新增或删除后，获取最新的动态增减的固定属性配置选项*/
+    private function get_all_conf ()
+    {
+        $conf_data = Db::table('confoption')->field('conf, conf_val')->select();
+        
+        if ( $conf_data )
+        {
+            /*遍历配置选项数据 组装为：配置项=>[配置数据]*/
+            foreach ($conf_data as $v)
+            {
+                $res[$v['conf']][]= $v['conf_val'];
+            }
+        }else{
+            $res = [];
+        }
+        
+        return $res;
+    }/*新增或删除后，获取最新的动态增减的固定属性配置选项 结束*/
 }

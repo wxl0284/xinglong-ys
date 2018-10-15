@@ -146,20 +146,34 @@ $(function () {
                 conf_val: confVal, 
             },
             success:  function (info) {
-                layer.alert(info, {
-                    shade:false,
-                    closeBtn:0,
-                    yes:function (n){
-                        layer.close(n);
-                        if (info.indexOf('登录') !== -1)
-                        {
-                            location.href = '/';
+                if ( info.indexOf('新增ok') !== -1 )
+                {
+                    var data = info.split('#');
+                    layer.alert(data[0], {
+                        shade:false,
+                        closeBtn:0,
+                        yes:function (n){
+                            layer.close(n);
                         }
-                    },
-                });
+                    });
+                    //将最新的配置选项存入localStorage
+                    localStorage.setItem('share_conf_data', data[1]);
+                }else{
+                    layer.alert(info, {
+                        shade:false,
+                        closeBtn:0,
+                        yes:function (n){
+                            layer.close(n);
+                            if (info.indexOf('登录') !== -1)
+                            {
+                                location.href = '/';
+                            }
+                        },
+                    });
+                }
             },
             error:  function () {
-              layer.alert('网络异常,请再次连接！', {shade:false, closeBtn:0});
+              layer.alert('网络异常,请重新提交！', {shade:false, closeBtn:0});
             },
         })//ajax 结束
         
@@ -438,17 +452,43 @@ $(function () {
                         })
                     }//刷新余下的记录行号 ok
                     
-                    layer.alert(info, {
-                        shade:false,
-                        closeBtn:0,
-                        yes:function (n){
-                            layer.close(n);
-                            if (info.indexOf('登录') !== -1)
-                            {
-                                location.href = '/';
+                    // layer.alert(info, {
+                    //     shade:false,
+                    //     closeBtn:0,
+                    //     yes:function (n){
+                    //         layer.close(n);
+                    //         if (info.indexOf('登录') !== -1)
+                    //         {
+                    //             location.href = '/';
+                    //         }
+                    //     },
+                    // });
+
+                    if ( info.indexOf('删除成功') !== -1 )
+                    {
+                        var data = info.split('#');
+                        layer.alert(data[0], {
+                            shade:false,
+                            closeBtn:0,
+                            yes:function (n){
+                                layer.close(n);
                             }
-                        },
-                    });
+                        });
+                        //将最新的配置选项存入localStorage
+                        localStorage.setItem('share_conf_data', data[1]);
+                    }else{
+                        layer.alert(info, {
+                            shade:false,
+                            closeBtn:0,
+                            yes:function (n){
+                                layer.close(n);
+                                if (info.indexOf('登录') !== -1)
+                                {
+                                    location.href = '/';
+                                }
+                            },
+                        });
+                    }
                 },
                 error: function (){
                     layer.alert('网络异常，请重新操作!', {shade:false, closeBtn:0});

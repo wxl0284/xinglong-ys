@@ -617,8 +617,7 @@ class Page extends Base
         }/*验证望远镜添加表单的数据 结束*/
 
         //查询新提交的望远镜id或望远镜名 是否在数据表中唯一
-        $old = Db::table('atlist')->where('atname', $postData['atname'])->find();
-        
+        $old = Db::table('atlist')->where('id', '<>', $postData['id'])->field('atname')->find();
         if ($old)
         {
             return '望远镜名称重复,请重新选择!';
