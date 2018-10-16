@@ -100,7 +100,8 @@ class Conf extends Base
             /*读取最新的固定属性 返回给页面，来存入浏览器本地存储*/
             $conf_data = $this->get_all_conf();
             //然后 转为json格式 强制转为对象格式
-            $conf_data = json_encode ( $conf_data, JSON_FORCE_OBJECT );
+            //$conf_data = json_encode ( $conf_data, JSON_FORCE_OBJECT );
+            $conf_data = json_encode ( $conf_data );
             /*读取最新的固定属性 返回给页面，来存入浏览器本地存储 结束*/
             
             return $conf . '新增ok!' . '#'. $conf_data;
@@ -147,10 +148,10 @@ class Conf extends Base
             /*读取最新的固定属性 返回给页面，来存入浏览器本地存储*/
             $conf_data = $this->get_all_conf();
             //然后 转为json格式 强制转为对象格式
-            $conf_data = json_encode ( $conf_data, JSON_FORCE_OBJECT );
+            $conf_data = json_encode ( $conf_data );
             /*读取最新的固定属性 返回给页面，来存入浏览器本地存储 结束*/
             
-            return $conf . '删除成功!' . '#'. $conf_data;
+            return '删除成功!' . '#' . $conf_data;
         }else{
             return '删除失败';
         }

@@ -451,18 +451,6 @@ $(function () {
                             this.childNodes[1].innerHTML = i + 1;
                         })
                     }//刷新余下的记录行号 ok
-                    
-                    // layer.alert(info, {
-                    //     shade:false,
-                    //     closeBtn:0,
-                    //     yes:function (n){
-                    //         layer.close(n);
-                    //         if (info.indexOf('登录') !== -1)
-                    //         {
-                    //             location.href = '/';
-                    //         }
-                    //     },
-                    // });
 
                     if ( info.indexOf('删除成功') !== -1 )
                     {

@@ -429,7 +429,7 @@ class Page extends Base
             //return json数据给前端
             return json_encode ($result);
         }//获取相应望远镜的配置数据，以json格式返回 结束
-    }//ajax请求 判断19个动态增减的固定是否已添加够 并获取相应望远镜的配置数据 结束
+    }//ajax请求 判断16个动态增减的固定是否已添加够 并获取相应望远镜的配置数据 结束
 
     //显示望远镜列表 /////////
     public function atlist()

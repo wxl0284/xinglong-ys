@@ -14,8 +14,15 @@ $(function () {
            function (){ configList.hide(); } 
        );
 /************* 读取16个动态增减的配置数据 *************/
-var share_conf_data = localStorage.getItem('share_conf_data');
-
+    $(window).focus(function () {
+        var share_conf_data = localStorage.getItem('share_conf_data');
+        if ( share_conf_data )
+        {
+            //var x = eval( '(' + share_conf_data + ')' ); 
+            vm.confOption = eval( '(' + share_conf_data + ')' );
+        }
+    })
+/************* 读取16个动态增减的配置数据 *************/
 /************* vue 开始 *************/
     var vm = new Vue ({ //vue 开始
         el: '#all',
@@ -99,9 +106,6 @@ var share_conf_data = localStorage.getItem('share_conf_data');
         },//data 结束
         computed: {
         },//computed 结束
-        mounted: function () {
-            //将share_conf_data 赋给confOption
-        },
         watch: {
             readoutspeed: function (newV){//监听readoutspeed
                 var r = newV.length, //r: 读出速度的数目
@@ -496,7 +500,7 @@ var share_conf_data = localStorage.getItem('share_conf_data');
                             }else{//处理返回的json数据
                                 var info = $.parseJSON(info); //根据json数据 显示配置项
                                 //console.log($.parseJSON(info.gimbal_data.focustype));return;
-                                that.confOption = info.confOption; //将14个配置项数据赋给
+                                that.confOption = info.confOption; //将16个配置项数据赋给
                                 var focustype_num = info.confOption.focustype.length; //转台的焦点类型个数
                                 for ( let i = 0; i < focustype_num; i++)
                                 {
