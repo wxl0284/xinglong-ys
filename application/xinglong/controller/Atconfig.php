@@ -51,6 +51,25 @@ class Atconfig extends Base
         {//未提交ip,或者IP不符合ipv4和ipv6
             $errMsg .= '转台ip输入有误<br>';
         }
+
+        //判断转台IP是否被其他设备占用 (同一望远镜的各设备ip可以重复)
+        //在表devipid中查所有不是此望远镜的ip
+        $ips = Db::table('devipid')->where('teleid', '<>', $postData['teleid'])->column ('ip');
+        
+        if ( $ips && in_array($postData['ip'], $ips) )
+        {
+            $errMsg .= '转台ip与其他望远镜设备ip重复<br>';
+        }
+        //判断转台IP是否被其他设备占用 结束
+
+        //判断望远镜名称是否重复
+        $at_name = Db::table('atlist')->where('id', '<>', $postData['teleid'])->field('atname')->find ();
+        
+        if ( $at_name )
+        {
+            $errMsg .= '望远镜名称重复<br>';
+        }
+        //判断望远镜名称是否重复 结束
     
         if ( $errMsg !== '' ) return $errMsg;
 
@@ -64,18 +83,6 @@ class Atconfig extends Base
             $at_data['longitude'] = $postData['longitude'];
             $at_data['latitude'] = $postData['latitude'];
             $at_data['altitude'] = $postData['altitude'];
-
-            //判断转台IP是否被其他设备占用
-            //首先 查到此望远镜转台在表devipid中的主键id
-            $id = Db::table('devipid')->where('dev', 'gimbal')->where('teleid', $postData['teleid'])->field('id')->find();
-            //然后 在表devipid中查所有不是此id的数据
-            $ips = Db::table('devipid')->where('id', '<>', $id['id'])->column ('ip');
-         
-            if ( $ips && in_array($postData['ip'], $ips))
-            {
-                return '转台ip与其他设备ip重复';
-            }
-            //判断转台IP是否被其他设备占用 结束
 
             //开启事务 同时操作atlist表 和 gimbalconf 和 devipid表
             Db::startTrans();
@@ -99,14 +106,6 @@ class Atconfig extends Base
             $at_data['longitude'] = $postData['longitude'];
             $at_data['latitude'] = $postData['latitude'];
             $at_data['altitude'] = $postData['altitude'];
-
-            //判断转台IP是否被其他设备占用
-            $ips = Db::table('devipid')->where('ip', $postData['ip'])->find();
-            if ( $ips )
-            {
-                return '转台ip与其他设备ip重复';
-            }
-            //判断转台IP是否被其他设备占用 结束
 
             //开启事务 同时操作atlist表 和 gimbalconf表
             Db::startTrans();
@@ -298,26 +297,28 @@ class Atconfig extends Base
         {
             $errMsg .= 'CCD名称输入有误<br>';
         }
-
+        //验证 ccd的IP与其他望远镜设备IP是否重复
+        $dev_ip = Db::table('devipid')->where('teleid', '<>', $postData['teleid'])->column ('ip');
+          
+        if ( $dev_ip && in_array($postData['ip'], $dev_ip) )
+        {
+            $errMsg .= 'ccd的ip与其他望远镜设备ip重复';
+        }
+        //验证 ccd的IP与其他望远镜设备IP是否重复 结束
         if ( $errMsg !== '' ) return $errMsg;
 
         $data = Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', $postData['ccdno'])->find();
        
         if ( $data )
         {//已有配置数据 进行update
-            //检查ccd的ip id 名称是否重复
-            //首先 查到当前设备在表devipid中的主键
+            //检查ccd的id 名称是否重复
+            //查到当前设备在表devipid中的主键
             $id = Db::table('devipid')->where('teleid', $postData['teleid'])->where('dev', 'ccd')->where('devnum', $postData['ccdno'])->field('id')->find();
-            //然后 在表devipid中查不是此id对应的数据
+            //在表devipid中查不是此id对应的数据
             $ips = Db::table('devipid')->where('id', '<>', $id['id'])->select();
 
-            if ( $ips )
+            if ( $ips ) /*判断设备id和名称是否唯一*/
             {
-                if ( in_array( $postData['ip'], array_column($ips, 'ip') )  )
-                {
-                    $errMsg .= 'ccd的ip与其他设备重复<br>';
-                }
-
                 if ( in_array( $postData['ccdid'], array_column($ips, 'devid') )  )
                 {
                     $errMsg .= 'ccd的id与其他设备重复<br>';
@@ -328,7 +329,7 @@ class Atconfig extends Base
                     $errMsg .= 'ccd的名称与其他设备重复<br>';
                 }
             }
-            //检查ccd的ip id 名称是否重复 结束
+            //检查ccd的id 名称是否重复 结束
             if ( $errMsg !== '' ) return $errMsg;
             //开启事务 同时操作ccdconf 和 devipid表
             Db::startTrans();
@@ -353,11 +354,6 @@ class Atconfig extends Base
             $ips = Db::table('devipid')->select();
             if ( $ips )
             {
-                if ( in_array( $postData['ip'], array_column($ips, 'ip') )  )
-                {
-                    $errMsg .= 'ccd的ip与其他设备重复<br>';
-                }
-
                 if ( in_array( $postData['ccdid'], array_column($ips, 'devid') )  )
                 {
                     $errMsg .= 'ccd的id与其他设备重复<br>';
@@ -625,7 +621,14 @@ class Atconfig extends Base
         {//判断滤光片的名称是否重复
             $errMsg .= '滤光片名称输入有误<br>';
         }
-
+        //判断ip与其他望远镜设备ip是否重复
+        $dev_ip = Db::table('devipid')->where('teleid', '<>', $postData['teleid'])->column ('ip');
+          
+        if ( $dev_ip && in_array($postData['ip'], $dev_ip) )
+        {
+            $errMsg .= '滤光片ip与其他望远镜设备ip重复';
+        }
+        //判断ip与其他望远镜设备ip是否重复 结束
        if ( $errMsg !== '' ) return $errMsg;
 
        $slot_temp['slot_num'] = $postData['numberoffilter'];
@@ -640,7 +643,7 @@ class Atconfig extends Base
 
         if ( $data )
         {//已有配置数据 进行update
-            //检查滤光片的ip id 名称是否重复
+            //检查滤光片的id 名称是否重复
             //首先 查到当前设备在表devipid中的主键
             $id = Db::table('devipid')->where('teleid', $postData['teleid'])->where('dev', 'filter')->field('id')->find();
             //然后 在表devipid中查不是此id对应的数据
@@ -648,11 +651,6 @@ class Atconfig extends Base
 
             if ( $ips )
             {
-                if ( in_array( $postData['ip'], array_column($ips, 'ip') )  )
-                {
-                    $errMsg .= '滤光片的ip与其他设备重复<br>';
-                }
-
                 if ( in_array( $postData['filterid'], array_column($ips, 'devid') )  )
                 {
                     $errMsg .= '滤光片的id与其他设备重复<br>';
@@ -663,7 +661,7 @@ class Atconfig extends Base
                     $errMsg .= '滤光片的名称与其他设备重复<br>';
                 }
             }
-            //检查滤光片的ip id 名称是否重复 结束
+            //检查滤光片的id 名称是否重复 结束
             if ( $errMsg !== '' ) return $errMsg;
             //开启事务 同时操作filterconf 和 devipid表
             Db::startTrans();
@@ -683,16 +681,11 @@ class Atconfig extends Base
                 $res = false;
             }
         }else{//还无配置数据 进行insert
-            //检查滤光片的ip id 名称是否重复
+            //检查滤光片的id 名称是否重复
             $ips = Db::table('devipid')->select();
 
             if ( $ips )
             {
-                if ( in_array( $postData['ip'], array_column($ips, 'ip') )  )
-                {
-                    $errMsg .= '滤光片的ip与其他设备重复<br>';
-                }
-
                 if ( in_array( $postData['filterid'], array_column($ips, 'devid') )  )
                 {
                     $errMsg .= '滤光片的id与其他设备重复<br>';
@@ -703,7 +696,7 @@ class Atconfig extends Base
                     $errMsg .= '滤光片的名称与其他设备重复<br>';
                 }
             }
-            //检查滤光片的ip id 名称是否重复 结束
+            //检查滤光片的id 名称是否重复 结束
             if ( $errMsg !== '' ) return $errMsg;
             //开启事务 同时操作filterconf 和 devipid表
             Db::startTrans();
@@ -806,7 +799,14 @@ class Atconfig extends Base
         {
             $errMsg .= '随动圆顶名称输入有误<br>';
         }
-
+        //验证 随动圆顶IP与其他望远镜设备ip是否重复
+        $dev_ip = Db::table('devipid')->where('teleid', '<>', $postData['teleid'])->column ('ip');
+          
+        if ( $dev_ip && in_array($postData['ip'], $dev_ip) )
+        {
+            $errMsg .= '随动圆顶ip与其他望远镜设备ip重复';
+        }
+        //验证 随动圆顶IP与其他望远镜设备ip是否重复 结束
         if ( $errMsg !== '' ) return $errMsg;
 
         $data = Db::table('sdomeconf')->where('teleid', $postData['teleid'])->find();
@@ -821,11 +821,6 @@ class Atconfig extends Base
 
             if ( $ips )
             {
-                if ( in_array( $postData['ip'], array_column($ips, 'ip') )  )
-                {
-                    $errMsg .= '随动圆顶ip与其他设备重复<br>';
-                }
-
                 if ( in_array( $postData['sdomeid'], array_column($ips, 'devid') )  )
                 {
                     $errMsg .= '随动圆顶id与其他设备重复<br>';
@@ -857,16 +852,11 @@ class Atconfig extends Base
                 $res = false;
             }
         }else{//还无配置数据 进行insert
-            //检查随动圆顶的ip id 名称是否重复
+            //检查随动圆顶的id 名称是否重复
             $ips = Db::table('devipid')->select();
 
             if ( $ips )
             {
-                if ( in_array( $postData['ip'], array_column($ips, 'ip') )  )
-                {
-                    $errMsg .= '随动圆顶ip与其他设备重复<br>';
-                }
-
                 if ( in_array( $postData['sdomeid'], array_column($ips, 'devid') )  )
                 {
                     $errMsg .= '随动圆顶id与其他设备重复<br>';
@@ -877,7 +867,7 @@ class Atconfig extends Base
                     $errMsg .= '随动圆顶名称与其他设备重复<br>';
                 }
             }
-            //检查随动圆顶ip id 名称是否重复 结束
+            //检查随动圆顶id 名称是否重复 结束
             if ( $errMsg !== '' ) return $errMsg;
             //开启事务 同时操作sdomeconf 和 devipid表
             Db::startTrans();
@@ -980,13 +970,22 @@ class Atconfig extends Base
             $errMsg .=  '全开圆顶名称输入有误<br>';
         }
 
+        //验证 IP与其他望远镜设备IP重复
+        $dev_ip = Db::table('devipid')->where('teleid', '<>', $postData['teleid'])->column ('ip');
+          
+        if ( $dev_ip && in_array($postData['ip'], $dev_ip) )
+        {
+            $errMsg .= '全开圆顶ip与其他望远镜设备ip重复';
+        }
+        //验证 IP与其他望远镜设备IP重复 结束
+
         if ( $errMsg !== '' ) return $errMsg;
 
         $data = Db::table('odomeconf')->where('teleid', $postData['teleid'])->find();
 
         if ( $data )
         {//已有配置数据 进行update
-            //检查全开圆顶的ip id 名称是否重复
+            //检查全开圆顶的id 名称是否重复
             //首先 查到当前设备在表devipid中的主键
             $id = Db::table('devipid')->where('teleid', $postData['teleid'])->where('dev', 'odome')->field('id')->find();
             //然后 在表devipid中查不是此id对应的数据
@@ -994,11 +993,6 @@ class Atconfig extends Base
 
             if ( $ips )
             {
-                if ( in_array( $postData['ip'], array_column($ips, 'ip') )  )
-                {
-                    $errMsg .= '全开圆顶ip与其他设备重复<br>';
-                }
-
                 if ( in_array( $postData['odomeid'], array_column($ips, 'devid') )  )
                 {
                     $errMsg .= '全开圆顶id与其他设备重复<br>';
@@ -1009,7 +1003,7 @@ class Atconfig extends Base
                     $errMsg .= '全开圆顶名称与其他设备重复<br>';
                 }
             }
-            //检查全开圆顶ip id 名称是否重复 结束
+            //检查全开圆顶id 名称是否重复 结束
             if ( $errMsg !== '' ) return $errMsg;
             //开启事务 odomeconf 和 devipid表
             Db::startTrans();
@@ -1034,11 +1028,6 @@ class Atconfig extends Base
 
             if ( $ips )
             {
-                if ( in_array( $postData['ip'], array_column($ips, 'ip') )  )
-                {
-                    $errMsg .= '全开圆顶ip与其他设备重复<br>';
-                }
-
                 if ( in_array( $postData['odomeid'], array_column($ips, 'devid') )  )
                 {
                     $errMsg .= '全开圆顶id与其他设备重复<br>';
@@ -1152,13 +1141,22 @@ class Atconfig extends Base
             $errMsg .= '调焦器名称输入有误<br>';
         }
 
+        //验证 IP与其他望远镜IP是否重复
+        $dev_ip = Db::table('devipid')->where('teleid', '<>', $postData['teleid'])->column ('ip');
+          
+        if ( $dev_ip && in_array($postData['ip'], $dev_ip) )
+        {
+            $errMsg .= '调焦器ip与其他望远镜设备ip重复';
+        }
+        //验证 IP与其他望远镜IP是否重复 结束
+
         if ( $errMsg !== '' ) return $errMsg;
 
         $data = Db::table('focusconf')->where('teleid', $postData['teleid'])->find();
 
         if ( $data )
         {//已有配置数据 进行update
-            //检查调焦器的ip id 名称是否重复
+            //检查调焦器的id 名称是否重复
             //首先 查到当前设备在表devipid中的主键
             $id = Db::table('devipid')->where('teleid', $postData['teleid'])->where('dev', 'focus')->field('id')->find();
             //然后 在表devipid中查不是此id对应的数据
@@ -1166,11 +1164,6 @@ class Atconfig extends Base
 
             if ( $ips )
             {
-                if ( in_array( $postData['ip'], array_column($ips, 'ip') )  )
-                {
-                    $errMsg .= '调焦器ip与其他设备重复<br>';
-                }
-
                 if ( in_array( $postData['focusid'], array_column($ips, 'devid') )  )
                 {
                     $errMsg .= '调焦器id与其他设备重复<br>';
@@ -1181,7 +1174,7 @@ class Atconfig extends Base
                     $errMsg .= '调焦器名称与其他设备重复<br>';
                 }
             }
-            //检查调焦器ip id 名称是否重复 结束
+            //检查调焦器id 名称是否重复 结束
             if ( $errMsg !== '' ) return $errMsg;
             //开启事务 同时操作focusconf 和 devipid表
             Db::startTrans();
@@ -1201,16 +1194,11 @@ class Atconfig extends Base
                 $res = false;
             }
         }else{//还无配置数据 进行insert
-            //检查调焦器的ip id 名称是否重复
+            //检查调焦器的id 名称是否重复
             $ips = Db::table('devipid')->select();
 
             if ( $ips )
             {
-                if ( in_array( $postData['ip'], array_column($ips, 'ip') )  )
-                {
-                    $errMsg .= '调焦器ip与其他设备重复<br>';
-                }
-
                 if ( in_array( $postData['focusid'], array_column($ips, 'devid') )  )
                 {
                     $errMsg .= '调焦器id与其他设备重复<br>';
@@ -1221,7 +1209,7 @@ class Atconfig extends Base
                     $errMsg .= '调焦器名称与其他设备重复<br>';
                 }
             }
-            //检查调焦器ip id 名称是否重复 结束
+            //检查调焦器id 名称是否重复 结束
             if ( $errMsg !== '' ) return $errMsg;
             //开启事务 同时操作focusconf 和 devipid表
             Db::startTrans();
@@ -1328,13 +1316,20 @@ class Atconfig extends Base
 
         if ( !isset($postData['guidescopeid']) || strlen($postData['guidescopeid']) === 0 )
         {
-            $errMsg .= '导星镜id输入有误';
+            $errMsg .= '导星镜id输入有误<br>';
         }
 
         //判断导星望远镜的名称是否重复
         if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
         {
-            $errMsg .= '导星镜名称输入有误';
+            $errMsg .= '导星镜名称输入有误<br>';
+        }
+        //判断 导星镜ip与其他望远镜设备ip是否重复
+        $dev_ip = Db::table('devipid')->where('teleid', '<>', $postData['teleid'])->column ('ip');
+          
+        if ( $dev_ip && in_array($postData['ip'], $dev_ip) )
+        {
+            $errMsg .= '导星镜ip与其他望远镜设备ip重复<br>';
         }
 
         if ( $errMsg !== '' ) return $errMsg;
@@ -1349,7 +1344,7 @@ class Atconfig extends Base
 
         if ( $data )
         {//已有配置数据 进行update
-            //检查导星镜的ip id 名称是否重复
+            //检查导星镜的id 名称是否重复
             //首先 查到当前设备在表devipid中的主键
             $id = Db::table('devipid')->where('teleid', $postData['teleid'])->where('dev', 'guide')->field('id')->find();
             //然后 在表devipid中查不是此id对应的数据
@@ -1357,11 +1352,6 @@ class Atconfig extends Base
 
             if ( $ips )
             {
-                if ( in_array( $postData['ip'], array_column($ips, 'ip') )  )
-                {
-                    $errMsg .= '导星镜ip与其他设备重复<br>';
-                }
-
                 if ( in_array( $postData['guidescopeid'], array_column($ips, 'devid') )  )
                 {
                     $errMsg .= '导星镜id与其他设备重复<br>';
@@ -1372,7 +1362,7 @@ class Atconfig extends Base
                     $errMsg .= '导星镜名称与其他设备重复<br>';
                 }
             }
-            //检查导星镜ip id 名称是否重复 结束
+            //检查导星镜id 名称是否重复 结束
             if ( $errMsg !== '' ) return $errMsg;
             //开启事务 同时操作guideconf 和 devipid表
             Db::startTrans();
@@ -1397,11 +1387,6 @@ class Atconfig extends Base
 
             if ( $ips )
             {
-                if ( in_array( $postData['ip'], array_column($ips, 'ip') )  )
-                {
-                    $errMsg .= '导星镜ip与其他设备重复<br>';
-                }
-
                 if ( in_array( $postData['guidescopeid'], array_column($ips, 'devid') )  )
                 {
                     $errMsg .= '导星镜id与其他设备重复<br>';
