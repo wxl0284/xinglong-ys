@@ -67,7 +67,7 @@ $(function () {
             gimbal_file: {}, //转台上传的文件
             ccd_config: {
                 type: '0', imagebits: '0', coolermode: '0', gainnumber: '0', shuttertype: '0',
-                binarray: [], ip:'', ccdid:'', name:'', xpixel:'', ypixel:'', xpixelsize:'', ypixelsize:'',
+                bin:[], ip:'', ccdid:'', name:'', xpixel:'', ypixel:'', xpixelsize:'', ypixelsize:'',
                 sensorname:'', lowcoolert:'', maxexposuretime:'', minexposuretime:'', exposuretimeration:'', 
                 fullwelldepth:'', readoutspeed:[], readoutmode:[], transferspeed:[], gainmode:[], gainvaluearray:'',
                 readoutnoisearray:'', shuttermode:[], interfacetype:[], emmaxvalue:'', exposetriggermode:[],
@@ -179,9 +179,9 @@ $(function () {
                 // this.gain_noise[1] = this.gain_noise[3];
                 // this.gain_noise[3] = temp;;
             },
-            check_atName: function (tip, v, e,) {//验证望远镜名称
+            check_atName: function (tip, v, e) {//验证望远镜名称
                 var msg = '';
-                if ( v.length < 1 )
+                if ( !v || v.length < 1 )
                 {
                     msg = '望远镜名称输入有误';
                 }
@@ -194,7 +194,7 @@ $(function () {
             },
             check_Address: function (tip, v, e,) {//验证隶属观测站
                 var msg = '';
-                if ( v.length < 1 )
+                if ( !v || v.length < 1 )
                 {
                     msg = '隶属观测站输入有误';
                 }
@@ -863,7 +863,7 @@ $(function () {
             },//check_Num() 结束
             check_version: function (tip, v, e, n) {//验证 属性版本号
                 var msg = '';
-                if ( v.length < 1 )
+                if ( !v || v.length < 1 )
                 {    
                     switch (n) {
                         case 1:
@@ -956,26 +956,26 @@ $(function () {
 
                 msg += this.check_version(false, this.gimbal_config.attrversion, this.$refs.gimbal_version, 1);
 
-                if ( this.gimbal_config.haveaxis3 === undefined ) msg += '是否有第3轴未选择<br>';
-                if ( this.gimbal_config.haveaxis5 === undefined ) msg += '是否有镜盖未选择<br>';
-                if ( this.gimbal_config.canconnect === undefined ) msg += '是否支持连接未选择<br>';
-                if ( this.gimbal_config.canfindhome === undefined ) msg += '是否支持找零未选择<br>';
-                if ( this.gimbal_config.cantrackstar === undefined ) msg += '是否支持跟踪恒星未选择<br>';
-                if ( this.gimbal_config.cansetobjectname === undefined ) msg += '是否支持设置目标名称未选择<br>';
-                if ( this.gimbal_config.canslewazel === undefined ) msg += '是否支持指向固定位置未选择<br>';
-                if ( this.gimbal_config.canslewderotator === undefined ) msg += '是否支持轴3指向固定位置未选择<br>';
-                if ( this.gimbal_config.canconfigderotator === undefined ) msg += '是否支持设置轴3工作模式未选择<br>';
-                if ( this.gimbal_config.canstop === undefined ) msg += '是否支持停止未选择<br>';
-                if ( this.gimbal_config.cansettrackspeed === undefined ) msg += '是否支持设置跟踪速度未选择<br>';
-                if ( this.gimbal_config.canpark === undefined ) msg += '是否支持复位未选择<br>';
-                if ( this.gimbal_config.canfixedmove === undefined ) msg += '是否支持恒速运动未选择<br>';
-                if ( this.gimbal_config.canpositioncorrect === undefined ) msg += '是否支持位置修正未选择<br>';
-                if ( this.gimbal_config.cancoveroperation === undefined ) msg += '是否支持镜盖操作未选择<br>';
-                if ( this.gimbal_config.canfocusoperation === undefined ) msg += '是否支持焦点切换镜未选择<br>';
-                if ( this.gimbal_config.canemergencystop === undefined ) msg += '是否支持急停未选择<br>';
-                if ( this.gimbal_config.cansavesyncdata === undefined ) msg += '是否支持保存同步数据未选择<br>';
-                if ( this.gimbal_config.cantracksatellite === undefined ) msg += '是否支持跟踪卫星未选择<br>';
-                if ( this.gimbal_config.canconfigproperty === undefined ) msg += '是否支持属性设置未选择<br>';
+                if ( !this.gimbal_config.haveaxis3 ) msg += '是否有第3轴未选择<br>';
+                if ( !this.gimbal_config.haveaxis5 ) msg += '是否有镜盖未选择<br>';
+                if ( !this.gimbal_config.canconnect ) msg += '是否支持连接未选择<br>';
+                if ( !this.gimbal_config.canfindhome ) msg += '是否支持找零未选择<br>';
+                if ( !this.gimbal_config.cantrackstar ) msg += '是否支持跟踪恒星未选择<br>';
+                if ( !this.gimbal_config.cansetobjectname ) msg += '支持设置目标名称未选择<br>';
+                if ( !this.gimbal_config.canslewazel ) msg += '是否支持指向固定位置未选择<br>';
+                if ( !this.gimbal_config.canslewderotator ) msg += '是否支持轴3指向固定位置未选择<br>';
+                if ( !this.gimbal_config.canconfigderotator ) msg += '是否支持设置轴3工作模式未选择<br>';
+                if ( !this.gimbal_config.canstop ) msg += '是否支持停止未选择<br>';
+                if ( !this.gimbal_config.cansettrackspeed ) msg += '支持设置跟踪速度未选择<br>';
+                if ( !this.gimbal_config.canpark ) msg += '是否支持复位未选择<br>';
+                if ( !this.gimbal_config.canfixedmove ) msg += '是否支持恒速运动未选择<br>';
+                if ( !this.gimbal_config.canpositioncorrect ) msg += '是否支持位置修正未选择<br>';
+                if ( !this.gimbal_config.cancoveroperation ) msg += '是否支持镜盖操作未选择<br>';
+                if ( !this.gimbal_config.canfocusoperation ) msg += '是否支持焦点切换镜未选择<br>';
+                if ( !this.gimbal_config.canemergencystop ) msg += '是否支持急停未选择<br>';
+                if ( !this.gimbal_config.cansavesyncdata ) msg += '是否支持保存同步数据未选择<br>';
+                if ( !this.gimbal_config.cantracksatellite ) msg += '是否支持跟踪卫星未选择<br>';
+                if ( !this.gimbal_config.canconfigproperty ) msg += '是否支持属性设置未选择<br>';
                 
                 if ( msg !== '' )
                 {
@@ -1025,11 +1025,24 @@ $(function () {
                      }
                 })/*ajax 结束*/
             },//gimbal_sbmt() 结束
-            check_devId:function (tip, v, e) {//验证各设备 id
+            check_devId:function (tip, v, e, dev) {//验证各设备 id
                 var msg = '';
-                if ( v.length < 1 )
+                if ( !v || v.length < 1 )
                 {
-                    msg = '请输入设备id';
+                    switch (dev) {
+                        case 'ccd':
+                            msg = '请输入ccd Id'; break;
+                        case 'filter':
+                            msg = '请输入滤光片转轮 ID'; break;
+                        case 'guide':
+                            msg = '请输入导星镜 ID'; break;
+                        case 'oDome':
+                            msg = '请输入全开圆顶 ID'; break;
+                        case 'sDome':
+                            msg = '请输入随动圆顶 ID'; break;
+                        case 'focus':
+                            msg = '请输入调焦器 ID'; break;
+                    }
                 }
 
                 if ( tip===true && msg !== '' )
@@ -1041,7 +1054,7 @@ $(function () {
             check_devName:function (tip, v, e, dev) {//验证各设备 名称
                 var msg = '';
 
-                if ( v.length < 1 )
+                if ( !v || v.length < 1 )
                 {
                     switch (dev) {
                         case 'ccd':
@@ -1462,36 +1475,35 @@ $(function () {
                 if ( this.ccd_config.type == '0' )              msg += '探测器类型未选择<br>';
                 if ( this.ccd_config.imagebits == '0' )         msg += '图像位数未选择<br>';
                 if ( this.ccd_config.coolermode == '0' )        msg += '制冷方式未选择<br>';
-                if ( this.ccd_config.binarray.length < 1 )   msg += 'Bin未选择<br>';
+                if ( this.ccd_config.bin.length < 1 )           msg += 'Bin未选择<br>';
                 if ( this.ccd_config.readoutmode.length < 1 )   msg += '读出模式未选择<br>';
-                //if ( this.ccd_config.gainmode.length < 1 )      msg += '增益模式未选择<br>';
                 if ( this.ccd_config.shuttertype == '0' )       msg += '快门类型未选择<br>';
                 if ( this.ccd_config.shuttermode.length < 1)    msg += '快门模式未选择<br>';
-                if ( this.ccd_config.issupportfullframe === undefined ) msg += '支持帧转移未选择<br>';
-                if ( this.ccd_config.issupportem === undefined )        msg += '支持EM未选择<br>';
-                if ( this.ccd_config.issupportscmosnoisefilter === undefined ) msg += '支持CMOS noise filter未选择<br>';
-                if ( this.ccd_config.issupportbaseline === undefined ) msg += '支持base line未选择<br>';
-                if ( this.ccd_config.issupportoverscan === undefined ) msg += '支持Over scan未选择<br>';
-                if ( this.ccd_config.issupportroi === undefined )   msg += '支持开窗未选择<br>';
+                if ( !this.ccd_config.issupportfullframe ) msg += '支持帧转移未选择<br>';
+                if ( !this.ccd_config.issupportem )        msg += '支持EM未选择<br>';
+                if ( !this.ccd_config.issupportscmosnoisefilter ) msg += '支持CMOS noise filter未选择<br>';
+                if ( !this.ccd_config.issupportbaseline ) msg += '支持base line未选择<br>';
+                if ( !this.ccd_config.issupportoverscan ) msg += '支持Over scan未选择<br>';
+                if ( !this.ccd_config.issupportroi )   msg += '支持开窗未选择<br>';
                 if ( this.ccd_config.interfacetype.length < 1 )     msg += '接口类型未选择<br>';
                 if ( this.ccd_config.exposetriggermode.length < 1 ) msg += '曝光触发模式未选择<br>';
-                if ( this.ccd_config.canconnect === undefined )     msg += '支持连接未选择<br>';
-                if ( this.ccd_config.cansetcoolert === undefined )  msg += '设置制冷温度未选择<br>';
-                if ( this.ccd_config.cansetexposureparam === undefined ) msg += '设置曝光策略未选择<br>';
-                if ( this.ccd_config.canstartexposure === undefined )   msg += '支持开始曝光未选择<br>';
-                if ( this.ccd_config.canstopexposure === undefined )    msg += '支持停止曝光未选择<br>';
-                if ( this.ccd_config.canabortexposure === undefined )   msg += '支持终止曝光未选择<br>';
-                if ( this.ccd_config.cansetgain === undefined )         msg += '设置增益未选择<br>';
-                if ( this.ccd_config.cansetreadoutspeedmode === undefined ) msg += '设置读出速度模式未选择<br>';
-                if ( this.ccd_config.cansettransferspeedmode === undefined ) msg += '设置转移速度模式未选择<br>';
-                if ( this.ccd_config.cansetbin === undefined ) msg += '设置BIN未选择<br>';
-                if ( this.ccd_config.cansetroi === undefined ) msg += '设置ROI未选择<br>';
-                if ( this.ccd_config.cansetshutter === undefined ) msg += '设置快门未选择<br>';
-                if ( this.ccd_config.cansetfullframe === undefined ) msg += '设置帧转移未选择<br>';
-                if ( this.ccd_config.cansetem === undefined ) msg += '设置EM未选择<br>';
-                if ( this.ccd_config.cannoisefilter === undefined ) msg += '设置CMOS noise filter未选择<br>';
-                if ( this.ccd_config.cansetbaseline === undefined ) msg += '设置Base line未选择<br>';
-                if ( this.ccd_config.cansetoverscan === undefined ) msg += '设置Over scan未选择<br>';
+                if ( !this.ccd_config.canconnect )     msg += '支持连接未选择<br>';
+                if ( !this.ccd_config.cansetcoolert )  msg += '设置制冷温度未选择<br>';
+                if ( !this.ccd_config.cansetexposureparam ) msg += '设置曝光策略未选择<br>';
+                if ( !this.ccd_config.canstartexposure )   msg += '支持开始曝光未选择<br>';
+                if ( !this.ccd_config.canstopexposure )    msg += '支持停止曝光未选择<br>';
+                if ( !this.ccd_config.canabortexposure )   msg += '支持终止曝光未选择<br>';
+                if ( !this.ccd_config.cansetgain )         msg += '设置增益未选择<br>';
+                if ( !this.ccd_config.cansetreadoutspeedmode ) msg += '设置读出速度模式未选择<br>';
+                if ( !this.ccd_config.cansettransferspeedmode ) msg += '设置转移速度模式未选择<br>';
+                if ( !this.ccd_config.cansetbin ) msg += '设置BIN未选择<br>';
+                if ( !this.ccd_config.cansetroi ) msg += '设置ROI未选择<br>';
+                if ( !this.ccd_config.cansetshutter ) msg += '设置快门未选择<br>';
+                if ( !this.ccd_config.cansetfullframe ) msg += '设置帧转移未选择<br>';
+                if ( !this.ccd_config.cansetem ) msg += '设置EM未选择<br>';
+                if ( !this.ccd_config.cannoisefilter ) msg += '设置CMOS noise filter未选择<br>';
+                if ( !this.ccd_config.cansetbaseline ) msg += '设置Base line未选择<br>';
+                if ( !this.ccd_config.cansetoverscan ) msg += '设置Over scan未选择<br>';
 
                 if ( msg !== '' )
                 {
@@ -1741,7 +1753,7 @@ $(function () {
                 }
 
                 msg += this.check_ip(false, this.filter_config.ip, this.$refs.filterIp);
-                msg += this.check_devId(false, this.filter_config.filterid, this.$refs.filterId);
+                msg += this.check_devId(false, this.filter_config.filterid, this.$refs.filterId, 'filter');
                 msg += this.check_devName(false, this.filter_config.name, this.$refs.filterName, 'filter');
                 msg += this.check_slot(false, this.filter_config.numberoffilter, this.$refs.filterNum);
                 msg += this.check_filterSize(false, this.filter_config.filtersize, this.$refs.filterSize);
@@ -1758,9 +1770,9 @@ $(function () {
                     }
                 }
 
-                if ( this.filter_config.cansetfilterposition === undefined ) msg += '设置滤光片位置未选择<br>';
-                if ( this.filter_config.canconnect === undefined ) msg += '支持连接未选择<br>';
-                if ( this.filter_config.canfindhome === undefined ) msg += '支持找零未选择<br>';
+                if ( !this.filter_config.cansetfilterposition ) msg += '设置滤光片位置未选择<br>';
+                if ( !this.filter_config.canconnect ) msg += '支持连接未选择<br>';
+                if ( !this.filter_config.canfindhome ) msg += '支持找零未选择<br>';
                 if ( this.filter_config.filtershape === '0' ) msg += '滤光片形状未选择<br>';
                 msg += this.check_version(false, this.filter_config.attrversion, this.$refs.filterAttrVersion, 3);
 
@@ -1823,13 +1835,13 @@ $(function () {
                 }
 
                 msg += this.check_ip(false, this.oDome_config.ip, this.$refs.oDomeIp);
-                msg += this.check_devId(false, this.oDome_config.odomeid, this.$refs.oDomeId);
+                msg += this.check_devId(false, this.oDome_config.odomeid, this.$refs.oDomeId, 'oDome');
                 msg += this.check_devName(false, this.oDome_config.name, this.$refs.oDomeName, 'oDome');
                 if ( this.oDome_config.type === '0' ) msg += '全开圆顶类型未选择<br>';
                 msg += this.check_num(false, this.oDome_config.diameter, this.$refs.oDomeDiameter, 'oDome_D');
-                if ( this.oDome_config.canopendome === undefined ) msg += '支持打开圆顶未选择<br>';
+                if ( !this.oDome_config.canopendome ) msg += '支持打开圆顶未选择<br>';
                 msg += this.check_version(false, this.oDome_config.attrversion, this.$refs.odomeAttrversion, 5);
-                if ( this.oDome_config.canconnect === undefined ) msg += '支持连接未选择';
+                if ( !this.oDome_config.canconnect ) msg += '支持连接未选择';
                 
                 if ( msg !== '')
                 {
@@ -1890,19 +1902,19 @@ $(function () {
                 }
 
                 msg += this.check_ip(false, this.sDome_config.ip, this.$refs.sDomeIp);
-                msg += this.check_devId(false, this.sDome_config.sdomeid, this.$refs.sDomeId);
+                msg += this.check_devId(false, this.sDome_config.sdomeid, this.$refs.sDomeId, 'sDome');
                 msg += this.check_devName(false, this.sDome_config.name, this.$refs.sDomeName, 'sDome');
                 if ( this.sDome_config.dometype === '0' ) msg += '随动圆顶类型未选择<br>';
                 msg += this.check_num(false, this.sDome_config.maxspeed, this.$refs.sDomeMaxSpeed, "sDome_speed");
                 msg += this.check_num(false, this.sDome_config.diameter, this.$refs.sDomeDiameter, "sDome_D");
-                if ( this.sDome_config.hasshade === undefined ) msg += '有无风帘未选择<br>';
-                if ( this.sDome_config.cansetdomepositin === undefined ) msg += '设置目标方位未选择<br>';
-                if ( this.sDome_config.cansetshadeposition === undefined ) msg += '设置风帘位置未选择<br>';
-                if ( this.sDome_config.cansetrotatespeed === undefined ) msg += '设置转动速度未选择<br>';
-                if ( this.sDome_config.canstop === undefined ) msg += '支持停止运动未选择<br>';
-                if ( this.sDome_config.canopenshutter === undefined ) msg += '支持打开天窗未选择<br>';
-                if ( this.sDome_config.cansetshadespeed === undefined ) msg += '控制风帘运动未选择<br>';
-                if ( this.sDome_config.canconnect === undefined ) msg += '支持连接未选择<br>';
+                if ( !this.sDome_config.hasshade ) msg += '有无风帘未选择<br>';
+                if ( !this.sDome_config.cansetdomepositin ) msg += '设置目标方位未选择<br>';
+                if ( !this.sDome_config.cansetshadeposition ) msg += '设置风帘位置未选择<br>';
+                if ( !this.sDome_config.cansetrotatespeed ) msg += '设置转动速度未选择<br>';
+                if ( !this.sDome_config.canstop ) msg += '支持停止运动未选择<br>';
+                if ( !this.sDome_config.canopenshutter ) msg += '支持打开天窗未选择<br>';
+                if ( !this.sDome_config.cansetshadespeed ) msg += '控制风帘运动未选择<br>';
+                if ( !this.sDome_config.canconnect ) msg += '支持连接未选择<br>';
                 msg += this.check_version(false, this.sDome_config.attrversion, this.$refs.sDome_version, 6);
                 if ( msg !== '')
                 {
@@ -1963,14 +1975,14 @@ $(function () {
 
                 var msg = '';
                 msg += this.check_ip(false, this.guide_config.ip, this.$refs.guideScopeIp);
-                msg += this.check_devId(false, this.guide_config.guidescopeid, this.$refs.guideScopeId);
+                msg += this.check_devId(false, this.guide_config.guidescopeid, this.$refs.guideScopeId, 'guide');
                 msg += this.check_devName(false, this.guide_config.name, this.$refs.guideScopeName, "guide");
                 msg += this.check_num(false, this.guide_config.aperture, this.$refs.guideScopeAperture, "guide");
-                if ( this.guide_config.canopencover === undefined ) msg += '支持镜盖操作未选择<br>';
-                if ( this.guide_config.canconnect === undefined ) msg += '支持连接未选择<br>';
-                if ( this.guide_config.hasmirrorcover === undefined ) msg += '有无镜盖未选择<br>';
-                if ( this.guide_config.issupportautofocus === undefined ) msg += '支持自动调焦未选择<br>';
-                if ( this.guide_config.canenableautofocus === undefined ) msg += '使能自动调焦未选择<br>';
+                if ( !this.guide_config.canopencover ) msg += '支持镜盖操作未选择<br>';
+                if ( !this.guide_config.canconnect ) msg += '支持连接未选择<br>';
+                if ( !this.guide_config.hasmirrorcover ) msg += '有无镜盖未选择<br>';
+                if ( !this.guide_config.issupportautofocus ) msg += '支持自动调焦未选择<br>';
+                if ( !this.guide_config.canenableautofocus ) msg += '使能自动调焦未选择<br>';
                 msg += this.check_version(false, this.guide_config.attrversion, this.$refs.guideAttrVersion, 4);
                 if ( this.guide_focus.focustype.length == 0 )  msg += '焦点类型未选择<br>';
                 
@@ -2045,20 +2057,20 @@ $(function () {
 
                 var msg = '';
                 msg += this.check_ip(false, this.focus_config.ip, this.$refs.focusIp);
-                msg += this.check_devId(false, this.focus_config.focusid, this.$refs.focusId);
+                msg += this.check_devId(false, this.focus_config.focusid, this.$refs.focusId, 'focus');
                 msg += this.check_devName(false, this.focus_config.name, this.$refs.focusName, "focus");
                 msg += this.check_focusV(false, this.focus_config.maxvalue, this.$refs.focusMaxValue);
                 msg += this.check_focusV(false, this.focus_config.minvalue, this.$refs.focusMinValue, this.focus_config.maxvalue);
                 msg += this.check_num(false, this.focus_config.increment, this.$refs.focusIncrement, "focus_I");
                 msg += this.check_num(false, this.focus_config.maxspeed, this.$refs.focusMaxSpeed, "focus_S");
-                if ( this.focus_config.canconnect === undefined ) msg += '支持连接未选择<br>';
-                if ( this.focus_config.canfindhome === undefined ) msg += '支持找零未选择<br>';
-                if ( this.focus_config.cantemperturecompensate === undefined ) msg += '进行温度补偿未选择<br>';
-                if ( this.focus_config.cansetposition === undefined ) msg += '设置目标位置未选择<br>';
-                if ( this.focus_config.cansetspeed === undefined ) msg += '设置恒速运动未选择<br>';
-                if ( this.focus_config.canstop === undefined ) msg += '支持停止运动未选择<br>';
-                if ( this.focus_config.canenabletemperturecompensate === undefined ) msg += '使能温度补偿未选择<br>';
-                if ( this.focus_config.cansettemperturecompensatecoefficient === undefined ) msg += '设置温度补偿系数未选择<br>';
+                if ( !this.focus_config.canconnect ) msg += '支持连接未选择<br>';
+                if ( !this.focus_config.canfindhome ) msg += '支持找零未选择<br>';
+                if ( !this.focus_config.cantemperturecompensate ) msg += '进行温度补偿未选择<br>';
+                if ( !this.focus_config.cansetposition ) msg += '设置目标位置未选择<br>';
+                if ( !this.focus_config.cansetspeed ) msg += '设置恒速运动未选择<br>';
+                if ( !this.focus_config.canstop ) msg += '支持停止运动未选择<br>';
+                if ( !this.focus_config.canenabletemperturecompensate ) msg += '使能温度补偿未选择<br>';
+                if ( !this.focus_config.cansettemperturecompensatecoefficient ) msg += '设置温度补偿系数未选择<br>';
                 msg += this.check_version(false, this.focus_config.attrversion, this.$refs.focusAttrVersion, 7);
                 
                 if ( msg !== '' )

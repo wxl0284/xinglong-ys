@@ -267,8 +267,8 @@
 				return final_shutter_mode;
 			}, /*readout_speed_Mode 结束*/
 			bin: function (){//处理ccd的bin
-				return this.ccd_config.binarray.split('#');
-				/*var temp = this.ccd_config.binarray.split('#'); ////以'#'把binarray分割为数组:['2*2', '4*4']
+				return this.ccd_config.bin.split('#');
+				/*var temp = this.ccd_config.bin.split('#'); ////以'#'把binarray分割为数组:['2*2', '4*4']
 				var bin_arr = [];
 				temp.filter(function (v) {
 					bin_arr.push( v.substr(0,1) ); //取'2*2'这个字符串的第一个字符, 放入数组bin_arr中

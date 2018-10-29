@@ -89,8 +89,9 @@ class Test extends Controller
 		//$temp = $res['gain_noise'];
 		
 		//$a = data2Time(17.416638888889);
-		$a = Db::table('devipid')->where('teleid', '<>', '25')->select();
-		halt($a);
+		$a = 'truncate table plandata';
+		$res = Db::query( $a );
+		dump($res);
 	}
 	
 	public function valid ()

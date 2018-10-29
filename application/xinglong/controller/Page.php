@@ -273,6 +273,12 @@ class Page extends Base
                         }else if( $ccd_data[$ccd_i]['exposetriggermode'] === null ){
                             $ccd_data[$ccd_i]['exposetriggermode'] = [];
                         }
+                        if ( is_string($ccd_data[$ccd_i]['bin']) )
+                        {//处理 bin
+                            $ccd_data[$ccd_i]['bin'] = explode('#', $ccd_data[$ccd_i]['bin']);
+                        }else if( $ccd_data[$ccd_i]['bin'] === null ){
+                            $ccd_data[$ccd_i]['bin'] = [];
+                        }
                     }//foreach 结束
                 }//for循环结束
             }//循环遍历处理ccd配置中checkbox及增益-读出噪声（json字串）的 结束 
@@ -524,7 +530,7 @@ class Page extends Base
         
         if ($old)
         {
-            return '望远镜名称重复,请重新选择!';
+            return '望远镜名称重复,请重新填写!';
         }
         //执行数据添加
         $res = Db::table('atlist')->insert($postData);
@@ -617,10 +623,11 @@ class Page extends Base
         }/*验证望远镜添加表单的数据 结束*/
 
         //查询新提交的望远镜id或望远镜名 是否在数据表中唯一
-        $old = Db::table('atlist')->where('id', '<>', $postData['id'])->field('atname')->find();
-        if ($old)
+        $names = Db::table('atlist')->where('id', '<>', $postData['id'])->field('atname')->find();
+     
+        if ( $names && in_array($postData['atname'], $names) )
         {
-            return '望远镜名称重复,请重新选择!';
+            return '望远镜名称重复,请重新填写!';
         }
 
         //执行更新

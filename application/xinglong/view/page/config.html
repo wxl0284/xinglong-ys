@@ -31,8 +31,8 @@
 			</span>
 			<table v-if='show_dev_form.at != "0"' >
 				<tr>
-					<td>转台<input id='have_gimbal' type="checkbox" value='show_gimbal' v-model='show_dev_form.show_gimbal' ></td>
-					<td>CCD<input id='have_ccd' type="checkbox" value='show_ccd' v-model='show_dev_form.show_ccd'></td>
+					<td><label>转台<input id='have_gimbal' type="checkbox" value='show_gimbal' v-model='show_dev_form.show_gimbal' ></label></td>
+					<td><label>CCD<input id='have_ccd' type="checkbox" value='show_ccd' v-model='show_dev_form.show_ccd'></label></td>
 					<td style='width:22.2%;'>CCD数量
 						<select name="ccdNum" id="ccd_num" v-model='show_dev_form.ccd_form_num' >
 							<option value="1">1</option>
@@ -42,14 +42,14 @@
 							<option value="5">5</option>
 						</select>
 					</td>
-					<td>滤光片转轮<input id='have_filter' type="checkbox" value='show_filter' v-model='show_dev_form.show_filter'></td>
-					<td>随动圆顶<input id='have_sDome' type="checkbox" name='sDome' v-model='show_dev_form.show_sDome' ></td>
-					<td>全开圆顶<input id='have_oDome' type="checkbox" name='oDome'v-model='show_dev_form.show_oDome' ></td>
-					<td>调焦器<input id='have_focus' type="checkbox" name='focus' v-model='show_dev_form.show_focus'></td>
+					<td><label>滤光片转轮<input id='have_filter' type="checkbox" value='show_filter' v-model='show_dev_form.show_filter'></label></td>
+					<td><label>随动圆顶<input id='have_sDome' type="checkbox" name='sDome' v-model='show_dev_form.show_sDome'></label></td>
+					<td><label>全开圆顶<input id='have_oDome' type="checkbox" name='oDome'v-model='show_dev_form.show_oDome'></label></td>
+					<td><label>调焦器<input id='have_focus' type="checkbox" name='focus' v-model='show_dev_form.show_focus'></label></td>
 				</tr>
 				<tr>
-					<td>导星镜<input id='have_guide' type="checkbox" name='guide' v-model='show_dev_form.show_guide'></td>
-					<td>光谱终端<input id='have_spectral' type="checkbox" name='spectral'></td>
+					<td><label>导星镜<input id='have_guide' type="checkbox" name='guide' v-model='show_dev_form.show_guide'></label></td>
+					<td><label>光谱终端<input id='have_spectral' type="checkbox" name='spectral'></label></td>
 					<td>光谱终端数量
 						<select name="spectral_Num" id="spectral_Num">
 							<option value="1">1</option>
@@ -57,9 +57,9 @@
 							<option value="3">3</option>
 						</select>
 					</td>
-					<td>数据处理模块1<input id='dataHandle_1' type="checkbox" name='dataHandle_1'></td>
-					<td>数据处理模块2<input id='dataHandle_2' type="checkbox" name='dataHandle_2'></td>
-					<td>数据处理模块3<input id='dataHandle_3' type="checkbox" name='dataHandle_3'></td>
+					<td><label>数据处理模块1<input id='dataHandle_1' type="checkbox" name='dataHandle_1'></label></td>
+					<td><label>数据处理模块2<input id='dataHandle_2' type="checkbox" name='dataHandle_2'></label></td>
+					<td><label>数据处理模块3<input id='dataHandle_3' type="checkbox" name='dataHandle_3'></label></td>
 				</tr>	
 			</table>
 		</h3>
@@ -411,7 +411,7 @@
 						<td>ccd之ip:</td>
 						<td><input type='text' ref='ccdIp' name='ip' placeholder='ip地址' v-model.trim='ccd_config.ip' @blur='check_ip(true, ccd_config.ip, $refs.ccdIp)'></td>
 						<td>ccd之id:</td>
-						<td><input type='text' ref='ccdId' name='ccdid' v-model.trim='ccd_config.ccdid' @blur='check_devId(true, ccd_config.ccdid, $refs.ccdId)'></td>
+						<td><input type='text' ref='ccdId' name='ccdid' v-model.trim='ccd_config.ccdid' @blur='check_devId(true, ccd_config.ccdid, $refs.ccdId, "ccd")'></td>
 						<td>ccd名称:</td>
 						<td><input type='text' ref='ccdName' name='name' placeholder='Andor DZ936/PI1300' v-model.trim='ccd_config.name' @blur='check_devName(true, ccd_config.name, $refs.ccdName, "ccd")'></td>
 					</tr>
@@ -562,19 +562,31 @@
 					<tr>
 						<td>读出模式:</td>
 						<td colspan="5" class="border_td" id='ccd_1readoutMode'>
-							<span v-for='v in confOption.readoutMode'>{{v}}<input type='checkbox' name='readoutmode[]' :value='v' v-model='ccd_config.readoutmode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in confOption.readoutMode'>
+								<label>
+									{{v}}<input type='checkbox' name='readoutmode[]' :value='v' v-model='ccd_config.readoutmode'>
+								</label>&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>
 						</td>
 					</tr>
 					<tr>
 						<td>BIN:</td>
-							<td colspan="5" class="border_td">
-								<span v-for='v in confOption.bin'>{{v}}<input type='checkbox' name='binarray[]' :value='v' v-model='ccd_config.binarray'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-							</td>
+						<td colspan="5" class="border_td">
+							<span v-for='v in confOption.bin'>
+								<label>
+								{{v}}<input type='checkbox' name='bin[]' :value="v" v-model='ccd_config.bin'>
+								</label>&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>
+						</td>
 					</tr>
 					<tr>
 						<td>快门模式:</td>
 						<td colspan="3" class="border_td" id='ccd_1ShutterMode'>
-							<span v-for='v in confOption.ShutterMode'>{{v}}<input type='checkbox' name='shuttermode[]' :value='v' v-model='ccd_config.shuttermode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in confOption.ShutterMode'>
+								<label>
+									{{v}}<input type='checkbox' name='shuttermode[]' :value='v' v-model='ccd_config.shuttermode'>
+								</label>&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>
 						</td>
 						<td>支持帧转移:</td>
 						<td>
@@ -620,7 +632,11 @@
 					<tr>
 						<td>接口类型:</td>
 						<td colspan="3" class="border_td" id='ccd_1InterfaceType'>
-							<span v-for='v in confOption.InterfaceType'>{{v}}<input type='checkbox' name='interfacetype[]' :value='v' v-model='ccd_config.interfacetype'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in confOption.InterfaceType'>
+								<label>
+									{{v}}<input type='checkbox' name='interfacetype[]' :value='v' v-model='ccd_config.interfacetype'>
+								</label>&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>
 						</td>
 						<td>最大EM:</td>
 						<td>
@@ -630,7 +646,11 @@
 					<tr>
 						<td>曝光触发模式:</td>
 						<td colspan="3" class="border_td" id='ccd_1ExposeTriggerMode'>
-							<span v-for='v in confOption.ExposeTriggerMode'>{{v}}<input type='checkbox' name='exposetriggermode[]' :value='v' v-model='ccd_config.exposetriggermode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span v-for='v in confOption.ExposeTriggerMode'>
+								<label>
+									{{v}}<input type='checkbox' name='exposetriggermode[]' :value='v' v-model='ccd_config.exposetriggermode'>
+								</label>&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>
 						</td>
 						<td>最小EM:</td>
 						<td>
@@ -787,7 +807,7 @@
 						<td>滤光片ip:</td>
 						<td><input type='text' ref='filterIp' name='ip' placeholder='ip地址' v-model.trim='filter_config.ip' @blur='check_ip(true, filter_config.ip, $refs.filterIp)'></td>
 						<td>滤光片id:</td>
-						<td><input type='text' ref='filterId' name='filterid' v-model.trim='filter_config.filterid' @blur='check_devId(true, filter_config.filterid, $refs.filterId)'></td>
+						<td><input type='text' ref='filterId' name='filterid' v-model.trim='filter_config.filterid' @blur='check_devId(true, filter_config.filterid, $refs.filterId, "filter")'></td>
 						<td>名称:</td>
 						<td><input type='text' ref='filterName' name='name' v-model.trim='filter_config.name' @blur='check_devName(true, filter_config.name, $refs.filterName, "filter")'></td>
 					</tr>
@@ -881,7 +901,7 @@
 						<td>随动圆顶ip:</td>
 						<td><input type='text' ref='sDomeIp' name='ip' placeholder='ip地址' v-model.trim='sDome_config.ip' @blur='check_ip(true, sDome_config.ip, $refs.sDomeIp)'></td>
 						<td>随动圆顶id:</td>
-						<td><input type='text' ref='sDomeId' name='sdomeid' v-model.trim='sDome_config.sdomeid' @blur='check_devId(true, sDome_config.sdomeid, $refs.sDomeId)'></td>
+						<td><input type='text' ref='sDomeId' name='sdomeid' v-model.trim='sDome_config.sdomeid' @blur='check_devId(true, sDome_config.sdomeid, $refs.sDomeId, "sDome")'></td>
 						<td>随动圆顶名称:</td>
 						<td><input type='text' ref='sDomeName' name='name' v-model.trim='sDome_config.name' @blur='check_devName(true, sDome_config.name, $refs.sDomeName, "sDome")'></td>
 					</tr>
@@ -987,7 +1007,7 @@
 						<td>全开圆顶ip:</td>
 						<td><input type='text' ref='oDomeIp' name='ip' placeholder='ip地址' v-model.tirm='oDome_config.ip' @blur='check_ip(true, oDome_config.ip, $refs.oDomeIp)'></td>
 						<td>全开圆顶id:</td>
-						<td><input type='text' ref='oDomeId' name='odomeid' v-model.trim='oDome_config.odomeid' @blur='check_devId(true, oDome_config.odomeid, $refs.oDomeId)'></td>
+						<td><input type='text' ref='oDomeId' name='odomeid' v-model.trim='oDome_config.odomeid' @blur='check_devId(true, oDome_config.odomeid, $refs.oDomeId, "oDome")'></td>
 						<td>全开圆顶名称:</td>
 						<td><input type='text' ref='oDomeName' name='name' v-model.trim='oDome_config.name' @blur='check_devName(true, oDome_config.name, $refs.oDomeName, "oDome")'></td>
 					</tr>
@@ -1049,7 +1069,7 @@
 						<td>调焦器ip:</td>
 						<td><input type='text' ref='focusIp' name='ip' placeholder='ip地址' v-model.trim='focus_config.ip' @blur='check_ip(true, focus_config.ip, $refs.focusIp)'></td>
 						<td>调焦器id:</td>
-						<td><input type='text' ref='focusId' name='focusid' v-model.trim='focus_config.focusid' @blur='check_devId(true, focus_config.focusid, $refs.focusId)'></td>
+						<td><input type='text' ref='focusId' name='focusid' v-model.trim='focus_config.focusid' @blur='check_devId(true, focus_config.focusid, $refs.focusId, "focus")'></td>
 						<td>调焦器名称:</td>
 						<td><input type='text' ref='focusName' name='name' v-model.trim='focus_config.name' @blur='check_devName(true, focus_config.name, $refs.focusName, "focus")'></td>
 					</tr>
@@ -1156,7 +1176,7 @@
 						<td>导星望远镜ip:</td>
 						<td><input type='text' ref='guideScopeIp' name='ip' placeholder='ip地址' v-model.trim='guide_config.ip' @blur='check_ip(true, guide_config.ip, $refs.guideScopeIp)'></td>
 						<td>导星望远镜id:</td>
-						<td><input type='text' ref='guideScopeId' name='guidescopeid' v-model.trim='guide_config.guidescopeid' @blur='check_devId(true, guide_config.guidescopeid, $refs.guideScopeId)'></td>
+						<td><input type='text' ref='guideScopeId' name='guidescopeid' v-model.trim='guide_config.guidescopeid' @blur='check_devId(true, guide_config.guidescopeid, $refs.guideScopeId, "guide")'></td>
 						<td>导星望远镜名称:</td>
 						<td><input type='text' ref='guideScopeName' name='name' v-model.trim='guide_config.name' @blur='check_devName(true, guide_config.name, $refs.guideScopeName, "guide")'></td>
 					</tr>

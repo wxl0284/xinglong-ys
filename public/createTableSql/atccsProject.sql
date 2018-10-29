@@ -100,7 +100,7 @@ CREATE TABLE ccdconf(
      "issupportscmosnoisefilter" character varying(5),
      "issupportbaseline" character varying(5),
      "issupportoverscan" character varying(5),
-     "binarray" character varying,
+     "bin" character varying,
      "issupportroi" character varying(5),
      "interfacetype" character varying,
      "exposetriggermode" character varying,
