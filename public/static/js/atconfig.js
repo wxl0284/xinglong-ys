@@ -1694,7 +1694,8 @@ $(function () {
             },//check_slot() 结束
             check_filterSize:function (tip, v, e) {//验证插槽大小
                 var msg = '';
-                var patn = /^\[\d+\.?\d?,\d+\.?\d?,\d+\.?\d?\]$/;
+                var patn = /^\d+\.?\d? \d+\.?\d? \d+\.?\d?$/;
+                
                 if ( !patn.test(v) )
                 {
                     msg = '插槽大小输入有误';

@@ -403,9 +403,13 @@
                     <li class='li fl'>纬度:<span>{{configData.gimbal.latitude}}</span></li>
                     <li class='li fl'>口径:<span>{{configData.gimbal.aperture}}</span> </li>
                     <li class='li fl'>类型:<span>{{configData.gimbal.type}}</span></li>
-                    <li class='li fl' style='width:100%'>焦点类型:<span>{{configData.gimbal.focustype}}</span></li>
+					<li class='li fl' v-for='(v, k) in gimbal_focus.focus'>
+						焦点:
+						<span>{{v}}（焦比:{{gimbal_focus['v'+k]['focusRatio']}}&nbsp;焦距:{{gimbal_focus['v'+k]['focusLeng']}}）</span>
+					</li>
+                    <!--<li class='li fl' style='width:100%'>焦点类型:<span>{{configData.gimbal.focustype}}</span></li>
                     <li class='li fl' style='width:100%'>焦比:<span>{{configData.gimbal.focusratio}}</span></li>
-                    <li class='li fl' style='width:100%'>焦距:<span>{{configData.gimbal.focuslength}}</span></li>
+                    <li class='li fl' style='width:100%'>焦距:<span>{{configData.gimbal.focuslength}}</span></li>-->
                     <li class='li fl'>轴1最大速度:<span>{{configData.gimbal.maxaxis1speed}}</span></li>
                     <li class='li fl'> 轴2最大速度:<span>{{configData.gimbal.maxaxis2speed}}</span></li>
                     <li class='li fl'> 轴3最大速度:<span>{{configData.gimbal.maxaxis3speed}}</span></li>
@@ -415,8 +419,8 @@
                     <li class='li fl'> 轴1复位位置:<span>{{configData.gimbal.axis1parkposition}}</span></li>
                     <li class='li fl'> 轴2复位位置:<span>{{configData.gimbal.axis2parkposition}}</span></li>
                     <li class='li fl'> 轴3复位位置:<span>{{configData.gimbal.axis3parkposition}}</span></li>
-                    <li class='li fl'> 是否有第3轴:	<span>{{configData.gimbal.haveaxis3 ? '有' : '无'}}</span></li>
-                    <li class='li fl'> 是否有镜盖:<span>{{configData.gimbal.haveaxis5 ? '有' : '无'}}</span></li>
+                    <li class='li fl'> 是否有第3轴:	<span>{{configData.gimbal.haveaxis3 ? '是' : '否'}}</span></li>
+                    <li class='li fl'> 是否有镜盖:<span>{{configData.gimbal.haveaxis5 ? '是' : '否'}}</span></li>
                     <li class='li fl'> 支持恒速运动:<span>{{configData.gimbal.canfixedmove ? '是' : '否'}}</span></li>
                 </ul><div class='clear'></div>
 		 </div><!--固定属性 结束-->
@@ -782,8 +786,8 @@
 			   <li class='li fl'>类型:&nbsp;&nbsp;<span>{{configData.sDome.dometype}}</span></li>
 			   <li class='li fl'>最大转动速度:&nbsp;&nbsp;<span>{{configData.sDome.maxspeed}}</span></li>
 			   <li class='li fl'>具备风帘:&nbsp;&nbsp;
-				<span v-if='configData.sDome.hasshade==1'>有</span>
-				<span v-else>无</span>
+				<span v-if='configData.sDome.hasshade==1'>是</span>
+				<span v-else>否</span>
 				</li>
 			   <li class='li fl'>控制风帘运动:&nbsp;&nbsp;
 				<span v-if='configData.sDome.cansetshadespeed==1'>是</span>
@@ -866,10 +870,10 @@
 				<li class='li fl' style='width:80%;'>
 					<table class="center center_mrg" style='width:100%;'>
 						<tr>
-							<td>插槽序号</td> <td>滤光片类型</td> <td>滤光片焦距偏差值</td>
+							<td>插槽序号</td> <td>滤光片类型</td> <td>滤光片名称</td>  <td>焦距偏差值（μm）</td>
 						</tr>
 						<tr v-for='n in configData.filter.slot_num*1'>
-							<td>插槽{{n}}</td> <td>{{configData.filter.filterType[n-1]}}</td> <td>{{configData.filter.filterComp[n-1]}}</td>
+							<td>插槽{{n}}</td> <td>{{configData.filter.filterType[n-1]}}</td> <td>{{configData.filter.filtername[n-1]}}</td> <td>{{configData.filter.filterComp[n-1]}}</td>
 						</tr>
 					</table>
 				</li>   

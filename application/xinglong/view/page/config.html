@@ -167,6 +167,20 @@
 						</td>
 					</tr>
 					<tr>
+						<td>温度传感器数目:</td>
+						<td>
+							<input type='text' ref='tempera_num' name='numtemperaturesensor' v-model.trim='gimbal_config.numtemperaturesensor' @blur='check_Num(true, gimbal_config.numtemperaturesensor, $refs.tempera_num, 1)' >
+						</td>
+						<td>湿度传感器数目:</td>
+						<td>
+							<input type='text' ref='humid_num' name='numhumiditysensor' v-model.trim='gimbal_config.numhumiditysensor' @blur='check_Num(true, gimbal_config.numhumiditysensor, $refs.humid_num, 2)'>
+						</td>
+						<td>俯仰最低值（°）:</td>
+						<td>
+							<input type='text' ref='minElev' name='minelevation' placeholder="> 10" v-model.trim='gimbal_config.minelevation' @blur='check_minelevation(true, gimbal_config.minelevation, $refs.minElev)' >
+						</td>
+					</tr>
+					<tr>
 						<td>第3轴:</td>
 						<td>
 							<label>
@@ -184,20 +198,6 @@
 							<label>
 								无<input type='radio' id='gimbalHaveAxis5-1' name='haveaxis5' value="0" v-model='gimbal_config.haveaxis5' @click='gimbal_config.cancoveroperation="0"'>
 							</label>
-						</td>
-						<td>俯仰最低值（°）:</td>
-						<td>
-							<input type='text' ref='minElev' name='minelevation' placeholder="> 10" v-model.trim='gimbal_config.minelevation' @blur='check_minelevation(true, gimbal_config.minelevation, $refs.minElev)' >
-						</td>
-					</tr>
-					<tr>
-						<td>温度传感器数目:</td>
-						<td>
-							<input type='text' ref='tempera_num' name='numtemperaturesensor' v-model.trim='gimbal_config.numtemperaturesensor' @blur='check_Num(true, gimbal_config.numtemperaturesensor, $refs.tempera_num, 1)' >
-						</td>
-						<td>湿度传感器数目:</td>
-						<td>
-							<input type='text' ref='humid_num' name='numhumiditysensor' v-model.trim='gimbal_config.numhumiditysensor' @blur='check_Num(true, gimbal_config.numhumiditysensor, $refs.humid_num, 2)'>
 						</td>
 						<td>支持连接指令:</td>
 						<td>
@@ -588,11 +588,33 @@
 								</label>&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>
 						</td>
-						<td>支持帧转移:</td>
+					</tr>
+					<tr>
+						<td>接口类型:</td>
+						<td colspan="3" class="border_td" id='ccd_1InterfaceType'>
+							<span v-for='v in confOption.InterfaceType'>
+								<label>
+									{{v}}<input type='checkbox' name='interfacetype[]' :value='v' v-model='ccd_config.interfacetype'>
+								</label>&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>
+						</td>
+						<td>最大EM:</td>
 						<td>
-							<label>是<input type='radio' id='ccdIsSupportFullFrame' name='issupportfullframe' value="1" v-model='ccd_config.issupportfullframe'></label>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>否<input type='radio' id='ccdIsSupportFullFrame-1' name='issupportfullframe' value="0" v-model='ccd_config.issupportfullframe' @click='ccd_config.cansetfullframe=0'></label>	
+							<input type='text' ref='emMaxValue' name='emmaxvalue' placeholder="整数" v-model.trim='ccd_config.emmaxvalue' @blur='check_emV(true, ccd_config.emmaxvalue, $refs.emMaxValue)' >
+						</td>
+					</tr>
+					<tr>
+						<td>曝光触发模式:</td>
+						<td colspan="3" class="border_td" id='ccd_1ExposeTriggerMode'>
+							<span v-for='v in confOption.ExposeTriggerMode'>
+								<label>
+									{{v}}<input type='checkbox' name='exposetriggermode[]' :value='v' v-model='ccd_config.exposetriggermode'>
+								</label>&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>
+						</td>
+						<td>最小EM:</td>
+						<td>
+							<input type='text' ref='emMinValue' name='emminvalue' placeholder="整数" v-model.trim='ccd_config.emminvalue' @blur='check_emV(true, ccd_config.emminvalue, $refs.emMinValue, ccd_config.emmaxvalue)'>
 						</td>
 					</tr>
 					<tr>
@@ -628,33 +650,11 @@
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>否<input type='radio' id='ccdIsSupportROI-1' name='issupportroi' value="0" v-model='ccd_config.issupportroi'></label>
 						</td>
-					</tr>
-					<tr>
-						<td>接口类型:</td>
-						<td colspan="3" class="border_td" id='ccd_1InterfaceType'>
-							<span v-for='v in confOption.InterfaceType'>
-								<label>
-									{{v}}<input type='checkbox' name='interfacetype[]' :value='v' v-model='ccd_config.interfacetype'>
-								</label>&nbsp;&nbsp;&nbsp;&nbsp;
-							</span>
-						</td>
-						<td>最大EM:</td>
+						<td>支持帧转移:</td>
 						<td>
-							<input type='text' ref='emMaxValue' name='emmaxvalue' placeholder="整数" v-model.trim='ccd_config.emmaxvalue' @blur='check_emV(true, ccd_config.emmaxvalue, $refs.emMaxValue)' >
-						</td>
-					</tr>
-					<tr>
-						<td>曝光触发模式:</td>
-						<td colspan="3" class="border_td" id='ccd_1ExposeTriggerMode'>
-							<span v-for='v in confOption.ExposeTriggerMode'>
-								<label>
-									{{v}}<input type='checkbox' name='exposetriggermode[]' :value='v' v-model='ccd_config.exposetriggermode'>
-								</label>&nbsp;&nbsp;&nbsp;&nbsp;
-							</span>
-						</td>
-						<td>最小EM:</td>
-						<td>
-							<input type='text' ref='emMinValue' name='emminvalue' placeholder="整数" v-model.trim='ccd_config.emminvalue' @blur='check_emV(true, ccd_config.emminvalue, $refs.emMinValue, ccd_config.emmaxvalue)'>
+							<label>是<input type='radio' id='ccdIsSupportFullFrame' name='issupportfullframe' value="1" v-model='ccd_config.issupportfullframe'></label>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label>否<input type='radio' id='ccdIsSupportFullFrame-1' name='issupportfullframe' value="0" v-model='ccd_config.issupportfullframe' @click='ccd_config.cansetfullframe=0'></label>	
 						</td>
 					</tr>
 					<tr>
@@ -817,7 +817,7 @@
 						<td>插槽数目:</td>
 						<td><input type='text' ref='filterNum' name='numberoffilter' v-model.trim.lazy='filter_config.numberoffilter' @blur='check_slot(true, filter_config.numberoffilter, $refs.filterNum)'></td>
 						<td>插槽大小（mm）:</td>
-						<td><input type='text' ref='filterSize' name='filtersize' placeholder='[x,y,z]' v-model.trim='filter_config.filtersize' @blur='check_filterSize(true, filter_config.filtersize, $refs.filterSize)'></td>
+						<td><input type='text' ref='filterSize' name='filtersize' placeholder='x y z' v-model.trim='filter_config.filtersize' @blur='check_filterSize(true, filter_config.filtersize, $refs.filterSize)'></td>
 					</tr>
 					<tr>
 						<td colspan="6">
@@ -923,12 +923,6 @@
 						<td>
 							<input type='text' ref='sDomeDiameter' name='diameter' placeholder='直径' v-model.trim='sDome_config.diameter' @blur='check_num(true, sDome_config.diameter, $refs.sDomeDiameter, "sDome_D")'></td>
 						</td>
-						<td>风帘:</td>
-						<td>
-							<label>有<input type='radio' name='hasshade' value="1" v-model='sDome_config.hasshade'></label>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label>无<input type='radio' name='hasshade' value="0" v-model='sDome_config.hasshade' @click='sDome_config.cansetshadeposition=0;sDome_config.cansetshadespeed=0;'></label>
-						</td>
 					</tr>
 					<tr>
 						<td>设置目标方位:</td>
@@ -977,12 +971,15 @@
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>否<input type='radio' name='canconnect' value="0" v-model='sDome_config.canconnect'></label>
 						</td>
-						<td>属性版本号:</td>
+						<td>风帘:</td>
 						<td>
-							<input type='text' ref='sDome_version' name='attrversion' v-model.trim='sDome_config.attrversion' @blur='check_version(true, sDome_config.attrversion, $refs.sDome_version, 6)'>
+							<label>有<input type='radio' name='hasshade' value="1" v-model='sDome_config.hasshade'></label>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label>无<input type='radio' name='hasshade' value="0" v-model='sDome_config.hasshade' @click='sDome_config.cansetshadeposition=0;sDome_config.cansetshadespeed=0;'></label>
 						</td>
-						<td>属性更新时间:</td>
-						<td>{{sDome_config.attrmodifytime}}</td>
+					</tr>
+					<tr>
+						
 					</tr>
 					<tr>
 						<td>上传随动圆顶相关文件:</td>
@@ -1045,12 +1042,12 @@
 					<tr>
 						<td>属性更新时间:</td>
 						<td id='oDomeAttrModifyTime'>{{oDome_config.attrmodifytime}}</td>
+					</tr>
+					<tr>
 						<td>上传全开圆顶相关文件:</td>
 						<td colspan="2" class="border_td">
 							说明文件:<input type='file' name='specification'>
 						</td>
-					</tr>
-					<tr>
 						<td>全开圆顶相关文件:</td>
 						<td class="border_td">
 							<span v-for='v in oDome_file'><a title="点击下载" @click='downLoadFile(v, "oDome")'>{{v}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>

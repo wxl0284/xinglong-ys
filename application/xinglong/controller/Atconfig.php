@@ -305,7 +305,7 @@ class Atconfig extends Base
             $errMsg .= 'ccd的ip与其他望远镜设备ip重复';
         }
         //验证 ccd的IP与其他望远镜设备IP是否重复 结束
-        if ( $errMsg !== '' ) return $errMsg;
+        //if ( $errMsg !== '' ) return $errMsg;
 
         $data = Db::table('ccdconf')->where('teleid', $postData['teleid'])->where('ccdno', $postData['ccdno'])->find();
         
@@ -427,7 +427,7 @@ class Atconfig extends Base
                 $res = false;
             }
         }
-       // halt( $ipid_res );
+       
         if ( !$res )
         {
             $errMsg .= 'ccd配置存数据库失败!<br>';
@@ -669,7 +669,7 @@ class Atconfig extends Base
             $errMsg .= '滤光片ip与其他望远镜设备ip重复';
         }
         //判断ip与其他望远镜设备ip是否重复 结束
-       if ( $errMsg !== '' ) return $errMsg;
+       //if ( $errMsg !== '' ) return $errMsg;
 
        $slot_temp['slot_num'] = $postData['numberoffilter'];
        $slot_temp['filterType'] = $postData['filterType'];
@@ -866,7 +866,7 @@ class Atconfig extends Base
             $errMsg .= '随动圆顶ip与其他望远镜设备ip重复';
         }
         //验证 随动圆顶IP与其他望远镜设备ip是否重复 结束
-        if ( $errMsg !== '' ) return $errMsg;
+        //if ( $errMsg !== '' ) return $errMsg;
 
         $data = Db::table('sdomeconf')->where('teleid', $postData['teleid'])->find();
         
@@ -1057,8 +1057,7 @@ class Atconfig extends Base
             $errMsg .= '全开圆顶ip与其他望远镜设备ip重复';
         }
         //验证 IP与其他望远镜设备IP重复 结束
-
-        if ( $errMsg !== '' ) return $errMsg;
+        //if ( $errMsg !== '' ) return $errMsg;
 
         $data = Db::table('odomeconf')->where('teleid', $postData['teleid'])->find();
 
@@ -1248,8 +1247,7 @@ class Atconfig extends Base
             $errMsg .= '调焦器ip与其他望远镜设备ip重复';
         }
         //验证 IP与其他望远镜IP是否重复 结束
-
-        if ( $errMsg !== '' ) return $errMsg;
+        //if ( $errMsg !== '' ) return $errMsg;
 
         $data = Db::table('focusconf')->where('teleid', $postData['teleid'])->find();
 
@@ -1439,12 +1437,12 @@ class Atconfig extends Base
             $errMsg .= '导星镜id输入有误<br>';
         }
 
-        //判断导星望远镜的名称是否重复
+        //判断导星望远镜的名称
         if ( !isset($postData['name']) || strlen($postData['name']) === 0 )
         {
             $errMsg .= '导星镜名称输入有误<br>';
         }
-        //判断 导星镜ip与其他望远镜设备ip是否重复
+        //判断 导星镜ip与其他望远镜设备ip
         $dev_ip = Db::table('devipid')->where('teleid', '<>', $postData['teleid'])->column ('ip');
           
         if ( $dev_ip && in_array($postData['ip'], $dev_ip) )
@@ -1452,7 +1450,7 @@ class Atconfig extends Base
             $errMsg .= '导星镜ip与其他望远镜设备ip重复<br>';
         }
 
-        if ( $errMsg !== '' ) return $errMsg;
+        //if ( $errMsg !== '' ) return $errMsg;
 
         $focus_temp['focus'] = $postData['guide_focus'];
 

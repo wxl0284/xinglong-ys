@@ -1139,10 +1139,10 @@ class Page extends Base
         if ( $gimbal )
         {
             //处理焦点类型-焦比-焦距
-            if ( $gimbal['focustype'] )
+            /*if ( $gimbal['focustype'] )
             {
                 $temp_data = json_decode($gimbal['focustype'], true);
-    
+                halt ($temp_data);
                 $gimbal['focustype'] = implode (', ', $temp_data['focus']);
                 foreach ( $temp_data as $k => $v )
                 {
@@ -1151,7 +1151,7 @@ class Page extends Base
                 }
             }
             $gimbal['focusratio'] = implode (', ', $gimbal['focusratio']);
-            $gimbal['focuslength'] = implode (', ', $gimbal['focuslength']);
+            $gimbal['focuslength'] = implode (', ', $gimbal['focuslength']);*/
             //处理焦点类型-焦比-焦距 结束
             $gimbal['longitude'] = $atData['longitude']; //经度
             $gimbal['latitude'] = $atData['latitude']; //纬度

@@ -190,6 +190,11 @@
 			focus_status: {},
 		},/********vue data属性对象 结束********/
 		computed: {//计算属性
+			gimbal_focus: function () {
+				//return $.parseJSON (this.configData.gimbal.focustype);
+				return eval ( '(' + this.configData.gimbal.focustype + ')' );
+				//console.log(x);
+			},//gimbal_focus 结束
 			ccd_gainMode: function (){
 				var gainMode = this.ccd_config.gainmode.split(', ');
 				var final_gainMode = {
