@@ -2395,7 +2395,7 @@
             },/* success方法 结束*/
 			error: function (){
 				status_err ++;
-				if (status_err == 2) clearInterval(status_interval);
+				if (status_err == 1) clearInterval(status_interval);
 				layer.alert('网络异常,设备实时数据无法获取!', {shade:false, closeBtn:0});
 			},
 		});

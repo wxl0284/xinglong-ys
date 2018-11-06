@@ -701,13 +701,13 @@ class Ccd extends Base
 
     protected function set_bin ($postData, $param)  /*设置Bin*/
     {
-        $res = Db::table('ccdconf')->where('teleid', $postData['at'])->where('ccdno', $this->ccdNo)->field('binarray')->find(); //获取该望远镜的ccdconf表中的:bin值
+        $res = Db::table('ccdconf')->where('teleid', $postData['at'])->where('ccdno', $this->ccdNo)->field('bin')->find(); //获取该望远镜的ccdconf表中的:bin值
         if ( !$res )
         {
             return '验证bin参数失败';
         }
 
-        $temp = explode('#', $res['binarray']); //将2*2#4*4分开成为数组
+        $temp = explode('#', $res['bin']); //将2*2#4*4分开成为数组
         //halt($postData);
         if ( !in_array($postData['bin'], $temp) )
         {

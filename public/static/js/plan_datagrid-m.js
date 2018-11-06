@@ -906,6 +906,9 @@ var all_plans = aperture + 'all_plans';
 
 //var get_plan_i = setInterval (get_plan, 60000); //定时执行get_plan() 60秒执行一次查询，否则浏览器卡顿
 //var get_plan_i = 0;
+ var no_plan_execute = 0; //如果没有正执行的计划，此值加1
+ var plan_execute_i =  -1; //定时器的返回值
+
  function plan_executing ()
  { //显示正在执行的计划
 	//console.log ( localStorage.getItem('all_plas') );
@@ -935,7 +938,13 @@ var all_plans = aperture + 'all_plans';
 		})
 	}
 
-	//然后去请求中控 查看每个望远镜中正在执行的计划之tag,然后标绿
+	no_plan_execute = 0; //如果没有正执行的计划，此值加1
+	plan_execute_i =  setInterval (get_plan_tag, 2000);
+ }/*plan_executing() 结束*/
+
+ /*查询正在执行第几条计划*/
+ function get_plan_tag ()
+ {
 	$.ajax({
 		url: '/plan',
 		type: 'post',
@@ -953,22 +962,30 @@ var all_plans = aperture + 'all_plans';
 					},
 				})
 			}else{
-				layer.alert(info, {
-					shade:false,
-					closeBtn:0,
-					yes:function (n){
-						layer.close(n);
-						if ( info.indexOf('登录') !== -1 )
-						{
-							location.href = '/';
-						}
-					},
-				});
+				no_plan_execute ++;
+				if ( no_plan_execute <= 1 )
+				{
+					layer.alert(info, {
+						shade:false,
+						closeBtn:0,
+						yes:function (n){
+							layer.close(n);
+							if ( info.indexOf('登录') !== -1 )
+							{
+								location.href = '/';
+							}
+						},
+					});
+
+					clearInterval ( plan_execute_i ); //无正在执行的计划，关闭定时器
+				}
+				
 			}
 		},//success 方法结束
 	})/*ajax 结束*/
- }/*plan_executing() 结束*/
-
+ }
+ /*查询正在执行第几条计划 结束*/
+ 
  /*导入已提交的计划数据*/
  function importData ()
  {

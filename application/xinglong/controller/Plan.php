@@ -438,11 +438,11 @@ class Plan extends Base
 			if ( preg_match('/^[0-9]$/', $epoch) ) //数字类型
 			{
 				$sendMsg .= pack('L', $epoch); 
-			}else{//直接为字符类型数据
+			}else{//直接为字符类型数据 
 				$epoch = strtolower ($epoch);
 				if( $epoch == 'real' )
 				{
-					$sendMsg .= pack('L', 0); 
+					$sendMsg .= pack('L', 0);
 				}elseif( $epoch == 'j2000' ){
 					$sendMsg .= pack('L', 1); 
 				}elseif( $epoch == 'b1950' ){
@@ -597,8 +597,17 @@ class Plan extends Base
 		}
 
 		$sql = 'select tag from ' . $plan_table . ' where "user" ='. "'". $this->user. "'" . ' order by id desc limit 1';
+		
 		$exetue = Db::query($sql);
-		//halt($exetue);
+		
+		if ( $exetue )
+		{
+			return 'tagOk#' . $exetue[0]['tag']; //返回tag, 'tagOk'用来供前端判断
+		}else{
+			return '无正执行计划!';
+		}
+		
+		/*halt($exetue);
 		//$plan_data = Db::table('plandata')->where('atuser', $this->user)->where('at', $at)->order('id', 'desc')->field('plan')->find();
 		//halt($plan_data);
 		if ( $exetue )
