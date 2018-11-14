@@ -160,9 +160,10 @@
 						editRow = undefined; //否则 无法拖动
 						planErr = 0; //将提交计划的错误标识 改为0
 						checked = []; //清空被选中的行索引
+						clearInterval ( plan_execute_i ); //关闭查询执行哪条计划的定时器
 						table.datagrid('enableDnd');
 					}
-				},
+				},//success 结束
 	            error:  function () {
 	               layer.alert('网络异常,请重新导入计划', {shade:false, closeBtn:0});
 	            },
@@ -445,6 +446,7 @@
 		layer.confirm('确定删除？', {icon: 3, title:'提示',shade:0}, function(index){
 			table.datagrid({ data:[] }); //执行删除
 			checked = []; //清空被选中的行索引
+			clearInterval ( plan_execute_i ); //关闭查询执行哪条计划的定时器
 			editRow = undefined;
 			layer.close(index);
 		});
@@ -607,6 +609,7 @@
 					if (info.indexOf('计划停止') !== -1)
 					{
 						//planStart.prop('disabled', false);
+						clearInterval ( plan_execute_i ); //关闭查询执行哪条计划的定时器
 					}
 	            },
 	            error:  function () {
