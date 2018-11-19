@@ -533,11 +533,11 @@
 										<img class='pos_a' src="/static/images-1/up.png" style='top:15%;left:68%;' @click='gain_noise_sort1("gain_gear", "asc")'>
 										<img class='pos_a' src="/static/images-1/down.png" style='top:-38%;left:82%;' @click='gain_noise_sort1("gain_gear", "desc")'>
 									</td>
-									<td class="pos_r">增益值
+									<td class="pos_r" style='text-align: left'>增益值（eˉ/ADU）
 										<img class='pos_a' src="/static/images-1/up.png" style='top:15%;left:68%;' @click='gain_noise_sort1("gainVal", "asc")'>
 										<img class='pos_a' src="/static/images-1/down.png" style='top:-38%;left:82%;' @click='gain_noise_sort1("gainVal", "desc")'>
 									</td>
-									<td @click='tt' class="pos_r">读出噪声值
+									<td @click='tt' class="pos_r" style='text-align: left'>读出噪声值（eˉ）
 										<img class='pos_a' src="/static/images-1/up.png" style='top:15%;left:68%;' @click='gain_noise_sort1("noiseVal", "asc")'>
 										<img class='pos_a' src="/static/images-1/down.png" style='top:-38%;left:82%;' @click='gain_noise_sort1("noiseVal", "desc")'>
 									</td>
@@ -600,7 +600,8 @@
 						</td>
 						<td>最大EM:</td>
 						<td>
-							<input type='text' ref='emMaxValue' name='emmaxvalue' placeholder="整数" v-model.trim='ccd_config.emmaxvalue' @blur='check_emV(true, ccd_config.emmaxvalue, $refs.emMaxValue)' >
+							<input type='text' ref='emMaxValue' name='emmaxvalue' placeholder="整数" v-model.trim='ccd_config.emmaxvalue'>
+							<!--<input type='text' ref='emMaxValue' name='emmaxvalue' placeholder="整数" v-model.trim='ccd_config.emmaxvalue' @blur='check_emV(true, ccd_config.emmaxvalue, $refs.emMaxValue)' >-->
 						</td>
 					</tr>
 					<tr>
@@ -614,7 +615,8 @@
 						</td>
 						<td>最小EM:</td>
 						<td>
-							<input type='text' ref='emMinValue' name='emminvalue' placeholder="整数" v-model.trim='ccd_config.emminvalue' @blur='check_emV(true, ccd_config.emminvalue, $refs.emMinValue, ccd_config.emmaxvalue)'>
+							<input type='text' ref='emMinValue' name='emminvalue' placeholder="整数" v-model.trim='ccd_config.emminvalue'>
+							<!--<input type='text' ref='emMinValue' name='emminvalue' placeholder="整数" v-model.trim='ccd_config.emminvalue' @blur='check_emV(true, ccd_config.emminvalue, $refs.emMinValue, ccd_config.emmaxvalue)'>-->
 						</td>
 					</tr>
 					<tr>
@@ -976,6 +978,10 @@
 							<label>有<input type='radio' name='hasshade' value="1" v-model='sDome_config.hasshade'></label>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label>无<input type='radio' name='hasshade' value="0" v-model='sDome_config.hasshade' @click='sDome_config.cansetshadeposition=0;sDome_config.cansetshadespeed=0;'></label>
+						</td>
+						<td>属性版本号:</td>
+						<td>
+							<input type='text' ref='sDome_version' name='attrversion' v-model.trim='sDome_config.attrversion' @blur='check_version(true, sDome_config.attrversion, $refs.sDome_version, 6)' >
 						</td>
 					</tr>
 					<tr>

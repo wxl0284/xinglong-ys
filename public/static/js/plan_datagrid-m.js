@@ -808,7 +808,7 @@ var all_plans = aperture + 'all_plans';
 				msg += '第' + (i+1) + '条滤光片超限!<br>';
 			}
 
-			var plan_gain = $.trim(plans[i].gain);
+			/*var plan_gain = $.trim(plans[i].gain);
 			patn = /^\d+$/;
 			if ( !patn.test(plan_gain) || plan_gain < 1 )
 			{
@@ -827,7 +827,7 @@ var all_plans = aperture + 'all_plans';
 			if ( !patn.test(plan_readout) || plan_gain < 1 )
 			{
 				msg += '第' + (i+1) + '条读出速度超限!<br>';
-			}
+			}*/
 		}
 		return msg;
 	}/*plan_valid  结束*/

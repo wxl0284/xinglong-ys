@@ -316,7 +316,7 @@ class Plan extends Base
 				$errMsg .= '第'. ($i+1) .'条计划:滤光片参数超限!<br>';
 			}
 
-			//验证增益
+			/*//验证增益
 			$gain = $postData['planData'][$i]['gain'];
 			if($gain === '')//增益 未填写
 			{
@@ -350,8 +350,7 @@ class Plan extends Base
 				{
 					$errMsg .= '第'. ($i+1) .'条计划:读出速度参数超限!<br>';
 				}
-			}
-			
+			}*/			
 		}	//循环验证每条计划数据 结束///////
 
 		if ($errMsg !== '' )	//若验证有错误
