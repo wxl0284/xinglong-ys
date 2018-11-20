@@ -564,24 +564,25 @@
 		{
 			/*开始执行前 将所有计划数据和被checked的行索引存入浏览器本地存储*/
 			checked_plans = []; //每次执行计划前都将checked_plans清空
-			var plans_data = JSON.stringify( table.datagrid('getRows') ); //转为字符串
-			localStorage.setItem (all_plans, plans_data); //将字符串存入all_plans变量内
-		
-			if ( rows.length > 0 )
+			/*var plans_data = JSON.stringify( table.datagrid('getRows') ); //转为字符串
+			localStorage.setItem (all_plans, plans_data); //将字符串存入all_plans变量内 所有正执行的计划都从php的缓存中读取 */
+			/*开始执行前 将所有计划数据和被checked的行索引存入浏览器本地存储 结束*/
+			if ( rows.length > 0 ) //将被选中的计划的索引存入 checked_plans
 			{
 				rows.filter(function (v) {
 					
 					checked_plans.push ( table.datagrid('getRowIndex', v) );
 				})
 			}
-
-			/*开始执行前 将所有计划数据和被checked的行索引存入浏览器本地存储 结束*/
+			var checked_plans_index = JSON.stringify( checked_plans ); //将被选中的计划的索引转为字符串，发给php
+			
 			$.ajax({
 				type : 'post',
 				url : '/plan',
 				data : {
 					planOption : option,
 					mode : modeVal,
+					checked_plans_index :  checked_plans_index,
 					start : index +1,
 					command : 2, //标识 plan.php控制器中用以区别要执行的函数
 					at : at,
@@ -604,6 +605,18 @@
 					{
 						//planStart.prop('disabled', true);
 						//planStop.prop('disabled', false);
+
+						//将index这一索引对应的计划高亮
+						table.datagrid('scrollTo', index); //滚动到第index行
+						table.datagrid({
+							rowStyler: function (i, row) {
+								if( i == (index) ){
+									return 'background-color:#18fd65;';
+								}
+							},
+						}) //高亮 结束
+
+						plan_execute_i =  setInterval (get_plan_tag, 2000); //开始查询正执行的计划
 					}
 					
 					if (info.indexOf('计划停止') !== -1)
@@ -642,10 +655,12 @@ var all_plans = aperture + 'all_plans';
 		{
 			layer.alert(msg, {shade:false, closeBtn:0});return;
 		}
-		/*将计划数据存入本地*/
+		/*将计划数据存入本地
 		var all_plans_data = JSON.stringify( table.datagrid('getRows') ); //转为字符串
 		localStorage.setItem (all_plans, all_plans_data); //将字符串存入all_plans变量内
-		/*将计划数据存入本地 结束*/
+		将计划数据存入本地 结束*/
+		var all_plans_data = JSON.stringify( plans ); //计划数据转为字符串
+
 		if (planErr === 0)  //ajax 发送数据到后台
 		{
 			$.ajax({
@@ -653,9 +668,10 @@ var all_plans = aperture + 'all_plans';
 				url: '/plan',
 				data: {
 					planData: plans,
+					planDataStr: all_plans_data, //转为json字串所有计划数据
 					command : 1,  //标识 plan.php控制器中用以区别要执行的函数
 					at : at,
-					at_aperture:aperture,
+					at_aperture:aperture, //页面中的望远镜口径
 					plan_filter_option : plan_filter_option, //将该望远镜filter的['u','v','b']提交
 					maxExpose: configData.ccd[0].maxexposuretime,
 					minExpose: configData.ccd[0].minexposuretime,
@@ -915,7 +931,7 @@ var all_plans = aperture + 'all_plans';
  function plan_executing ()
  { //显示正在执行的计划
 	//console.log ( localStorage.getItem('all_plas') );
-	var plans_data = localStorage.getItem(all_plans);
+	/*原先的是从本地读取存储的计划数据 var plans_data = localStorage.getItem(all_plans);
 	var parsed_all_plans = JSON.parse ( plans_data );
 
 	var all_plans_num = 0; //已保存的计划条数
@@ -939,7 +955,57 @@ var all_plans = aperture + 'all_plans';
 		checked_plans.filter(function (v) {
 			table.datagrid('checkRow', v); //逐一选中计划
 		})
-	}
+	}*/
+
+	/*去php请求Cache中的：计划数据及被选中计划的行索引，然后在页面中显示这些计划并高亮正被执行的计划*/
+	$.ajax({
+		url: '/plan',
+		type: 'post',
+		data: {at: at, command: 'get_cached_plan', at_aperture:aperture},
+		success: function (info) {
+			//console.log (info.indexOf('cache')); return;
+			if ( info.indexOf('cache') !== -1 ) //缓存的计划数据
+			{
+				//解析数据，然后在页面显示
+				info = info.split('#'); // info[1]为计划数据，info[2]为被选中的计划索引
+				
+				table.datagrid({ data: JSON.parse ( info[1] ) }); //在表格中显示本地存储的计划数据
+				//然后逐一将这些索引的行 进行选中
+				info = JSON.parse ( info[2] ); //将返回的被选中的行索引转为数组格式
+				if ( info.length > 1 )
+				{
+					info.filter(function (v) {
+						table.datagrid('checkRow', v);
+					})
+				} //逐一选中计划 结束
+
+				editRow = undefined; //否则，无法拖动
+
+			}else{
+				no_plan_execute ++;
+				if ( no_plan_execute <= 1 )
+				{
+					layer.alert(info, {
+						shade:false,
+						closeBtn:0,
+						yes:function (n){
+							layer.close(n);
+							if ( info.indexOf('登录') !== -1 )
+							{
+								location.href = '/';
+							}
+						},
+					});
+
+					clearInterval ( plan_execute_i ); //无正在执行的计划，关闭定时器
+				}
+			}
+		}, //success 结束
+		error: function (){
+			layer.alert('网络异常,请重新点击', {shade:false, closeBtn:0});
+		} //error 结束
+	}) //ajax 结束
+	/*去php请求Cache中的：计划数据及被选中计划的行索引，然后在页面中显示这些计划并高亮正被执行的计划 结束*/
 
 	no_plan_execute = 0; //如果没有正执行的计划，此值加1
 	plan_execute_i =  setInterval (get_plan_tag, 2000);
@@ -982,17 +1048,52 @@ var all_plans = aperture + 'all_plans';
 
 					clearInterval ( plan_execute_i ); //无正在执行的计划，关闭定时器
 				}
-				
 			}
 		},//success 方法结束
+		error: function () {
+			layer.alert('网络异常, 查询失败', {shade:false, closeBtn:0});
+		} //error 结束
 	})/*ajax 结束*/
  }
  /*查询正在执行第几条计划 结束*/
  
- /*导入已提交的计划数据*/
+ /*导入已提交的计划数据 从php的缓存中获得*/
  function importData ()
  {
-	var plans_data = localStorage.getItem(all_plans);
+	$.ajax({
+		url: '/plan',
+		type: 'post',
+		data: {at: at, command: 'get_submited_plan', at_aperture:aperture},
+		success: function (info) {
+			if ( info.indexOf('cache') !== -1 ) //缓存的计划数据
+			{
+				//解析数据，然后在页面显示
+				info = info.split('#'); // info[1]为计划数据，info[2]为被选中的计划索引
+				
+				table.datagrid({ data: JSON.parse ( info[1] ) }); //在表格中显示本地存储的计划数据
+
+				editRow = undefined; //否则，无法拖动
+
+			}else{
+				layer.alert(info, {
+					shade:false,
+					closeBtn:0,
+					yes:function (n){
+						layer.close(n);
+						if ( info.indexOf('登录') !== -1 )
+						{
+							location.href = '/';
+						}
+					},
+				});
+			}
+		}, //success 结束
+		error: function (){
+			layer.alert('网络异常,请重新点击', {shade:false, closeBtn:0});
+		} //error 结束
+	}) //ajax 结束	
+	
+	/* 原先的从本地存储读取的代码 var plans_data = localStorage.getItem(all_plans);
 	var parsed_all_plans = JSON.parse ( plans_data );
 	var all_plans_num = 0; //已保存的计划条数
 
@@ -1007,7 +1108,7 @@ var all_plans = aperture + 'all_plans';
 		editRow = undefined; //否则，无法拖动
 	}else{
 		layer.alert('已提交计划数据为空', {shade:0, closeBtn:0}); return;
-	}
+	} */
  }/*导入已提交的计划数据 importData () 结束*/
 
  function test ()

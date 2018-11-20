@@ -5,6 +5,7 @@ use app\xinglong\controller\Base;
 use think\Cookie;
 use think\Db;
 use think\Session;
+use think\Cache;
 
 /*此控制器 负责各望远镜的计划发送*/
 class Plan extends Base
@@ -187,10 +188,34 @@ class Plan extends Base
         if ( $postData['command'] == 1 ) //验证计划的数据，并发送计划数据
         {      
             return $this->sendPlan($postData);   //执行发送
-        }else if( $postData['command'] == 2 ){//根据计划执行方式，开始执行计划       
+		}else if( $postData['command'] == 2 )
+		{//根据计划执行方式，开始执行计划       
             return $this->planOption($postData); //执行发送
-        }else if( $postData['command'] == 'get_plan' ){//查询当前用户是否有观测计划正在执行      
+		}else if( $postData['command'] == 'get_plan' )
+		{//查询当前用户是否有观测计划正在执行      
             return $this->get_plan($postData['at']);
+		}else if( $postData['command'] == 'get_cached_plan' )
+		{//点击'正执行的计划'按钮 查询Cache中的计划数据和被选中的计划索引
+			$cached_plans = Cache::get( $postData['at_aperture'] ); //每个望远镜都以口径值命名缓存的计划
+			$cached_checked_index = Cache::get( $postData['at_aperture']. 'checked_plans_index' );
+			
+			if ( $cached_plans && $cached_checked_index  ) //若有缓存
+			{
+				return 'cache' .'#'. $cached_plans .'#'. $cached_checked_index; //以#分割
+			}else{
+				return '还没有正在执行的计划';
+			}
+			
+        }else if( $postData['command'] == 'get_submited_plan' )
+		{//点击'已提交的计划'按钮 查询Cache中的被提交后缓存的计划数据
+			$cached_plans = Cache::get( $postData['at_aperture'] ); //每个望远镜都以口径值命名缓存的计划
+			if ( $cached_plans ) //若有缓存
+			{
+				return 'cache' .'#'. $cached_plans; //以#分割
+			}else{//无缓存时
+				return '还没有被提交的计划数据';
+			}
+			
         }
 
     }//观测计划 根据提交的参数 调用函数 结束 
@@ -492,7 +517,7 @@ class Plan extends Base
             udpSendPlan($sendMsg, $this->ip, $this->port); //无返回值
 		}//给中控 发送数据 结束///////////////
 
-		/*// 把计划数据写入表plandata中
+		/*// 把计划数据写入plandata中
 		$plan_data_json = json_encode ($postData['planData']); //将提交上来的计划数据转为json字串
 		$data = [
 			'atuser' => $this->user,
@@ -505,7 +530,11 @@ class Plan extends Base
 		if (!$res)
 		{
 			return '观测计划缓存失败, 请重新提交观测计划!';
-		}*/
+		} //计划数据写入plandata中 结束*/
+
+		// 把计划数据写入Cache中 planDataStr 缓存的名称是望远镜口径
+		Cache::set ( $postData['at_aperture'], $postData['planDataStr'] );
+		//计划数据写入Cache中 结束
 
 		return '观测计划发送完毕!';
     } //获取计划数据 验证并发送计划数据 结束////////////////////////////////////////
@@ -536,6 +565,8 @@ class Plan extends Base
                
 		if($postData['planOption'] == 'planStart')
 		{
+			Cache::set( $postData['at_aperture'] . 'checked_plans_index', $postData['checked_plans_index'] ); //点击‘开始’按钮时发送过来的被选中的计划索引
+			
 			$sendMsg = pack('L', 1);
 			$sendMsg .= pack('L', $postData['mode']);
 			$sendMsg .= pack('L', $postData['start']);
@@ -595,7 +626,7 @@ class Plan extends Base
 				break;
 		}
 
-		$sql = 'select tag from ' . $plan_table . ' where "user" ='. "'". $this->user. "'" . ' order by id desc limit 1';
+		/*$sql = 'select tag from ' . $plan_table . ' where "user" ='. "'". $this->user. "'" . ' order by id desc limit 1';
 		
 		$exetue = Db::query($sql);
 		
@@ -604,7 +635,9 @@ class Plan extends Base
 			return 'tagOk#' . $exetue[0]['tag']; //返回tag, 'tagOk'用来供前端判断
 		}else{
 			return '无正执行计划!';
-		}
+		}*/
+
+		return 'tagOk#' . '1'; //返回tag, 'tagOk'用来供前端判断
 		
 		/*halt($exetue);
 		//$plan_data = Db::table('plandata')->where('atuser', $this->user)->where('at', $at)->order('id', 'desc')->field('plan')->find();

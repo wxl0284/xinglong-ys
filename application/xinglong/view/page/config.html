@@ -439,11 +439,11 @@
 					<tr>
 						<td>传感器名称:</td>
 						<td><input type='text' ref='ccdSensorName' name='sensorname' placeholder="芯片名称" v-model.trim='ccd_config.sensorname' @blur='check_devName(true, ccd_config.sensorname, $refs.ccdSensorName, "ccd_sensor")'></td>
-						<td>图像位数:</td>
+						<td>快门类型:</td>
 						<td>
-							<select id='ccdImageBits' name='imagebits' v-model='ccd_config.imagebits'>
+							<select id='ccdShutterType' name='shuttertype' v-model='ccd_config.shuttertype'>
 								<option value="0">请选择</option>
-								<option :value="v" v-for='v in confOption.imageBits'>{{v}}</option>
+								<option :value="v" v-for='v in confOption.ShutterType'>{{v}}</option>
 							</select>
 						</td>
 						<td>制冷方式:</td>
@@ -477,13 +477,6 @@
 						<td>
 							<input type='text' ref='fullWellDepth' name='fullwelldepth' placeholder='整数' v-model.trim='ccd_config.fullwelldepth' @blur='check_intV(true, ccd_config.fullwelldepth, $refs.fullWellDepth, 2)'>
 						</td>
-						<td>快门类型:</td>
-						<td>
-							<select id='ccdShutterType' name='shuttertype' v-model='ccd_config.shuttertype'>
-								<option value="0">请选择</option>
-								<option :value="v" v-for='v in confOption.ShutterType'>{{v}}</option>
-							</select>
-						</td>
 					</tr>
 					<tr>
 						<td>读出速度（MHz）:&nbsp;<input type='button' value='增加' style='width:20%;font-size:1em;font-weight:normal;' @click='r_spd++;'></td>
@@ -508,8 +501,12 @@
 					<tr>
 						<td>增益模式:</td>
 						<td colspan="3" class="border_td" id='ccd_1gainmode'>
-							<span>High Sensitivity<input type='checkbox' name='gainmode[]' value='High Sensitivity' v-model='gainMode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-							<span>High Capacity<input type='checkbox' name='gainmode[]' value='High Capacity' v-model='gainMode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<label>
+								<span>High Sensitivity<input type='checkbox' name='gainmode[]' value='High Sensitivity' v-model='gainMode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							</label>
+							<label>
+								<span>High Capacity<input type='checkbox' name='gainmode[]' value='High Capacity' v-model='gainMode'>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							</label>
 						</td>
 						<td>增益档位:</td>
 						<td>
@@ -557,6 +554,16 @@
 								</tr>								
 							</table><br>
 							<input type="button" value="保存增益及噪声值" @click='gain_noise_sbmt'>
+						</td>
+					</tr>
+					<tr>
+						<td>图像位数:</td>
+						<td colspan="5" class="border_td">
+							<span v-for='v in confOption.imageBits'>
+								<label>
+									{{v}}<input type='checkbox' name='imagebits[]' :value='v' v-model='ccd_config.imagebits'>
+								</label>&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>
 						</td>
 					</tr>
 					<tr>

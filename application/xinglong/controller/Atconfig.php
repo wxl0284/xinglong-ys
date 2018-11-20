@@ -275,6 +275,12 @@ class Atconfig extends Base
             $postData['exposetriggermode'] = implode ('#', $postData['exposetriggermode']);
        }/*处理 曝光触发模式 结束*/
 
+       /*处理 图像位数*/
+       if ( isset($postData['imagebits']) ) //有此数据
+       {
+            $postData['imagebits'] = implode ('#', $postData['imagebits']);
+       }/*处理 图像位数 结束*/
+
        //属性更新时间
        $postData['attrmodifytime'] = date ('Y-m-d');
        
@@ -636,12 +642,12 @@ class Atconfig extends Base
                 $errMsg .= '插槽' . ($slot_i+1) . '滤光片类型有误<br>';
             }
             //检查滤光片名称
-            if ( preg_match('/[\x{4e00}-\x{9af5} 0-9]/u', $postData['filterName'][$slot_i]) || $postData['filterName'][$slot_i] === '' )
+            if ( preg_match('/[\x{4e00}-\x{9af5} ]/u', $postData['filterName'][$slot_i]) || $postData['filterName'][$slot_i] === '' )
             {
                 $errMsg .= '插槽' . ($slot_i+1) . '滤光片名称有误<br>';
             }
             //检查焦距偏差值
-            if ( !preg_match('/\d+/', $postData['filterComp'][$slot_i]) || $postData['filterComp'][$slot_i] < 1 )
+            if ( !preg_match('/\d+/', $postData['filterComp'][$slot_i]) || $postData['filterComp'][$slot_i] < 0 )
             {
                 $errMsg .= '插槽' . ($slot_i+1) . '焦距偏差值有误<br>';
             }

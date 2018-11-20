@@ -1188,6 +1188,10 @@ class Page extends Base
                 {
                     $ccd[$k]['exposetriggermode'] = str_replace ('#', ', ', $ccd[$k]['exposetriggermode']);
                 }
+                if ( $ccd[$k]['imagebits'] ) //处理图像位数，处理后直接在页面显示
+                {
+                    $ccd[$k]['imagebits'] = str_replace ('#', ', ', $ccd[$k]['imagebits']);
+                }
             }
             
             // if ( $ccd['gainmode'] )  //处理增益模式，处理后直接在页面显示
