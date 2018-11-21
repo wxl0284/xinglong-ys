@@ -965,19 +965,20 @@
 			 </table>
 			<div id="toolbar">
 			<a class="easyui-linkbutton" iconCls="icon-more" plain="true" onclick="importPlan()">导入计划文件</a>
+			<a class="easyui-linkbutton" iconCls="icon-out" plain="true" onclick="exportPlan(this)" download="plan_data.strat" href='#'>导出至文件</a>
 			<a class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="savePlan()">保存</a>
 			<a class="easyui-linkbutton" iconCls="icon-redo" plain="true" onclick="submitPlan()">提交计划</a>
 			<a class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="importData()">已提交的计划</a>
-			<a class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="plan_executing()">正执行的计划</a>
+			<a class="easyui-linkbutton" iconCls="icon-do" plain="true" onclick="plan_executing()">正执行的计划</a>
 			<a class="easyui-linkbutton" iconCls="icon-clear" plain="true" onclick="delAll()">全部删除</a>
            </div>
 		   <!--观测计划的模式按钮-->
 		   <div id='planModes' class='pos_a'>
-				<select id="sortPlanOrder" class='pos_r' style='left:-18%'>
+				<select id="sortPlanOrder" class='pos_r' style='left:-8%'>
 					<option value="asc">升序</option>
 					<option value="desc">降序</option>
 				</select>
-				<select id="sortPlan" class='pos_r' style='left:-16%'>
+				<select id="sortPlan" class='pos_r' style='left:-6%'>
 					<option value="-1">排序的列</option>
 					<option value="1">赤经</option>
 					<option value="2">赤纬</option>

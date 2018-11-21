@@ -16,6 +16,12 @@
 .icon-save{
 	background:url('icons/filesave.png') no-repeat center center;
 }
+.icon-out{
+	background:url('icons/out.png') no-repeat center center;
+}
+.icon-do{
+	background:url('icons/do.png') no-repeat center center;
+}
 .icon-cut{
 	background:url('icons/cut.png') no-repeat center center;
 }

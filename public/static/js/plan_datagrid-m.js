@@ -972,7 +972,7 @@ var all_plans = aperture + 'all_plans';
 				table.datagrid({ data: JSON.parse ( info[1] ) }); //在表格中显示本地存储的计划数据
 				//然后逐一将这些索引的行 进行选中
 				info = JSON.parse ( info[2] ); //将返回的被选中的行索引转为数组格式
-				if ( info.length > 1 )
+				if ( info.length > 0 )
 				{
 					info.filter(function (v) {
 						table.datagrid('checkRow', v);
@@ -1051,6 +1051,7 @@ var all_plans = aperture + 'all_plans';
 			}
 		},//success 方法结束
 		error: function () {
+			clearInterval ( plan_execute_i ); //无正在执行的计划，关闭定时器
 			layer.alert('网络异常, 查询失败', {shade:false, closeBtn:0});
 		} //error 结束
 	})/*ajax 结束*/
@@ -1110,6 +1111,22 @@ var all_plans = aperture + 'all_plans';
 		layer.alert('已提交计划数据为空', {shade:0, closeBtn:0}); return;
 	} */
  }/*导入已提交的计划数据 importData () 结束*/
+ 
+ /*
+  exportPlan (): 将页面已保存的观测计划导出至文件
+ */
+ function exportPlan (aLink)
+ {
+	//先验证数据是否都已保存，页面是否有数据，暂时不做
+
+	//直接将页面计划数据以文件下载的方式保存
+	//var all_plan = table.datagrid('getRows');
+	var str = 'hahah\r\nvvvv'; //要写入文件的字符串
+ 
+    str =  encodeURIComponent(str);  
+    aLink.href = "data:text/strat;charset=utf-8,"+str; 
+
+ }//exportPlan() 结束
 
  function test ()
  {

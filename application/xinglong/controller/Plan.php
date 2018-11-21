@@ -34,14 +34,22 @@ class Plan extends Base
 		// 获取表单上传文件 
 		$file = request()->file('plan');
 		//halt($file);
+		//halt($file);
 		//上传文件验证
-		$result = $this->validate(
+		/*$result = $this->validate(
 				['file' => $file],
 				['file' => 'file|require|fileExt:txt|fileSize:4096000000|fileMime:text/plain'],
 				['file.require' => '请选择上传文件',
 				 'file.fileExt' => '文件后缀名必须为txt',
 				 'file.fileSize' => '文件大小超出限制',
-				 'file.fileMime' => '文件格式或文件内容不符合要求']);
+				 'file.fileMime' => '文件格式或文件内容不符合要求']);*/
+		$result = $this->validate(
+		['file' => $file],
+		['file' => 'file|require|fileExt:strat|fileSize:4096000000|fileMime:text/plain'],
+		['file.require' => '请选择上传文件',
+			'file.fileExt' => '文件后缀须为strat',
+			'file.fileSize' => '文件大小超出限制',
+			'file.fileMime' => '文件格式或文件内容不符合要求']);
 		if (true !== $result)
 		{
 			return $result;
@@ -53,7 +61,8 @@ class Plan extends Base
 		$path = ROOT_PATH . 'public' . DS . 'uploads/' .$dir;
 		$info = $file->move($path, $name.'.txt');
 
-		if($info){
+		if($info)
+		{
 			//获取计划文件的字符编码
 			$planData = file_get_contents($path.'/'.$name.'.txt');
 			
@@ -84,6 +93,63 @@ class Plan extends Base
 			fclose($file);
 			array_filter($fileData);  //删除$fileData中等值为false的元素
 			
+			$data_perLine_onePlan = []; //将上传文件的原始数据转为每行一条完整计划的格式 返回给页面显示
+			$line = 0; //读取的第几行数据
+			$object_num = 0; //第几个观测目标
+
+			foreach ($fileData as $k => $v) //遍历每行数据 文件中数据的验证稍后再说（就在此遍历中验证每一条计划是否有错误）
+			{
+				$line ++;
+				$temp_line = str_replace (';', '', $v); //去掉每行末尾的';' 暂时存储每行计划数据
+				
+				//组装一条完整计划 每条以'$'开头的表示一个观测目标
+				if ( strpos($v, '$') !== false ) //一个观测目标
+				{
+					$object_num ++;
+					$temp_line = ltrim ($temp_line, '$,'); //去掉开头的'$,'
+					$perLine_pre = $temp_line; //每个观测目标的相同部分 即前段
+				}else{//当前观测目标的后段
+					$temp_line = rtrim ($temp_line, ','); //去掉末尾的','
+					$index = $line - $object_num -1; //当前行数减当前目标数再减1即为$data_perLine_onePlan数组的下标（从0开始，每一条在页面显示为一行）
+					$data_perLine_onePlan[$index] = $perLine_pre .$temp_line;
+
+					//接下来把刚组装的计划数据整理为页面所需的一个数组，并以json格式返回
+					$row = explode( ',', $data_perLine_onePlan[$index] );
+					
+					$plan["plan".$index]["target"] = trim($row[0]); //目标名称
+					$plan["plan".$index]["type"] = '恒星';  //目标类型 默认为恒星
+					$plan["plan".$index]["type"] = '恒星';  //目标类型 默认为恒星
+					//处理赤经
+					$rightAscension = explode (':', trim($row[1]));
+					$plan["plan".$index]["rightAscension1"] = trim( $rightAscension[0] );
+					$plan["plan".$index]["rightAscension2"] = trim( $rightAscension[1] );
+					$plan["plan".$index]["rightAscension3"] = trim( $rightAscension[2] );
+
+					//处理赤纬
+					$declination = explode (':', trim($row[2]));
+					$plan["plan".$index]["declination1"] = trim( $declination[0] );
+					$plan["plan".$index]["declination2"] = trim( $declination[1] );
+					$plan["plan".$index]["declination3"] = trim( $declination[2] );
+
+					if ( trim($row[3]) == '2000' )
+					{
+						$plan["plan".$index]["epoch"] = 'J2000'; //历元
+					}
+					
+					$plan["plan".$index]["exposureTime"] = trim($row[6]); //曝光时间
+					$plan["plan".$index]["delayTime"] = trim($row[9]); //延迟时间
+					$plan["plan".$index]["exposureCount"] = trim($row[10]); //曝光数量					
+					$plan["plan".$index]["filter"] = trim($row[7]); //滤光片
+					$plan["plan".$index]["gain"] = '1'; //增益 文件中无此参数 我给默认为1
+					$plan["plan".$index]["bin"] = '0'; //bin 文件中无此参数 我给默认为0(即1*1)
+					$plan["plan".$index]["readout"] = trim($row[8]);; //读出速度
+					$plan["plan".$index]["id"] = $index + 1;
+					//整理数组 结束
+					$index ++;					
+				} //组装一条完整计划 结束
+			} //遍历每行数据 结束
+
+			/*此代码为遍历 原来最原始我的txt文本格式文件
 			//遍历每行数据
 			foreach ($fileData as $k => $data)
 			{
@@ -118,10 +184,8 @@ class Plan extends Base
 					$plan["plan".$k]["readout"] = trim($row[11]);
 					$plan["plan".$k]["id"] = $k+1;
 				}
-
-			}
-			return json_encode($plan);
-			
+			} //遍历每行数据 结束 */
+			return json_encode($plan);	
 		}else{// 上传失败获取错误信息
 			return $file->getError();
 		}		
@@ -626,7 +690,7 @@ class Plan extends Base
 				break;
 		}
 
-		/*$sql = 'select tag from ' . $plan_table . ' where "user" ='. "'". $this->user. "'" . ' order by id desc limit 1';
+		$sql = 'select tag from ' . $plan_table . ' where "user" ='. "'". $this->user. "'" . ' order by id desc limit 1';
 		
 		$exetue = Db::query($sql);
 		
@@ -635,9 +699,7 @@ class Plan extends Base
 			return 'tagOk#' . $exetue[0]['tag']; //返回tag, 'tagOk'用来供前端判断
 		}else{
 			return '无正执行计划!';
-		}*/
-
-		return 'tagOk#' . '1'; //返回tag, 'tagOk'用来供前端判断
+		}
 		
 		/*halt($exetue);
 		//$plan_data = Db::table('plandata')->where('atuser', $this->user)->where('at', $at)->order('id', 'desc')->field('plan')->find();
