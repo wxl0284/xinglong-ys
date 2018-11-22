@@ -1120,11 +1120,32 @@ var all_plans = aperture + 'all_plans';
 	//先验证数据是否都已保存，页面是否有数据，暂时不做
 
 	//直接将页面计划数据以文件下载的方式保存
-	//var all_plan = table.datagrid('getRows');
-	var str = 'hahah\r\nvvvv'; //要写入文件的字符串
- 
-    str =  encodeURIComponent(str);  
-    aLink.href = "data:text/strat;charset=utf-8,"+str; 
+	var all_plan = table.datagrid('getRows');
+	let num = all_plan.length;
+	let out_str = ''; //要写入文件的字串
+
+	for ( let i = 0; i < num; i++ ) //循环每一条计划
+	{
+		let temp = all_plan[i];
+		//if ( temp['declination1']*1 >= 0 ) temp['declination1'] = '+' + temp['declination1'];
+		if ( temp['epoch'].indexOf('2000') !== -1 ) temp['epoch'] = '2000';
+
+		if ( out_str.indexOf(temp['target']) !== -1 ) //是同一个目标的数据，只把后段数据加入out_str
+		{
+			out_str += '0,' + temp['exposureTime'] + ',' + temp['filter'] + ','
+				   + temp['readout'] + ',' + temp['delayTime'] + ',' + temp['exposureCount'] + ',;\r\n';
+		}else{//是一个新目标的数据
+			out_str += '$,' + temp['target'] + ',' + temp['rightAscension1'] + ':'
+				   + temp['rightAscension1'] + ':' + temp['rightAscension3'] + ','
+				   + temp['declination1'] + ':' + temp['declination2'] + ':' + temp['declination3']
+				   + ',' + temp['epoch'] + ',' + '1,;\r\n' + '0,' + temp['exposureTime'] + ',' + temp['filter'] + ','
+				   + temp['readout'] + ',' + temp['delayTime'] + ',' + temp['exposureCount'] + ',;\r\n';
+		}
+
+	}//循环每一条计划 结束
+
+	out_str =  encodeURIComponent(out_str);  
+    aLink.href = "data:text/strat;charset=utf-8," + out_str;
 
  }//exportPlan() 结束
 
