@@ -471,17 +471,17 @@
 	/*对计划排序*/
 	var sortData = $('#sortPlan');
 
-	sortData.change(function () {
+	sortData.click(function () {
 		table.datagrid('endEdit', editRow); //结束编辑状态
-		table.datagrid('unselectRow', editRow); //结束编辑状态
+		table.datagrid('unselectRow', editRow); //将编辑的行取消选择
 		var plan = table.datagrid('getRows');//所有的计划数据
 		var plan_num = plan.length;
-		if ( plan_num < 1 ) 
+		if ( plan_num <= 2 ) 
 		{
 			layer.alert('数据无须排序', {shade:0,closeBtn:0});return;
 		}
 		
-		var field = $(this).val();
+		let field = $('#field').val();
 		switch (field)
 		{
 			case '1':
@@ -1118,10 +1118,9 @@ var all_plans = aperture + 'all_plans';
  function exportPlan (aLink)
  {
 	//先验证数据是否都已保存，页面是否有数据，暂时不做
-
-	//直接将页面计划数据以文件下载的方式保存
 	var all_plan = table.datagrid('getRows');
 	let num = all_plan.length;
+	//直接将页面计划数据以文件下载的方式保存
 	let out_str = ''; //要写入文件的字串
 
 	for ( let i = 0; i < num; i++ ) //循环每一条计划

@@ -965,7 +965,7 @@
 			 </table>
 			<div id="toolbar">
 			<a class="easyui-linkbutton" iconCls="icon-more" plain="true" onclick="importPlan()">导入计划文件</a>
-			<a class="easyui-linkbutton" iconCls="icon-out" plain="true" onclick="exportPlan(this)" download="plan_data.strat" href='#'>导出至文件</a>
+			<a class="easyui-linkbutton" iconCls="icon-out" plain="true" onclick="exportPlan(this)" download="plan_data.strat">导出至文件</a>
 			<a class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="savePlan()">保存</a>
 			<a class="easyui-linkbutton" iconCls="icon-redo" plain="true" onclick="submitPlan()">提交计划</a>
 			<a class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="importData()">已提交的计划</a>
@@ -978,11 +978,11 @@
 					<option value="asc">升序</option>
 					<option value="desc">降序</option>
 				</select>
-				<select id="sortPlan" class='pos_r' style='left:-6%'>
-					<option value="-1">排序的列</option>
+				<select id='field' class='pos_r' style='left:-6%'>
 					<option value="1">赤经</option>
 					<option value="2">赤纬</option>
 				</select>
+				<input type='button' id="sortPlan" class='pos_r' style='right:6%' value="排序">
 				<!--<div id='h'>亮起来</div>-->
 			  执行模式:<select id='modeSpan'>
 			    <option value='1'>single</option>
