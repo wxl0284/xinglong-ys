@@ -24,7 +24,7 @@ class Too extends Base
 
     public function ToO ()  //显示协同计划页面
     {
-        return $this->fetch();
+        return $this->fetch('too/too');
     }
 
     public function send_ToO_plan ()  //发送协同计划数据给 中控

@@ -21,14 +21,18 @@
              配置望远镜
              <ul id='atConfigList' class='center displayNo'>
                 <li><a href='{:url("/atlist")}' target='_blank'>望远镜列表</a></li>
+                {if condition="$Think.session.role!=2"}
                 <hr>
                 <li><a href='{:url("/atadd")}' target='_blank'>添加望远镜</a></li>
                 <hr>
                 <li><a href='{:url("/atconfig")}' target='_blank'>配置望远镜</a></li>
+                {/if}
              </ul>
         </div>
         
+        {if condition="$Think.session.role!=2"}
         <a href='{:url("/ToO")}' style="position: relative;left: 33%;color:#eaf1f9; cursor: pointer;">协同观测</a>
+        {/if}
        <!-- <a href="{:url('/xinglong/result')}" class='pos_r' id='res'>观测结果</a> -->
         <p class='pos_a'>
              <a href="{:url('/front')}">首页&nbsp;&nbsp;&nbsp;&nbsp;

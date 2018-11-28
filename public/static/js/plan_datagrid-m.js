@@ -759,7 +759,7 @@ var all_plans = aperture + 'all_plans';
 			}
 
 			var dec1 = $.trim( plans[i].declination1 );
-			patn = /^-?\d{1,2}$/;
+			patn = /^+?-?\d{1,2}$/;
 
 			if ( !patn.test(dec1) || dec1 > 90 || dec1 < -90 || dec1 === '' )
 			{
