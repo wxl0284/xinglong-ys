@@ -218,30 +218,44 @@ class Plan extends Base
 			$this->sequence = 0;
 		}
         
-        $this->ip = config('ip');
-        $this->port = config('port');
+        $ip = config('ip');
+        $port = config('port');
 
         switch ($postData['at_aperture']) { //根据望远镜口径，给 $this->$at赋值
             case '50cm':
                 $this->at = 38;
+                $this->ip = $ip['at50'] ;
+                $this->port = $port['at50'] ;
                 break;
             case '60cm':
                 $this->at = 37;
+                $this->ip = $ip['at60'] ;
+                $this->port = $port['at60'] ;
                 break;
             case '80cm':
-				$this->at = 36;
-				break;
+                $this->at = 36;
+                $this->ip = $ip['at80'] ;
+                $this->port = $port['at80'] ;
+                break;
             case '85cm':
                 $this->at = 35;
+                $this->ip = $ip['at85'] ;
+                $this->port = $port['at85'] ;
                 break;
             case '100cm':
                 $this->at = 34;
+                $this->ip = $ip['at100'] ;
+                $this->port = $port['at100'] ;
                 break;
             case '126cm':
                 $this->at = 33;
+                $this->ip = $ip['at126'] ;
+                $this->port = $port['at126'] ;
                 break;
             case '216cm':
                 $this->at = 32;
+                $this->ip = $ip['at216'] ;
+                $this->port = $port['at216'] ;
                 break;
             default:
                 return '提交的望远镜参数有误!';
@@ -254,7 +268,7 @@ class Plan extends Base
             return $this->sendPlan($postData);   //执行发送
 		}else if( $postData['command'] == 2 )
 		{//根据计划执行方式，开始执行计划       
-            return $this->planOption($postData); //执行发送
+            return $this->planOption($postData);
 		}else if( $postData['command'] == 'get_plan' )
 		{//查询当前用户是否有观测计划正在执行      
             return $this->get_plan($postData['at']);

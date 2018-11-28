@@ -7,16 +7,16 @@ return [
         //'type'            => 'mysql',
         
         // 服务器地址
-        ///'hostname'        => '192.168.1.7',
-        'hostname'        => '127.0.0.1',
+        'hostname'        => '192.168.160.15',
+        //'hostname'        => '127.0.0.1',
        
         // 数据库名
         //'database'        => 'ATCCSDB',   
-        'database'        => 'postgres',   
+        'database'        => 'atccs',   
         
         // 数据库用户名
         //'username'        => 'atccs', 
-        'username'        => 'postgres',
+        'username'        => 'atccs',
 
         // 数据库密码
         'password'        => '123456', 

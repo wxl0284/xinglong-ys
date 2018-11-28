@@ -1026,8 +1026,90 @@ class Page extends Base
            $vars['cloudPic'] = $cloudPic;
         }
 
+        //获取气象信息
+        $weather_data = Db::table('wsrealtimedata')->order('id', 'desc')->find();
+        //halt($weather_data);
+        if ( $weather_data )
+        {
+            $weather_data['sec'] = date('Y-m-d H:i:s', $weather_data['sec']);
+            
+            if ( $weather_data['winddirection'] == 0 ) //风向
+            {
+                $weather_data['winddirection'] = '北';
+            }
+            elseif (  $weather_data['winddirection'] > 270 )
+            {
+                $weather_data['winddirection'] = '西北';
+            }
+            elseif (  $weather_data['winddirection'] == 270 )
+            {
+                $weather_data['winddirection'] = '西';
+            }
+            elseif (  $weather_data['winddirection'] > 180  && $weather_data['winddirection'] < 270 )
+            {
+                $weather_data['winddirection'] = '西南';
+            }
+            elseif (  $weather_data['winddirection'] == 180 )
+            {
+                $weather_data['winddirection'] = '南';
+            }
+            elseif (  $weather_data['winddirection'] > 90 && $weather_data['winddirection'] < 180 )
+            {
+                $weather_data['winddirection'] = '东南';
+            }
+            elseif (  $weather_data['winddirection'] == 90 )
+            {
+                $weather_data['winddirection'] = '东';
+            }
+
+            $vars['weather_data'] = $weather_data;
+        }
+        
 		return view('weather', $vars);
     }//显示天气详情页 结束///
+
+    public function ajax_get_weather () //ajax 每分钟请求环境信息
+    {
+        $weather_data = Db::table('wsrealtimedata')->order('id', 'desc')->find();
+        
+        if ( $weather_data )
+        {
+            $weather_data['sec'] = date('Y-m-d H:i:s', $weather_data['sec']);
+            
+            if ( $weather_data['winddirection'] == 0 ) //风向
+            {
+                $weather_data['winddirection'] = '北';
+            }
+            elseif (  $weather_data['winddirection'] > 270 )
+            {
+                $weather_data['winddirection'] = '西北';
+            }
+            elseif (  $weather_data['winddirection'] == 270 )
+            {
+                $weather_data['winddirection'] = '西';
+            }
+            elseif (  $weather_data['winddirection'] > 180  && $weather_data['winddirection'] < 270 )
+            {
+                $weather_data['winddirection'] = '西南';
+            }
+            elseif (  $weather_data['winddirection'] == 180 )
+            {
+                $weather_data['winddirection'] = '南';
+            }
+            elseif (  $weather_data['winddirection'] > 90 && $weather_data['winddirection'] < 180 )
+            {
+                $weather_data['winddirection'] = '东南';
+            }
+            elseif (  $weather_data['winddirection'] == 90 )
+            {
+                $weather_data['winddirection'] = '东';
+            }
+
+            return json_encode ( $weather_data );
+        }else{
+            return '环境信息获取失败!';
+        }
+    }
 
     /*验证望远镜id格式*/
     /*protected function check_atId ($atId)

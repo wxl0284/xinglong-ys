@@ -32,38 +32,41 @@
 		</div><br />
 		<div class='pos_r'><!--2个 数据表格-->
 			<div id='tb_1' class='center'>
-				<p class='title_text'>气象信息</p>
+				<p class='title_text'>环境信息</p>
 				<a class='border1 more' href="{:url('/weather_info')}">查看详情</a><br /><br />
 			  <table>
 			   <tr>
 					<th class='leng_1'>数据名称</th> <th class='leng_2'>数据值</th>
 			   </tr>
 			   <tr>
-					<td>采集时间</td> <td>2017.7.10 8:10:10</td>
+					<td>采集时间</td> <td id='sec'>{$weather_data['sec']}</td>
 			   </tr>
 			   <tr>
-					<td>环境温度</td> <td>20℃</td>
+					<td>环境温度（℃）</td> <td id='temperature'>{$weather_data['temperature']}</td>
 			   </tr>
 			   <tr>
-					<td>环境湿度</td> <td>30%</td>
+					<td>环境湿度（%）</td> <td id='humidity'>{$weather_data['humidity']}</td>
 			   </tr>
 			   <tr>
-					<td>露点温度</td> <td>20℃</td>
+					<td>露点温度（℃）</td> <td id='dewpoint'>{$weather_data['dewpoint']}</td>
 			   </tr>
 			   <tr>
-					<td>气压</td> <td>10.2 Hpa</td>
+					<td>气压（Pa）</td> <td id='pressure'>{$weather_data['pressure']}</td>
 			   </tr>
 			   <tr>
-					<td>瞬时风速</td> <td>5.1 m/s</td>
+					<td>瞬时风速（m/s）</td> <td id='windspeed'>{$weather_data['windspeed']}</td>
 			   </tr>
 			   <tr>
-					<td>2分钟风速</td>	<td>5.1 m/s</td>
+					<td>2分钟风速（m/s）</td> <td id='windspeed2'>{$weather_data['windspeed2']}</td>
 			   </tr>
 			   <tr>
-					<td>10分钟风速</td>	<td>5.1 m/s</td>
+					<td>10分钟风速（m/s）</td> <td id='windspeed10'>{$weather_data['windspeed10']}</td>
 			   </tr>
 			   <tr>
-					<td>风向</td> <td>东南风</td>
+					<td>风向</td> <td id='winddirection'>{$weather_data['winddirection']}</td>
+			   </tr>
+			   <tr>
+					<td>降水（mm）</td> <td id='rainfall'>{$weather_data['rainfall']}</td>
 			   </tr>
 			</table>
 			</div>
@@ -89,6 +92,9 @@
 			   <tr>
 					<td>传感器温度</td>	<td>22℃</td>
 			   </tr>
+			   <tr>
+					<td>Rain Heater</td><td>100%</td>
+		   	   </tr>
 			   <tr>
 					<td>湿度</td> <td>30%</td>
 			   </tr>

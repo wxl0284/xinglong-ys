@@ -31,6 +31,8 @@ Route::get('user/passwd$', 'xinglong/user/passwd');
 Route::post('user/edit_passwd$', 'xinglong/user/editPasswd');
 //天气 显示详情 路由
 Route::get('weather$', 'xinglong/page/weather');
+//ajax 每分钟请求环境信息 显示详情 路由
+Route::post('get_weater$', 'xinglong/page/ajax_get_weather');
 //天气 显示详情 路由
 Route::get('weather_info$', 'xinglong/weather/weatherDetail');
 //ajax实时获取各子设备状态信息 路由
@@ -98,7 +100,12 @@ Route::post('guideScope_config$', 'xinglong/atconfig/guideScope_config');
 //属性配置页面 下载说明文件 路由
 Route::get('download/:dir/:filename$', 'xinglong/atconfig/downLoadFlie');
 /*配置各望远镜固定属性 结束*/
-
+//计划之 协同观测 ToO 路由
+Route::get('ToO$', 'xinglong/Too/ToO');
+//页面 提交协同观测 ToO 路由
+Route::post('ToO_plan$', 'xinglong/Too/send_ToO_plan');
+//页面 提交协同观测 ToO 之开始或停止 路由
+Route::post('ToO_start_stop$', 'xinglong/Too/start_stop_ToO');
 /*如下为望远镜配置的示例 路由*/
 //测试首页 
 Route::get('test$', 'xl/test/test');
