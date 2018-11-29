@@ -125,43 +125,43 @@
 		</div><!--重要信息区域 结束-->
         <div id='devsInfo' class='pos_r center'>
             <div class='childDev'>
-               <img src='/static/images-1/focus.png' width='100px;'/>
-				<br>转台
+               <!--<img src='/static/images-1/focus.png' width='100px;'/>
+				<br>-->转台
             </div>
             <div class='childDev'>
-                <img src='/static/images-1/filter.png' width='100px;'/>
-				<br>滤光片
+				<!--<img src='/static/images-1/filter.png' width='100px;'/>
+				<br>-->滤光片
             </div>
             <div class='childDev'>
-                <img src='/static/images-1/ccdTemp.png' width='100px;' /><br>CCD
+				<!--<img src='/static/images-1/ccdTemp.png' width='100px;' /><br>-->CCD
             </div>
             <div class='childDev'>
-                <img src='/static/images-1/ccdExpo.png' width='100px;' /><br>圆顶
+				<!--<img src='/static/images-1/ccdExpo.png' width='100px;' /><br>-->圆顶
             </div>
             <div class='childDev'>
-				<img src='/static/images-1/ccdExpo.png' width='100px;' />
-                <br>调焦器
+				<!--<img src='/static/images-1/ccdExpo.png' width='100px;' />
+                <br>-->调焦器
             </div>
 			<img class='center_mrg' src='/static/images-1/line.png' width='970px;' style='display:block;'/>
-			<div class='pos_a' style='left:47px;top:168px;width:150px;'>
+			<div class='pos_a' style='left:47px;top:88px;width:150px;'>
 				<!-- <img src='/static/images-1/zt.png' > -->
 				<img id='gimbPic' src='/static/images-1/ok.jpg' >
-				<p id='gimbStatus'>转台{{gimbal_status.curstatus}}</p>
+				<p id='gimbStatus'>{{gimbal_status.curstatus}}</p>
 			</div>
-			<div class='pos_a' style='left:287px;top:168px;width:150px;'>
+			<div class='pos_a' style='left:287px;top:88px;width:150px;'>
 				<!-- <img src='/static/images-1/ccd.png' > -->
 				<img src='/static/images-1/ok.jpg' >
 				<p id='filterStatus'>{{filter_status.filterCurstatus}}</p>
 			</div>
-			<div class='pos_a' style='left:526px;top:168px;width:150px;'>
+			<div class='pos_a' style='left:526px;top:88px;width:150px;'>
 				<!-- <img src='/static/images-1/tjq.png' > -->
-				<img src='/static/images-1/ok.jpg' ><p id='ccdStatus'>CCD{{ccd_status.ccdCurStatus}}</p>
+				<img src='/static/images-1/ok.jpg' ><p id='ccdStatus'>{{ccd_status.ccdCurStatus}}</p>
 			</div>
-			<div class='pos_a' style='left:772px;top:168px;width:150px;'>
+			<div class='pos_a' style='left:772px;top:88px;width:150px;'>
 				<!-- <img src='/static/images-1/yd.png' > -->
-				<img src='/static/images-1/ok.jpg' ><p id='domeStatus'>圆顶{{sDome_status.sDomeCurstatus}}</p>
+				<img src='/static/images-1/ok.jpg' ><p id='domeStatus'>{{sDome_status.sDomeCurstatus}}</p>
 			</div>
-			<div class='pos_a' style='left:1021px;top:168px;width:128px;'>
+			<div class='pos_a' style='left:1021px;top:88px;width:128px;'>
 				<!-- <img src='/static/images-1/lgp.png' > -->
 				<img src='/static/images-1/ok.jpg' ><p id='focusStatus'>{{focus_status.focusCurStatus}}</p>
 			</div>
@@ -946,15 +946,12 @@
 		<br>
 		<div id='at60Res' class='center_mrg' style='width:92%;' v-if='device_nav.dev_click=="pic"'><!--观测图像 开始-->
 			<div id='bigPic' class='pos_r'>
-				<img src='/static/images-1/pic_Res.jpg' style='width:100%;'>
-				<button class='pos_a'>最新图像</button>
+				<img :src='"/fits-image/" + at_image[0]' style='width:1104px;'>
+				{if condition="$Think.session.role!=2"}<img class='pos_a' src='/static/images-1/download.png' style='top:680px;right:3px;cursor: pointer;'>{/if}
 			</div>
 			<div id='smallPic' class='pos_r'>
 				<img id='pre' src='/static/images-1/left.jpg'>
-				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
-				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
-				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
-				<img class='mrgR' src='/static/images-1/picSmall.jpg'>
+				<img class='mrgR' v-for='v in at_image' :src='"/fits-image/" + v' style='width:226px;height:154px;'>
 				<img id='next' class='pos_a' src='/static/images-1/right.jpg'>
 			</div>
 		</div><!--观测图像 结束-->	

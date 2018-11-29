@@ -16,31 +16,46 @@ class Weather extends Base
 	}///////////////////////////////////////////////////////////
 	
 	//显示更多 气象信息////////////////////////////////////////////
-	public function weatherDetail ()
+	public function weatherDetail ($hour=2)
 	{	
-		$tempaData = json_encode([12,15,18,21,25,27,29,32]); //气温数据
-		$windData2 = json_encode([0.8,1.1,0.5,0.6,0.7,0.9,0.7,0.8]); //2分钟平均风速
-		$windData10 = json_encode([0.9,0.8,0.7,0.9,0.85,0.95,0.8,1.0]); //10分钟平均风速
-		$tmpData = json_encode([12,15,18,21,25,27,29,32]); //温度/露点/湿度图-温度
-		$dewPointData = json_encode([-2.2,-1.8,0.2,-1.6,-2.0,-2.5,0.3,-1.7]); //温度/露点/湿度图-露点
-		$humiData = json_encode([18,18.7,19.2,18.2,17.7,20,21,18.7]); //温度/露点/湿度图-湿度
-		$nightLight = json_encode([18,18.7,19.2,18.2,17.7,20,21,18.7]); //夜天光
-		$seeing = json_encode([18,18.7,19.2,18.2,17.7,20,21,18.7]); //视宁度
-		$dust = json_encode([18,18.7,19.2,18.2,17.7,20,21,18.7]); //粉尘
+		//获取环境数据
+		$time_leng = $hour*60; //获取多长时间间隔的数据
+		$data = Db::table('wsrealtimedata')->order('id', 'desc')->limit($time_leng)->select();
+		//halt($data);
+		$num = count ($data);
+		$i = $num - 1;
+		for ($i; $i >= 0; $i--)
+		{
+			$time_point[] = date('G:i', $data[$i]['sec']); //分钟 横坐标
+			$tempaData[] = $data[$i]['temperature']; //温度
+			$windData2[] = $data[$i]['windspeed2']; //2分钟平均风速
+			$windData10[] = $data[$i]['windspeed10']; //10分钟平均风速
+			$humiData[] = $data[$i]['humidity']; //湿度
+			$dewPointData[] = $data[$i]['dewpoint']; //露点温度
+		}
+
+		$time_point = json_encode($time_point);
+		$tempaData = json_encode($tempaData);
+		$windData2 = json_encode($windData2);
+		$windData10 = json_encode($windData10);
+		$dewPointData = json_encode($dewPointData);
+		$humiData = json_encode($humiData);
 
 		$this->assign([
+			'time_point' => $time_point,
 			'tempaData' => $tempaData,
 			'windData2' => $windData2,
 			'windData10' => $windData10,
-			'tmpData' => $tmpData,
+			//'tmpData' => $tmpData,
 			'dewPointData' => $dewPointData,
 			'humiData' => $humiData,
-			'nightLight' => $nightLight,
-			'seeing' => $seeing,
-			'dust' => $dust,
+			//'nightLight' => $nightLight,
+			//'seeing' => $seeing,
+			//'dust' => $dust,
 		]);
 		
 		return view('weatherDetail');
+	
 	}/////////////////////////////////////////////////////////////
 	
 }

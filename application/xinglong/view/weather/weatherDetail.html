@@ -13,6 +13,7 @@
 	<img src='/static/images-1/top.jpg' style='width:100%'/>
 	{include file="common/common"/}
 	<div id='all' class='border'>
+		<input id='hours' type="button" value="24小时数据曲线" style="margin-left:46%">
 		<div><!--各类图表 开始-->
 		   <div id='temperature' style='width:1000px;height:390px;margin:0 auto;'><!--温度图-->
 		   </div>
@@ -20,12 +21,12 @@
 		   </div>
 		   <div id='tempHumid' style='width:1000px;height:390px;margin:20px auto;'><!--温度湿度图-->
 		   </div>
-		   <div id='nightLight' style='width:1000px;height:390px;margin:20px auto;'><!--夜天光图-->
-		   </div>
-		   <div id='seeing' style='width:1000px;height:390px;margin:20px auto;'><!--视宁度-->
-		   </div>
-		   <div id='dust' style='width:1000px;height:390px;margin:20px auto;'><!--粉尘-->
-		   </div>
+		   <!--<div id='nightLight' style='width:1000px;height:390px;margin:20px auto;'>
+		   </div>夜天光图-->
+		   <!--<div id='seeing' style='width:1000px;height:390px;margin:20px auto;'>
+		   </div>视宁度-->
+		   <!--<div id='dust' style='width:1000px;height:390px;margin:20px auto;'>
+		   </div>粉尘-->
 		</div><!--各类图表 结束-->
 	</div><br>
 	<footer class='center'>
@@ -34,8 +35,9 @@
 </body>
 <script>
 	//温度图 js//////////////////////////////////////////
+	var time_point = {$time_point};//时间间隔 横坐标
 	var tempaChart = echarts.init(document.getElementById('temperature'));
-	var tempaData = {$tempaData};	//在模板中直接使用php分配过来的变量
+	var tempaData = {$tempaData};	//在模板中直接使用php分配过来的变量 
 	var optionTempa = {
 		title: {
 			text: '温度（℃）',
@@ -52,7 +54,7 @@
 		xAxis: {
 			type: 'category',
 			boundaryGap: false,
-			data: ['8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00']
+			data: time_point
 		},
 		yAxis: {
 			type: 'value'
@@ -63,8 +65,7 @@
 				type:'line',
 				data:tempaData	
 			}
-		]	
-		
+		]
 	}; 
 	tempaChart.setOption(optionTempa);
 //温度图 结束//////////////////////////////////////////////////////////
@@ -91,7 +92,7 @@
 		xAxis: {
 			type: 'category',
 			boundaryGap: false,
-			data: ['8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00']
+			data: time_point
 		},
 		yAxis: {
 			type: 'value'
@@ -113,7 +114,7 @@
 //风速图 结束///////////////////////////////////////////////////
 //温度湿度图 js////////////////////////////////////////////////
 	var tempaHumidChart = echarts.init(document.getElementById('tempHumid'));
-	var tmpData = {$tmpData}; //在模板中直接使用php分配过来的变量
+	var tmpData = {$tempaData}; //在模板中直接使用php分配过来的变量
 	var dewPointData = {$dewPointData}; //在模板中直接使用php分配过来的变量
 	var humiData = {$humiData}; //在模板中直接使用php分配过来的变量
 	var optionTmpHumi = {
@@ -135,7 +136,7 @@
 		xAxis: {
 			type: 'category',
 			boundaryGap: false,
-			data: ['8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00'],
+			data: time_point
 			//axisTick: {
 			//    alignWithLabel: true
 			//}
@@ -172,9 +173,9 @@
 	};
 	tempaHumidChart.setOption(optionTmpHumi);
 //温度 湿度 露点温度 结束//////////////////////////////////////////////////////
-//夜天光 js//////////////////////////////////////////
+/*//夜天光 js//////////////////////////////////////////
 	var nightLightChart = echarts.init(document.getElementById('nightLight'));
-	var nightLightData = {$nightLight};	//在模板中直接使用php分配过来的变量
+	var nightLightData = '';	//在模板中直接使用php分配过来的变量
 	var optionNightLight = {
 		title: {
 			text: '夜天光',
@@ -209,7 +210,7 @@
 //夜天光 结束//////////////////////////////////////////////////////////
 //视宁度 js//////////////////////////////////////////
 	var seeingChart = echarts.init(document.getElementById('seeing'));
-	var seeingData = {$seeing};	//在模板中直接使用php分配过来的变量
+	var seeingData = '';	//在模板中直接使用php分配过来的变量
 	var optionSeeing = {
 		title: {
 			text: '视宁度',
@@ -244,7 +245,7 @@
 //视宁度 结束//////////////////////////////////////////////////////////
 //粉尘 js//////////////////////////////////////////
 	var dustChart = echarts.init(document.getElementById('dust'));
-	var dustData = {$dust};	//在模板中直接使用php分配过来的变量
+	var dustData = '';	//在模板中直接使用php分配过来的变量
 	var optionDust = {
 		title: {
 			text: '粉尘',
@@ -276,6 +277,9 @@
 		
 	}; 
 	dustChart.setOption(optionDust);
-//粉尘 结束//////////////////////////////////////////////////////////
+//粉尘 结束/////////////////////////////////////////////////////////*/
+$('#hours').click(function () {
+	location.href = '/weather_info/24';
+})
 </script>
 </html>

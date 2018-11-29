@@ -623,6 +623,13 @@
 					{
 						//planStart.prop('disabled', false);
 						clearInterval ( plan_execute_i ); //关闭查询执行哪条计划的定时器
+						table.datagrid({
+							rowStyler: function (index, row) {
+								if( index == (plan_index) ){
+									return '';
+								}
+							},
+						})
 					}
 	            },
 	            error:  function () {
@@ -717,7 +724,7 @@ var all_plans = aperture + 'all_plans';
 		for(var i = 0; i < n; i++)
 		{
 			var plan_target = $.trim( plans[i].target );
-			var patn = /([\u4e00-\u9fa5]| )+/;
+			let patn = /([\u4e00-\u9fa5]| )+/;
 			if ( patn.test(plan_target) || plan_target == '' || plan_target.length > 48 )
 			{
 				msg += '第' + (i+1) + '条目标名格式错误!<br>';
@@ -759,7 +766,7 @@ var all_plans = aperture + 'all_plans';
 			}
 
 			var dec1 = $.trim( plans[i].declination1 );
-			patn = /^+?-?\d{1,2}$/;
+			patn = /^\+?-?\d{1,2}$/;
 
 			if ( !patn.test(dec1) || dec1 > 90 || dec1 < -90 || dec1 === '' )
 			{
@@ -1012,6 +1019,8 @@ var all_plans = aperture + 'all_plans';
  }/*plan_executing() 结束*/
 
  /*查询正在执行第几条计划*/
+ var plan_index = 0; //用以标记要高亮的计划行
+
  function get_plan_tag ()
  {
 	$.ajax({
@@ -1021,6 +1030,7 @@ var all_plans = aperture + 'all_plans';
 		success: function (info) {
 			if ( info.indexOf('tagOk') !== -1 )
 			{//查到了tag字段
+				/*20181129兴隆验收前，只返回tag的代码
 				var plan_tag = info.split('#')[1];
 				table.datagrid('scrollTo', plan_tag-1); //滚动到第tag行
 				table.datagrid({
@@ -1029,7 +1039,32 @@ var all_plans = aperture + 'all_plans';
 							return 'background-color:#18fd65;';
 						}
 					},
-				})
+				})*/
+				
+				let plan_data = info.split('#')[1];
+				plan_data = $.parseJSON(plan_data); //此望远镜正执行的计划数据
+				let page_plan = table.datagrid('getRows');
+				let num = page_plan.length;
+				
+				if ( num > 0 )
+				{
+					for (let i = 0; i < num; i++)
+					{
+						if ( plan_data['target'] == page_plan[i]['target'] && plan_data['filter'] == page_plan[i]['filter']);
+						plan_index = i;
+						break; //跳出for循环
+					}
+
+					table.datagrid('scrollTo', plan_index); //滚动到第plan_index行
+					table.datagrid({
+						rowStyler: function (index, row) {
+							if( index == (plan_index) ){
+								return 'background-color:#18fd65;';
+							}
+						},
+					})
+				}
+
 			}else{
 				no_plan_execute ++;
 				if ( no_plan_execute <= 1 )
@@ -1135,7 +1170,7 @@ var all_plans = aperture + 'all_plans';
 				   + temp['readout'] + ',' + temp['delayTime'] + ',' + temp['exposureCount'] + ',;\r\n';
 		}else{//是一个新目标的数据
 			out_str += '$,' + temp['target'] + ',' + temp['rightAscension1'] + ':'
-				   + temp['rightAscension1'] + ':' + temp['rightAscension3'] + ','
+				   + temp['rightAscension2'] + ':' + temp['rightAscension3'] + ','
 				   + temp['declination1'] + ':' + temp['declination2'] + ':' + temp['declination3']
 				   + ',' + temp['epoch'] + ',' + '1,;\r\n' + '0,' + temp['exposureTime'] + ',' + temp['filter'] + ','
 				   + temp['readout'] + ',' + temp['delayTime'] + ',' + temp['exposureCount'] + ',;\r\n';

@@ -141,7 +141,7 @@ class Plan extends Base
 					$plan["plan".$index]["exposureCount"] = trim($row[10]); //曝光数量					
 					$plan["plan".$index]["filter"] = trim($row[7]); //滤光片
 					$plan["plan".$index]["gain"] = '1'; //增益 文件中无此参数 我给默认为1
-					$plan["plan".$index]["bin"] = '0'; //bin 文件中无此参数 我给默认为0(即1*1)
+					$plan["plan".$index]["bin"] = '1'; //bin 文件中无此参数 我给默认为0(即1*1)
 					$plan["plan".$index]["readout"] = trim($row[8]);; //读出速度
 					$plan["plan".$index]["id"] = $index + 1;
 					//整理数组 结束
@@ -271,7 +271,7 @@ class Plan extends Base
             return $this->planOption($postData);
 		}else if( $postData['command'] == 'get_plan' )
 		{//查询当前用户是否有观测计划正在执行      
-            return $this->get_plan($postData['at']);
+            return $this->get_plan($postData, $this->at);
 		}else if( $postData['command'] == 'get_cached_plan' )
 		{//点击'正执行的计划'按钮 查询Cache中的计划数据和被选中的计划索引
 			$cached_plans = Cache::get( $postData['at_aperture'] ); //每个望远镜都以口径值命名缓存的计划
@@ -381,7 +381,7 @@ class Plan extends Base
 			$epoch = $postData['planData'][$i]['epoch'];
 
 			$epoch = strtolower ($epoch);
-			if ( !preg_match('/^[0-3]$/', $epoch) && !in_array($epoch, ['real','j2000','b1950','j2050']) )
+			if ( !(preg_match('/^[0-3]$/', $epoch) || in_array($epoch, ['real','j2000','b1950','j2050'])) )
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:历元参数超限!<br>';
 			}
@@ -672,11 +672,11 @@ class Plan extends Base
 	}//观测计划的 开始 停止 下一个 结束////////////////////////////
 
 	/*ajax 请求  是否有观测计划在执行*/
-	protected function get_plan ($at)
-	{
+	protected function get_plan ($postData, $at)
+	{		
 		$plan_table = ''; //中控之 各望远镜的观测计划表
 
-		switch ($this->at)
+		switch ($at)
 		{
 			case 37:
 				$plan_table = 'at60plan';
@@ -704,6 +704,7 @@ class Plan extends Base
 				break;
 		}
 
+		/*20181129兴隆验收时注释，改为从计划数据表中读最新一条，比对目标名称和滤光片来确定正执行哪条
 		$sql = 'select tag from ' . $plan_table . ' where "user" ='. "'". $this->user. "'" . ' order by id desc limit 1';
 		
 		$exetue = Db::query($sql);
@@ -713,7 +714,18 @@ class Plan extends Base
 			return 'tagOk#' . $exetue[0]['tag']; //返回tag, 'tagOk'用来供前端判断
 		}else{
 			return '无正执行计划!';
+		}*/
+
+		/*最新的比对目标名称和滤光片的代码*/
+		$data = Db::table($plan_table)->order('id', 'desc')->find();
+		if ($data)
+		{
+			return 'tagOk#' . json_encode($data);
+		}else{
+			return '无正执行计划!';
 		}
+		
+		/*最新的比对目标名称和滤光片的代码*/
 		
 		/*halt($exetue);
 		//$plan_data = Db::table('plandata')->where('atuser', $this->user)->where('at', $at)->order('id', 'desc')->field('plan')->find();

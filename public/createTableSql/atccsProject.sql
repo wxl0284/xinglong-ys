@@ -248,6 +248,46 @@ CREATE TABLE devipid(
      "ip" character varying(200),/*设备ip地址*/
      "devid" character varying,/*设备id*/
      "devname" character varying/*设备名称*/
-);/*存储各望远镜自设备的IP id 设备名称*/ 
+);/*存储各望远镜自设备的IP id 设备名称*/
+
+CREATE TABLE plancooper (/*协同计划表*/
+  "id" BIGSERIAL NOT NULL PRIMARY KEY,
+  "user" character varying,
+  "project" TEXT NOT NULL,
+  "target" TEXT NOT NULL,
+  "filter" TEXT NOT NULL,
+  "at" INTEGER NOT NULL,
+  "type" INTEGER NOT NULL,
+  "epoch" INTEGER NOT NULL,
+  "exposureCount" INTEGER NOT NULL,
+  "gain" INTEGER NOT NULL,
+  "bin" INTEGER NOT NULL,
+  "readout" INTEGER NOT NULL,
+  "exposureTime" INTEGER NOT NULL,
+  "rightAscension" INTEGER NOT NULL,
+  "declination" INTEGER NOT NULL,
+  "delayTime" INTEGER NOT NULL,
+  "atname" character varying NOT NULL,
+  "import" character varying NOT NULL);
+
+  CREATE TABLE plantoo (/*ToO计划表*/
+  "id" BIGSERIAL NOT NULL PRIMARY KEY,
+  "user" character varying,
+  "project" TEXT NOT NULL,
+  "target" TEXT NOT NULL,
+  "filter" TEXT NOT NULL,
+  "at" INTEGER NOT NULL,
+  "type" INTEGER NOT NULL,
+  "epoch" INTEGER NOT NULL,
+  "exposureCount" INTEGER NOT NULL,
+  "gain" INTEGER NOT NULL,
+  "bin" INTEGER NOT NULL,
+  "readout" INTEGER NOT NULL,
+  "exposureTime" INTEGER NOT NULL,
+  "rightAscension" INTEGER NOT NULL,
+  "declination" INTEGER NOT NULL,
+  "delayTime" INTEGER NOT NULL,
+  "atname" character varying NOT NULL,
+  "import" character varying NOT NULL);
 
 "C:\Program Files (x86)\pgAdmin 4\v1\runtime\pgAdmin4.exe"   //执行 postgres命令行

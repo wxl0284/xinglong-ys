@@ -34,7 +34,7 @@ Route::get('weather$', 'xinglong/page/weather');
 //ajax 每分钟请求环境信息 显示详情 路由
 Route::post('get_weater$', 'xinglong/page/ajax_get_weather');
 //天气 显示详情 路由
-Route::get('weather_info$', 'xinglong/weather/weatherDetail');
+Route::get('weather_info/:hour$', 'xinglong/weather/weatherDetail');
 //ajax实时获取各子设备状态信息 路由
 Route::post('get_status$', 'xinglong/status/get_status');
 //发送转台指令 路由
@@ -106,6 +106,8 @@ Route::get('ToO$', 'xinglong/Too/ToO');
 Route::post('ToO_plan$', 'xinglong/Too/send_ToO_plan');
 //页面 提交协同观测 ToO 之开始或停止 路由
 Route::post('ToO_start_stop$', 'xinglong/Too/start_stop_ToO');
+//ajax 获取观测图像 路由
+Route::post('get_image$', 'xinglong/Image/get_image');
 /*如下为望远镜配置的示例 路由*/
 //测试首页 
 Route::get('test$', 'xl/test/test');

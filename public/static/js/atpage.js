@@ -29,6 +29,7 @@
 			configData: configData, //configData是后端返回的json数据
 			ccd_config:configData.ccd[0], //此对象存储ccd的配置数据
 			ccd_name:'CCD1',
+			at_image:[], //存储
 			device_nav: {//此对象中的数据用以区分是否给各子设备加上蓝色底框
 				dev_click: 'gimbal',  //区分各自设备
 				gimbal_command: '',   //区分转台各指令
@@ -412,6 +413,39 @@
 			pic_click: function () {
 				this.device_nav.dev_click = 'pic';
 				planInfo.addClass('displayNo');
+				var t = this;
+				//ajax 获取观测图像
+				$.ajax({
+					url: '/get_image',
+					type: 'post',
+					data: {
+						at_aperture: aperture, 
+					},
+					success: function (info){
+						if ( info.indexOf('img') !== -1 ) //返回了图像信息
+						{
+							let img_data = info.split('#');
+							img_data = $.parseJSON(img_data[1]);
+							img_data = img_data.slice(0,4); //截取前4个图片
+							t.at_image = img_data;
+						}else{
+							layer.alert(info, {
+								shade:false,
+								closeBtn:0,
+								yes:function (n){
+									layer.close(n);
+									if (info.indexOf('登录') !== -1)
+									{
+										location.href = '/';
+									}
+								},
+							});/*layer.alert 结束*/
+						}
+					},//success 结束
+					error:function () {
+						layer.alert('网络异常, 获取观测图像失败', {shade:false, closeBtn:0});
+					}//error 结束
+				})//ajax获取观测图像结束
 			},
 			gimbal_track_star_Asc1: function (tip) {
 				var msg = '';
