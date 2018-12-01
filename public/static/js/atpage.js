@@ -29,7 +29,12 @@
 			configData: configData, //configData是后端返回的json数据
 			ccd_config:configData.ccd[0], //此对象存储ccd的配置数据
 			ccd_name:'CCD1',
-			at_image:[], //存储
+			at_image:[], //存储所有获取的普通格式观测图像
+			img4_data: [], //存储截取的4个普通格式图片
+			at_image_dir:'', //各望远镜普通观测图像目录
+			at_fitsImg_dir:'', //各望远镜fits观测图像目录
+			next_pre_click:0, //向左或向右按钮点击的次数
+			big_img:'', //观测图像的大图名称
 			device_nav: {//此对象中的数据用以区分是否给各子设备加上蓝色底框
 				dev_click: 'gimbal',  //区分各自设备
 				gimbal_command: '',   //区分转台各指令
@@ -426,8 +431,9 @@
 						{
 							let img_data = info.split('#');
 							img_data = $.parseJSON(img_data[1]);
-							img_data = img_data.slice(0,4); //截取前4个图片
-							t.at_image = img_data;
+							t.at_image = img_data; //将目录中所有图片信息赋值给at_image
+							t.img4_data = img_data.slice(0,4); //截取前4个图片 赋值给img4_data
+							t.big_img = t.img4_data[0]; //将第一个图片，显示
 						}else{
 							layer.alert(info, {
 								shade:false,
@@ -446,6 +452,21 @@
 						layer.alert('网络异常, 获取观测图像失败', {shade:false, closeBtn:0});
 					}//error 结束
 				})//ajax获取观测图像结束
+			},
+			next_4_pic: function () {//观测图像向右按钮 点击事件
+				let n = this.at_image.length; //图片总数
+				let m = Math.floor( n/4 ); //可以向右点击的次数
+				if ( this.next_pre_click < m )  this.next_pre_click ++; //向左向右点击次数加1
+				let head = this.next_pre_click * 4; //每点击1次，起始位置增加4
+				this.img4_data = this.at_image.slice(head, head+4); 
+			},
+			pre_4_pic: function () {//观测图像向左按钮 点击事件
+				if ( this.next_pre_click > 0 ) this.next_pre_click --; //向左向右点击次数减1
+				let head = this.next_pre_click * 4; //每点击1次，起始位置减去4
+				this.img4_data = this.at_image.slice(head, head+4); 
+			},
+			show_big_img: function (k) {//被点击后 显示大图
+				this.big_img = this.img4_data[k];
 			},
 			gimbal_track_star_Asc1: function (tip) {
 				var msg = '';
@@ -2386,6 +2407,7 @@
 	});/***************vue js结束*****************/
 
 	var status_err = 0;
+	var plan_cooper_i = 0; //控制弹窗数量和导入动作执行的次数
 	function getStatus() //实时更新各设备状态
 	{
 		$.ajax({
@@ -2413,19 +2435,110 @@
 					vm.focus_status = info.focus;
 				}
 				
-			
 				if ( info.sDome )//显示随动圆顶状态信息
 				{
 					//show_sDome_status (info.sDome);
 					vm.sDome_status = info.sDome;
 				}
 				
-				
 				if ( info.filter ) //显示滤光片状态信息
 				{
 					//show_filter_status (info.filter);
 					vm.filter_status = info.filter;
 				}
+
+				if ( info.plan_cooper ) //处理协同计划信息
+				{
+					if ( plan_cooper_i < 1 )
+					{
+						if ( info.plan_cooper.data != '无协同计划' )	//有协同计划数据
+						{
+							plan_cooper_i ++;
+							layer.alert('查到协同观测计划，要导入此页面请点确定', {
+								shade:false,
+								closeBtn:0,
+								type:1,//alert默认是0，此时设为1,可防止被其他alert覆盖冲掉
+								btn: ['确定', '不导入'],
+								yes:function (n){//点击确定
+									vm.plan_click();
+									var  plan_cooper = info.plan_cooper.data;
+									var cooper_arr = [];
+									var cooper_n = plan_cooper.length;
+									for (let i = 0; i < cooper_n; i++)
+									{
+										cooper_arr[i] = plan_cooper[i];
+									}
+									
+									table.datagrid({
+										data: cooper_arr,
+									});
+									$('#modeSpan').val(info.plan_cooper.exemode);//将执行模式赋值
+									$.ajax({//Ajax把plancooper中import字段变为1
+										url: '/change_plancooper_import',
+										type: 'post',
+										data: {at_aperture: aperture},
+										//success: function (){},
+										//error: function (){},
+									})//ajax结束
+									layer.close(n);
+								},//yes函数结束
+								btn2: function(index) {//点击不导入时
+									layer.close(index);
+									//layer.msg('算了，算了,不删了...');
+								},//btn2函数结束
+							});
+						}//处理协同计划数据 结束
+					}
+				}//处理协同计划信息 结束
+
+				if ( info.plan_too ) //处理ToO计划信息
+				{
+					if ( plan_cooper_i < 1 )
+					{
+						if ( info.plan_too.data != '无ToO计划' )	//有ToO计划数据
+						{
+							plan_cooper_i ++;
+							layer.alert('查到ToO观测计划，要导入此页面请点确定', {
+								shade:false,
+								type: 1,
+								closeBtn:0,
+								btn: ['确定', '不导入'],
+								yes:function (n){//点击确定
+									vm.plan_click();
+									var  plan_too = info.plan_too.data;
+									var too_arr = [];
+									var too_n = plan_too.length;
+									for (let i = 0; i < too_n; i++)
+									{
+										too_arr[i] = plan_too[i];
+									}
+									
+									table.datagrid({
+										data: too_arr,
+									});
+									$('#modeSpan').val(info.plan_cooper.exemode);//将执行模式赋值
+									//执行提交计划指令
+									submitPlan();
+									planStop.click();
+									planStart.click();
+									//执行提交计划指令
+									$.ajax({//Ajax把plantoo中import字段变为1
+										url: '/change_plantoo_import',
+										type: 'post',
+										data: {at_aperture: aperture},
+										//success: function (){},
+										//error: function (){},
+									})//ajax结束
+									layer.close(n);
+								},//yes函数结束
+								btn2: function(index) {//点击不导入时
+									layer.close(index);
+									//layer.msg('算了，算了,不删了...');
+								},//btn2函数结束
+							});
+						}//处理协同计划数据 结束
+					}
+				}//处理ToO计划信息 结束
             },/* success方法 结束*/
 			error: function (){
 				status_err ++;

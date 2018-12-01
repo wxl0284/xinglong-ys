@@ -25,6 +25,11 @@ class Too extends Base
     public function ToO ()  //显示协同计划页面
     {
         return $this->fetch('too/too');
+	}
+	
+	public function ToO_1 ()  //显示ToO计划页面
+    {
+        return $this->fetch('too/too_1');
     }
 
     public function send_ToO_plan ()  //发送协同计划数据给 中控
@@ -40,9 +45,47 @@ class Too extends Base
 			$this->sequence = 0;
 		}
         
-        $postData = input();
+		$postData = input();
+		
+		//halt($postData['planData']);
+		$num = count ( $postData['planData'] );
+		for ($i=0; $i < $num; $i++)
+		{ 
+			$postData['planData'][$i]['type'] = '0';
+			$temp = $postData['planData'][$i]['rightAscension1'] .':' . $postData['planData'][$i]['rightAscension2'] . ':' . $postData['planData'][$i]['rightAscension3'];
 
-        $at60_data = []; //存储at60的计划数据
+			$postData['planData'][$i]['rightascension'] = time2Data($temp);
+
+			$temp = $postData['planData'][$i]['declination1'] .':' . $postData['planData'][$i]['declination2'] . ':' . $postData['planData'][$i]['declination3'];
+
+			$postData['planData'][$i]['declination'] = time2Data($temp);
+
+			switch ($postData['planData'][$i]['at'])
+			{
+				case '60cm':
+					$postData['planData'][$i]['at'] = 37; break;
+				case '80cm':
+					$postData['planData'][$i]['at'] = 36; break;
+				case '50cm':
+					$postData['planData'][$i]['at'] = 38; break;
+				case '85cm':
+					$postData['planData'][$i]['at'] = 35; break;
+				case '100cm':
+					$postData['planData'][$i]['at'] = 34; break;
+				case '126cm':
+					$postData['planData'][$i]['at'] = 33; break;
+				case '216cm':
+					$postData['planData'][$i]['at'] = 32; break;
+			}
+
+			$postData['planData'][$i]['exemode'] = $postData['exeMode'];
+			$postData['planData'][$i]['exposurecount'] = $postData['planData'][$i]['exposureCount'];
+			$postData['planData'][$i]['exposuretime'] = $postData['planData'][$i]['exposureTime'];
+			$postData['planData'][$i]['delaytime'] = $postData['planData'][$i]['delayTime'];
+		}
+
+		Db::table('plancooper')->strict(false)->insertAll($postData['planData']);
+        /*$at60_data = []; //存储at60的计划数据
         $at80_data = []; //存储at80的计划数据
 
         foreach ($postData['planData'] as $k => $v) 
@@ -264,9 +307,65 @@ class Too extends Base
            
             udpSendPlan($sendMsg, $this->ip, $this->port); //无返回值
 		}//给中控 发送at80数据 结束///////////////
-
+		*/
 		return '协同观测计划发送完毕!';
-    }//send_ToO_plan () 结束
+	}//send_ToO_plan () 结束
+	
+	public function send_ToO_1_plan ()  //保存ToO计划数据
+    {
+        //halt($planData['plan_filter_option']);
+		//定义全局$sequence 此变量在packHead()函数中要使用
+		if (Cookie::has('sequence'))
+		{
+			$this->sequence = Cookie::get('sequence');
+			Cookie::set('sequence', $this->sequence+1);
+		}else{
+			Cookie::set('sequence', 1);
+			$this->sequence = 0;
+		}
+        
+		$postData = input();
+		
+		//halt($postData['planData']);
+		$num = count ( $postData['planData'] );
+		for ($i=0; $i < $num; $i++)
+		{ 
+			$postData['planData'][$i]['type'] = '0';
+			$temp = $postData['planData'][$i]['rightAscension1'] .':' . $postData['planData'][$i]['rightAscension2'] . ':' . $postData['planData'][$i]['rightAscension3'];
+
+			$postData['planData'][$i]['rightascension'] = time2Data($temp);
+
+			$temp = $postData['planData'][$i]['declination1'] .':' . $postData['planData'][$i]['declination2'] . ':' . $postData['planData'][$i]['declination3'];
+
+			$postData['planData'][$i]['declination'] = time2Data($temp);
+
+			switch ($postData['planData'][$i]['at'])
+			{
+				case '60cm':
+					$postData['planData'][$i]['at'] = 37; break;
+				case '80cm':
+					$postData['planData'][$i]['at'] = 36; break;
+				case '50cm':
+					$postData['planData'][$i]['at'] = 38; break;
+				case '85cm':
+					$postData['planData'][$i]['at'] = 35; break;
+				case '100cm':
+					$postData['planData'][$i]['at'] = 34; break;
+				case '126cm':
+					$postData['planData'][$i]['at'] = 33; break;
+				case '216cm':
+					$postData['planData'][$i]['at'] = 32; break;
+			}
+
+			$postData['planData'][$i]['exemode'] = $postData['exeMode'];
+			$postData['planData'][$i]['exposurecount'] = $postData['planData'][$i]['exposureCount'];
+			$postData['planData'][$i]['exposuretime'] = $postData['planData'][$i]['exposureTime'];
+			$postData['planData'][$i]['delaytime'] = $postData['planData'][$i]['delayTime'];
+		}
+
+		Db::table('plantoo')->strict(false)->insertAll($postData['planData']);
+		return 'ToO观测计划发送完毕!';
+    }//send_ToO_1_plan () 结束
 
     public function start_stop_ToO () //开始执行观测或停止
     {

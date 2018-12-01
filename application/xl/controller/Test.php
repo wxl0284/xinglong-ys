@@ -89,9 +89,28 @@ class Test extends Controller
 		//$temp = $res['gain_noise'];
 		
 		//$a = data2Time(17.416638888889);
-		$a = 'truncate table plandata';
-		$res = Db::query( $a );
-		dump($res);
+		$dir = ROOT_PATH . 'public' . DS . 'cloudsc/';
+
+		//$res = scandir ( $dir = ROOT_PATH . 'public' . DS . 'cloudsd/' );
+		//halt($res);
+
+		try{
+			$res = scandir ( $dir = ROOT_PATH . 'public' . DS . 'cloudsd/' );
+		}catch(\Exception $e){
+			$err = 'hhh';
+		}
+
+
+
+		// if ( $res !== false && count($res) > 2 )
+		// {
+		// 	$file_name = array_pop( $res ); //最后的文件名
+		// 	// foreach ( $res as $k)
+		// 	// {
+		// 	// 	$result['file'][] = iconv('GBK', 'UTF-8', $k);  //将文件名转为utf-8
+		// 	// }
+		// }
+		// halt($file_name);
 	}
 	
 	public function valid ()

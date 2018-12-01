@@ -100,14 +100,29 @@ Route::post('guideScope_config$', 'xinglong/atconfig/guideScope_config');
 //属性配置页面 下载说明文件 路由
 Route::get('download/:dir/:filename$', 'xinglong/atconfig/downLoadFlie');
 /*配置各望远镜固定属性 结束*/
-//计划之 协同观测 ToO 路由
+//计划之 显示协同观测页面 ToO 路由
 Route::get('ToO$', 'xinglong/Too/ToO');
+//计划之 显示ToO计划页面 路由
+Route::get('ToO_1$', 'xinglong/Too/ToO_1');
 //页面 提交协同观测 ToO 路由
 Route::post('ToO_plan$', 'xinglong/Too/send_ToO_plan');
+//页面 提交ToO观测 ToO 路由
+Route::post('ToO_1_plan$', 'xinglong/Too/send_ToO_1_plan');
 //页面 提交协同观测 ToO 之开始或停止 路由
 Route::post('ToO_start_stop$', 'xinglong/Too/start_stop_ToO');
+//ajax 将协同计划表中import字段变为1 路由
+Route::post('change_plancooper_import$', 'xinglong/Status/change_cooper_import');
+//ajax 将ToO计划表中import字段变为1 路由
+Route::post('change_plantoo_import$', 'xinglong/Status/change_too_import');
 //ajax 获取观测图像 路由
 Route::post('get_image$', 'xinglong/Image/get_image');
+/*/ajax 观测图像 向右按钮 路由
+Route::post('next4$', 'xinglong/Image/next4_image');
+/ajax 观测图像 向左按钮 路由
+Route::post('pre4$', 'xinglong/Image/pre4_image');*/
+//ajax 获云量图像 路由
+Route::post('get_cloud_pic$', 'xinglong/Page/ajax_get_cloud_pic');
+
 /*如下为望远镜配置的示例 路由*/
 //测试首页 
 Route::get('test$', 'xl/test/test');

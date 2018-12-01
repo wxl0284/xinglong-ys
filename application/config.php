@@ -251,6 +251,13 @@ return [
         'at60' => '4747',
         'at80' => '4747',
     ],
+
+    'cloud_pic_dir' => 'atccs-data/', //云量图片路径
+
+    'at_pic_dir' => [//观测图片路径 
+        'at60' => 'atccs-data/at60/', //at60观测图像路径
+        'at80' => 'atccs-data/at80/', //at80观测图像路径
+    ],
 	
 	//兴隆经纬度
 	'latitude'  =>  40.396141666666665,

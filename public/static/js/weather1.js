@@ -74,5 +74,24 @@ $(function (){
     });//ajax结束
  } //get_weather() 结束
  setInterval (get_weather, 1000*60); //1分钟刷新一次页面
- //ajax 1分钟请求一次气象信息 结束   
+//ajax 1分钟请求一次气象信息 结束  
+
+ /*每5分钟请求一次云量图片数据*/
+ var cloud_pic = $('#cloud_pic'); //图片的img元素
+
+ function get_cloud_pic ()
+ {
+    $.ajax({
+        url: '/get_cloud_pic',
+        type: 'post',
+        success: function (info){
+            if (info != '未获取到')
+            {
+                cloud_pic.attr('src', '/' + info);
+            }
+        },//success结束
+    })
+ } /*每5分钟请求一次云量图片数据 结束*/
+  
+ setInterval (get_cloud_pic, 1000*300); //5分钟更新一次
 })

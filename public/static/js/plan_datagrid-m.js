@@ -122,6 +122,7 @@
 		
 		plan.one('change', function () {
 			var formData = new FormData(planForm[0]);
+			formData.append('aperture', aperture);
 
 			$.ajax({
 				type: 'post',
@@ -392,7 +393,7 @@
 				editor:{ type:'text' }
 			},
 	
-			{field:'declination1', width:table_w*0.0325, title:'时',
+			{field:'declination1', width:table_w*0.0325, title:'度',
 				editor:{ type:'numberbox' }
 			},
 			{field:'c3', width:table_w*0.013,
@@ -605,7 +606,8 @@
 					{
 						//planStart.prop('disabled', true);
 						//planStop.prop('disabled', false);
-
+						planStart.css("background-color","red");
+						planStop.css("background-color","#e1e1e1");
 						//将index这一索引对应的计划高亮
 						table.datagrid('scrollTo', index); //滚动到第index行
 						table.datagrid({
@@ -622,6 +624,8 @@
 					if (info.indexOf('计划停止') !== -1)
 					{
 						//planStart.prop('disabled', false);
+						planStop.css("background-color","red");
+						planStart.css("background-color","#e1e1e1");
 						clearInterval ( plan_execute_i ); //关闭查询执行哪条计划的定时器
 						table.datagrid({
 							rowStyler: function (index, row) {
@@ -675,11 +679,11 @@ var all_plans = aperture + 'all_plans';
 				url: '/plan',
 				data: {
 					planData: plans,
-					planDataStr: all_plans_data, //转为json字串所有计划数据
-					command : 1,  //标识 plan.php控制器中用以区别要执行的函数
-					at : at,
-					at_aperture:aperture, //页面中的望远镜口径
-					plan_filter_option : plan_filter_option, //将该望远镜filter的['u','v','b']提交
+					planDataStr: all_plans_data,//转为json字串所有计划数据
+					command: 1,//标识 plan.php控制器中用以区别要执行的函数
+					at: at,
+					at_aperture: aperture,//页面中的望远镜口径
+					plan_filter_option: plan_filter_option,//将该望远镜filter的['u','v','b']提交
 					maxExpose: configData.ccd[0].maxexposuretime,
 					minExpose: configData.ccd[0].minexposuretime,
 				},
@@ -739,7 +743,7 @@ var all_plans = aperture + 'all_plans';
 			}
 
 			var asc1 = $.trim( plans[i].rightAscension1 );
-			patn  = /^\d{1,2}$/;
+			patn  = /^\+?\d{1,2}$/;
 			if ( !patn.test(asc1) || asc1 > 24 || asc1 < 0 || asc1 === '' )
 			{
 				msg += '第' + (i+1) + '条赤经小时参数超限!<br>';

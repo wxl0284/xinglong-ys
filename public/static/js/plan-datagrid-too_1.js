@@ -705,7 +705,7 @@ $('#atConfig').hover(
 		{
 			$.ajax({
 				type: 'post',
-				url: '/ToO_plan',
+				url: '/ToO_1_plan',
 				data: {
 					planData: plans,
 					exeMode: exeMode,
@@ -1189,15 +1189,4 @@ $('#atConfig').hover(
 
 //  }//exportPlan() 结束
 
-   
-
- function test ()
- {
-	var d  = table.datagrid('getChecked');
-	console.log(d);
-	console.log('----');
-	d  = table.datagrid('getSelections');
-	console.log(d);
-	console.log(checked);
- }
 /*******实时获取 获取正在执行的计划 结束*******/

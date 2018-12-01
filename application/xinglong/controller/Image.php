@@ -47,7 +47,7 @@ class Image extends Base
                 return '提交的望远镜参数有误!';
         }*/
 
-        $res = scandir ($this->file_path);
+        $res = scandir ($this->file_path); /*后期要改为云量图片的处理异常来做 否则有bug*/
 
         if ( $res !== false && count($res) > 2 )
         {
@@ -61,4 +61,5 @@ class Image extends Base
             return '未获取到观测文件';
         }
     }//get_image 结束
+
 }

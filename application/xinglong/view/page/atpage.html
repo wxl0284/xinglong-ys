@@ -25,9 +25,9 @@
 	<div id='all'>
         <div class='pos_r'><!--重要信息区域 开始-->
 			<div id='atPic'>
-                <img src='/static/images-1/location_1.png'/>
-                <img src='/static/images-0/location.png'/>
-				<a class='pos_a border1 more inline center' id='takeOverBtn'>接管</a>
+                <!--<img src='"/fits-image/" + img4_data[0]' >
+				<a class='pos_a border1 more inline center' id='takeOverBtn'>接管</a>-->
+				<img src='/static/images-0/location.png' style='margin-left:12%;'>
 			</div>
 			
 			<div id='panel' class='displayNo pos_a'><!--接管弹窗-->
@@ -110,11 +110,10 @@
 					<tr>
 					  <td>目标赤纬:<span id='targetDeclination'>{{gimbal_status.targetDeclination}}</span>
 					  </td>
-					  
-					  <!-- <td>赤纬速度:<span id='declinationSpeed'>{{gimbal_status.declinationSpeed}}</span>
+					  <td>ccd温度:<span id='declinationSpeed'>{{ccd_status.coolerT}}℃</span>
 					  </td>
-					  <td>轴3速度:<span>{{gimbal_status.axis3Speed}}</span>
-					  </td> -->
+					  <td>滤光片:<span>{{configData.filter.filtername[filter_status.position]}}</span>
+					  </td>
 					</tr>
 					<tr>
 					  <!-- <td>赤经速度:<span id='RightAscensionSpeed'>{{gimbal_status.RightAscensionSpeed}}</span>
@@ -946,13 +945,13 @@
 		<br>
 		<div id='at60Res' class='center_mrg' style='width:92%;' v-if='device_nav.dev_click=="pic"'><!--观测图像 开始-->
 			<div id='bigPic' class='pos_r'>
-				<img :src='"/fits-image/" + at_image[0]' style='width:1104px;'>
+				<img :src='"/fits-image/" + big_img' style='width:1104px;'>
 				{if condition="$Think.session.role!=2"}<img class='pos_a' src='/static/images-1/download.png' style='top:680px;right:3px;cursor: pointer;'>{/if}
 			</div>
 			<div id='smallPic' class='pos_r'>
-				<img id='pre' src='/static/images-1/left.jpg'>
-				<img class='mrgR' v-for='v in at_image' :src='"/fits-image/" + v' style='width:226px;height:154px;'>
-				<img id='next' class='pos_a' src='/static/images-1/right.jpg'>
+				<img id='pre' src='/static/images-1/left.jpg' @click='pre_4_pic()' >
+				<img class='mrgR' v-for='(v,k) in img4_data' :src='"/fits-image/" + v' style='width:226px;height:154px;' @click='show_big_img(k)' >
+				<img id='next' class='pos_a' src='/static/images-1/right.jpg' @click='next_4_pic()' >
 			</div>
 		</div><!--观测图像 结束-->	
 	</div><!-- id='all' 结束 --><br>

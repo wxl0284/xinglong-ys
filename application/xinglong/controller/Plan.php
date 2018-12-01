@@ -30,7 +30,8 @@ class Plan extends Base
         {//无权执行
             return '您无权限执行此操作!';
         }*/
-		
+		$aperture = input('post.aperture'); //标记是否为80望远镜，如果是将增益置为1
+		halt($aperture);
 		// 获取表单上传文件 
 		$file = request()->file('plan');
 		//halt($file);
@@ -140,7 +141,11 @@ class Plan extends Base
 					$plan["plan".$index]["delayTime"] = trim($row[9]); //延迟时间
 					$plan["plan".$index]["exposureCount"] = trim($row[10]); //曝光数量					
 					$plan["plan".$index]["filter"] = trim($row[7]); //滤光片
-					$plan["plan".$index]["gain"] = '1'; //增益 文件中无此参数 我给默认为1
+					if ( $aperture == '80cm' )
+					{
+						$plan["plan".$index]["gain"] = '0'; //增益 文件中无此参数 我给默认为1
+					}
+					
 					$plan["plan".$index]["bin"] = '1'; //bin 文件中无此参数 我给默认为0(即1*1)
 					$plan["plan".$index]["readout"] = trim($row[8]);; //读出速度
 					$plan["plan".$index]["id"] = $index + 1;
@@ -203,10 +208,10 @@ class Plan extends Base
         //接受表单数据
         $postData = input ();
         //验证数据
-        if (!$postData['at'])
-        {//未接收到望远镜编号
-            return '网络异常,请刷新页面后再次提交指令!';
-        }
+        // if (!$postData['at'])
+        // {//未接收到望远镜编号
+        //     return '网络异常,请刷新页面后再次提交指令!';
+        // }
 
         //定义全局$sequence 此变量在packHead()函数中要使用
 		if (Cookie::has('sequence'))
@@ -579,6 +584,10 @@ class Plan extends Base
 
 			//增益 gain
 			$gain = $postData['planData'][$i]['gain'];
+			if ( $this->at == 36 )
+			{//如果是at80, 
+				$gain = '0'; //发送的增益默认为0
+			}
 			$sendMsg .= pack('S', $gain); 
 			
 			//bin

@@ -10,6 +10,7 @@ class Status extends Base
 {
     //定义变量
     protected $at = 0; //望远镜
+    protected $at_num = 0; //望远镜编号
 
     /******实时获取各子设备的状态信息 以json格式返回*******/
    public function get_status ()
@@ -21,27 +22,34 @@ class Status extends Base
         }*/
 
        //首先 判断需要获取哪个望远镜状态信息
-       switch ( input('at_aperture') ) { //根据望远镜口径，给 $this->$at赋值
+       switch ( input('at_aperture') ) { //根据望远镜口径，给 $this->$at及$this->at_num赋值
         case '50cm':
             $this->at = 50;
+            $this->at_num = 38;
             break;
         case '60cm':
             $this->at = 60;
+            $this->at_num = 37;
             break;
         case '80cm':
             $this->at = 80;
+            $this->at_num = 36;
             break;
         case '85cm':
             $this->at = 85;
+            $this->at_num = 35;
             break;
         case '100cm':
             $this->at = 100;
+            $this->at_num = 34;
             break;
         case '126cm':
             $this->at = 126;
+            $this->at_num = 33;
             break;
         case '216cm':
             $this->at = 216;
+            $this->at_num = 32;
             break;
         default:
             return '提交的望远镜参数有误!';
@@ -66,7 +74,16 @@ class Status extends Base
        $status['sDome'] = $this->sDome_status($this->at);
        //获取滤光片状态信息
        $status['filter'] = $this->filter_status($this->at);
-
+       //获取协同计划信息
+       $status['plan_cooper'] = $this->plan_cooper($this->at_num);
+       //获取ToO计划信息
+       $status['plan_too'] = $this->plan_too($this->at_num);
+       
+       if ( $status['plan_too']['data'] != '无ToO计划' ) //有ToO计划数据
+       {
+            $status['plan_cooper']['data'] = '无协同计划'; //告诉页面无协同计划
+       }
+       
        return json_encode ($status);
     }/******实时获取各子设备的状态信息 以json格式返回  结束*******/
 
@@ -304,6 +321,7 @@ class Status extends Base
                 break;
         }
 
+        $status['coolerT'] = $ccdStatus['coolerT'];  //ccd当前温度
         $status['errorString'] = $ccdStatus['errorString'];  //错误标识
         switch ($ccdStatus['error']) //错误状态
         {
@@ -575,10 +593,181 @@ class Status extends Base
         }
         //滤光片当前状态 结束 /////////////////////////////////////
         $status['filterIsHomed'] = $filterStatus['isHomed'] ==1 ? '是' : '否'; //是否找零
-        //错误标识
-        $status['filterErrorStatus'] = $filterStatus['errorString']; 
-
+        $status['filterErrorStatus'] = $filterStatus['errorString']; //错误标识
+        //filter当前哪个片
+        $status['position'] = $filterStatus['filterPosition']; //数字
         return $status;
     }/*获取滤光片状态信息 结束*/
+
+    protected function plan_cooper ($at_num) //根据望远镜编号查协同计划数据
+    {
+        $data = Db::table('plancooper')->where('at', $at_num)->where('import', '0')->order('id', 'desc')->select();
+        //halt($data);
+        if ($data) //将计划数据转为
+        //if (false) //将计划数据转为
+        {
+            foreach ($data as $k => $v)
+            {
+                $temp[$k]['target'] = $v['target'];
+                $temp[$k]['type'] = $v['type'];
+
+                $tem = data2Time ($v['rightascension']);//赤经
+                $tem = explode(':', $tem);
+                
+                $temp[$k]['rightAscension1'] = $tem[0];
+                $temp[$k]['rightAscension2'] = $tem[1];
+                $temp[$k]['rightAscension3'] = $tem[2];
+
+                $tem = data2Time ($v['declination']);//赤纬
+                $tem = explode(':', $tem);
+
+                $temp[$k]['declination1'] = $tem[0];
+                $temp[$k]['declination2'] = $tem[1];
+                $temp[$k]['declination3'] = $tem[2];
+
+                $temp[$k]['epoch'] = $v['epoch'];
+                $temp[$k]['exposureTime'] = $v['exposuretime'];
+                $temp[$k]['delayTime'] = $v['delaytime'];
+                $temp[$k]['exposureCount'] = $v['exposurecount'];
+                $temp[$k]['filter'] = $v['filter'];
+                $temp[$k]['gain'] = $v['gain'];
+                $temp[$k]['bin'] = $v['bin'];
+                $temp[$k]['readout'] = $v['readout'];
+            }
+   
+            $status['data'] = $temp;
+            $status['exemode'] = $data[0]['exemode']; //执行模式
+        }else{//无协同计划数据
+            $status['data'] = '无协同计划';
+        }
+        return $status;
+    }//plan_cooper()结束
+
+    protected function plan_too ($at_num) //根据望远镜编号查ToO计划数据
+    {
+        $data = Db::table('plantoo')->where('at', $at_num)->where('import', '0')->order('id', 'desc')->select();
+        //halt($data);
+        if ($data) //将计划数据转为
+        {
+            foreach ($data as $k => $v)
+            {
+                $temp[$k]['target'] = $v['target'];
+                $temp[$k]['type'] = $v['type'];
+
+                $tem = data2Time ($v['rightascension']);//赤经
+                $tem = explode(':', $tem);
+                
+                $temp[$k]['rightAscension1'] = $tem[0];
+                $temp[$k]['rightAscension2'] = $tem[1];
+                $temp[$k]['rightAscension3'] = $tem[2];
+
+                $tem = data2Time ($v['declination']);//赤纬
+                $tem = explode(':', $tem);
+
+                $temp[$k]['declination1'] = $tem[0];
+                $temp[$k]['declination2'] = $tem[1];
+                $temp[$k]['declination3'] = $tem[2];
+
+                $temp[$k]['epoch'] = $v['epoch'];
+                $temp[$k]['exposureTime'] = $v['exposuretime'];
+                $temp[$k]['delayTime'] = $v['delaytime'];
+                $temp[$k]['exposureCount'] = $v['exposurecount'];
+                $temp[$k]['filter'] = $v['filter'];
+                $temp[$k]['gain'] = $v['gain'];
+                $temp[$k]['bin'] = $v['bin'];
+                $temp[$k]['readout'] = $v['readout'];
+            }
+   
+            $status['data'] = $temp;
+            $status['exemode'] = $data[0]['exemode']; //执行模式
+        }else{//无ToO计划数据
+            $status['data'] = '无ToO计划';
+        }
+        return $status;
+    }//plan_too()结束
+
+    //ajax 将协同计划表中import字段变为1
+    public function change_cooper_import()
+    {
+        $postData = input();
+        
+        switch ( $postData['at_aperture'] )
+        { //根据望远镜口径，给 $this->$at及$this->at_num赋值
+            case '50cm':
+                $this->at = 50;
+                $this->at_num = 38;
+                break;
+            case '60cm':
+                $this->at = 60;
+                $this->at_num = 37;
+                break;
+            case '80cm':
+                $this->at = 80;
+                $this->at_num = 36;
+                break;
+            case '85cm':
+                $this->at = 85;
+                $this->at_num = 35;
+                break;
+            case '100cm':
+                $this->at = 100;
+                $this->at_num = 34;
+                break;
+            case '126cm':
+                $this->at = 126;
+                $this->at_num = 33;
+                break;
+            case '216cm':
+                $this->at = 216;
+                $this->at_num = 32;
+                break;
+            default:
+                return '提交的望远镜参数有误!';
+        }
+        //halt($this->at_num);
+        Db::table('plancooper')->where('at', $this->at_num)->where('import', '0')->setField('import', '1');
+    }//ajax 将协同计划表中import字段变为1 结束
+
+    //ajax 将协同计划表中import字段变为1
+    public function change_too_import()
+    {
+        $postData = input();
+        
+        switch ( $postData['at_aperture'] )
+        { //根据望远镜口径，给 $this->$at及$this->at_num赋值
+            case '50cm':
+                $this->at = 50;
+                $this->at_num = 38;
+                break;
+            case '60cm':
+                $this->at = 60;
+                $this->at_num = 37;
+                break;
+            case '80cm':
+                $this->at = 80;
+                $this->at_num = 36;
+                break;
+            case '85cm':
+                $this->at = 85;
+                $this->at_num = 35;
+                break;
+            case '100cm':
+                $this->at = 100;
+                $this->at_num = 34;
+                break;
+            case '126cm':
+                $this->at = 126;
+                $this->at_num = 33;
+                break;
+            case '216cm':
+                $this->at = 216;
+                $this->at_num = 32;
+                break;
+            default:
+                return '提交的望远镜参数有误!';
+        }
+        //halt($this->at_num);
+        Db::table('plantoo')->where('at', $this->at_num)->where('import', '0')->setField('import', '1');
+    }//ajax 将ToO计划表中import字段变为1 结束
 
 } /******class Status 结束*******/

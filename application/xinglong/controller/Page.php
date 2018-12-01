@@ -8,6 +8,8 @@ use think\Session;
 
 class Page extends Base
 {
+    protected $path = ROOT_PATH . 'public' . DS; //读取文件的路径
+
     //根据at参数显示不同望远镜页面
     public function at_page($at)
     {
@@ -1064,9 +1066,65 @@ class Page extends Base
 
             $vars['weather_data'] = $weather_data;
         }
+
+        //读取云量相机图片 存入session
+        ///data/lampp/htdocs/public/atccs-data/2018/11/11
+        $cloud_pic_dir = config('cloud_pic_dir');
+        $dir = date('Y/n/j', time()); //$dir格式：2018/2/29
+        $dir = $cloud_pic_dir. $dir .'/';
+        $err = ''; //记录错误
+        $file_name = $dir; //要获取的最新文件名
+
+        try{
+			$res = scandir ( $this->path .$dir );
+		}catch(\Exception $e){
+			$err = '读取文件异常';
+        }
+        
+        if ( $err === '' ) //没有异常
+        {
+            if ( $res !== false && count($res) > 2 )
+            {
+                $file_name = $dir . array_pop( $res ); //最新的文件名
+            }
+        }
+
+        //将最新文件名存入session
+        if ( Session::get('cloud_pic') !== $file_name )
+        {
+            Session::set('cloud_pic', $file_name);
+        }
+        //读取云量相机图片 存入session 结束
         
 		return view('weather', $vars);
     }//显示天气详情页 结束///
+
+    public function ajax_get_cloud_pic () //ajax 获取云量图片
+    {
+        $cloud_pic_dir = config('cloud_pic_dir');
+        $dir = date('Y/n/j', time()); //$dir格式：2018/2/29
+        $dir = $cloud_pic_dir. $dir .'/';
+        $err = ''; //记录错误
+        $file_name = $dir; //要获取的最新文件名
+
+        try{
+			$res = scandir ( $this->path .$dir );
+		}catch(\Exception $e){
+			$err = '读取文件异常';
+        }
+        
+        if ( $err === '' ) //没有异常
+        {
+            if ( $res !== false && count($res) > 2 )
+            {
+                $file_name = $dir . array_pop( $res ); //最新的文件名
+            }
+        }else{//有异常
+            $file_name = '未获取到';
+        }
+
+        return $file_name;
+    }//ajax 获取云量图片
 
     public function ajax_get_weather () //ajax 每分钟请求环境信息
     {
