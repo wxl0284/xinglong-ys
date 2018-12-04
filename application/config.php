@@ -245,18 +245,43 @@ return [
 	'ip' => [
         'at60' => '192.168.160.108',
         'at80' => '192.168.160.43',
+        'at85' => '192.168.160.218',
+        'at100' => '192.168.160.219',
+        'at50' => '192.168.160.50',
+        'at126' => '192.168.160.126',
+        'at216' => '192.168.160.216',
     ],
     //与中控通信的端口
     'port' => [
         'at60' => '4747',
         'at80' => '4747',
+		'at85' => '4747',
+		'at100' => '4747',
+		'at126' => '4747',
+		'at216' => '4747',
+		'at50' => '4747',
     ],
 
     'cloud_pic_dir' => 'atccs-data/', //云量图片路径
 
     'at_pic_dir' => [//观测图片路径 
-        'at60' => 'atccs-data/at60/', //at60观测图像路径
-        'at80' => 'atccs-data/at80/', //at80观测图像路径
+        'at60' => 'atccs-png/at60/', //at60观测图像路径
+        'at80' => 'atccs-png/at80/', //at80观测图像路径
+        'at50' => 'atccs-png/at50/',
+        'at85' => 'atccs-png/at85/',
+        'at100' => 'atccs-png/at100/',
+        'at126' => 'atccs-png/at126/',
+        'at216' => 'atccs-png/at216/',
+    ],
+
+    'at_fits_dir' => [//fits图片路径 
+        'at60' => 'atccs-data/at60/', //at60fits图像路径
+        'at80' => 'atccs-data/at80/', //at80fits图像路径
+        'at50' => 'atccs-dada/at50/',
+        'at85' => 'atccs-dada/at85/',
+        'at100' => 'atccs-dada/at100/',
+        'at126' => 'atccs-dada/at126/',
+        'at216' => 'atccs-dada/at216/',
     ],
 	
 	//兴隆经纬度

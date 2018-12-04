@@ -1028,7 +1028,7 @@ class Page extends Base
            $vars['cloudPic'] = $cloudPic;
         }
 
-        //获取气象信息
+        //获取兴隆环境信息
         $weather_data = Db::table('wsrealtimedata')->order('id', 'desc')->find();
         //halt($weather_data);
         if ( $weather_data )
@@ -1430,4 +1430,96 @@ class Page extends Base
 
         return $result;
     }/*获取相应望远镜固定属性数据 结束*/
+
+    public function whole_day_pic ($aperture) //在页面显示各望远镜观测图像及相关信息
+    {
+        $dir = config('at_pic_dir'); //各望远镜图片路径
+        $fits_dir = config('at_fits_dir'); //各望远镜fits图片路径
+
+        $day = date('Ymd', time()); //当前日期 20181201
+        //$day = '20181201'; //当前日期 20181201
+
+        switch ($aperture) { //根据望远镜口径，给 $this->$at赋值
+            case '50cm':
+                $at = 'at50';
+                $dir = $dir['at50'];
+                $fits_dir = $fits_dir['at50'];
+                break;
+            case '60cm':
+                $at = 'at60';
+                $dir = $dir['at60'];
+                $fits_dir = $fits_dir['at60'];
+                break;
+            case '80cm':
+                $at = 'at80';
+                $dir = $dir['at80'];
+                $fits_dir = $fits_dir['at80'];
+                break;
+            case '85cm':
+                $at = 'at85';
+                $dir = $dir['at85'];
+                $fits_dir = $fits_dir['at85'];
+                break;
+            case '100cm':
+                $at = 'at100';
+                $dir = $dir['at100'];
+                $fits_dir = $fits_dir['at100'];
+                break;
+            case '126cm':
+                $at = 'at126';
+                $dir = $dir['at126'];
+                $fits_dir = $fits_dir['at126'];
+                break;
+            case '216cm':
+                $at = 'at216';
+                $dir = $dir['at216'];
+                $fits_dir = $fits_dir['at216'];
+                break;
+            default:
+                return '提交的望远镜参数有误!';
+        }
+        
+       $res = Db::table('observerimg')->where('at', $at)->where('date', $day)->order('time', 'desc')->field('time, name')->limit(30)->select();
+       
+       if ( $res )
+       {
+           foreach ($res as $k => $v)
+           {
+               $res[$k]['date'] = $day;
+               $res[$k]['time'] = date('H:i:s', $v['time']);
+               $res[$k]['name'] = str_replace('fit', 'png', $v['name']);
+               $res[$k]['fit'] =  $v['name'];
+           }
+
+            $vars['pic_data'] = json_encode( $res );
+       }else{
+            $vars['pic_data'] = '无图片信息';
+       }
+
+
+        $vars['pic_dir'] = $dir . $day .'/';
+        $vars['fits_dir'] = $fits_dir . $day .'/';
+        $vars['aperture'] = $aperture;
+        return view('page/whole_day_img', $vars); //显示页面是base.php中有些信息读不到 回头找原因
+    }//在页面显示各望远镜观测图像及相关信息
+
+    public function down_fits_pic () //下载fits图片
+    {
+		$postData = input();
+		halt($postData);
+        $file = $this->path . $dir . DS . $filename;
+        //$file = iconv('UTF-8', 'GBK', $file); //将整个路径转为GBK字符集
+        if ( file_exists($file) )
+        {
+            header("Content-type:application/octet-stream"); //设置内容类型
+            header("Content-Disposition:attachment;filename = ". $filename); //下载弹框的默认文件名
+            header('Content-Transfer-Encoding: binary'); //设置传输方式
+            //header("Accept-ranges:bytes");
+            header("Content-length:".filesize($file)); //获取文件字节数
+            //header("Accept-length:".filesize($file));
+            readfile($file);
+        }else{
+            return 0;
+        }
+    }
 }

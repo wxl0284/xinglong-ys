@@ -13,7 +13,9 @@
 	<img src='/static/images-1/top.jpg' style='width:100%'/>
 	{include file="common/common"/}
 	<div id='all' class='border'>
-		<input id='hours' type="button" value="24小时数据曲线" style="margin-left:46%">
+		<input id='hours_2' type="button" value="2小时数据曲线" style="display:block;margin:0 align-self: auto;">
+		<input id='hours_12' type="button" value="12小时数据曲线" style="display:block;margin:0 align-self: auto;">
+		<input id='hours_24' type="button" value="24小时数据曲线" style="display:block;margin:0 align-self: auto;">
 		<div><!--各类图表 开始-->
 		   <div id='temperature' style='width:1000px;height:390px;margin:0 auto;'><!--温度图-->
 		   </div>
@@ -278,8 +280,26 @@
 	}; 
 	dustChart.setOption(optionDust);
 //粉尘 结束/////////////////////////////////////////////////////////*/
-$('#hours').click(function () {
+var hour_2 = $('#hours_2');
+var hour_12 = $('#hours_12');
+var hour_24 = $('#hours_24');
+hour_2.click(function () {
+	location.href = '/weather_info/2';
+	hour_2.css("background-color","red");
+	hour_12.css("background-color","#e1e1e1");
+	hour_24.css("background-color","#e1e1e1");
+})
+hour_12.click(function () {
+	location.href = '/weather_info/12';
+	hour_12.css("background-color","red");
+	hour_2.css("background-color","#e1e1e1");
+	hour_24.css("background-color","#e1e1e1");
+})
+hour_24.click(function () {
 	location.href = '/weather_info/24';
+	hour_24.css("background-color","red");
+	hour_2.css("background-color","#e1e1e1");
+	hour_12.css("background-color","#e1e1e1");
 })
 </script>
 </html>

@@ -945,14 +945,19 @@
 		<br>
 		<div id='at60Res' class='center_mrg' style='width:92%;' v-if='device_nav.dev_click=="pic"'><!--观测图像 开始-->
 			<div id='bigPic' class='pos_r'>
-				<img :src='"/fits-image/" + big_img' style='width:1104px;'>
-				{if condition="$Think.session.role!=2"}<img class='pos_a' src='/static/images-1/download.png' style='top:680px;right:3px;cursor: pointer;'>{/if}
+				<img :src='"/" + png_dir + big_img' style='width:1104px;'>
+				<!--{if condition="$Think.session.role!=2"}<img class='pos_a' src='/static/images-1/download.png' style='top:680px;right:3px;cursor: pointer;'>{/if}-->
 			</div>
 			<div id='smallPic' class='pos_r'>
-				<img id='pre' src='/static/images-1/left.jpg' @click='pre_4_pic()' >
-				<img class='mrgR' v-for='(v,k) in img4_data' :src='"/fits-image/" + v' style='width:226px;height:154px;' @click='show_big_img(k)' >
-				<img id='next' class='pos_a' src='/static/images-1/right.jpg' @click='next_4_pic()' >
+				<!--<img id='pre' src='/static/images-1/left.jpg' @click='pre_4_pic()' >-->
+				<!--<img class='mrgR' v-for='(v,k) in img4_data' :src='"/"+ png_dir + v' style='width:226px;height:154px;' @click='show_big_img(k)' >-->
+				<img class='mrgR'  src='/static/images-1/ylxj.jpg' style='width:226px;height:154px;' @click='show_big_img(k)' >
+				<img class='mrgR'  src='/static/images-1/ylxj.jpg' style='width:226px;height:154px;' @click='show_big_img(k)' >
+				<img class='mrgR'  src='/static/images-1/ylxj.jpg' style='width:226px;height:154px;' @click='show_big_img(k)' >
+				<img class='mrgR'  src='/static/images-1/ylxj.jpg' style='width:226px;height:154px;' @click='show_big_img(k)' >
+				<!--<img id='next' class='pos_a' src='/static/images-1/right.jpg' @click='next_4_pic()' >-->
 			</div>
+			<a href='{:url("xinglong/Page/whole_day_pic", ["aperture"=>$at_aperture[$data["at_id"]]])}' class="display center" style="font-size:22px;" >查看全天观测结果</a>
 		</div><!--观测图像 结束-->	
 	</div><!-- id='all' 结束 --><br>
 	

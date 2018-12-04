@@ -268,7 +268,8 @@ CREATE TABLE plancooper (/*协同计划表*/
   "declination" character varying,
   "delaytime" character varying,
   "import" character varying,
-  "exemode" character varying);
+  "exemode" character varying,
+  "giveup" character varying/*放弃 默认0，不导入后改为1*/);
 
   CREATE TABLE plantoo (/*ToO计划表*/
   "id" BIGSERIAL NOT NULL PRIMARY KEY,
@@ -288,6 +289,7 @@ CREATE TABLE plancooper (/*协同计划表*/
   "declination" character varying,
   "delaytime" character varying,
   "import" character varying,
-  "exemode" character varying);
+  "exemode" character varying,
+  "giveup" character varying/*放弃*/);
 
 "C:\Program Files (x86)\pgAdmin 4\v1\runtime\pgAdmin4.exe"   //执行 postgres命令行

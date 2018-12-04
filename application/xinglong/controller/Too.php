@@ -32,18 +32,18 @@ class Too extends Base
         return $this->fetch('too/too_1');
     }
 
-    public function send_ToO_plan ()  //发送协同计划数据给 中控
+    public function send_ToO_plan ()  //将协同计划数据存入plancooper表中
     {
         //halt($planData['plan_filter_option']);
 		//定义全局$sequence 此变量在packHead()函数中要使用
-		if (Cookie::has('sequence'))
+		/*if (Cookie::has('sequence'))
 		{
 			$this->sequence = Cookie::get('sequence');
 			Cookie::set('sequence', $this->sequence+1);
 		}else{
 			Cookie::set('sequence', 1);
 			$this->sequence = 0;
-		}
+		}*/
         
 		$postData = input();
 		
@@ -82,9 +82,18 @@ class Too extends Base
 			$postData['planData'][$i]['exposurecount'] = $postData['planData'][$i]['exposureCount'];
 			$postData['planData'][$i]['exposuretime'] = $postData['planData'][$i]['exposureTime'];
 			$postData['planData'][$i]['delaytime'] = $postData['planData'][$i]['delayTime'];
+			$postData['planData'][$i]['giveup'] = '0'; /*后期此字段要改为默认为0*/
 		}
 
-		Db::table('plancooper')->strict(false)->insertAll($postData['planData']);
+		$res = Db::table('plancooper')->strict(false)->insertAll($postData['planData']);
+
+		if ( $res )
+		{
+			return '协同观测计划发送保存完毕!';
+		}else{
+			return '协同观测计划发送保存失败!';
+		}
+
         /*$at60_data = []; //存储at60的计划数据
         $at80_data = []; //存储at80的计划数据
 
@@ -308,21 +317,20 @@ class Too extends Base
             udpSendPlan($sendMsg, $this->ip, $this->port); //无返回值
 		}//给中控 发送at80数据 结束///////////////
 		*/
-		return '协同观测计划发送完毕!';
 	}//send_ToO_plan () 结束
 	
 	public function send_ToO_1_plan ()  //保存ToO计划数据
     {
         //halt($planData['plan_filter_option']);
 		//定义全局$sequence 此变量在packHead()函数中要使用
-		if (Cookie::has('sequence'))
+		/*if (Cookie::has('sequence'))
 		{
 			$this->sequence = Cookie::get('sequence');
 			Cookie::set('sequence', $this->sequence+1);
 		}else{
 			Cookie::set('sequence', 1);
 			$this->sequence = 0;
-		}
+		}*/
         
 		$postData = input();
 		
@@ -361,10 +369,16 @@ class Too extends Base
 			$postData['planData'][$i]['exposurecount'] = $postData['planData'][$i]['exposureCount'];
 			$postData['planData'][$i]['exposuretime'] = $postData['planData'][$i]['exposureTime'];
 			$postData['planData'][$i]['delaytime'] = $postData['planData'][$i]['delayTime'];
+			$postData['planData'][$i]['giveup'] = '0'; /*后期此字段要改为默认为0*/
 		}
 
-		Db::table('plantoo')->strict(false)->insertAll($postData['planData']);
-		return 'ToO观测计划发送完毕!';
+		$res = Db::table('plantoo')->strict(false)->insertAll($postData['planData']);
+		if ( $res )
+		{
+			return 'ToO观测计划发送保存完毕!';
+		}else{
+			return 'ToO观测计划发送保存失败!';
+		}
     }//send_ToO_1_plan () 结束
 
     public function start_stop_ToO () //开始执行观测或停止

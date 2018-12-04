@@ -1047,6 +1047,7 @@ var all_plans = aperture + 'all_plans';
 				
 				let plan_data = info.split('#')[1];
 				plan_data = $.parseJSON(plan_data); //此望远镜正执行的计划数据
+				
 				let page_plan = table.datagrid('getRows');
 				let num = page_plan.length;
 				
@@ -1054,9 +1055,12 @@ var all_plans = aperture + 'all_plans';
 				{
 					for (let i = 0; i < num; i++)
 					{
-						if ( plan_data['target'] == page_plan[i]['target'] && plan_data['filter'] == page_plan[i]['filter']);
-						plan_index = i;
-						break; //跳出for循环
+						if ( plan_data['target'] == page_plan[i]['target'] && plan_data['filter'] == page_plan[i]['filter'])
+						{
+							plan_index = i;
+							break; //跳出for循环
+						}					
+						
 					}
 
 					table.datagrid('scrollTo', plan_index); //滚动到第plan_index行

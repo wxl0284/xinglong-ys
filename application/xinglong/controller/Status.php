@@ -601,7 +601,7 @@ class Status extends Base
 
     protected function plan_cooper ($at_num) //根据望远镜编号查协同计划数据
     {
-        $data = Db::table('plancooper')->where('at', $at_num)->where('import', '0')->order('id', 'desc')->select();
+        $data = Db::table('plancooper')->where('at', $at_num)->where('import', '0')->where('giveup', '0')->order('id', 'desc')->select();
         //halt($data);
         if ($data) //将计划数据转为
         //if (false) //将计划数据转为
@@ -645,7 +645,7 @@ class Status extends Base
 
     protected function plan_too ($at_num) //根据望远镜编号查ToO计划数据
     {
-        $data = Db::table('plantoo')->where('at', $at_num)->where('import', '0')->order('id', 'desc')->select();
+        $data = Db::table('plantoo')->where('at', $at_num)->where('import', '0')->where('giveup', '0')->order('id', 'desc')->select();
         //halt($data);
         if ($data) //将计划数据转为
         {
@@ -686,7 +686,7 @@ class Status extends Base
         return $status;
     }//plan_too()结束
 
-    //ajax 将协同计划表中import字段变为1
+    //ajax 将协同计划表中import字段变为1 导入时
     public function change_cooper_import()
     {
         $postData = input();
@@ -725,10 +725,16 @@ class Status extends Base
                 return '提交的望远镜参数有误!';
         }
         //halt($this->at_num);
-        Db::table('plancooper')->where('at', $this->at_num)->where('import', '0')->setField('import', '1');
+        if ( $postData['import'] == 1 ) //点击导入时
+        {
+            Db::table('plancooper')->where('at', $this->at_num)->where('import', '0')->setField('import', '1');
+        }elseif( $postData['give_up'] == 1 ){//点不导入时
+            Db::table('plancooper')->where('at', $this->at_num)->where('giveup', '0')->setField('giveup', '1');
+        }
+        
     }//ajax 将协同计划表中import字段变为1 结束
 
-    //ajax 将协同计划表中import字段变为1
+    //ajax 将协同计划表中import字段或giveup字段变为1
     public function change_too_import()
     {
         $postData = input();
@@ -767,7 +773,13 @@ class Status extends Base
                 return '提交的望远镜参数有误!';
         }
         //halt($this->at_num);
-        Db::table('plantoo')->where('at', $this->at_num)->where('import', '0')->setField('import', '1');
+        if ( $postData['import'] == 1 ) //点导入时
+        {
+            Db::table('plantoo')->where('at', $this->at_num)->where('import', '0')->setField('import', '1');
+        }elseif( $postData['give_up'] == 1 ){//点不导入时
+            Db::table('plantoo')->where('at', $this->at_num)->where('giveup', '0')->setField('giveup', '1');
+        }
+        
     }//ajax 将ToO计划表中import字段变为1 结束
 
 } /******class Status 结束*******/

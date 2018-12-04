@@ -33,7 +33,7 @@ Route::post('user/edit_passwd$', 'xinglong/user/editPasswd');
 Route::get('weather$', 'xinglong/page/weather');
 //ajax 每分钟请求环境信息 显示详情 路由
 Route::post('get_weater$', 'xinglong/page/ajax_get_weather');
-//天气 显示详情 路由
+//天气 显示详情 显示不同时间段环境信息折线图 路由
 Route::get('weather_info/:hour$', 'xinglong/weather/weatherDetail');
 //ajax实时获取各子设备状态信息 路由
 Route::post('get_status$', 'xinglong/status/get_status');
@@ -110,7 +110,7 @@ Route::post('ToO_plan$', 'xinglong/Too/send_ToO_plan');
 Route::post('ToO_1_plan$', 'xinglong/Too/send_ToO_1_plan');
 //页面 提交协同观测 ToO 之开始或停止 路由
 Route::post('ToO_start_stop$', 'xinglong/Too/start_stop_ToO');
-//ajax 将协同计划表中import字段变为1 路由
+//ajax 将协同计划表中import字段或giveup字段变为1 路由
 Route::post('change_plancooper_import$', 'xinglong/Status/change_cooper_import');
 //ajax 将ToO计划表中import字段变为1 路由
 Route::post('change_plantoo_import$', 'xinglong/Status/change_too_import');
@@ -122,6 +122,10 @@ Route::post('next4$', 'xinglong/Image/next4_image');
 Route::post('pre4$', 'xinglong/Image/pre4_image');*/
 //ajax 获云量图像 路由
 Route::post('get_cloud_pic$', 'xinglong/Page/ajax_get_cloud_pic');
+//显示 全天观测图片 路由
+Route::get('/whole_day_pic/:aperture$', 'xinglong/Page/whole_day_pic');
+//下载fits图片 路由
+//Route::get('/down_fits/:dir/:filename$', 'xinglong/page/down_fits_pic');
 
 /*如下为望远镜配置的示例 路由*/
 //测试首页 

@@ -31,7 +31,7 @@ class Plan extends Base
             return '您无权限执行此操作!';
         }*/
 		$aperture = input('post.aperture'); //标记是否为80望远镜，如果是将增益置为1
-		halt($aperture);
+		//halt($aperture);
 		// 获取表单上传文件 
 		$file = request()->file('plan');
 		//halt($file);
@@ -144,6 +144,8 @@ class Plan extends Base
 					if ( $aperture == '80cm' )
 					{
 						$plan["plan".$index]["gain"] = '0'; //增益 文件中无此参数 我给默认为1
+					}else{
+						$plan["plan".$index]["gain"] = '1';
 					}
 					
 					$plan["plan".$index]["bin"] = '1'; //bin 文件中无此参数 我给默认为0(即1*1)

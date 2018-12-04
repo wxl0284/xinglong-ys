@@ -1,5 +1,5 @@
 /** 望远镜控制页面js*/
- $(function () {
+$(function () {
 	//显示导航栏望远镜列表   
 	var ul = $('#atListUl');
 	$('#atList').hover(
@@ -29,6 +29,7 @@
 			configData: configData, //configData是后端返回的json数据
 			ccd_config:configData.ccd[0], //此对象存储ccd的配置数据
 			ccd_name:'CCD1',
+			png_dir: '',
 			at_image:[], //存储所有获取的普通格式观测图像
 			img4_data: [], //存储截取的4个普通格式图片
 			at_image_dir:'', //各望远镜普通观测图像目录
@@ -197,9 +198,18 @@
 		},/********vue data属性对象 结束********/
 		computed: {//计算属性
 			gimbal_focus: function () {
-				//return $.parseJSON (this.configData.gimbal.focustype);
-				return eval ( '(' + this.configData.gimbal.focustype + ')' );
-				//console.log(x);
+				let t = eval ( '(' + this.configData.gimbal.focustype + ')' );
+				let temp = {}; //定义一个对象临时存储数据
+				temp.focus = t.focus;
+				delete t.focus; //删除t中的focus
+
+				let j = 0; //
+				for (p in t)
+				{
+					temp['v'+j] = t[p];
+					j++;
+				}
+				return temp;
 			},//gimbal_focus 结束
 			ccd_gainMode: function (){
 				var gainMode = this.ccd_config.gainmode.split(', ');
@@ -430,6 +440,7 @@
 						if ( info.indexOf('img') !== -1 ) //返回了图像信息
 						{
 							let img_data = info.split('#');
+							t.png_dir = img_data[2];
 							img_data = $.parseJSON(img_data[1]);
 							t.at_image = img_data; //将目录中所有图片信息赋值给at_image
 							t.img4_data = img_data.slice(0,4); //截取前4个图片 赋值给img4_data
@@ -2472,19 +2483,25 @@
 									table.datagrid({
 										data: cooper_arr,
 									});
-									$('#modeSpan').val(info.plan_cooper.exemode);//将执行模式赋值
+									modeSpan.val(info.plan_cooper.exemode);//将执行模式赋值
 									$.ajax({//Ajax把plancooper中import字段变为1
 										url: '/change_plancooper_import',
 										type: 'post',
-										data: {at_aperture: aperture},
+										data: {at_aperture: aperture, import:1},
 										//success: function (){},
 										//error: function (){},
 									})//ajax结束
 									layer.close(n);
 								},//yes函数结束
 								btn2: function(index) {//点击不导入时
+									$.ajax({//Ajax把plancooper中giveup字段变为1
+										url: '/change_plancooper_import',
+										type: 'post',
+										data: {at_aperture: aperture, give_up:1},
+										//success: function (){},
+										//error: function (){},
+									})//ajax结束
 									layer.close(index);
-									//layer.msg('算了，算了,不删了...');
 								},//btn2函数结束
 							});
 						}//处理协同计划数据 结束
@@ -2493,7 +2510,7 @@
 
 				if ( info.plan_too ) //处理ToO计划信息
 				{
-					if ( plan_cooper_i < 1 )
+					if ( plan_cooper_i < 1 )//控制弹窗个数，只弹出1个
 					{
 						if ( info.plan_too.data != '无ToO计划' )	//有ToO计划数据
 						{
@@ -2516,7 +2533,9 @@
 									table.datagrid({
 										data: too_arr,
 									});
-									$('#modeSpan').val(info.plan_cooper.exemode);//将执行模式赋值
+									//$('#modeSpan').val(info.plan_too.exemode);//将执行模式赋值
+									modeSpan.val(info.plan_too.exemode);//将执行模式赋值
+
 									//执行提交计划指令
 									submitPlan();
 									planStop.click();
@@ -2525,13 +2544,20 @@
 									$.ajax({//Ajax把plantoo中import字段变为1
 										url: '/change_plantoo_import',
 										type: 'post',
-										data: {at_aperture: aperture},
+										data: {at_aperture: aperture, import: 1},
 										//success: function (){},
 										//error: function (){},
 									})//ajax结束
 									layer.close(n);
 								},//yes函数结束
 								btn2: function(index) {//点击不导入时
+									$.ajax({//Ajax把plantoo中giveup字段变为1
+										url: '/change_plantoo_import',
+										type: 'post',
+										data: {at_aperture: aperture, give_up: 1},
+										//success: function (){},
+										//error: function (){},
+									})//ajax结束
 									layer.close(index);
 									//layer.msg('算了，算了,不删了...');
 								},//btn2函数结束
