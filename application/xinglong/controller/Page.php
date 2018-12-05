@@ -1124,7 +1124,44 @@ class Page extends Base
         }
 
         return $file_name;
-    }//ajax 获取云量图片
+    }//ajax 获取云量图片 结束
+
+    public function more_cloud_pic () //云量相机 查看更多云量图片
+    {
+        //默认点击按钮后 查看1小时内照片（5分钟一张）
+        $cloud_pic_dir = config('cloud_pic_dir');
+        $dir = date('Y/n/j', time()); //$dir格式：2018/2/29
+        $dir = $cloud_pic_dir. $dir .'/';
+        //$dir = $cloud_pic_dir. '2018/12/1' .'/';
+        $err = ''; //记录错误
+        $file_name = $dir; //要获取的最新文件名
+
+        try{
+			$res = scandir ( $this->path .$dir );
+		}catch(\Exception $e){
+			$err = '读取文件异常';
+        }
+
+        $file_nums = 0; //记录云量图片的数量
+
+        if ( $err === '' ) //没有异常
+        {
+            if ( $res !== false && count($res) > 2 )
+            {
+                unset ($res[0], $res[1]); //删除前2个数据
+                $file_name = array_slice($res, -12, 12); //获取最后的12个元素
+            }
+        }else{//有异常
+            $file_name = '未获取到';
+        }
+        //$file_name = ['17_44_05_000245.jpg','17_44_05_000245.jpg','17_44_05_000245.jpg','17_44_05_000245.jpg',
+        //'17_44_05_000245.jpg','17_44_05_000245.jpg','17_44_05_000245.jpg','17_44_05_000245.jpg'
+    //];
+        $vars['cloud_pic'] = $file_name;
+        $vars['cloud_pic_dir'] = $dir; //把目录返给页面，用以拼接路径
+        return $this->fetch ('weather/clouds', $vars);
+
+    }//more_cloud_pic结束
 
     public function ajax_get_weather () //ajax 每分钟请求环境信息
     {

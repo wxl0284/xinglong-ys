@@ -10,7 +10,7 @@ if ($.fn.treegrid && $.fn.datagrid){
 	$.fn.treegrid.defaults.loadMsg = $.fn.datagrid.defaults.loadMsg;
 }
 if ($.messager){
-	$.messager.defaults.ok = '確定';
+	$.messager.defaults.ok = '确定';
 	$.messager.defaults.cancel = '取消';
 }
 $.map(['validatebox','textbox','passwordbox','filebox','searchbox',
@@ -18,14 +18,14 @@ $.map(['validatebox','textbox','passwordbox','filebox','searchbox',
 		'datebox','datetimebox','numberbox',
 		'spinner','numberspinner','timespinner','datetimespinner'], function(plugin){
 	if ($.fn[plugin]){
-		$.fn[plugin].defaults.missingMessage = '該輸入項為必輸項';
+		$.fn[plugin].defaults.missingMessage = '此处不能为空';
 	}
 });
 if ($.fn.validatebox){
-	$.fn.validatebox.defaults.rules.email.message = '請輸入有效的電子郵件地址';
-	$.fn.validatebox.defaults.rules.url.message = '請輸入有效的URL地址';
-	$.fn.validatebox.defaults.rules.length.message = '輸入內容長度必須介於{0}和{1}之間';
-	$.fn.validatebox.defaults.rules.remote.message = '請修正此欄位';
+	$.fn.validatebox.defaults.rules.email.message = '请输入有效的电子邮箱';
+	$.fn.validatebox.defaults.rules.url.message = '请输入有效的URL地址';
+	$.fn.validatebox.defaults.rules.length.message = '输入内容长度须在{0}和{1}之間';
+	$.fn.validatebox.defaults.rules.remote.message = '请修改此字段';
 }
 if ($.fn.calendar){
 	$.fn.calendar.defaults.weeks = ['日','一','二','三','四','五','六'];
@@ -33,8 +33,8 @@ if ($.fn.calendar){
 }
 if ($.fn.datebox){
 	$.fn.datebox.defaults.currentText = '今天';
-	$.fn.datebox.defaults.closeText = '關閉';
-	$.fn.datebox.defaults.okText = '確定';
+	$.fn.datebox.defaults.closeText = '关闭';
+	$.fn.datebox.defaults.okText = '确定';
 }
 if ($.fn.datetimebox && $.fn.datebox){
 	$.extend($.fn.datetimebox.defaults,{

@@ -120,6 +120,9 @@ Route::post('get_image$', 'xinglong/Image/get_image');
 Route::post('next4$', 'xinglong/Image/next4_image');
 /ajax 观测图像 向左按钮 路由
 Route::post('pre4$', 'xinglong/Image/pre4_image');*/
+
+//ajax 查看更多云量相机图片 路由
+Route::get('weather/clouds$', 'xinglong/Page/more_cloud_pic');
 //ajax 获云量图像 路由
 Route::post('get_cloud_pic$', 'xinglong/Page/ajax_get_cloud_pic');
 //显示 全天观测图片 路由
