@@ -14,14 +14,39 @@ $(function () {
            function (){ configList.hide(); } 
        );
 /************* 读取16个动态增减的配置数据 *************/
-    $(window).focus(function () {
+    window.onfocus = function () {//此处需对转台和导星镜的焦点类型及其焦距焦比进行处理
         var share_conf_data = localStorage.getItem('share_conf_data');
         if ( share_conf_data )
         {
-            //var x = eval( '(' + share_conf_data + ')' ); 
             vm.confOption = eval( '(' + share_conf_data + ')' );
+            console.log( vm.confOption );  //是数组
+            //处理转台的焦点类型及其焦距焦比
+            let gimbal_focus_num = vm.confOption.focustype.length;
+
+            if ( gimbal_focus_num >= 1 )
+            {
+                //如果gimbal_focus没有相应的postData对象，则创建
+                for (let i = 0; i < gimbal_focus_num; i++)
+                {
+                    if ( !vm.gimbal_focus.postData[i] )  vm.gimbal_focus.postData[i] = {focusratio:"", focuslength:""};              
+                }
+            }
+            //处理转台的焦点类型及其焦距焦比 结束
+
+            //处理导星镜的焦点类型及其焦距
+            let guide_focus_num = vm.confOption.opticalStructure.length;
+
+            if ( guide_focus_num >= 1 )
+            {
+                //如果gimbal_focus没有相应的postData对象，则创建
+                for (let i = 0; i < guide_focus_num; i++)
+                {
+                    if ( !vm.guide_focus.postData[i] )  vm.guide_focus.postData[i] = {focuslength:""};              
+                }
+            }
+            //处理导星镜的焦点类型及其焦距 结束
         }
-    })
+    }//window.onfcus() 结束
 /************* 读取16个动态增减的配置数据 *************/
 /************* vue 开始 *************/
     var vm = new Vue ({ //vue 开始
@@ -1216,13 +1241,11 @@ $(function () {
                 {
                     msg = '最大EM输入有误';
                     if ( v1 !== undefined ) msg = '最小EM输入有误';
-            
                 }
 
                 if ( v1 !== undefined && v1 < v*1 )
                 {
                     msg = '最小EM输入有误';
-            
                 }
 
                 if ( tip===true && msg !== '' )
@@ -1481,8 +1504,8 @@ $(function () {
                 msg += this.check_maxExposTime(false, t.minexposuretime, this.$refs.ccdMinExposureTime, t.maxexposuretime);
                 msg += this.check_intV(false, t.exposuretimeration, this.$refs.exposureTimeRation, 1);
                 msg += this.check_intV(false, t.fullwelldepth, this.$refs.fullWellDepth, 2);
-                //msg += this.check_emV(false, t.emmaxvalue, this.$refs.emMaxValue);
-                //msg += this.check_emV(false, t.emminvalue, this.$refs.emMinValue, t.emmaxvalue);
+                msg += this.check_emV(false, t.emmaxvalue, this.$refs.emMaxValue);
+                msg += this.check_emV(false, t.emminvalue, this.$refs.emMinValue, t.emmaxvalue);
                 msg += this.check_version(false, t.attrversion, this.$refs.ccd_version, 2);
 
                 if ( t.type == '0' )              msg += '探测器类型未选择<br>';

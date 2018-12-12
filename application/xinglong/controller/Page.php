@@ -5,6 +5,7 @@ use app\xinglong\controller\Base;
 use think\Cache;
 use think\Db;
 use think\Session;
+use \ZipArchive; //引入php自带的压缩扩展
 
 class Page extends Base
 {
@@ -1118,6 +1119,8 @@ class Page extends Base
             if ( $res !== false && count($res) > 2 )
             {
                 $file_name = $dir . array_pop( $res ); //最新的文件名
+            }else{
+                $file_name = '未获取到';
             }
         }else{//有异常
             $file_name = '未获取到';
@@ -1126,11 +1129,18 @@ class Page extends Base
         return $file_name;
     }//ajax 获取云量图片 结束
 
-    public function more_cloud_pic () //云量相机 查看更多云量图片
+    public function more_cloud_pic ($date='') //云量相机 查看更多云量图片
     {
         //默认点击按钮后 查看1小时内照片（5分钟一张）
         $cloud_pic_dir = config('cloud_pic_dir');
-        $dir = date('Y/n/j', time()); //$dir格式：2018/2/29
+
+        if ( preg_match('/^\d{4}\/\d{1,2}\/\d{1,2}$/', $date) )//$date参数有输入时
+        {
+            $dir = $date; //$date格式：2018/2/29
+        }else{
+            $dir = date('Y/n/j', time()); //$dir格式：2018/2/29
+        }
+        
         $dir = $cloud_pic_dir. $dir .'/';
         //$dir = $cloud_pic_dir. '2018/12/1' .'/';
         $err = ''; //记录错误
@@ -1149,7 +1159,11 @@ class Page extends Base
             if ( $res !== false && count($res) > 2 )
             {
                 unset ($res[0], $res[1]); //删除前2个数据
-                $file_name = array_slice($res, -12, 12); //获取最后的12个元素
+                $file_name = array_slice($res, -144, 144); //获取最新的144个元素
+                //然后 获取$file_name中 每一个元素对应图片的创建时间
+
+            }else{//只有 . ..两个元素
+                $file_name = '未获取到';
             }
         }else{//有异常
             $file_name = '未获取到';
@@ -1462,19 +1476,16 @@ class Page extends Base
             }
 
             $result['guide'] = $guide;
-            $result['has_guide'] = 1; //表示有 导星镜的配置数据
+            $result['has_guide'] = 1; //表示有 导星镜的配置数据   
         }
 
         return $result;
     }/*获取相应望远镜固定属性数据 结束*/
 
-    public function whole_day_pic ($aperture) //在页面显示各望远镜观测图像及相关信息
+    public function whole_day_pic ($aperture, $day=null) //在页面显示各望远镜某天观测图像及相关信息
     {
         $dir = config('at_pic_dir'); //各望远镜图片路径
         $fits_dir = config('at_fits_dir'); //各望远镜fits图片路径
-
-        $day = date('Ymd', time()); //当前日期 20181201
-        //$day = '20181201'; //当前日期 20181201
 
         switch ($aperture) { //根据望远镜口径，给 $this->$at赋值
             case '50cm':
@@ -1513,34 +1524,71 @@ class Page extends Base
                 $fits_dir = $fits_dir['at216'];
                 break;
             default:
-                return '提交的望远镜参数有误!';
+                $this->error('请求参数有误');
         }
-        
-       $res = Db::table('observerimg')->where('at', $at)->where('date', $day)->order('time', 'desc')->field('time, name')->limit(30)->select();
+
+        if ( preg_match('/^\d{4}\/\d{1,2}\/\d{1,2}$/', $day) )//提交了日期数据
+        {
+            $day = str_replace('/', '', $day);
+            /*$res = Db::table('observerimg')->where('at', $at)->where('date', $day)->order('time', 'desc')->field('time, name')->limit(30)->select();
        
-       if ( $res )
-       {
-           foreach ($res as $k => $v)
-           {
-               $res[$k]['date'] = $day;
-               $res[$k]['time'] = date('H:i:s', $v['time']);
-               $res[$k]['name'] = str_replace('fit', 'png', $v['name']);
-               $res[$k]['fit'] =  $v['name'];
-           }
+            if ( $res )
+            {
+                foreach ($res as $k => $v)
+                {
+                    $res[$k]['date'] = $day;
+                    $res[$k]['time'] = date('H:i:s', $v['time']);
+                    $res[$k]['name'] = str_replace('fit', 'png', $v['name']);
+                    $res[$k]['fit'] =  $v['name'];
+                }
 
+                $vars['pic_data'] = json_encode( $res );
+            }else{
+                $vars['pic_data'] = '无图片信息';
+            }*/
+
+            $res[0] = [
+                'date'=> '20181201',
+                'time'=> '12:12:12',
+                'name'=> 'aa.png',
+                'fit'=> 'aa.fit',
+            ];
+            $res[1] = [
+                'date'=> '20181205',
+                'time'=> '12:12:18',
+                'name'=> 'aa1.png',
+                'fit'=> 'aa1.fit',
+            ];
             $vars['pic_data'] = json_encode( $res );
-       }else{
-            $vars['pic_data'] = '无图片信息';
-       }
 
 
-        $vars['pic_dir'] = $dir . $day .'/';
-        $vars['fits_dir'] = $fits_dir . $day .'/';
-        $vars['aperture'] = $aperture;
-        return view('page/whole_day_img', $vars); //显示页面是base.php中有些信息读不到 回头找原因
-    }//在页面显示各望远镜观测图像及相关信息
+            $vars['pic_dir'] = $dir . $day .'/';
+            $vars['fits_dir'] = $fits_dir . $day .'/';
+            $vars['aperture'] = $aperture;
 
-    public function down_fits_pic () //下载fits图片
+            return view('page/whole_day_img', $vars); //显示页面是base.php中有些信息读不到 回头找原因
+        }else{//未提交日期数据
+            if ( $day == 'show_datebox' )
+            {
+                $vars['pic_data'] = '仅显示datebox';
+                $vars['pic_dir'] = $dir . $day .'/';
+                $vars['fits_dir'] = $fits_dir . $day .'/';
+                $vars['aperture'] = $aperture;
+
+                return view('page/whole_day_img', $vars);
+            }elseif( $day == 'today' )
+            {
+                $vars['pic_data'] = '无图片信息';
+                $vars['pic_dir'] = $dir . $day .'/';
+                $vars['fits_dir'] = $fits_dir . $day .'/';
+                $vars['aperture'] = $aperture;
+
+                return view('page/whole_day_img', $vars);
+            }
+        }
+    }//whole_day_pic 在页面显示各望远镜某天观测图像及相关信息 结束
+
+    /*public function down_fits_pic () //下载fits图片
     {
 		$postData = input();
 		halt($postData);
@@ -1558,5 +1606,87 @@ class Page extends Base
         }else{
             return 0;
         }
-    }
+    }*/
+
+    public function down_multi_fit () //ajax 一次下载多个fit图片
+    {
+        /**
+         *  ajax验证 若无权限 return 0;
+         * */
+        $postData = input('param');
+        $postData = json_decode($postData, true);
+
+        //验证提交的望远镜口径参数
+        $aperture = Db::table('atlist')->column('aperture');
+        //dump($postData);die();
+        if ( $aperture && !in_array($postData['aperture'], $aperture) ) //提交的望远镜口径 有误
+        {
+            return 11; //前端获取的返回数据之size为2 提交参数有误
+        }
+
+        if ( isset($postData['files']) && count($postData['files']) < 2 ) //要下载的文件数<2
+        {
+            return 11; //前端获取的返回数据之size为2 提交参数有误
+        }
+
+        //验证日期参数 $postData['day'] 不符合格式 return 11；
+      
+        //$dir = config('at_pic_dir'); //各望远镜图片路径
+        $fits_dir = config('at_fits_dir'); //各望远镜fits图片路径
+        
+        switch ($postData['aperture']) {
+            case '50cm':
+                $fits_dir = $fits_dir['at50'];break;
+            case '60cm':
+                $fits_dir = $fits_dir['at60'];break;
+            case '80cm':
+                $fits_dir = $fits_dir['at80'];break;
+            case '85cm':
+                $fits_dir = $fits_dir['at85'];break;
+            case '100cm':
+                $fits_dir = $fits_dir['at100'];break;
+            case '126cm':
+                $fits_dir = $fits_dir['at126'];break;
+            case '216cm':
+                $fits_dir = $fits_dir['at216'];break;
+            default:
+                return 11;
+        }
+
+        $files = ['clouds_1.png', 'clouds_2.png', '17_67_05_000265.jpg', 'Lumen.pdf', 'at-config.mp4'];
+        //$temp_zip = 'temp' . session('login') . time(); //防止文件名重复
+        $temp_zip = 'temp' . 'user1' . time(); //防止文件名重复
+
+        $zip = new ZipArchive;
+        $res = $zip->open($temp_zip, ZIPARCHIVE::OVERWRITE);
+
+        if ( $res == 11 )//还未创建过temp.zip
+        {
+            $res = $zip->open($temp_zip, ZIPARCHIVE::CREATE); //创建temp.zip
+        }
+
+        if ( $res == true )
+        {
+            //$path = $this->path . $fits_dir . $postData['day'] . '/'; //要根据口径和日期进行拼接
+            $path = $this->path . 'atccs-data/at60/20181201/'; //要根据口径和日期进行拼接
+
+            foreach ($postData['files'] as $v)
+            {
+               // $fp = $zip->getStream( $path . $v );
+                //if ( !$fp ) return '下载失败';
+                $per_file_data = file_get_contents( $path . $v );
+
+                if ( $per_file_data === false ) return 111;
+
+                $zip->addFromString( $v, $per_file_data );
+            }
+            $zip->close();
+            readfile($temp_zip);
+            unlink($temp_zip); //删除临时的压缩文件
+        }else{
+            return 111;
+        }
+
+        //dump ($postData);
+    }//down_multi_fit 结束
 }

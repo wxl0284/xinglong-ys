@@ -3,19 +3,30 @@
 <head>
     <meta charset='utf-8'>
     <title>{$aperture}全天观测图片</title>
-	{load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
+	{load href='/static/plugin/easyui-1.3.5/themes/default/easyui.css'}
+    {load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
+	<!-- {load href='/static/plugin/easyui-1.3.5/themes/icon.css'} -->
+	{load href='/static/plugin/easyui-1.3.5/jquery.easyui.min.js'}
+    {load href='/static/plugin/easyui-1.3.5/locale/easyui-lang-zh_TW.js'}
 	{load href='/static/plugin/layer/layer.js'}
 	{load href='/static/css/common-1.css'}
     {load href='/static/css/atpage.css'}
     <script>
-        {if condition="$pic_data == '无图片信息' "}
+        {if condition="$pic_data == '无图片信息'"}
             var pic_data = 0;
             var pic_dir = "{$pic_dir}";
             var fits_dir = 0;
+            var aperture = "{$aperture}";
+        {elseif condition="$pic_data == '仅显示datebox'"/}
+            var pic_data = -1;
+            var pic_dir = "{$pic_dir}";
+            var fits_dir = 0;
+            var aperture = "{$aperture}";
         {else /}
             var pic_data = {$pic_data};
             var pic_dir = "{$pic_dir}";
             var fits_dir = "{$fits_dir}";
+            var aperture = "{$aperture}";
         {/if}
     </script>
     {load href='/static/plugin/vue.js'}
@@ -23,26 +34,43 @@
     <style>
         table td {border: 1px solid #ccc;}
         table tr {line-height: auto}
-        table td img {height: 100px;}
+        table td img {height: 100px;margin-top:4px;}
     </style>
 </head>
 <body>
 	<img src='/static/images-1/top.jpg' style='width:100%' >
 	{include file="common/common"/}
 	<div id='all'>
-        <table v-if='pic_data!=0' style="width: 80%;border: 1px solid #ccc;margin: 0 auto;border-collapse: collapse;text-align:center;">
+        <span style="display:block;margin:0 auto 6px auto;width:50;text-align:center;" >
+            <input id='date' type="text" >&nbsp;&nbsp;&nbsp;
+            <input id='sbmt' type="button" value="确  定" style='line-height: 26px;'>
+        </span>
+        <table v-if='typeof(pic_data)=="object"' style="width: 80%;border: 1px solid #ccc;margin: 0 auto;border-collapse: collapse;text-align:center;">
            <tr>
                <td>望远镜</td> <td>日期</td> <td>时间</td> <td>缩略图</td> <td>下载</td>
            </tr>
            <tr v-for='v in img'>
                <td>{$aperture}</td> <td>{{v.date}}</td> <td>{{v.time}}</td> 
-               <td><img :src='"/" + pic_dir + v.name' ></td> 
-               
-               <td> <a :href='"/" + fits_dir + v.fit' :download='v.fit'><button>下载</button> </a> </td>
+               <td>
+                   <img :src='"/" + pic_dir + v.name' >&nbsp;&nbsp;
+                </td>
+               <td>
+                   <!-- <a :href='"/" + fits_dir + v.fit' :download='v.fit'> -->
+                    <a @click='down_this_fit("/" + fits_dir + v.fit, v.fit)'>
+                        <input type='button' value='下载此图' >
+                    </a><br><br>
+                 <span>
+                    <label>多图下载<input type='checkbox' :value='v.name' v-model='multi_down'></label>
+                 </span>
+                </td>
            </tr> 
         </table>
-        <h3 v-else>获取观测图片失败，请尝试刷新页面!</h3>
-        <a ref='down' style="visibility:hidden"></a><!-- 用于下载各设备文件 -->
+        <h3 style='width: 80%;margin:0 auto;text-align:center;' v-if='pic_data==0'>未获取到观测图片!</h3>
+        <h3 style='width: 80%;margin:0 auto;text-align:center;' v-if='pic_data==-1'>请选择日期来查看观测图片!</h3>
+        <span style="position:fixed;right:0;top:50%;" v-if='multi_down.length>1'>
+            <input type="button" value="开始多图下载" @click='multi_down_fit'>
+            <a ref='down' style="visibility:hidden" ></a> <!--用于下载各设备文件-->
+        </span>
     </div><!--主体结束-->
     <br><br><br><br>
 	<footer class='center' style="position:fixed; bottom:0;width:100%;">

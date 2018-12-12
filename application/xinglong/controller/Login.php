@@ -44,12 +44,12 @@ class Login extends Controller
         }
         $username = $postData['username'];
         $password = $postData['password'];
-        
+       
         //验证数据 validate方法
         $result	= $this->validate(
             [
                 '用户名' =>	$username,
-                '__token__'	=> input('__token__'),
+                '__token__'	=> $postData['__token__'],
                 '密码' => $password,
             ],
             
@@ -64,21 +64,22 @@ class Login extends Controller
         }
         
         //判断登录用户名和密码有效性 用预处理 防止sql注入
+        $err = ''; //错误标记
 		$userData = Db::query('SELECT * FROM atccsuser WHERE username=?',[$username]);
 		
 		if (!$userData) //用户名不存在
         {
-            $this->error('用户名或密码错误!');
+            $err .= '用户不存在!';
         }
 
-        //判断密码
-        if(md5($password) != $userData[0]['password'])
+        if( $userData && md5($password) != $userData[0]['password'] ) //判断密码
         {
-            $this->error('用户名或密码错误!');
+            $err .= '密码错误!';
         }
-		
-		//判断用户状态
-        if(1 != $userData[0]['status'])
+
+        if ($err !== '') $this->error('用户名或密码错误!');
+        
+        if(1 != $userData[0]['status'])//判断用户状态
         {
             $this->error('此用户已被禁用!');
         }
@@ -104,18 +105,4 @@ class Login extends Controller
         //返回首页
          return view('login');
     }//退出的方法  结束
-
-    //测试之方法
-    public function Test()
-    {
-        //$res = Db::table('ccdconf')->where('ccdno', '>', 1)->delete();
-        $res = Db::table('focusconf')->select();
-        halt($res);
-    }
-
-     //测试之方法
-     public function test1()
-     {
-        return $this->request->routeInfo()['route'];
-     }
 }

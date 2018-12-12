@@ -229,43 +229,43 @@ class Plan extends Base
         $port = config('port');
 
         switch ($postData['at_aperture']) { //根据望远镜口径，给 $this->$at赋值
-            case '50cm':
-                $this->at = 38;
-                $this->ip = $ip['at50'] ;
-                $this->port = $port['at50'] ;
-                break;
-            case '60cm':
-                $this->at = 37;
-                $this->ip = $ip['at60'] ;
-                $this->port = $port['at60'] ;
-                break;
-            case '80cm':
-                $this->at = 36;
-                $this->ip = $ip['at80'] ;
-                $this->port = $port['at80'] ;
-                break;
-            case '85cm':
-                $this->at = 35;
-                $this->ip = $ip['at85'] ;
-                $this->port = $port['at85'] ;
-                break;
-            case '100cm':
-                $this->at = 34;
-                $this->ip = $ip['at100'] ;
-                $this->port = $port['at100'] ;
-                break;
-            case '126cm':
-                $this->at = 33;
-                $this->ip = $ip['at126'] ;
-                $this->port = $port['at126'] ;
-                break;
-            case '216cm':
-                $this->at = 32;
-                $this->ip = $ip['at216'] ;
-                $this->port = $port['at216'] ;
-                break;
-            default:
-                return '提交的望远镜参数有误!';
+			case '50cm':
+				$this->at = 38;
+				$this->ip = $ip['at50'];
+				$this->port = $port;
+				break;
+			case '60cm':
+				$this->at = 37;
+				$this->ip = $ip['at60'];
+				$this->port = $port;
+				break;
+			case '80cm':
+				$this->at = 36;
+				$this->ip = $ip['at80'];
+				$this->port = $port;
+				break;
+			case '85cm':
+				$this->at = 35;
+				$this->ip = $ip['at85'];
+				$this->port = $port;
+				break;
+			case '100cm':
+				$this->at = 34;
+				$this->ip = $ip['at100'];
+				$this->port = $port;
+				break;
+			case '126cm':
+				$this->at = 33;
+				$this->ip = $ip['at126'];
+				$this->port = $port;
+				break;
+			case '216cm':
+				$this->at = 32;
+				$this->ip = $ip['at216'];
+				$this->port = $port;
+				break;
+			default:
+				return '提交的望远镜参数有误!';
         }
 
         //$command = input('command'); //获取提交的指令

@@ -191,10 +191,15 @@ $(function () {
 				},
 			},/** 导星镜 表单 结束**/
 			gimbal_status: {},
+			gimbal_s: false,//控制转台当前状态的字体颜色
 			ccd_status: {},
+			ccd_s: false,
 			sDome_status: {},
+			sDome_s: false,
 			filter_status: {},
+			filter_s: false,
 			focus_status: {},
+			focus_s: false,
 		},/********vue data属性对象 结束********/
 		computed: {//计算属性
 			gimbal_focus: function () {
@@ -445,7 +450,8 @@ $(function () {
 							t.at_image = img_data; //将目录中所有图片信息赋值给at_image
 							t.img4_data = img_data.slice(0,4); //截取前4个图片 赋值给img4_data
 							t.big_img = t.img4_data[0]; //将第一个图片，显示
-						}else{
+						}else{//为获取到图像
+							t.img4_data = []; //将页面原有图片清空
 							layer.alert(info, {
 								shade:false,
 								closeBtn:0,
@@ -2412,7 +2418,7 @@ $(function () {
 				});			
 			},/*guide_action_sbmt 结束*/
 			guide_focus_sbmt:function () {
-				console.log(this.gimbal_status.curstatus);
+				//console.log(this.gimbal_status.curstatus);
 			},/*guide_focus_sbmt 结束*/
 		},/******methods 结束******/
 	});/***************vue js结束*****************/
@@ -2431,30 +2437,56 @@ $(function () {
 				if ( info.gimbal )  //显示转台状态信息
 				{
 					//show_gimbal_status (info.gimbal);
+					//判断新的状态值与原有状态值是否一致 不一致时将
+					let status = vm.gimbal_status.curstatus;
+					if ( status && status != info.gimbal.curstatus ) //有值且与新值不一样
+					{
+						vm.gimbal_s = !vm.gimbal_s; //取反
+					}
 					vm.gimbal_status = info.gimbal;
 				}
 
 				if ( info.ccd )  //显示ccd状态信息
 				{
-					//show_ccd_status (info.ccd);
+					//判断新的状态值与原有状态值是否一致 不一致时将
+					let status = vm.ccd_status.ccdCurStatus;
+					if ( status && status != info.ccd.ccdCurStatus ) //有值且与新值不一样
+					{
+						vm.ccd_s = !vm.ccd_s; //取反
+					}
 					vm.ccd_status = info.ccd;
 				}
 				
 				if ( info.focus ) //显示调焦器状态信息
 				{
-					//show_focus_status (info.focus);
+					//判断新的状态值与原有状态值是否一致 不一致时将
+					let status = vm.focus_status.focusCurStatus;
+					if ( status && status != info.focus.focusCurStatus ) //有值且与新值不一样
+					{
+						vm.focus_s = !vm.focus_s; //取反
+					}
 					vm.focus_status = info.focus;
 				}
 				
 				if ( info.sDome )//显示随动圆顶状态信息
 				{
-					//show_sDome_status (info.sDome);
+					//判断新的状态值与原有状态值是否一致 不一致时将
+					let status = vm.sDome_status.sDomeCurstatus;
+					if ( status && status != info.sDome.sDomeCurstatus ) //有值且与新值不一样
+					{
+						vm.sDome_s = !vm.sDome_s; //取反
+					}
 					vm.sDome_status = info.sDome;
 				}
 				
 				if ( info.filter ) //显示滤光片状态信息
 				{
-					//show_filter_status (info.filter);
+					//判断新的状态值与原有状态值是否一致 不一致时将
+					let status = vm.filter_status.filterCurstatus;
+					if ( status && status != info.filter.filterCurstatus ) //有值且与新值不一样
+					{
+						vm.filter_s = !vm.filter_s; //取反
+					}
 					vm.filter_status = info.filter;
 				}
 
@@ -2572,7 +2604,7 @@ $(function () {
 				layer.alert('网络异常,设备实时数据无法获取!', {shade:false, closeBtn:0});
 			},
 		});
-	}
+	}//getStatus() //实时更新各设备状态 结束
 	var status_interval = setInterval (getStatus, 1800);  //实时显示各设备状态信息
 
 //接管 弹窗代码////////////////////////////////////////////////
@@ -2617,7 +2649,7 @@ $(function () {
     });//////////////////////////////////////////////////////////*/
 	
 //观测计划 执行模式 js /////////////////////////////////////
-	$('#modeSpan').hover(
+	/*$('#modeSpan').hover(
 		function (){
 			$('#modeVal').show();
 			var planMode = $('#modeVal input');
@@ -2631,7 +2663,7 @@ $(function () {
 		function (){
 			$('#modeVal').hide();
 		}
-	);
+	);*/
 //观测计划 执行模式 js结束 /////////////////////////////////////
 
 //观测计划 若为single和singleLoop 隐藏‘下一个’按钮///////////////
@@ -2644,7 +2676,7 @@ $(function () {
 		$('#planNext').hide();
 	}else if(planMode.eq(2).prop('checked') || planMode.eq(3).prop('checked')){
 		$('#planNext').show();
-	} */
+	} 
 	$('#modeVal').on('click', 'input', function () {
 		if($(this).val() == 3 || $(this).val() == 4)
 		{
@@ -2655,5 +2687,5 @@ $(function () {
 		{
 			$('#planNext').hide();
 		}
-	});//观测计划 若为single和singleLoop 隐藏‘下一个’按钮 结束/////////
+	});*///观测计划 若为single和singleLoop 隐藏‘下一个’按钮 结束/////////
 })

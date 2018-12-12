@@ -21,7 +21,9 @@ class Image extends Base
         }*/
 
         $png_dir = config('at_pic_dir');
-		$day = date("Ymd", time());
+        $day = date("Ymd", time());
+        //$day = '20181201';
+        $err = ''; //错误提示
         //$fits_dir = config('at_fits_dir');
 
         $postData = input();
@@ -57,19 +59,28 @@ class Image extends Base
             default:
                 return '提交的望远镜参数有误!';
         }
+        //halt($this->file_path . $this->at_image_dir . $day);
+        try{
+            $res = scandir ($this->file_path . $this->at_image_dir . $day);
+        }catch(\Exception $e){
+            $err = '读取文件异常';
+        }
 
-        $res = scandir ($this->file_path . $this->at_image_dir . $day); /*后期要改为云量图片的处理异常来做 否则有bug*/
-
-        if ( $res !== false && count($res) > 2 )
+        if ( $err === '' )  //读取图片正常
         {
-            unset ($res[0], $res[1]); //删除前2个数据
-            foreach ( $res as $v)
+            if ( $res !== false && count($res) > 2 )
             {
-                $result[] = $v;  //将文件名存入数组中
+                unset ($res[0], $res[1]); //删除前2个数据
+                foreach ( $res as $v)
+                {
+                    $result[] = $v;  //将文件名存入数组中
+                }
+                return 'img#' . json_encode ($result) . '#' . $this->at_image_dir . $day . '/';
+            }else{
+                return '未获取到观测图片';
             }
-            return 'img#' . json_encode ($result) . '#' . $this->at_image_dir . $day . '/';
-        }else{
-            return '未获取到观测文件';
+        }else{//读取图片异常
+            return '未获取到观测图片';
         }
     }//get_image 结束
 

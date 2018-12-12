@@ -607,8 +607,7 @@
 						</td>
 						<td>最大EM:</td>
 						<td>
-							<input type='text' ref='emMaxValue' name='emmaxvalue' placeholder="整数" v-model.trim='ccd_config.emmaxvalue'>
-							<!--<input type='text' ref='emMaxValue' name='emmaxvalue' placeholder="整数" v-model.trim='ccd_config.emmaxvalue' @blur='check_emV(true, ccd_config.emmaxvalue, $refs.emMaxValue)' >-->
+							<input type='text' ref='emMaxValue' name='emmaxvalue' placeholder="整数" v-model.trim='ccd_config.emmaxvalue' @blur='check_emV(true, ccd_config.emmaxvalue, $refs.emMaxValue)' :disabled='ccd_config.issupportem=="0"'>
 						</td>
 					</tr>
 					<tr>
@@ -622,8 +621,7 @@
 						</td>
 						<td>最小EM:</td>
 						<td>
-							<input type='text' ref='emMinValue' name='emminvalue' placeholder="整数" v-model.trim='ccd_config.emminvalue'>
-							<!--<input type='text' ref='emMinValue' name='emminvalue' placeholder="整数" v-model.trim='ccd_config.emminvalue' @blur='check_emV(true, ccd_config.emminvalue, $refs.emMinValue, ccd_config.emmaxvalue)'>-->
+							<input type='text' ref='emMinValue' name='emminvalue' placeholder="整数" v-model.trim='ccd_config.emminvalue' @blur='check_emV(true, ccd_config.emminvalue, $refs.emMinValue, ccd_config.emmaxvalue)' :disabled='ccd_config.issupportem=="0"'>
 						</td>
 					</tr>
 					<tr>
@@ -992,7 +990,8 @@
 						</td>
 					</tr>
 					<tr>
-						
+						<td>属性更新时间:</td>
+						<td>{{sDome_config.attrmodifytime}}</td>
 					</tr>
 					<tr>
 						<td>上传随动圆顶相关文件:</td>

@@ -122,13 +122,15 @@ Route::post('next4$', 'xinglong/Image/next4_image');
 Route::post('pre4$', 'xinglong/Image/pre4_image');*/
 
 //ajax 查看更多云量相机图片 路由
-Route::get('weather/clouds$', 'xinglong/Page/more_cloud_pic');
+Route::get('/weather/clouds', 'xinglong/Page/more_cloud_pic');
 //ajax 获云量图像 路由
 Route::post('get_cloud_pic$', 'xinglong/Page/ajax_get_cloud_pic');
 //显示 全天观测图片 路由
 Route::get('/whole_day_pic/:aperture$', 'xinglong/Page/whole_day_pic');
-//下载fits图片 路由
-//Route::get('/down_fits/:dir/:filename$', 'xinglong/page/down_fits_pic');
+//ajax 全天观测图片 下载多个图片 路由
+Route::post('/down_multi_fit$', 'xinglong/Page/down_multi_fit');
+//ajax 下载当前一个fits图片 路由
+Route::post('/down_fits_pic$', 'xinglong/page/down_fits_pic');
 
 /*如下为望远镜配置的示例 路由*/
 //测试首页 

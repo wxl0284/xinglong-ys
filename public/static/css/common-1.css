@@ -78,3 +78,4 @@ header div div {border:1px solid #fff; font-size:14px; text-align:center;
 
 header div div a {color:#eaf1f9;}
 /*** #res {left:300px; color:#eaf1f9;} 导航：观测结果样式*/
+.dev_status {color:#64B2E0} /*各设备状态字体颜色*/

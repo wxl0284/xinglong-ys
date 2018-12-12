@@ -7,6 +7,7 @@ use think\Db;
 use think\Cache;
 use think\Request;
 use app\xinglong\model\At60config;
+use \ZipArchive;
 
 class Test extends Controller
 {
@@ -94,23 +95,26 @@ class Test extends Controller
 		//$res = scandir ( $dir = ROOT_PATH . 'public' . DS . 'cloudsd/' );
 		//halt($res);
 
-		try{
+		/*try{
 			$res = scandir ( $dir = ROOT_PATH . 'public' . DS . 'cloudsd/' );
 		}catch(\Exception $e){
 			$err = 'hhh';
+		}*/
+
+		/*如下是测试php-zip扩展 进行多文件压缩*/
+		$zip = new \ZipArchive;
+
+		$res = $zip->open('test.zip', ZipArchive::CREATE);
+
+		if ($res === TRUE)
+		{
+			$zip->addFile('11.png'); //添加文件
+			$zip->addFile('vv.docx'); //继续添加文件
+    		$zip->close();
+		} else {
+			echo 'failed';
 		}
-
-
-
-		// if ( $res !== false && count($res) > 2 )
-		// {
-		// 	$file_name = array_pop( $res ); //最后的文件名
-		// 	// foreach ( $res as $k)
-		// 	// {
-		// 	// 	$result['file'][] = iconv('GBK', 'UTF-8', $k);  //将文件名转为utf-8
-		// 	// }
-		// }
-		// halt($file_name);
+		/*如下是测试php-zip扩展 进行多文件压缩 结束*/
 	}
 	
 	public function valid ()
