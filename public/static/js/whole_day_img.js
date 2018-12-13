@@ -77,18 +77,34 @@ var vm = new Vue({//vue 实例化
 				}
 			};//xhr.onload 结束
 			xhr.send('param=' + JSON.stringify(param));  //发送请求
+			xhr.onprogress = function (event) //下载进度事件
+			{
+				if (event.lengthComputable)
+				{
+				  let down_percent = event.loaded / event.total;
+				  if ( down_percent == 1 )
+				  {
+					  let n = t.multi_down.length; 
+					  for (let i = 0; i < n; i++)//将multi_down中每一文件对应的复选按钮字体变灰
+					  {
+						  t.$refs["a"+multi_down[i]][0].setAttribute('style', 'color: #A9A9A9');
+					  }
+				  }
+				}
+			}//下载进度事件 结束
 		},//multi_down_fit结束
-		down_this_fit: function (file, file_name) {//下载当前这个fits图片
+		down_this_fit: function (file_path_name, file_name) {//下载当前这个fits图片
 			let t = this;
+			//console.log(t.$refs.down1);return;
 			let url = '/down_fits_pic';
 			//验证提交的参数
-			if ( file.length < 10 )
+			if ( file_path_name < 10 )
 			{
 				layer.alert('下载文件路径有误!', {shade:0, closeBtn:0}); return;
 			}//验证提交的参数 结束
 			
 			let param = {//提交的参数
-				file: file,//要下载的文件（带部分路径 '/atccs-png/at60/2018124/aa.png'）
+				file_name: file_path_name,//要下载的fits文件路径及文件名
 			};
 			var xhr = new XMLHttpRequest();
 			xhr.open('POST', url, true);    // 也可以使用POST方式，true表示异步
@@ -99,12 +115,12 @@ var vm = new Vue({//vue 实例化
 				if (this.status === 200)// 返回200
 				{
 					let blob = this.response;
-					//console.log(blob);
+					
 					if ( blob.size == 2 ) //服务器返回的是错误提示，提交的参数有误
 					{//返回的11
 						layer.alert('提交的参数有误!', {shade:0, closeBtn:0});return;
 					}else if ( blob.size == 3 ){//返回的111
-						layer.alert('打包下载文件时出错!', {shade:0, closeBtn:0});return;
+						layer.alert('下载文件时出错!', {shade:0, closeBtn:0});return;
 					}else if ( blob.size == 1 ){//返回的0
 						layer.alert('您没有权限下载!', {shade:0, closeBtn:0});return;
 					}
@@ -113,15 +129,26 @@ var vm = new Vue({//vue 实例化
 					reader.readAsDataURL(blob);  // 转换为base64，可以直接放入a的href
 					reader.onload = function (e)
 					{
-						t.$refs.down.download = file_name; //that.$refs.down 页面中一个a元素
-						t.$refs.down.href = e.target.result;
-						t.$refs.down.click();
+						t.$refs.down1.download = file_name; 
+						t.$refs.down1.href = e.target.result;
+						t.$refs.down1.click();
 					}
 				}else if (this.status >= 400) {
 					layer.alert('网络异常!', {shade:0, closeBtn:0});
 				}
 			};//xhr.onload 结束
 			xhr.send('param=' + JSON.stringify(param));  //发送请求
+			xhr.onprogress = function (event) //下载进度事件
+			{
+				if (event.lengthComputable)
+				{
+				  let down_percent = event.loaded / event.total;
+				  if ( down_percent == 1 )
+				  {
+					t.$refs[file_name][0].setAttribute('style', 'color: #A9A9A9');
+				  }
+				}
+			}//下载进度事件 结束
 		},//down_this_fit结束
 	},//methods 结束
 	/*watch: {

@@ -1588,25 +1588,38 @@ class Page extends Base
         }
     }//whole_day_pic 在页面显示各望远镜某天观测图像及相关信息 结束
 
-    /*public function down_fits_pic () //下载fits图片
+    public function down_fits_pic () //下载单个fits图片
     {
-		$postData = input();
-		halt($postData);
-        $file = $this->path . $dir . DS . $filename;
+		/**
+         *  ajax验证 若无权限 return 0;
+         * */
+        $postData = input('param');
+        $postData = json_decode($postData, true);
+        //验证参数
+        if ( !isset($postData['file_name']) || strlen($postData['file_name']) < 10 )
+        {
+            return 11;
+        }
+        //验证参数 结束
+        
+        $file = $this->path . $postData['file_name']; //路径中的20181201日期部分需要处理
+        $file = str_replace('121', '1201', $file);
+        //$file = $this->path . 'atccs-data/at60/20181201/aa.fit';
         //$file = iconv('UTF-8', 'GBK', $file); //将整个路径转为GBK字符集
+
         if ( file_exists($file) )
         {
             header("Content-type:application/octet-stream"); //设置内容类型
-            header("Content-Disposition:attachment;filename = ". $filename); //下载弹框的默认文件名
+            //header("Content-Disposition:attachment;filename = ". $filename); //下载弹框的默认文件名
             header('Content-Transfer-Encoding: binary'); //设置传输方式
             //header("Accept-ranges:bytes");
             header("Content-length:".filesize($file)); //获取文件字节数
             //header("Accept-length:".filesize($file));
             readfile($file);
         }else{
-            return 0;
+            return 111;
         }
-    }*/
+    }
 
     public function down_multi_fit () //ajax 一次下载多个fit图片
     {
@@ -1681,6 +1694,8 @@ class Page extends Base
                 $zip->addFromString( $v, $per_file_data );
             }
             $zip->close();
+            header("Content-type:application/octet-stream"); //设置内容类型
+            header('Content-Transfer-Encoding: binary'); //设置传输方式
             readfile($temp_zip);
             unlink($temp_zip); //删除临时的压缩文件
         }else{

@@ -47,20 +47,19 @@
         </span>
         <table v-if='typeof(pic_data)=="object"' style="width: 80%;border: 1px solid #ccc;margin: 0 auto;border-collapse: collapse;text-align:center;">
            <tr>
-               <td>望远镜</td> <td>日期</td> <td>时间</td> <td>缩略图</td> <td>下载</td>
+               <td>望远镜</td> <td>日期时间</td> <td>fits文件名</td> <td>缩略图</td> <td>下载</td>
            </tr>
            <tr v-for='v in img'>
-               <td>{$aperture}</td> <td>{{v.date}}</td> <td>{{v.time}}</td> 
+               <td>{$aperture}</td> <td>{{v.date}}<br>{{v.time}}</td> <td>{{v.fit}}</td> 
                <td>
                    <img :src='"/" + pic_dir + v.name' >&nbsp;&nbsp;
                 </td>
                <td>
                    <!-- <a :href='"/" + fits_dir + v.fit' :download='v.fit'> -->
-                    <a @click='down_this_fit("/" + fits_dir + v.fit, v.fit)'>
-                        <input type='button' value='下载此图' >
-                    </a><br><br>
-                 <span>
-                    <label>多图下载<input type='checkbox' :value='v.name' v-model='multi_down'></label>
+                    <input type='button' value='下载此图' :ref='v.fit' @click='down_this_fit(fits_dir + v.fit, v.fit)' >
+                    <br><br>
+                 <span :ref='"a"+v.fit'>
+                    <label>多图下载<input type='checkbox' :value='v.fit' v-model='multi_down'></label>
                  </span>
                 </td>
            </tr> 
@@ -69,8 +68,9 @@
         <h3 style='width: 80%;margin:0 auto;text-align:center;' v-if='pic_data==-1'>请选择日期来查看观测图片!</h3>
         <span style="position:fixed;right:0;top:50%;" v-if='multi_down.length>1'>
             <input type="button" value="开始多图下载" @click='multi_down_fit'>
-            <a ref='down' style="visibility:hidden" ></a> <!--用于下载各设备文件-->
+            <a ref='down' style="visibility:hidden" ></a> <!--用于下载多个fits文件-->
         </span>
+        <a ref='down1' style="visibility:hidden" ></a> <!--用于下载单个fits文件-->
     </div><!--主体结束-->
     <br><br><br><br>
 	<footer class='center' style="position:fixed; bottom:0;width:100%;">
