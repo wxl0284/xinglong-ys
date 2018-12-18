@@ -56,18 +56,18 @@
             },
             parser: function (s){
                 if (!s) return new Date();  
-                let ss = (s.split('-'));  
-                // let y = parseInt(ss[0],10);  
-                // let m = parseInt(ss[1],10);  
-                // let d = parseInt(ss[2],10);  
-                let y = parseInt(ss[0]);  
-                let m = parseInt(ss[1]);  
-                let d = parseInt(ss[2]);  
+                let ss = (s.split('-'));
+                // let y = parseInt(ss[0],10); 
+                // let m = parseInt(ss[1],10);
+                // let d = parseInt(ss[2],10);
+                let y = parseInt(ss[0]);
+                let m = parseInt(ss[1]);
+                let d = parseInt(ss[2]);
                 if (!isNaN(y) && !isNaN(m) && !isNaN(d)){
-                    return new Date(y,m-1,d);  
-                } else { 
-                    return new Date();  
-                } 
+                    return new Date(y,m-1,d);
+                }else{
+                    return new Date();
+                }
             },
         })////datebox 结束
 

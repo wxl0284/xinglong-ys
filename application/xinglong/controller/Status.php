@@ -3,6 +3,7 @@ namespace app\xinglong\controller;
 
 use app\xinglong\controller\Base;
 use think\Db;
+use think\Cache;
 //use think\Session;
 
 /*此控制器 负责各望远镜的转台指令发送*/
@@ -11,8 +12,9 @@ class Status extends Base
     //定义变量
     protected $at = 0; //望远镜
     protected $at_num = 0; //望远镜编号
+    protected $path = ROOT_PATH . 'public' . DS; //读取文件的根路径
 
-    /******实时获取各子设备的状态信息 以json格式返回*******/
+    /******实时获取各子设备的状态信息 以json格式返回 有时间把获取字段给精简下*******/
    public function get_status ()
     {
         //首先判断是否有权限执行
@@ -21,36 +23,37 @@ class Status extends Base
             return '您无权限执行此操作!';
         }*/
 
+        $png_dir = config('at_pic_dir');
        //首先 判断需要获取哪个望远镜状态信息
        switch ( input('at_aperture') ) { //根据望远镜口径，给 $this->$at及$this->at_num赋值
         case '50cm':
             $this->at = 50;
             $this->at_num = 38;
-            break;
+            $png_dir = $png_dir['at50']; break;
         case '60cm':
             $this->at = 60;
             $this->at_num = 37;
-            break;
+            $png_dir = $png_dir['at60']; break;
         case '80cm':
             $this->at = 80;
             $this->at_num = 36;
-            break;
+            $png_dir = $png_dir['at80']; break;
         case '85cm':
             $this->at = 85;
             $this->at_num = 35;
-            break;
+            $png_dir = $png_dir['at85']; break;
         case '100cm':
             $this->at = 100;
             $this->at_num = 34;
-            break;
+            $png_dir = $png_dir['at100']; break;
         case '126cm':
             $this->at = 126;
             $this->at_num = 33;
-            break;
+            $png_dir = $png_dir['at126']; break;
         case '216cm':
             $this->at = 216;
             $this->at_num = 32;
-            break;
+            $png_dir = $png_dir['at216']; break;
         default:
             return '提交的望远镜参数有误!';
     }
@@ -82,7 +85,12 @@ class Status extends Base
        if ( $status['plan_too']['data'] != '无ToO计划' ) //有ToO计划数据
        {
             $status['plan_cooper']['data'] = '无协同计划'; //告诉页面无协同计划
+            //然后将协同计划表中的import字段改为1
+            Db::table('plancooper')->where('at', $this->at_num)->where('import', '0')->setField('import', '1');
        }
+
+       $this->get_new_png($png_dir, $this->at); //获取最新png图片并存入cache
+       $status['new_png_pic'] = Cache::get($this->at . 'png'); //将cache中最新的png图片名（带路径） 返回页面
        
        return json_encode ($status);
     }/******实时获取各子设备的状态信息 以json格式返回  结束*******/
@@ -695,32 +703,25 @@ class Status extends Base
         { //根据望远镜口径，给 $this->$at及$this->at_num赋值
             case '50cm':
                 $this->at = 50;
-                $this->at_num = 38;
-                break;
+                $this->at_num = 38; break;
             case '60cm':
                 $this->at = 60;
-                $this->at_num = 37;
-                break;
+                $this->at_num = 37; break;
             case '80cm':
                 $this->at = 80;
-                $this->at_num = 36;
-                break;
+                $this->at_num = 36; break;
             case '85cm':
                 $this->at = 85;
-                $this->at_num = 35;
-                break;
+                $this->at_num = 35; break;
             case '100cm':
                 $this->at = 100;
-                $this->at_num = 34;
-                break;
+                $this->at_num = 34; break;
             case '126cm':
                 $this->at = 126;
-                $this->at_num = 33;
-                break;
+                $this->at_num = 33; break;
             case '216cm':
                 $this->at = 216;
-                $this->at_num = 32;
-                break;
+                $this->at_num = 32; break;
             default:
                 return '提交的望远镜参数有误!';
         }
@@ -744,31 +745,24 @@ class Status extends Base
             case '50cm':
                 $this->at = 50;
                 $this->at_num = 38;
-                break;
             case '60cm':
                 $this->at = 60;
-                $this->at_num = 37;
-                break;
+                $this->at_num = 37; break;
             case '80cm':
                 $this->at = 80;
-                $this->at_num = 36;
-                break;
+                $this->at_num = 36; break;
             case '85cm':
                 $this->at = 85;
-                $this->at_num = 35;
-                break;
+                $this->at_num = 35; break;
             case '100cm':
                 $this->at = 100;
-                $this->at_num = 34;
-                break;
+                $this->at_num = 34; break;
             case '126cm':
                 $this->at = 126;
-                $this->at_num = 33;
-                break;
+                $this->at_num = 33; break;
             case '216cm':
                 $this->at = 216;
-                $this->at_num = 32;
-                break;
+                $this->at_num = 32; break;
             default:
                 return '提交的望远镜参数有误!';
         }
@@ -781,5 +775,45 @@ class Status extends Base
         }
         
     }//ajax 将ToO计划表中import字段变为1 结束
+
+    protected function get_new_png($png_dir, $at)//获取各望远镜最新png图片
+    {
+        $day = date('Ymd'); //月和日均有前导零
+        $png_dir = $png_dir . $day . '/'; 
+        $file_path = $this->path . $png_dir;
+        $err = ''; //错误信息
+        $file_time = 0; //最新的文件创建时间
+        $file_name = ''; //最新的文件名
+
+        try{
+			$res = scandir ( $file_path );
+		}catch(\Exception $e){
+			$err = '读取文件异常';
+        }
+
+        if ( $err === '' ) //读取文件时无异常
+        {
+            if ( $res !== false && count($res) > 2 )
+            {
+                //逐一比对文件创建时间 获取最新的png图片
+                foreach ($res as $v)
+                {
+                    $temp = filemtime ( './' . png_dir . $v); //每个文件的创建/修改时间
+                    if ( $temp > $file_time )
+                    {
+                        $file_time = $temp;
+                        $file_name = '/'. png_dir . $v;
+                    }
+
+                }
+            }
+        }
+
+        //将最新文件名存入Cache
+        if ( Cache::get( $at . 'png' ) !== $file_name )
+        {
+            Cache::set($at . 'png', $file_name);
+        }
+    }//get_new_png() 结束
 
 } /******class Status 结束*******/

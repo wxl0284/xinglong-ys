@@ -90,6 +90,7 @@ class Test extends Controller
 		//$temp = $res['gain_noise'];
 		
 		//$a = data2Time(17.416638888889);
+		halt('testt');
 		$dir = ROOT_PATH . 'public' . DS . 'cloudsc/';
 
 		//$res = scandir ( $dir = ROOT_PATH . 'public' . DS . 'cloudsd/' );

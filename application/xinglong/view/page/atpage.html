@@ -25,9 +25,10 @@
 	<div id='all'>
         <div class='pos_r'><!--重要信息区域 开始-->
 			<div id='atPic'>
-                <!--<img src='"/fits-image/" + img4_data[0]' >
-				<a class='pos_a border1 more inline center' id='takeOverBtn'>接管</a>-->
-				<img src='/static/images-0/location.png' style='margin-left:12%;'>
+				<!--<a class='pos_a border1 more inline center' id='takeOverBtn'>接管</a>-->
+				<img v-if='new_png!==""' :src='new_png' >
+				<span v-else style='float:left;width:264px;line-height:264px;text-align:center;'>暂无观测图片</span>
+				<img src='/static/images-0/location.png'>
 			</div>
 			
 			<div id='panel' class='displayNo pos_a'><!--接管弹窗-->

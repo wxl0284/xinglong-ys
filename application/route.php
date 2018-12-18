@@ -109,10 +109,10 @@ Route::post('ToO_plan$', 'xinglong/Too/send_ToO_plan');
 //页面 提交ToO观测 ToO 路由
 Route::post('ToO_1_plan$', 'xinglong/Too/send_ToO_1_plan');
 //页面 提交协同观测 ToO 之开始或停止 路由
-Route::post('ToO_start_stop$', 'xinglong/Too/start_stop_ToO');
+// Route::post('ToO_start_stop$', 'xinglong/Too/start_stop_ToO');
 //ajax 将协同计划表中import字段或giveup字段变为1 路由
 Route::post('change_plancooper_import$', 'xinglong/Status/change_cooper_import');
-//ajax 将ToO计划表中import字段变为1 路由
+//ajax 将ToO计划表中import字段或giveup字段变为1 路由
 Route::post('change_plantoo_import$', 'xinglong/Status/change_too_import');
 //ajax 获取观测图像 路由
 Route::post('get_image$', 'xinglong/Image/get_image');
@@ -121,7 +121,7 @@ Route::post('next4$', 'xinglong/Image/next4_image');
 /ajax 观测图像 向左按钮 路由
 Route::post('pre4$', 'xinglong/Image/pre4_image');*/
 
-//ajax 查看更多云量相机图片 路由
+//查看更多云量相机图片 路由
 Route::get('/weather/clouds', 'xinglong/Page/more_cloud_pic');
 //ajax 获云量图像 路由
 Route::post('get_cloud_pic$', 'xinglong/Page/ajax_get_cloud_pic');
@@ -134,5 +134,5 @@ Route::post('/down_fits_pic$', 'xinglong/page/down_fits_pic');
 
 /*如下为望远镜配置的示例 路由*/
 //测试首页 
-Route::get('test$', 'xl/test/test');
+//Route::get('test$', 'xl/test/test');
 /*如下为望远镜配置的示例 结束*/

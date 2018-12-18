@@ -36,6 +36,7 @@ $(function () {
 			at_fitsImg_dir:'', //各望远镜fits观测图像目录
 			next_pre_click:0, //向左或向右按钮点击的次数
 			big_img:'', //观测图像的大图名称
+			new_png: '', //最新观测图片
 			device_nav: {//此对象中的数据用以区分是否给各子设备加上蓝色底框
 				dev_click: 'gimbal',  //区分各自设备
 				gimbal_command: '',   //区分转台各指令
@@ -2433,6 +2434,8 @@ $(function () {
 			data : {at_aperture: aperture},         
             success:  function (info) {
                 var info = eval( '(' + info +')' );
+				//显示最新的观测图片
+				vm.new_png = info.new_png_pic;
 				
 				if ( info.gimbal )  //显示转台状态信息
 				{

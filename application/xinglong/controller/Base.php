@@ -9,15 +9,17 @@ use think\Db;
 class Base extends Controller
 {
     //定义ajax请求无权限时的错误标识
-    protected $ajaxAuthErr = 0;
+    protected $ajaxAuthErr = 0; //ajax请求时 （提示未登录、无权限等不同情况，赋给不同的值）
 
     //_initialize方法进行登陆及权限的验证,暂时不写
     protected function _initialize ()
 	{
         //查询望远镜列表，并进行模板赋值
-        $this->get_atList();
+        // $this->get_atList();
 
-        //$route = $this->request->routeInfo()['route'];
+        // $route = $this->request->routeInfo()['route']; //即: 'xinglong/gimbal/sendCommand'
+        // $param = input(); //请求参数
+        // halt($param);
 
     //    $m = $this->request->module(); //模块
     //    $c = $this->request->controller();  //控制器

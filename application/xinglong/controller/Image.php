@@ -71,10 +71,14 @@ class Image extends Base
             if ( $res !== false && count($res) > 2 )
             {
                 unset ($res[0], $res[1]); //删除前2个数据
-                foreach ( $res as $v)
+                foreach ( $res as $k => $v )
                 {
-                    $result[] = $v;  //将文件名存入数组中
+                    $result[$k] = $v;  //将文件名存入数组中
+                    $time[$k] = filemtime( $this->file_path . $this->at_image_dir . $day . '/' . $v );//获取文件最近修改日期
                 }
+
+                array_multisort($time, SORT_DESC, $result);//按时间降序排序
+
                 return 'img#' . json_encode ($result) . '#' . $this->at_image_dir . $day . '/';
             }else{
                 return '未获取到观测图片';

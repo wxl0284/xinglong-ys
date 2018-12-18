@@ -9,7 +9,7 @@ use \ZipArchive; //引入php自带的压缩扩展
 
 class Page extends Base
 {
-    protected $path = ROOT_PATH . 'public' . DS; //读取文件的路径
+    protected $path = ROOT_PATH . 'public' . DS; //读取文件的根路径
 
     //根据at参数显示不同望远镜页面
     public function at_page($at)
@@ -1530,7 +1530,7 @@ class Page extends Base
         if ( preg_match('/^\d{4}\/\d{1,2}\/\d{1,2}$/', $day) )//提交了日期数据
         {
             $day = str_replace('/', '', $day);
-            /*$res = Db::table('observerimg')->where('at', $at)->where('date', $day)->order('time', 'desc')->field('time, name')->limit(30)->select();
+            $res = Db::table('observerimg')->where('at', $at)->where('date', $day)->order('time', 'desc')->field('time, name')->limit(30)->select();
        
             if ( $res )
             {
@@ -1540,27 +1540,15 @@ class Page extends Base
                     $res[$k]['time'] = date('H:i:s', $v['time']);
                     $res[$k]['name'] = str_replace('fit', 'png', $v['name']);
                     $res[$k]['fit'] =  $v['name'];
+
+                    $time[$k] = $v['time'];//定义一个数组，其元素是图片的时间戳 用来按时间排序
                 }
 
+                array_multisort($time, SORT_DESC, $res);//按时间降序排序
                 $vars['pic_data'] = json_encode( $res );
             }else{
                 $vars['pic_data'] = '无图片信息';
-            }*/
-
-            $res[0] = [
-                'date'=> '20181201',
-                'time'=> '12:12:12',
-                'name'=> 'aa.png',
-                'fit'=> 'aa.fit',
-            ];
-            $res[1] = [
-                'date'=> '20181205',
-                'time'=> '12:12:18',
-                'name'=> 'aa1.png',
-                'fit'=> 'aa1.fit',
-            ];
-            $vars['pic_data'] = json_encode( $res );
-
+            }
 
             $vars['pic_dir'] = $dir . $day .'/';
             $vars['fits_dir'] = $fits_dir . $day .'/';
