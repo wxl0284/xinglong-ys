@@ -512,7 +512,7 @@ class Status extends Base
 				$status['sDomeCurstatus'] = '未获取到';
                 break;
         }//圆顶当前状态结束////////////////////////////////////////
-		$status['sDomeCurstatus'] = $slaveDomeStatus['domePosition'];
+		$status['domePosition'] = $slaveDomeStatus['domePosition'];
 		/*switch ($slaveDomeStatus['scuttleStatus']) //天窗状态
 		{
 			case 1:
@@ -798,11 +798,11 @@ class Status extends Base
                 //逐一比对文件创建时间 获取最新的png图片
                 foreach ($res as $v)
                 {
-                    $temp = filemtime ( './' . png_dir . $v); //每个文件的创建/修改时间
+                    $temp = filemtime ( './' . $png_dir . $v); //每个文件的创建/修改时间
                     if ( $temp > $file_time )
                     {
                         $file_time = $temp;
-                        $file_name = '/'. png_dir . $v;
+                        $file_name = '/'. $png_dir . $v;
                     }
 
                 }

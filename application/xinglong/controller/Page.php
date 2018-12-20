@@ -1074,7 +1074,8 @@ class Page extends Base
         $dir = date('Y/n/j', time()); //$dir格式：2018/2/29
         $dir = $cloud_pic_dir. $dir .'/';
         $err = ''; //记录错误
-        $file_name = $dir; //要获取的最新文件名
+        $file_name = ''; //要获取的最新文件名
+        $file_time = 0; //最新的文件创建时间
 
         try{
 			$res = scandir ( $this->path .$dir );
@@ -1086,7 +1087,19 @@ class Page extends Base
         {
             if ( $res !== false && count($res) > 2 )
             {
-                $file_name = $dir . array_pop( $res ); //最新的文件名
+                unset ($res[0], $res[1]); //删除前2个数据
+                foreach ($res as $v)//获取最新的图片
+                {
+                    $temp = filemtime ( './' . $dir . $v); //每个文件的创建/修改时间
+                    if ( $temp > $file_time )
+                    {
+                        $file_time = $temp;
+                        if ( strpos($v, '.db') === false )
+                        {
+                            $file_name = '/'. $dir . $v;
+                        }
+                    }
+                }
             }
         }
 
@@ -1106,7 +1119,8 @@ class Page extends Base
         $dir = date('Y/n/j', time()); //$dir格式：2018/2/29
         $dir = $cloud_pic_dir. $dir .'/';
         $err = ''; //记录错误
-        $file_name = $dir; //要获取的最新文件名
+        $file_name = ''; //要获取的最新文件名
+        $file_time = 0; //最新的文件创建时间
 
         try{
 			$res = scandir ( $this->path .$dir );
@@ -1118,7 +1132,18 @@ class Page extends Base
         {
             if ( $res !== false && count($res) > 2 )
             {
-                $file_name = $dir . array_pop( $res ); //最新的文件名
+                foreach ($res as $v)//获取最新的图片
+                {
+                    $temp = filemtime ( './' . $dir . $v ); //每个文件的创建/修改时间
+                    if ( $temp > $file_time )
+                    {
+                        $file_time = $temp;
+                        if ( strpos($v, '.db') === false )
+                        {
+                            $file_name = '/'. $dir . $v;
+                        }
+                    }
+                }
             }else{
                 $file_name = '未获取到';
             }
@@ -1144,7 +1169,7 @@ class Page extends Base
         $dir = $cloud_pic_dir. $dir .'/';
         //$dir = $cloud_pic_dir. '2018/12/1' .'/';
         $err = ''; //记录错误
-        $file_name = $dir; //要获取的最新文件名
+        $file_name = []; //要获取的最新文件名
 
         try{
 			$res = scandir ( $this->path .$dir );
@@ -1158,9 +1183,27 @@ class Page extends Base
         {
             if ( $res !== false && count($res) > 2 )
             {
-                unset ($res[0], $res[1]); //删除前2个数据
-                $file_name = array_slice($res, -144, 144); //获取最新的144个元素
+                //$file_name = array_slice($res, -144, 144); //获取最新的144个元素
                 //然后 获取$file_name中 每一个元素对应图片的创建时间
+                unset ($res[0], $res[1]); //删除前2个数据
+                foreach ($res as $k => $v)
+                {
+                    // $res[$k]['date'] = $day;
+                    // $res[$k]['time'] = date('H:i:s', $v['time']);
+                    // $res[$k]['name'] = str_replace('fit', 'png', $v['name']);
+                    // $res[$k]['fit'] =  $v['name'];
+                    if ( strpos($v, '.db') === false )
+                    {
+                        //$time[$k] = $v['time'];//定义一个数组，其元素是图片的时间戳 用来按时间排序
+                        $time[$k] = filemtime( './' . $dir . $v  );//定义一个数组，其元素是图片的时间戳 用来按时间排序
+                    }else{
+                        unset( $res[$k] ); //删除.db文件
+                    }
+                }
+
+                array_multisort($time, SORT_DESC, $res);//按时间降序排序
+
+                $file_name = $res;
 
             }else{//只有 . ..两个元素
                 $file_name = '未获取到';
@@ -1683,16 +1726,16 @@ class Page extends Base
         }*/
 
         //$files = ['clouds_1.png', 'clouds_2.png', '17_67_05_000265.jpg', 'Lumen.pdf', 'at-config.mp4'];
-        $temp_zip = 'temp' . session('login') . time(); //防止文件名重复
+        $temp_zip = 'temp' . session('login') . time() . 'zip'; //防止文件名重复
         //$temp_zip = 'temp' . 'user1' . time(); //防止文件名重复
-
+		//halt($temp_zip);
         $zip = new ZipArchive;
-        $res = $zip->open($temp_zip, ZIPARCHIVE::OVERWRITE);
+        //$res = $zip->open($temp_zip, ZIPARCHIVE::OVERWRITE);
 
-        if ( $res == 11 )//还未创建过temp.zip
-        {
-            $res = $zip->open($temp_zip, ZIPARCHIVE::CREATE); //创建temp.zip
-        }
+        //if ( $res == 11 )//还未创建过temp.zip
+        //{
+        $res = $zip->open($temp_zip, ZIPARCHIVE::CREATE); //创建zip文件
+        //}
 
         if ( $res == true )
         {
