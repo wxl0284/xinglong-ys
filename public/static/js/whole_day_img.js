@@ -18,7 +18,7 @@ $(function () {
 		}, 
 		function (){		
 			configList.hide();
-		} 
+		}
 	);
 //望远镜列表js代码结束/////////////////////////////////
 	
@@ -34,16 +34,16 @@ var vm = new Vue({//vue 实例化
     }, //data 结束
     methods: {
 		multi_down_fit:function(){//进行多图下载
-			let date_str = date_box.datebox('getValue');
+			//let date_str = date_box.datebox('getValue');
 			let t = this;
 			let url = '/down_multi_fit';
 			//验证提交的参数
 				//验证口径、要下载的文件数量是否>2 日期格式
 			//验证提交的参数 结束
 			let param = {//提交的参数
-				aperture: aperture,
+				//aperture: aperture,
 				files: t.multi_down, //将要下载的文件名提交
-				day: date_str, //日期
+				//day: date_str, //日期
 			};
 			var xhr = new XMLHttpRequest();
 			xhr.open('POST', url, true);    // 也可以使用POST方式，true表示异步
@@ -196,6 +196,12 @@ date_box.datebox({ //datebox开始
 		let dd = d.split('/');
 		dd = dd[0] + '-' + dd[1] + '-' + dd[2];
 		date_box.datebox('setValue', dd); //此处的赋值需要与上面parser方法一致
+	}else{
+		let d = new Date();
+		let y = d.getFullYear();
+		let m = d.getMonth() +1;
+		let dd = d.getDate();
+		date_box.datebox('setValue', y + '-' + m + '-' + dd);
 	}
 
 	date_box.datebox('calendar').calendar({

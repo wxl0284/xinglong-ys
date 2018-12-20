@@ -90,8 +90,9 @@ class Test extends Controller
 		//$temp = $res['gain_noise'];
 		
 		//$a = data2Time(17.416638888889);
+		$a = url("xinglong/Page/whole_day_pic", ["aperture"=>'50cm'])
 		halt('testt');
-		$dir = ROOT_PATH . 'public' . DS . 'cloudsc/';
+		//$dir = ROOT_PATH . 'public' . DS . 'cloudsc/';
 
 		//$res = scandir ( $dir = ROOT_PATH . 'public' . DS . 'cloudsd/' );
 		//halt($res);

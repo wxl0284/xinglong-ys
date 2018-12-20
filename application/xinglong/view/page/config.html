@@ -114,7 +114,7 @@
 							<input type="hidden" name="focus_n" :value='confOption.focustype.length'><!--将焦点类型的选项个数提交-->
 							<table id='inner_table1' v-if='gimbal_focus.focustype.length>0'>
 								<tr>
-									<td>焦点类型</td> <td>焦比</td> <td>焦距（）</td>
+									<td>焦点类型</td> <td>焦比</td> <td>焦距（m）</td>
 								</tr>
 								<tr v-for='(v,k) in confOption.focustype' v-if='show_focus_tr(v)'> 
 									<td>{{v}}</td>
@@ -1253,7 +1253,7 @@
 							<input type="hidden" name="focus_n" :value='confOption.opticalStructure.length'><!--将焦点类型的选项个数提交-->
 							<table id='inner_table3' v-if='guide_focus.focustype.length>0'>
 								<tr>
-									<td>焦点类型</td> <td>焦距</td>
+									<td>焦点类型</td> <td>焦距（m）</td>
 								</tr>
 								<tr v-for='(v,k) in confOption.opticalStructure' v-if='show_guide_tr(v)'>
 									<td>{{v}}</td>

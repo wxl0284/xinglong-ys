@@ -512,8 +512,8 @@ class Status extends Base
 				$status['sDomeCurstatus'] = '未获取到';
                 break;
         }//圆顶当前状态结束////////////////////////////////////////
-		
-		switch ($slaveDomeStatus['scuttleStatus']) //天窗状态
+		$status['sDomeCurstatus'] = $slaveDomeStatus['domePosition'];
+		/*switch ($slaveDomeStatus['scuttleStatus']) //天窗状态
 		{
 			case 1:
 				$status['sDomeScuttleStatus'] = '开';
@@ -533,7 +533,7 @@ class Status extends Base
 			default:
 				$status['sDomeScuttleStatus'] = '未获取到';
 				break;
-		}
+		}*/
 		
 		// switch ($slaveDomeStatus['shadeStatus']) //风帘状态
 		// {

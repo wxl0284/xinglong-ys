@@ -26,7 +26,7 @@
             <input id='hours_24' type="button" value="24小时数据曲线" > -->
         </span>
         <br>
-        {if condition="$cloud_pic == '未获取到'"}
+        {if condition="is_string($cloud_pic) && $cloud_pic == '未获取到'"}
             <h3 style="text-align:center;">未获取到云量图片</h3>
         {else /}
             {foreach name="cloud_pic" item="v"}
@@ -77,6 +77,12 @@
             let dd = d.split('/');
             dd = dd[0] + '-' + dd[1] + '-' + dd[2];
             date_box.datebox('setValue', dd); //此处的赋值需要与上面parser方法一致
+        }else{
+            let d = new Date();
+            let y = d.getFullYear();
+            let m = d.getMonth() +1;
+            let dd = d.getDate();
+            date_box.datebox('setValue', y + '-' + m + '-' + dd);
         }
 
         date_box.datebox('calendar').calendar({

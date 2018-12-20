@@ -117,8 +117,8 @@
 					  </td>
 					</tr>
 					<tr>
-					  <!-- <td>赤经速度:<span id='RightAscensionSpeed'>{{gimbal_status.RightAscensionSpeed}}</span>
-					  </td> -->
+					  <td>圆顶位置:<span >{{sDome_status.domePosition}}</span>
+					  </td>
                     </tr>
 				</table>
 			</div>
@@ -406,7 +406,7 @@
                     <li class='li fl'>类型:<span>{{configData.gimbal.type}}</span></li>
 					<li class='li fl' v-for='(v, k) in gimbal_focus.focus'>
 						焦点:
-						<span>{{v}}（焦比:{{gimbal_focus['v'+k]['focusRatio']}}&nbsp;焦距:{{gimbal_focus['v'+k]['focusLeng']}}）</span>
+						<span>{{v}}（焦比:{{gimbal_focus['v'+k]['focusRatio']}}&nbsp;焦距:{{gimbal_focus['v'+k]['focusLeng']}}m）</span>
 					</li>
                     <!--<li class='li fl' style='width:100%'>焦点类型:<span>{{configData.gimbal.focustype}}</span></li>
                     <li class='li fl' style='width:100%'>焦比:<span>{{configData.gimbal.focusratio}}</span></li>
@@ -958,7 +958,7 @@
 				<img class='mrgR' src='"/" + png_dir + big_img' style='width:226px;height:154px;' @click='show_big_img(k)' >-->
 				<!--<img id='next' class='pos_a' src='/static/images-1/right.jpg' @click='next_4_pic()' >-->
 			</div>
-			<a href='{:url("xinglong/Page/whole_day_pic", ["aperture"=>$at_aperture[$data["at_id"]]])}' class="display center" style="font-size:22px;" v-if='img4_data.length>0'>查看全天观测结果</a>
+			<a href="/whole_day_pic/{$at_aperture[$data['at_id']]}?day=today" class="display center" style="font-size:22px;" v-if='img4_data.length>0'>查看全天观测结果</a>
 			<!--<a v-else href="/whole_day_pic/{$at_aperture[$data['at_id']]}?day=today" style="display:block;margin:0 auto;width:50;text-align:center;">查询此望远镜其他日期观测图像</a>-->
 			<a v-else href="/whole_day_pic/{$at_aperture[$data['at_id']]}?day=show_datebox" style="display:block;margin:0 auto;width:50;text-align:center;">查询此望远镜其他日期观测图像</a>
 		</div><!--观测图像 结束-->

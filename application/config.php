@@ -166,7 +166,8 @@ return [
 
     'log'                    => [
         // 日志记录方式，内置 file socket 支持扩展
-        'type'  => 'File',
+        //'type'  => 'File',//tp默认日志配置
+        'type'    => 'test',//关闭日志写入
         // 日志保存目录
         'path'  => LOG_PATH,
         // 日志记录级别

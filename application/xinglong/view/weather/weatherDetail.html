@@ -285,23 +285,37 @@
 var hour_2 = $('#hours_2');
 var hour_12 = $('#hours_12');
 var hour_24 = $('#hours_24');
+
 hour_2.click(function () {
 	location.href = '/weather_info/2';
-	hour_2.css("background-color","red");
-	hour_12.css("background-color","#e1e1e1");
-	hour_24.css("background-color","#e1e1e1");
+	localStorage.setItem('click', 'hour_2');
 })
 hour_12.click(function () {
 	location.href = '/weather_info/12';
-	hour_12.css("background-color","red");
-	hour_2.css("background-color","#e1e1e1");
-	hour_24.css("background-color","#e1e1e1");
+	localStorage.setItem('click', 'hour_12');
 })
 hour_24.click(function () {
 	location.href = '/weather_info/24';
-	hour_24.css("background-color","red");
-	hour_2.css("background-color","#e1e1e1");
-	hour_12.css("background-color","#e1e1e1");
+	localStorage.setItem('click', 'hour_24');
 })
+
+switch (localStorage.getItem('click'))
+{
+	case 'hour_2':
+		hour_2.css("background-color", 'red');
+		hour_12.css("background-color", "#e1e1e1");
+		hour_24.css("background-color", "#e1e1e1");
+		break;
+	case 'hour_12':
+		hour_12.css("background-color", 'red');
+		hour_2.css("background-color", "#e1e1e1");
+		hour_24.css("background-color", "#e1e1e1");
+		break;
+	case 'hour_24':
+		hour_24.css("background-color", 'red');
+		hour_12.css("background-color", "#e1e1e1");
+		hour_2.css("background-color", "#e1e1e1");
+		break;
+}
 </script>
 </html>

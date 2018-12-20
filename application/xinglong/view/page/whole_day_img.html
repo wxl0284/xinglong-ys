@@ -59,7 +59,7 @@
                     <input type='button' value='下载此图' :ref='v.fit' @click='down_this_fit(fits_dir + v.fit, v.fit)' >
                     <br><br>
                  <span :ref='"a"+v.fit'>
-                    <label>多图下载<input type='checkbox' :value='v.fit' v-model='multi_down'></label>
+                    <label>多图下载<input type='checkbox' :value='fits_dir + v.fit' v-model='multi_down'></label>
                  </span>
                 </td>
            </tr> 

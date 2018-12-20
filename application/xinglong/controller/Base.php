@@ -15,7 +15,7 @@ class Base extends Controller
     protected function _initialize ()
 	{
         //查询望远镜列表，并进行模板赋值
-        // $this->get_atList();
+        $this->get_atList();
 
         // $route = $this->request->routeInfo()['route']; //即: 'xinglong/gimbal/sendCommand'
         // $param = input(); //请求参数
