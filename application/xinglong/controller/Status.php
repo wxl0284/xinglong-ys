@@ -89,7 +89,8 @@ class Status extends Base
             Db::table('plancooper')->where('at', $this->at_num)->where('import', '0')->setField('import', '1');
        }
 
-       $this->get_new_png($png_dir, $this->at); //获取最新png图片并存入cache
+       $this->get_new_png($png_dir, $this->at); //最新png图片、最新图片的fits头并存入cache
+       $status['fits_head'] = Cache::get( $this->at . 'fits_info' ); //将cache中最新的fits头信息 返回页面
        $status['new_png_pic'] = Cache::get($this->at . 'png'); //将cache中最新的png图片名（带路径） 返回页面
        
        return json_encode ($status);
@@ -695,7 +696,7 @@ class Status extends Base
     }//plan_too()结束
 
     //ajax 将协同计划表中import字段变为1 导入时
-    public function change_cooper_import()
+    public function changeimport()
     {
         $postData = input();
         
@@ -726,17 +727,17 @@ class Status extends Base
                 return '提交的望远镜参数有误!';
         }
         //halt($this->at_num);
-        if ( $postData['import'] == 1 ) //点击导入时
+        if ( isset($postData['import']) && $postData['import'] == 1 ) //点击导入时
         {
             Db::table('plancooper')->where('at', $this->at_num)->where('import', '0')->setField('import', '1');
-        }elseif( $postData['give_up'] == 1 ){//点不导入时
+        }elseif( isset($postData['give_up']) && $postData['give_up'] == 1 ){//点不导入时
             Db::table('plancooper')->where('at', $this->at_num)->where('giveup', '0')->setField('giveup', '1');
         }
         
     }//ajax 将协同计划表中import字段变为1 结束
 
     //ajax 将协同计划表中import字段或giveup字段变为1
-    public function change_too_import()
+    public function changetooimport()
     {
         $postData = input();
         
@@ -767,10 +768,10 @@ class Status extends Base
                 return '提交的望远镜参数有误!';
         }
         //halt($this->at_num);
-        if ( $postData['import'] == 1 ) //点导入时
+        if ( isset($postData['import']) && $postData['import'] == 1 ) //点导入时
         {
             Db::table('plantoo')->where('at', $this->at_num)->where('import', '0')->setField('import', '1');
-        }elseif( $postData['give_up'] == 1 ){//点不导入时
+        }elseif( isset($postData['give_up']) && $postData['give_up'] == 1 ){//点不导入时
             Db::table('plantoo')->where('at', $this->at_num)->where('giveup', '0')->setField('giveup', '1');
         }
         
@@ -779,11 +780,13 @@ class Status extends Base
     protected function get_new_png($png_dir, $at)//获取各望远镜最新png图片
     {
         $day = date('Ymd'); //月和日均有前导零
+        $day = '20181220'; //月和日均有前导零
         $png_dir = $png_dir . $day . '/'; 
         $file_path = $this->path . $png_dir;
         $err = ''; //错误信息
         $file_time = 0; //最新的文件创建时间
         $file_name = ''; //最新的文件名
+        $fits_info = []; //最新观测图像的fits头信息
 
         try{
 			$res = scandir ( $file_path );
@@ -795,6 +798,7 @@ class Status extends Base
         {
             if ( $res !== false && count($res) > 2 )
             {
+                unset($res[0], $res[1]);
                 //逐一比对文件创建时间 获取最新的png图片
                 foreach ($res as $v)
                 {
@@ -803,8 +807,39 @@ class Status extends Base
                     {
                         $file_time = $temp;
                         $file_name = '/'. $png_dir . $v;
-                    }
+                        //然后获取此$v文件的fits头信息
+                        $tem = Cache::get($at . 'png');
+                        if ( $tem !== $file_name )
+                        {
+                            $v = str_replace('png', 'fit', $v);
+                            $fits_data = Db::table('observerimg')->where('name', $v)->where('date', $day)->field('info')->find();
+                            //$fits_data = Db::table('observerimg')->where('id', '1125')->field('info')->find();
+							//halt($fits_data);
+                            if ( $fits_data )
+                            {                             
+                                preg_match("/OBJ_NAME.+'.+'/", $fits_data['info'], $match); //目标名称
+                                $fits_info['obj_name'] = trim(explode('=', $match[0])[1]);
+                                
+                                preg_match("/RA.+'.+'/", $fits_data['info'], $match); //赤经
+                                $fits_info['ra'] = trim(explode('=', $match[0])[1]);
+                                
+                                preg_match("/DEC.+'.+'/", $fits_data['info'], $match); //赤纬
+                                $fits_info['dec'] = trim(explode('=', $match[0])[1]);
 
+                                preg_match("/FILTER.+/", $fits_data['info'], $match); //filter
+                                $fits_info['filter'] = trim ( explode('=', $match[0])[1] );               
+                                
+                                preg_match("/EXPTIME.+/", $fits_data['info'], $match); //曝光时间
+                                $fits_info['exposeT'] = trim ( explode('=', $match[0])[1] );                  
+                                
+                                preg_match("/TIME-OBS.+'.+'/", $fits_data['info'], $match); //观测时间
+                                $fits_info['time_obs'] = trim ( explode('=', $match[0])[1] );    
+                               
+                                //然后将fits_info 写入cache
+                                Cache::set( $at . 'fits_info', json_encode($fits_info) );
+                            }
+                        }//然后获取此$v文件的fits头信息 结束
+                    }
                 }
             }
         }

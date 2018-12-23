@@ -26,9 +26,23 @@
         <div class='pos_r'><!--重要信息区域 开始-->
 			<div id='atPic'>
 				<!--<a class='pos_a border1 more inline center' id='takeOverBtn'>接管</a>-->
-				<img v-if='new_png!==""' :src='new_png' >
-				<span v-else style='float:left;width:264px;line-height:264px;text-align:center;'>暂无观测图片</span>
-				<img src='/static/images-0/location.png'>
+				<div style='width:528px;height:264px;' >
+					<img v-if='new_png!==""' :src='new_png' >
+					<span v-else style='color:red;'>
+						暂无观测图片
+					</span>
+					<div style='width:264px;float:right;'>
+					  <div style="width:78%; margin-left: 20px;" >
+						目标名:{{fits_head.obj_name}}<br>
+						赤经:{{fits_head.ra}}<br>
+						赤纬:{{fits_head.dec}}<br>
+						滤光片:{{fits_head.filter}}<br>
+						曝光时间:{{fits_head.exposeT}}<br>
+						拍摄时间:{{fits_head.time_obs}}
+					  </div>
+					</div>
+				</div>
+				<!--<img src='/static/images-0/location.png'>-->
 			</div>
 			
 			<div id='panel' class='displayNo pos_a'><!--接管弹窗-->
@@ -123,7 +137,7 @@
 				</table>
 			</div>
 		</div><!--重要信息区域 结束-->
-        <div id='devsInfo' class='pos_r center'>
+        <div id='devsInfo' class='pos_r center clear'>
             <div class='childDev'>
                <!--<img src='/static/images-1/focus.png' width='100px;'/>
 				<br>-->转台
@@ -971,7 +985,7 @@
 			<a class="easyui-linkbutton" iconCls="icon-more" plain="true" onclick="importPlan()">导入计划文件</a>
 			<a class="easyui-linkbutton" iconCls="icon-out" plain="true" onclick="exportPlan(this)" download="plan_data.strat">导出至文件</a>
 			<a class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="savePlan()">保存</a>
-			<a class="easyui-linkbutton" iconCls="icon-redo" plain="true" onclick="submitPlan()">提交计划</a>
+			<a class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="">编辑计划</a>
 			<a class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="importData()">已提交的计划</a>
 			<a class="easyui-linkbutton" iconCls="icon-do" plain="true" onclick="plan_executing()">正执行的计划</a>
 			<a class="easyui-linkbutton" iconCls="icon-clear" plain="true" onclick="delAll()">全部删除</a>
@@ -991,7 +1005,7 @@
 			  执行模式:<select id='modeSpan'>
 			    <option value='1'>single</option>
 			    <option value='2'>single-loop</option>
-			    <option value='3'>sequence</option>
+			    <option value='3' selected="selected">sequence</option>
 			    <option value='4'>sequence-loop</option>
 			  </select>
 				<div id='planExe' class='pos_a'>

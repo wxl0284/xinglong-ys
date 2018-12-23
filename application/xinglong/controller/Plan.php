@@ -392,7 +392,7 @@ class Plan extends Base
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:历元参数超限!<br>';
 			}
-
+	
 			//验证 曝光时间
 			$exposureTime = $postData['planData'][$i]['exposureTime'];
 

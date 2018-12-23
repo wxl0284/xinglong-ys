@@ -111,7 +111,6 @@
 	var table = $('#dg'); //定义全局table 变量
 	var editRow = undefined;  //全局开关, 编辑的行
 	var planForm = $('#imptPlan');
-	
 //导入计划文件 上传////////////////////////////////////////////
 	function importPlan ()
 	{
@@ -154,14 +153,12 @@
 							ii ++;
 						}
 						
-						table.datagrid({
-							data: arr,
-						});
+						table.datagrid({ data: arr,	});//页面中写入计划数据
 						
 						editRow = undefined; //否则 无法拖动
 						planErr = 0; //将提交计划的错误标识 改为0
 						checked = []; //清空被选中的行索引
-						clearInterval ( plan_execute_i ); //关闭查询执行哪条计划的定时器
+						//clearInterval ( plan_execute_i ); //关闭查询执行哪条计划的定时器
 						table.datagrid('enableDnd');
 					}
 				},//success 结束
@@ -180,7 +177,7 @@
 		//table.datagrid('unselectRow', editRow);
 
 		//验证计划数据
-		var plans = table.datagrid ('getRows');
+		let plans = table.datagrid ('getRows');
 		var n = plans.length
 
 		if ( n > 0 )
@@ -332,7 +329,7 @@
 			{field:'exposureTime', title:'曝光时间<br>（秒）',  width:table_w*0.059,rowspan:2,
 				editor:{ type:'text' },
 			},
-			{field:'delayTime', title:'delayTime<br>（秒）', width:table_w*0.069166667, rowspan:2,
+			{field:'delayTime', title:'delay<br>（秒）', width:table_w*0.034583335, rowspan:2,
 				editor:{ type:'text' },
 			},
 			{field:'exposureCount', title:'曝光数量', width:table_w*0.059, rowspan:2, 
@@ -359,7 +356,7 @@
 					type:'numberbox',
 				},
 			},
-			{field:'bin',  title:'Bin', width:table_w*0.026166667, rowspan:2,
+			{field:'bin',  title:'Bin', width:table_w*0.060750002, rowspan:2,
 				editor:{
 					type:'numberbox',
 				},
@@ -447,7 +444,7 @@
 		layer.confirm('确定删除？', {icon: 3, title:'提示',shade:0}, function(index){
 			table.datagrid({ data:[] }); //执行删除
 			checked = []; //清空被选中的行索引
-			clearInterval ( plan_execute_i ); //关闭查询执行哪条计划的定时器
+			//clearInterval ( plan_execute_i ); //关闭查询执行哪条计划的定时器
 			editRow = undefined;
 			layer.close(index);
 		});
@@ -608,17 +605,12 @@
 						//planStop.prop('disabled', false);
 						planStart.css("background-color","red");
 						planStop.css("background-color","#e1e1e1");
-						//将index这一索引对应的计划高亮
-						table.datagrid('scrollTo', index); //滚动到第index行
-						table.datagrid({
-							rowStyler: function (i, row) {
-								if( i == (index) ){
-									return 'background-color:#18fd65;';
-								}
-							},
-						}) //高亮 结束
+						
+						submitPlan();//提交计划
 
-						plan_execute_i =  setInterval (get_plan_tag, 2000); //开始查询正执行的计划
+						for (let i = 0; i < 400; i++){ /*空循环 延迟一下 再去执行下面的一行代码*/ }
+						
+						plan_executing (); //执行正执行的计划		
 					}
 					
 					if (info.indexOf('计划停止') !== -1)
@@ -627,13 +619,8 @@
 						planStop.css("background-color","red");
 						planStart.css("background-color","#e1e1e1");
 						clearInterval ( plan_execute_i ); //关闭查询执行哪条计划的定时器
-						table.datagrid({
-							rowStyler: function (index, row) {
-								if( index == (plan_index) ){
-									return '';
-								}
-							},
-						})
+						plan_execute_i = undefined;
+						editRow = undefined;
 					}
 	            },
 	            error:  function () {
@@ -652,8 +639,8 @@ var all_plans = aperture + 'all_plans';
 		table.datagrid('endEdit', editRow);
 		table.datagrid('unselectRow', editRow);
 		table.datagrid('enableDnd'); //启用拖放
-		var plans = table.datagrid('getRows');	//选中所有记录
-		var n = plans.length;
+		let plans = table.datagrid('getRows');	//选中所有记录
+		let n = plans.length;
 		if ( n< 1) 
 		{
 			planErr = 1;
@@ -704,7 +691,8 @@ var all_plans = aperture + 'all_plans';
 
 					if (info.indexOf('观测计划发送完毕') !== -1)
 					{
-						//planStart.prop('disabled', false); //启用 计划开始按钮
+						light_tr_i = null; //重置被tag进行高亮的行
+ 						scrollTo_tr = null; //重置要被滚到的行
 					}
 				},
 				error: function (){
@@ -799,9 +787,9 @@ var all_plans = aperture + 'all_plans';
 			}
 
 			var plan_epoch = $.trim(plans[i].epoch).toLocaleLowerCase();
-			patn = /^[0-3]$/;
 
-			if ( !patn.test(plan_epoch) && ( $.inArray(plan_epoch, ['real','j2000','b1950','j2050']) == -1)  )
+			patn = /^[0-3]$/;
+			if ( !( patn.test(plan_epoch) || ( $.inArray(plan_epoch, ['real','j2000','b1950','j2050']) !== -1 ) ) )
 			{
 				msg += '第' + (i+1) + '条历元超限!<br>';
 			}
@@ -937,7 +925,10 @@ var all_plans = aperture + 'all_plans';
 //var get_plan_i = setInterval (get_plan, 60000); //定时执行get_plan() 60秒执行一次查询，否则浏览器卡顿
 //var get_plan_i = 0;
  var no_plan_execute = 0; //如果没有正执行的计划，此值加1
- var plan_execute_i =  -1; //定时器的返回值
+ var plan_execute_i = undefined; //定时器的返回值
+ var light_tr = null; //存储datagrid中表格的所有行 用来将tag那行进行高亮
+ var plan_download = false; //标记服务器Cache中的计划数据是否被下载写入页面 
+ var plan_in_page = false; // 存储最新的页面中正执行的计划
 
  function plan_executing ()
  { //显示正在执行的计划
@@ -980,16 +971,18 @@ var all_plans = aperture + 'all_plans';
 				//解析数据，然后在页面显示
 				info = info.split('#'); // info[1]为计划数据，info[2]为被选中的计划索引
 				
-				table.datagrid({ data: JSON.parse ( info[1] ) }); //在表格中显示本地存储的计划数据
+				table.datagrid({ data: JSON.parse ( info[1] ) }); //在页面显示服务器cache中的计划数据
+				plan_in_page = JSON.parse ( info[1] );//获取到页面中正执行的所有计划 用来比对请求的tag表示的计划是否在页面中
+				plan_download = true; //页面写入cache中的计划完成
 				//然后逐一将这些索引的行 进行选中
-				info = JSON.parse ( info[2] ); //将返回的被选中的行索引转为数组格式
+				/*info = JSON.parse ( info[2] ); //将返回的被选中的行索引转为数组格式
 				if ( info.length > 0 )
 				{
 					info.filter(function (v) {
 						table.datagrid('checkRow', v);
 					})
-				} //逐一选中计划 结束
-
+				} //逐一选中计划 结束*/
+				light_tr = $('table.datagrid-btable tr'); //获取页面中的datagrid所有行
 				editRow = undefined; //否则，无法拖动
 
 			}else{
@@ -1009,6 +1002,7 @@ var all_plans = aperture + 'all_plans';
 					});
 
 					clearInterval ( plan_execute_i ); //无正在执行的计划，关闭定时器
+					plan_execute_i = undefined;
 				}
 			}
 		}, //success 结束
@@ -1019,11 +1013,16 @@ var all_plans = aperture + 'all_plans';
 	/*去php请求Cache中的：计划数据及被选中计划的行索引，然后在页面中显示这些计划并高亮正被执行的计划 结束*/
 
 	no_plan_execute = 0; //如果没有正执行的计划，此值加1
-	plan_execute_i =  setInterval (get_plan_tag, 2000);
+	if ( plan_execute_i !== undefined )//确保定时器只开一次
+	{
+		plan_execute_i =  setInterval (get_plan_tag, 2000); //开始查询tag
+	}
  }/*plan_executing() 结束*/
 
  /*查询正在执行第几条计划*/
  var plan_index = 0; //用以标记要高亮的计划行
+ var light_tr_i = null; //要被tag进行高亮的行
+ var scrollTo_tr = null; //要被滚到的行
 
  function get_plan_tag ()
  {
@@ -1033,45 +1032,77 @@ var all_plans = aperture + 'all_plans';
 		data: {at: at, command: 'get_plan', at_aperture:aperture},
 		success: function (info) {
 			if ( info.indexOf('tagOk') !== -1 )
-			{//查到了tag字段
-				/*20181129兴隆验收前，只返回tag的代码
-				var plan_tag = info.split('#')[1];
-				table.datagrid('scrollTo', plan_tag-1); //滚动到第tag行
-				table.datagrid({
+			{//查到了tag字段				
+				let plan_data = info.split('#')[1]; //数据库中最新的一条计划数据
+				plan_data = $.parseJSON(plan_data); //此望远镜正执行的计划数据
+
+				if ( scrollTo_tr != plan_data.tag-1 )
+				{
+					table.datagrid('scrollTo', plan_data.tag-1); //滚动到tag那行
+					scrollTo_tr = plan_data.tag-1; //将scrollTo_tr 重置
+				}
+				
+				/*table.datagrid({
 					rowStyler: function (index, row) {
-						if( index == (plan_tag-1) ){
+						if( index == (plan_data.tag-1) ){
 							return 'background-color:#18fd65;';
 						}
 					},
-				})*/
-				
-				let plan_data = info.split('#')[1];
-				plan_data = $.parseJSON(plan_data); //此望远镜正执行的计划数据
-				
-				let page_plan = table.datagrid('getRows');
-				let num = page_plan.length;
+				}) 之前的做法 效率低*/
+
+				if ( light_tr.length > 2 ) //表示有观测计划
+				{
+					if ( plan_data['target'] ==  plan_in_page[plan_data.tag-1]['target'] && plan_data['filter'] ==  plan_in_page[plan_data.tag-1]['filter'] ) //tag表示的计划与页面中
+					{
+						let t = light_tr.length/2 + plan_data.tag-1;
+
+						if ( light_tr_i === null )//第一次获取tag值 进行高亮时
+						{
+							light_tr[t].style.backgroundColor = '#00ee00';//背景变绿
+							light_tr_i = t; //给light_tr_i赋值
+						}else{//把已高亮的行先取消高亮 再高亮目前的行
+							if ( plan_download === true )//页面计划被重新写入，让tag那行数据高亮
+							{
+								light_tr[t].style.backgroundColor = '#00ee00';
+								light_tr_i = t; //给light_tr_i赋值
+							}else{//页面计划写入后 接下的请求tag时 如果正执行的计划与已高亮的计划不一致 则高亮新的计划
+								if ( light_tr_i != t )
+								{
+									light_tr[light_tr_i].style.backgroundColor = '#ffffff';//将前一条高亮的取消高亮
+									light_tr[t].style.backgroundColor = '#00ee00';
+									light_tr_i = t;
+								}
+							}
+
+							plan_download = false; //将此置为false
+						}
+					}
+				}
+				 
+				/*//let page_plan = table.datagrid('getRows');
+				//let num = page_plan.length;
 				
 				if ( num > 0 )
 				{
-					for (let i = 0; i < num; i++)
-					{
-						if ( plan_data['target'] == page_plan[i]['target'] && plan_data['filter'] == page_plan[i]['filter'])
-						{
-							plan_index = i;
-							break; //跳出for循环
-						}					
+					// for (let i = 0; i < num; i++)
+					// {
+					// 	if ( plan_data['target'] == page_plan[i]['target'] && plan_data['filter'] == page_plan[i]['filter'])
+					// 	{
+					// 		plan_index = i;
+					// 		break; //跳出for循环
+					// 	}					
 						
-					}
+					// }
 
-					table.datagrid('scrollTo', plan_index); //滚动到第plan_index行
+					table.datagrid('scrollTo', plan_data.tag-1); //滚动到第plan_index行
 					table.datagrid({
 						rowStyler: function (index, row) {
-							if( index == (plan_index) ){
+							if( index == (plan_data.tag-1) ){
 								return 'background-color:#18fd65;';
 							}
 						},
 					})
-				}
+				}*/
 
 			}else{
 				no_plan_execute ++;
@@ -1090,6 +1121,7 @@ var all_plans = aperture + 'all_plans';
 					});
 
 					clearInterval ( plan_execute_i ); //无正在执行的计划，关闭定时器
+					plan_execute_i = undefined;
 				}
 			}
 		},//success 方法结束
@@ -1161,17 +1193,22 @@ var all_plans = aperture + 'all_plans';
  function exportPlan (aLink)
  {
 	//先验证数据是否都已保存，页面是否有数据，暂时不做
-	var all_plan = table.datagrid('getRows');
-	let num = all_plan.length;
+	let extport_plan_data = table.datagrid('getRows');
+	let num = extport_plan_data.length;
 	//直接将页面计划数据以文件下载的方式保存
 	let out_str = ''; //要写入文件的字串
 
 	for ( let i = 0; i < num; i++ ) //循环每一条计划
 	{
-		let temp = all_plan[i];
+		let temp = extport_plan_data[i];
+		let epoch = '';
 		//if ( temp['declination1']*1 >= 0 ) temp['declination1'] = '+' + temp['declination1'];
-		if ( temp['epoch'].indexOf('2000') !== -1 ) temp['epoch'] = '2000';
-
+		if ( temp['epoch'].indexOf('2000') !== -1 )
+		{
+			epoch = '2000';
+		}else{
+			epoch = temp['epoch'];
+		}
 		if ( out_str.indexOf(temp['target']) !== -1 ) //是同一个目标的数据，只把后段数据加入out_str
 		{
 			out_str += '0,' + temp['exposureTime'] + ',' + temp['filter'] + ','
@@ -1180,24 +1217,31 @@ var all_plans = aperture + 'all_plans';
 			out_str += '$,' + temp['target'] + ',' + temp['rightAscension1'] + ':'
 				   + temp['rightAscension2'] + ':' + temp['rightAscension3'] + ','
 				   + temp['declination1'] + ':' + temp['declination2'] + ':' + temp['declination3']
-				   + ',' + temp['epoch'] + ',' + '1,;\r\n' + '0,' + temp['exposureTime'] + ',' + temp['filter'] + ','
+				   + ',' + epoch + ',' + '1,;\r\n' + '0,' + temp['exposureTime'] + ',' + temp['filter'] + ','
 				   + temp['readout'] + ',' + temp['delayTime'] + ',' + temp['exposureCount'] + ',;\r\n';
 		}
-
+		
 	}//循环每一条计划 结束
 
 	out_str =  encodeURIComponent(out_str);  
     aLink.href = "data:text/strat;charset=utf-8," + out_str;
 
  }//exportPlan() 结束
-
- function test ()
- {
-	var d  = table.datagrid('getChecked');
-	console.log(d);
-	console.log('----');
-	d  = table.datagrid('getSelections');
-	console.log(d);
-	console.log(checked);
+ function delAll1(){
+	// table.datagrid({
+	// 	rowStyler: function (i=3) {
+	// 		console.log('hehakk');
+	// 		//if( index == (1) ){
+	// 			return 'background-color:#18fd65;';
+	// 		//}
+	// 	},
+	// })
+	var light_tr = $('table.datagrid-btable tr');
+	var light_tr_num = light_tr.length;
+	//let x = light_tr_num/2 + 2;
+	console.log(light_tr_num);
+	//light_tr[7].css('background', 'red');
+	//light_tr[7].style.backgroundColor = 'red';
+	//table.datagrid('highlightRow',3);
  }
 /*******实时获取 获取正在执行的计划 结束*******/

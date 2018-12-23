@@ -111,9 +111,9 @@ Route::post('ToO_1_plan$', 'xinglong/Too/send_ToO_1_plan');
 //页面 提交协同观测 ToO 之开始或停止 路由
 // Route::post('ToO_start_stop$', 'xinglong/Too/start_stop_ToO');
 //ajax 将协同计划表中import字段或giveup字段变为1 路由
-Route::post('change_plancooper_import$', 'xinglong/Status/change_cooper_import');
+Route::post('/changeplancooperimport$', 'xinglong/Status/changeimport');
 //ajax 将ToO计划表中import字段或giveup字段变为1 路由
-Route::post('change_plantoo_import$', 'xinglong/Status/change_too_import');
+Route::post('/changeplantooimport$', 'xinglong/Status/changetooimport');
 //ajax 获取观测图像 路由
 Route::post('get_image$', 'xinglong/Image/get_image');
 /*/ajax 观测图像 向右按钮 路由

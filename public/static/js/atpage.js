@@ -37,6 +37,7 @@ $(function () {
 			next_pre_click:0, //向左或向右按钮点击的次数
 			big_img:'', //观测图像的大图名称
 			new_png: '', //最新观测图片
+			fits_head:'', //fits head
 			device_nav: {//此对象中的数据用以区分是否给各子设备加上蓝色底框
 				dev_click: 'gimbal',  //区分各自设备
 				gimbal_command: '',   //区分转台各指令
@@ -2425,9 +2426,15 @@ $(function () {
 	});/***************vue js结束*****************/
 
 	var status_err = 0;
-	var plan_cooper_i = 0; //控制弹窗数量和导入动作执行的次数
+	//var plan_cooper_i = 0; //控制弹窗数量和导入动作执行的次数
+	// localStorage.setItem('cooper', 0); //控制协同计划弹窗数量 刷新页面时要将此值置为0
+	// localStorage.setItem('too', 0); //控制Too计划弹窗的变量 刷新页面时要将此值置为0
+
 	function getStatus() //实时更新各设备状态
 	{
+		var cooper = localStorage.getItem('cooper'); //控制协同计划弹窗的变量
+		var too = localStorage.getItem('too'); //控制Too计划弹窗的变量
+
 		$.ajax({
 			type : 'post',
 			url : '/get_status', 
@@ -2436,6 +2443,8 @@ $(function () {
                 var info = eval( '(' + info +')' );
 				//显示最新的观测图片
 				vm.new_png = info.new_png_pic;
+				//console.log(info.fits_head);
+				vm.fits_head = info.fits_head;
 				
 				if ( info.gimbal )  //显示转台状态信息
 				{
@@ -2495,14 +2504,15 @@ $(function () {
 
 				if ( info.plan_cooper ) //处理协同计划信息
 				{
-					if ( plan_cooper_i < 1 )
+					if ( !cooper || cooper < 1 )
 					{
 						if ( info.plan_cooper.data != '无协同计划' )	//有协同计划数据
 						{
-							plan_cooper_i ++;
+							localStorage.setItem('cooper', ++cooper);//将cooper加1
+
 							layer.alert('查到协同观测计划，要导入此页面请点确定', {
 								shade:false,
-								closeBtn:0,
+								closeBtn:1,
 								type:1,//alert默认是0，此时设为1,可防止被其他alert覆盖冲掉
 								btn: ['确定', '不导入'],
 								yes:function (n){//点击确定
@@ -2518,26 +2528,34 @@ $(function () {
 									table.datagrid({
 										data: cooper_arr,
 									});
-									modeSpan.val(info.plan_cooper.exemode);//将执行模式赋值
+									//modeSpan.val(info.plan_cooper.exemode);//将执行模式赋值
+									modeSpan.val('3');//将执行模式赋值为sequence
 									$.ajax({//Ajax把plancooper中import字段变为1
-										url: '/change_plancooper_import',
+										url: '/changeplancooperimport',
 										type: 'post',
 										data: {at_aperture: aperture, import:1},
-										//success: function (){},
+										success: function (){
+											localStorage.setItem('cooper', 0);//将cooper置为0
+										},
 										//error: function (){},
 									})//ajax结束
 									layer.close(n);
 								},//yes函数结束
 								btn2: function(index) {//点击不导入时
 									$.ajax({//Ajax把plancooper中giveup字段变为1
-										url: '/change_plancooper_import',
+										url: '/changeplancooperimport',
 										type: 'post',
 										data: {at_aperture: aperture, give_up:1},
-										//success: function (){},
+										success: function (){
+											localStorage.setItem('cooper', 0);//将cooper置为0
+										},
 										//error: function (){},
 									})//ajax结束
 									layer.close(index);
 								},//btn2函数结束
+								cancel: function() {//关闭按钮
+									localStorage.setItem('cooper', 0);//将cooper置为0
+								}
 							});
 						}//处理协同计划数据 结束
 					}
@@ -2545,15 +2563,16 @@ $(function () {
 
 				if ( info.plan_too ) //处理ToO计划信息
 				{
-					if ( plan_cooper_i < 1 )//控制弹窗个数，只弹出1个
+					if ( !too || too < 1 )//控制弹窗个数，只弹出1个
 					{
 						if ( info.plan_too.data != '无ToO计划' )	//有ToO计划数据
 						{
-							plan_cooper_i ++;
+							localStorage.setItem('too', ++too);//将too加1
+
 							layer.alert('查到ToO观测计划，要导入此页面请点确定', {
 								shade:false,
 								type: 1,
-								closeBtn:0,
+								closeBtn:1,
 								btn: ['确定', '不导入'],
 								yes:function (n){//点击确定
 									vm.plan_click();
@@ -2569,7 +2588,8 @@ $(function () {
 										data: too_arr,
 									});
 									//$('#modeSpan').val(info.plan_too.exemode);//将执行模式赋值
-									modeSpan.val(info.plan_too.exemode);//将执行模式赋值
+									//modeSpan.val(info.plan_too.exemode);//将执行模式赋值
+									modeSpan.val('3');//将执行模式赋值为sequence
 
 									//执行提交计划指令
 									submitPlan();
@@ -2577,25 +2597,32 @@ $(function () {
 									planStart.click();
 									//执行提交计划指令
 									$.ajax({//Ajax把plantoo中import字段变为1
-										url: '/change_plantoo_import',
+										url: '/changeplantooimport',
 										type: 'post',
 										data: {at_aperture: aperture, import: 1},
-										//success: function (){},
+										success: function (){
+											localStorage.setItem('too', 0);//将too 置为0
+										},
 										//error: function (){},
 									})//ajax结束
 									layer.close(n);
 								},//yes函数结束
 								btn2: function(index) {//点击不导入时
 									$.ajax({//Ajax把plantoo中giveup字段变为1
-										url: '/change_plantoo_import',
+										url: '/changeplantooimport',
 										type: 'post',
 										data: {at_aperture: aperture, give_up: 1},
-										//success: function (){},
+										success: function (){
+											localStorage.setItem('too', 0);//将too 置为0
+										},
 										//error: function (){},
 									})//ajax结束
 									layer.close(index);
 									//layer.msg('算了，算了,不删了...');
 								},//btn2函数结束
+								cancel: function () {
+									localStorage.setItem('too', 0);//将too 置为0
+								}
 							});
 						}//处理协同计划数据 结束
 					}
