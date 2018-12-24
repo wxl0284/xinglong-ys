@@ -17,6 +17,7 @@
 		var at = "{$data['at_id']}"; //atlist表中的主键id
 		var aperture = "{$at_aperture[$data['at_id']]}"; //即添加望远镜时的口径值
 		var configData =  {$data['configData']}; //各子设备的配置数据
+		var too_import = false;//判断是否点击了too导入 若点击时置为false 让停止指令不弹窗
 	</script>
 	{load href='/static/js/atpage.js'}
 </head>

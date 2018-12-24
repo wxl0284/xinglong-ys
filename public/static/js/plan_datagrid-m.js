@@ -144,12 +144,12 @@
 							},
 						});
 					}else{			
-						var info = $.parseJSON(info);
-						var arr = [];
-						var ii = 0;
-						for (var p in info)
+						var info_data = $.parseJSON(info);
+						let arr = [];
+						let ii = 0;
+						for (let p in info_data)
 						{
-							arr[ii] = info[p];
+							arr[ii] = info_data[p];
 							ii ++;
 						}
 						
@@ -565,6 +565,13 @@
 			/*var plans_data = JSON.stringify( table.datagrid('getRows') ); //转为字符串
 			localStorage.setItem (all_plans, plans_data); //将字符串存入all_plans变量内 所有正执行的计划都从php的缓存中读取 */
 			/*开始执行前 将所有计划数据和被checked的行索引存入浏览器本地存储 结束*/
+
+			if ( option == 'planStart' ) //如果点击的开始按钮 则执行提交 并执行正执行的计划
+			{
+				submitPlan();//提交计划
+				setTimeout(plan_executing, 2000)//执行正执行的计划	
+			}
+
 			if ( rows.length > 0 ) //将被选中的计划的索引存入 checked_plans
 			{
 				rows.filter(function (v) {
@@ -588,34 +595,34 @@
 				},             
 	            success:  function (info) {
 		            planErr = 0;
-					layer.alert(info, {
-						shade:false,
-						closeBtn:0,
-						yes:function (n){
-							layer.close(n);
-							if (info.indexOf('登录') !== -1)
-							{
-								location.href = '/';
-							}
-						},
-					});
+					if( !too_import && info.indexOf('计划停止') === -1 ) //只要不是too_import导入后的停止按钮点击情况就都弹框
+					{
+						layer.alert(info, {
+							shade:false,
+							closeBtn:0,
+							yes:function (n){
+								layer.close(n);
+								if (info.indexOf('登录') !== -1)
+								{
+									location.href = '/';
+								}
+							},
+						});
+					}
+
 					if (info.indexOf('计划开始') !== -1)
 					{
 						//planStart.prop('disabled', true);
 						//planStop.prop('disabled', false);
+						too_import = false;
 						planStart.css("background-color","red");
-						planStop.css("background-color","#e1e1e1");
-						
-						submitPlan();//提交计划
-
-						for (let i = 0; i < 400; i++){ /*空循环 延迟一下 再去执行下面的一行代码*/ }
-						
-						plan_executing (); //执行正执行的计划		
+						planStop.css("background-color","#e1e1e1");	
 					}
 					
 					if (info.indexOf('计划停止') !== -1)
 					{
 						//planStart.prop('disabled', false);
+						too_import = false;
 						planStop.css("background-color","red");
 						planStart.css("background-color","#e1e1e1");
 						clearInterval ( plan_execute_i ); //关闭查询执行哪条计划的定时器
@@ -644,7 +651,7 @@ var all_plans = aperture + 'all_plans';
 		if ( n< 1) 
 		{
 			planErr = 1;
-			layer.alert('请先导入计划或添加计划!', {shade:false, closeBtn:0});
+			layer.alert('请先导入计划或添加计划!', {shade:false, closeBtn:0});return;
 		}
 
 		var msg = plan_valid(plans, n);  //js验证数据
@@ -677,7 +684,7 @@ var all_plans = aperture + 'all_plans';
 				success: function (info){
 					planErr = 0;
 
-					layer.alert(info, {
+					/*layer.alert(info, {
 						shade:false,
 						closeBtn:0,
 						yes:function (n){
@@ -687,7 +694,7 @@ var all_plans = aperture + 'all_plans';
 								location.href = '/';
 							}
 						},
-					});
+					});*/
 
 					if (info.indexOf('观测计划发送完毕') !== -1)
 					{
@@ -1013,7 +1020,7 @@ var all_plans = aperture + 'all_plans';
 	/*去php请求Cache中的：计划数据及被选中计划的行索引，然后在页面中显示这些计划并高亮正被执行的计划 结束*/
 
 	no_plan_execute = 0; //如果没有正执行的计划，此值加1
-	if ( plan_execute_i !== undefined )//确保定时器只开一次
+	if ( plan_execute_i === undefined )//确保定时器只开一次
 	{
 		plan_execute_i =  setInterval (get_plan_tag, 2000); //开始查询tag
 	}

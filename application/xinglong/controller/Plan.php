@@ -308,7 +308,6 @@ class Plan extends Base
     //获取计划数据 验证并发送计划数据/////////////////////////////
 	protected function sendPlan ($postData)  //即原来的savePlan函数
 	{
-		//halt($planData['plan_filter_option']);
 		//定义全局$sequence 此变量在packHead()函数中要使用
 		if (Cookie::has('sequence'))
 		{

@@ -2442,9 +2442,9 @@ $(function () {
             success:  function (info) {
                 var info = eval( '(' + info +')' );
 				//显示最新的观测图片
-				vm.new_png = info.new_png_pic;
+				//vm.new_png = info.new_png_pic;
 				//console.log(info.fits_head);
-				vm.fits_head = info.fits_head;
+				//vm.fits_head = info.fits_head;
 				
 				if ( info.gimbal )  //显示转台状态信息
 				{
@@ -2517,19 +2517,23 @@ $(function () {
 								btn: ['确定', '不导入'],
 								yes:function (n){//点击确定
 									vm.plan_click();
-									var  plan_cooper = info.plan_cooper.data;
-									var cooper_arr = [];
-									var cooper_n = plan_cooper.length;
-									for (let i = 0; i < cooper_n; i++)
+									let  plan_cooper = info.plan_cooper.data;
+									console.log(plan_cooper);
+									let cooper_arr = [];
+									let ii = 0;
+
+									for (let p in plan_cooper)
 									{
-										cooper_arr[i] = plan_cooper[i];
+										cooper_arr[ii] = plan_cooper[p];
+										ii++;
 									}
 									
 									table.datagrid({
 										data: cooper_arr,
 									});
-									//modeSpan.val(info.plan_cooper.exemode);//将执行模式赋值
+									
 									modeSpan.val('3');//将执行模式赋值为sequence
+									
 									$.ajax({//Ajax把plancooper中import字段变为1
 										url: '/changeplancooperimport',
 										type: 'post',
@@ -2575,26 +2579,30 @@ $(function () {
 								closeBtn:1,
 								btn: ['确定', '不导入'],
 								yes:function (n){//点击确定
+									too_import = true; //此时停止按钮不会弹框
 									vm.plan_click();
-									var  plan_too = info.plan_too.data;
-									var too_arr = [];
-									var too_n = plan_too.length;
-									for (let i = 0; i < too_n; i++)
+
+									let  plan_too = info.plan_too.data;
+									let too_arr = [];
+									let ii = 0;
+									
+									for (let p in plan_too)
 									{
-										too_arr[i] = plan_too[i];
+										too_arr[ii] = plan_too[p];
+										ii ++;
 									}
 									
 									table.datagrid({
 										data: too_arr,
 									});
-									//$('#modeSpan').val(info.plan_too.exemode);//将执行模式赋值
+						
 									//modeSpan.val(info.plan_too.exemode);//将执行模式赋值
 									modeSpan.val('3');//将执行模式赋值为sequence
 
 									//执行提交计划指令
-									submitPlan();
 									planStop.click();
-									planStart.click();
+									setTimeout("planStart.click()", 1500);
+									//planStart.click(); //点击 '开始按钮'（执行：提交和开始2个操作）
 									//执行提交计划指令
 									$.ajax({//Ajax把plantoo中import字段变为1
 										url: '/changeplantooimport',

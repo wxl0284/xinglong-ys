@@ -89,9 +89,9 @@ class Status extends Base
             Db::table('plancooper')->where('at', $this->at_num)->where('import', '0')->setField('import', '1');
        }
 
-       $this->get_new_png($png_dir, $this->at); //最新png图片、最新图片的fits头并存入cache
-       $status['fits_head'] = Cache::get( $this->at . 'fits_info' ); //将cache中最新的fits头信息 返回页面
-       $status['new_png_pic'] = Cache::get($this->at . 'png'); //将cache中最新的png图片名（带路径） 返回页面
+       //$this->get_new_png($png_dir, $this->at); //最新png图片、最新图片的fits头并存入cache
+       //$status['fits_head'] = Cache::get( $this->at . 'fits_info' ); //将cache中最新的fits头信息 返回页面
+       //$status['new_png_pic'] = Cache::get($this->at . 'png'); //将cache中最新的png图片名（带路径） 返回页面
        
        return json_encode ($status);
     }/******实时获取各子设备的状态信息 以json格式返回  结束*******/
@@ -610,38 +610,38 @@ class Status extends Base
 
     protected function plan_cooper ($at_num) //根据望远镜编号查协同计划数据
     {
-        $data = Db::table('plancooper')->where('at', $at_num)->where('import', '0')->where('giveup', '0')->order('id', 'desc')->select();
+        $data = Db::table('plancooper')->where('at', $at_num)->where('import', '0')->where('giveup', '0')->order('id asc')->select();
         //halt($data);
         if ($data) //将计划数据转为
         //if (false) //将计划数据转为
         {
             foreach ($data as $k => $v)
             {
-                $temp[$k]['target'] = $v['target'];
-                $temp[$k]['type'] = $v['type'];
+                $temp['p'.$k]['target'] = $v['target'];
+                $temp['p'.$k]['type'] = $v['type'];
 
                 $tem = data2Time ($v['rightascension']);//赤经
                 $tem = explode(':', $tem);
                 
-                $temp[$k]['rightAscension1'] = $tem[0];
-                $temp[$k]['rightAscension2'] = $tem[1];
-                $temp[$k]['rightAscension3'] = $tem[2];
+                $temp['p'.$k]['rightAscension1'] = $tem[0];
+                $temp['p'.$k]['rightAscension2'] = $tem[1];
+                $temp['p'.$k]['rightAscension3'] = $tem[2];
 
                 $tem = data2Time ($v['declination']);//赤纬
                 $tem = explode(':', $tem);
 
-                $temp[$k]['declination1'] = $tem[0];
-                $temp[$k]['declination2'] = $tem[1];
-                $temp[$k]['declination3'] = $tem[2];
+                $temp['p'.$k]['declination1'] = $tem[0];
+                $temp['p'.$k]['declination2'] = $tem[1];
+                $temp['p'.$k]['declination3'] = $tem[2];
 
-                $temp[$k]['epoch'] = $v['epoch'];
-                $temp[$k]['exposureTime'] = $v['exposuretime'];
-                $temp[$k]['delayTime'] = $v['delaytime'];
-                $temp[$k]['exposureCount'] = $v['exposurecount'];
-                $temp[$k]['filter'] = $v['filter'];
-                $temp[$k]['gain'] = $v['gain'];
-                $temp[$k]['bin'] = $v['bin'];
-                $temp[$k]['readout'] = $v['readout'];
+                $temp['p'.$k]['epoch'] = $v['epoch'];
+                $temp['p'.$k]['exposureTime'] = $v['exposuretime'];
+                $temp['p'.$k]['delayTime'] = $v['delaytime'];
+                $temp['p'.$k]['exposureCount'] = $v['exposurecount'];
+                $temp['p'.$k]['filter'] = $v['filter'];
+                $temp['p'.$k]['gain'] = $v['gain'];
+                $temp['p'.$k]['bin'] = $v['bin'];
+                $temp['p'.$k]['readout'] = $v['readout'];
             }
    
             $status['data'] = $temp;
@@ -654,40 +654,41 @@ class Status extends Base
 
     protected function plan_too ($at_num) //根据望远镜编号查ToO计划数据
     {
-        $data = Db::table('plantoo')->where('at', $at_num)->where('import', '0')->where('giveup', '0')->order('id', 'desc')->select();
+        $data = Db::table('plantoo')->where('at', $at_num)->where('import', '0')->where('giveup', '0')->order('id asc')->select();
         //halt($data);
         if ($data) //将计划数据转为
         {
             foreach ($data as $k => $v)
             {
-                $temp[$k]['target'] = $v['target'];
-                $temp[$k]['type'] = $v['type'];
+                $temp['p'.$k]['target'] = $v['target'];
+                $temp['p'.$k]['type'] = $v['type'];
 
                 $tem = data2Time ($v['rightascension']);//赤经
                 $tem = explode(':', $tem);
                 
-                $temp[$k]['rightAscension1'] = $tem[0];
-                $temp[$k]['rightAscension2'] = $tem[1];
-                $temp[$k]['rightAscension3'] = $tem[2];
+                $temp['p'.$k]['rightAscension1'] = $tem[0];
+                $temp['p'.$k]['rightAscension2'] = $tem[1];
+                $temp['p'.$k]['rightAscension3'] = $tem[2];
 
                 $tem = data2Time ($v['declination']);//赤纬
                 $tem = explode(':', $tem);
 
-                $temp[$k]['declination1'] = $tem[0];
-                $temp[$k]['declination2'] = $tem[1];
-                $temp[$k]['declination3'] = $tem[2];
+                $temp['p'.$k]['declination1'] = $tem[0];
+                $temp['p'.$k]['declination2'] = $tem[1];
+                $temp['p'.$k]['declination3'] = $tem[2];
 
-                $temp[$k]['epoch'] = $v['epoch'];
-                $temp[$k]['exposureTime'] = $v['exposuretime'];
-                $temp[$k]['delayTime'] = $v['delaytime'];
-                $temp[$k]['exposureCount'] = $v['exposurecount'];
-                $temp[$k]['filter'] = $v['filter'];
-                $temp[$k]['gain'] = $v['gain'];
-                $temp[$k]['bin'] = $v['bin'];
-                $temp[$k]['readout'] = $v['readout'];
+                $temp['p'.$k]['epoch'] = $v['epoch'];
+                $temp['p'.$k]['exposureTime'] = $v['exposuretime'];
+                $temp['p'.$k]['delayTime'] = $v['delaytime'];
+                $temp['p'.$k]['exposureCount'] = $v['exposurecount'];
+                $temp['p'.$k]['filter'] = $v['filter'];
+                $temp['p'.$k]['gain'] = $v['gain'];
+                $temp['p'.$k]['bin'] = $v['bin'];
+                $temp['p'.$k]['readout'] = $v['readout'];
             }
    
             $status['data'] = $temp;
+            //halt($status['data']);
             $status['exemode'] = $data[0]['exemode']; //执行模式
         }else{//无ToO计划数据
             $status['data'] = '无ToO计划';
