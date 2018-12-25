@@ -115,6 +115,9 @@
 	function importPlan ()
 	{
 		//var planForm = $('#imptPlan');
+		clearInterval ( plan_execute_i );//关闭请求tag的定时器
+		plan_execute_i = undefined;
+
 		var plan = planForm.find('input');
 		planForm[0].reset();//重置表单数据
 		plan.click(); //打开上传文件的选择窗口
@@ -158,7 +161,8 @@
 						editRow = undefined; //否则 无法拖动
 						planErr = 0; //将提交计划的错误标识 改为0
 						checked = []; //清空被选中的行索引
-						//clearInterval ( plan_execute_i ); //关闭查询执行哪条计划的定时器
+						clearInterval ( plan_execute_i ); //关闭查询执行哪条计划的定时器
+						plan_execute_i = undefined;
 						table.datagrid('enableDnd');
 					}
 				},//success 结束
@@ -444,7 +448,8 @@
 		layer.confirm('确定删除？', {icon: 3, title:'提示',shade:0}, function(index){
 			table.datagrid({ data:[] }); //执行删除
 			checked = []; //清空被选中的行索引
-			//clearInterval ( plan_execute_i ); //关闭查询执行哪条计划的定时器
+			clearInterval ( plan_execute_i ); //关闭查询执行哪条计划的定时器
+			plan_execute_i = undefined;
 			editRow = undefined;
 			layer.close(index);
 		});
@@ -569,7 +574,7 @@
 			if ( option == 'planStart' ) //如果点击的开始按钮 则执行提交 并执行正执行的计划
 			{
 				submitPlan();//提交计划
-				setTimeout(plan_executing, 2000)//执行正执行的计划	
+				for (let i=0; i < 10000000; i++) { i*1; i/1; } //空循环 延迟1秒
 			}
 
 			if ( rows.length > 0 ) //将被选中的计划的索引存入 checked_plans
@@ -616,7 +621,8 @@
 						//planStop.prop('disabled', false);
 						too_import = false;
 						planStart.css("background-color","red");
-						planStop.css("background-color","#e1e1e1");	
+						planStop.css("background-color","#e1e1e1");
+						setTimeout(plan_executing, 2000)//执行正执行的计划	
 					}
 					
 					if (info.indexOf('计划停止') !== -1)
@@ -1143,6 +1149,9 @@ var all_plans = aperture + 'all_plans';
  /*导入已提交的计划数据 从php的缓存中获得*/
  function importData ()
  {
+	clearInterval ( plan_execute_i );
+	plan_execute_i = undefined;
+
 	$.ajax({
 		url: '/plan',
 		type: 'post',
@@ -1202,6 +1211,7 @@ var all_plans = aperture + 'all_plans';
 	//先验证数据是否都已保存，页面是否有数据，暂时不做
 	let extport_plan_data = table.datagrid('getRows');
 	let num = extport_plan_data.length;
+	if ( num < 1 ) { layer.alert('无数据可导出', { shade:0, closeBtn:0}); return; }
 	//直接将页面计划数据以文件下载的方式保存
 	let out_str = ''; //要写入文件的字串
 
@@ -1234,6 +1244,30 @@ var all_plans = aperture + 'all_plans';
     aLink.href = "data:text/strat;charset=utf-8," + out_str;
 
  }//exportPlan() 结束
+/*
+ addPlans ()
+ 页面‘编辑计划’调用的方法
+ 功能：停止向服务器请求正执行计划之tag、清空页面计划数据 
+*/
+ function addPlans ()
+ {
+	clearInterval ( plan_execute_i );
+	plan_execute_i = undefined;
+
+	checked = []; //清空被选中的行索引
+
+	if ( table.datagrid('getRows').length < 1 )
+	{
+		table.datagrid('insertRow', {
+			index : 0, 
+			row:{},
+		});
+		
+		table.datagrid('beginEdit', 0); //将此新加的一行设为可编辑
+		editRow = 0;
+		table.datagrid('enableDnd');
+	}
+ }//addPlans () 结束
  function delAll1(){
 	// table.datagrid({
 	// 	rowStyler: function (i=3) {

@@ -134,5 +134,5 @@ Route::post('/down_fits_pic$', 'xinglong/page/down_fits_pic');
 
 /*如下为望远镜配置的示例 路由*/
 //测试首页 
-//Route::get('test$', 'xl/test/test');
+Route::get('test$', 'xl/test/test');
 /*如下为望远镜配置的示例 结束*/

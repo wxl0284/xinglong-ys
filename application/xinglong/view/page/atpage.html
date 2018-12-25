@@ -29,11 +29,11 @@
 				<!--<a class='pos_a border1 more inline center' id='takeOverBtn'>接管</a>-->
 				<div style='width:528px;height:264px;' >
 					<img v-if='new_png!==""' :src='new_png' >
-					<span v-else style='color:red;'>
+					<span v-else style='color:red;width:28%' class="center_mrg display">
 						暂无观测图片
 					</span>
 					<div style='width:264px;float:right;'>
-					  <div style="width:78%; margin-left: 20px;" >
+					  <div v-if='fits_head!=""' style="width:78%; margin-left: 20px;" >
 						目标名:{{fits_head.obj_name}}<br>
 						赤经:{{fits_head.ra}}<br>
 						赤纬:{{fits_head.dec}}<br>
@@ -186,7 +186,7 @@
         <div id='devsNav'><!--望远镜子设备导航:js用code/public/static/js/dev1.js-->
             <table>
                 <tr>
-				 {if condition="$Think.session.role!=2"}<td><a :class='{borderBtm: device_nav.dev_click=="plan"}' @click='plan_click' >观测计划</a></td>{/if}
+				  <td><a :class='{borderBtm: device_nav.dev_click=="plan"}' @click='plan_click' >观测计划</a></td>
 				  <td><a :class='{borderBtm: device_nav.dev_click=="pic"}' @click='pic_click' >观测图像</a></td>
 				  <td v-if='configData.has_gimbal'><a :class='{borderBtm: device_nav.dev_click=="gimbal"}' @click='gimbal_click' >转台</a></td>
 				  <td class='pos_r' v-if='configData.ccd_num>0' ><a :class='{borderBtm: device_nav.dev_click=="ccd"}' @click='ccd_click' >{{ccd_name}}</a>
@@ -983,10 +983,10 @@
 			 <table id="dg" title="计划表格" style='text-align: center;'> 
 			 </table>
 			<div id="toolbar">
-			<a class="easyui-linkbutton" iconCls="icon-more" plain="true" onclick="importPlan()">导入计划文件</a>
+			<a class="easyui-linkbutton" iconCls="icon-more" plain="true" {if condition="$Think.session.role!=2"}onclick="importPlan()"{/if}>导入计划文件</a>
 			<a class="easyui-linkbutton" iconCls="icon-out" plain="true" onclick="exportPlan(this)" download="plan_data.strat">导出至文件</a>
 			<a class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="savePlan()">保存</a>
-			<a class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="">编辑计划</a>
+			<a class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="addPlans()">编辑计划</a>
 			<a class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="importData()">已提交的计划</a>
 			<a class="easyui-linkbutton" iconCls="icon-do" plain="true" onclick="plan_executing()">正执行的计划</a>
 			<a class="easyui-linkbutton" iconCls="icon-clear" plain="true" onclick="delAll()">全部删除</a>
@@ -1010,10 +1010,9 @@
 			    <option value='4'>sequence-loop</option>
 			  </select>
 				<div id='planExe' class='pos_a'>
-					<button id='planStart'>开始</button>
-					<button id='planStop'>停止</button>
+					<button id='planStart' {if condition="$Think.session.role==2"}disabled='disabled'{/if} >开始</button>
+					<button id='planStop' {if condition="$Think.session.role==2"}disabled='disabled'{/if} >停止</button>
 				</div>
-				
 		   </div>
 		   <!--观测计划的模式按钮 结束-->
 		   <form id='imptPlan' style='display:none;' enctype='multipart/form-data'>

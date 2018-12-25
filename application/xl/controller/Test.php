@@ -90,8 +90,7 @@ class Test extends Controller
 		//$temp = $res['gain_noise'];
 		
 		//$a = data2Time(17.416638888889);
-		$a = url("xinglong/Page/whole_day_pic", ["aperture"=>'50cm'])
-		halt('testt');
+		
 		//$dir = ROOT_PATH . 'public' . DS . 'cloudsc/';
 
 		//$res = scandir ( $dir = ROOT_PATH . 'public' . DS . 'cloudsd/' );
@@ -103,7 +102,7 @@ class Test extends Controller
 			$err = 'hhh';
 		}*/
 
-		/*如下是测试php-zip扩展 进行多文件压缩*/
+		/*如下是测试php-zip扩展 进行多文件压缩
 		$zip = new \ZipArchive;
 
 		$res = $zip->open('test.zip', ZipArchive::CREATE);
@@ -117,6 +116,9 @@ class Test extends Controller
 			echo 'failed';
 		}
 		/*如下是测试php-zip扩展 进行多文件压缩 结束*/
+
+		$fit_img_data = Db::table('observerimg')->where('at', 'at80')->where('date', 'like', '20181221q'.'%')->order('time desc')->find();
+		dump($fit_img_data);
 	}
 	
 	public function valid ()

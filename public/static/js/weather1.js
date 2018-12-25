@@ -46,6 +46,7 @@ $(function (){
  var windspeed10 = $('#windspeed10');
  var winddirection = $('#winddirection');
  var rainfall = $('#rainfall');
+ var night_light = $('#night_light');
 
  function get_weather ()
  {
@@ -69,6 +70,7 @@ $(function (){
                 windspeed10.html(info.windspeed10);
                 winddirection.html(info.winddirection);
                 rainfall.html(info.rainfall);
+                night_light.html(info.night_light);
             }
         },//success() 结束
     });//ajax结束

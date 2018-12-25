@@ -1066,7 +1066,16 @@ class Page extends Base
             }
 
             $vars['weather_data'] = $weather_data;
+        }//获取兴隆环境信息 结束
+
+        //获取夜天光数据
+        $sqmData = Db::table('sqmrealtimedata')->order('id', 'desc')->find();
+        if ( $sqmData )
+        {
+            $night_light = round( $sqmData['sqmdata'], 2);
+            $vars['night_light'] = $night_light;
         }
+        //获取夜天光数据 结束
 
         //读取云量相机图片 存入session
         ///data/lampp/htdocs/public/atccs-data/2018/11/11
@@ -1223,8 +1232,9 @@ class Page extends Base
     public function ajax_get_weather () //ajax 每分钟请求环境信息
     {
         $weather_data = Db::table('wsrealtimedata')->order('id', 'desc')->find();
+        $sqmData = Db::table('sqmrealtimedata')->order('id', 'desc')->find();
         
-        if ( $weather_data )
+        if ( $weather_data && $sqmData )
         {
             $weather_data['sec'] = date('Y-m-d H:i:s', $weather_data['sec']);
             
@@ -1256,6 +1266,8 @@ class Page extends Base
             {
                 $weather_data['winddirection'] = '东';
             }
+
+            $weather_data['night_light'] = round( $sqmData['sqmdata'], 2 );
 
             return json_encode ( $weather_data );
         }else{

@@ -46,7 +46,7 @@ class Plan extends Base
 				 'file.fileMime' => '文件格式或文件内容不符合要求']);*/
 		$result = $this->validate(
 		['file' => $file],
-		['file' => 'file|require|fileSize:4096000000|fileMime:text/plain'],
+		['file' => 'file|require|fileSize:123800|fileMime:text/plain'],
 		['file.require' => '请选择上传文件',
 			//'file.fileExt' => '文件后缀须为strat',
 			'file.fileSize' => '文件大小超出限制',

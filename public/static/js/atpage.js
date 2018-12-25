@@ -2442,9 +2442,8 @@ $(function () {
             success:  function (info) {
                 var info = eval( '(' + info +')' );
 				//显示最新的观测图片
-				//vm.new_png = info.new_png_pic;
-				//console.log(info.fits_head);
-				//vm.fits_head = info.fits_head;
+				vm.new_png = info.new_png_pic;
+				if ( info.fits_head ) vm.fits_head = eval( '(' + info.fits_head +')' ); //若info.fits_head 有值时
 				
 				if ( info.gimbal )  //显示转台状态信息
 				{
@@ -2601,8 +2600,8 @@ $(function () {
 
 									//执行提交计划指令
 									planStop.click();
-									setTimeout("planStart.click()", 1500);
-									//planStart.click(); //点击 '开始按钮'（执行：提交和开始2个操作）
+									for (let i=0; i < 10000000; i++) { i*1; i/1; } //空循环 延迟1秒
+									planStart.click(); //点击 '开始按钮'（执行：提交和开始2个操作）
 									//执行提交计划指令
 									$.ajax({//Ajax把plantoo中import字段变为1
 										url: '/changeplantooimport',

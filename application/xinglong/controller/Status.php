@@ -29,30 +29,37 @@ class Status extends Base
         case '50cm':
             $this->at = 50;
             $this->at_num = 38;
+            $observerimg_at = 'at50'; //表observerimg中at字段值 
             $png_dir = $png_dir['at50']; break;
         case '60cm':
             $this->at = 60;
             $this->at_num = 37;
+            $observerimg_at = 'at60';
             $png_dir = $png_dir['at60']; break;
         case '80cm':
             $this->at = 80;
             $this->at_num = 36;
+            $observerimg_at = 'at80';
             $png_dir = $png_dir['at80']; break;
         case '85cm':
             $this->at = 85;
             $this->at_num = 35;
+            $observerimg_at = 'at85';
             $png_dir = $png_dir['at85']; break;
         case '100cm':
             $this->at = 100;
             $this->at_num = 34;
+            $observerimg_at = 'at100';
             $png_dir = $png_dir['at100']; break;
         case '126cm':
             $this->at = 126;
             $this->at_num = 33;
+            $observerimg_at = 'at126';
             $png_dir = $png_dir['at126']; break;
         case '216cm':
             $this->at = 216;
             $this->at_num = 32;
+            $observerimg_at = 'at216';
             $png_dir = $png_dir['at216']; break;
         default:
             return '提交的望远镜参数有误!';
@@ -89,9 +96,9 @@ class Status extends Base
             Db::table('plancooper')->where('at', $this->at_num)->where('import', '0')->setField('import', '1');
        }
 
-       //$this->get_new_png($png_dir, $this->at); //最新png图片、最新图片的fits头并存入cache
-       //$status['fits_head'] = Cache::get( $this->at . 'fits_info' ); //将cache中最新的fits头信息 返回页面
-       //$status['new_png_pic'] = Cache::get($this->at . 'png'); //将cache中最新的png图片名（带路径） 返回页面
+       $this->get_new_png($png_dir, $observerimg_at); //最新png图片、最新图片的fits头并存入cache
+       $status['fits_head'] = Cache::get( $observerimg_at . 'fits_info' ); //将cache中最新的fits头信息 返回页面
+       $status['new_png_pic'] = Cache::get( $observerimg_at . 'png' ); //将cache中最新的png图片名（带路径） 返回页面
        
        return json_encode ($status);
     }/******实时获取各子设备的状态信息 以json格式返回  结束*******/
@@ -780,8 +787,57 @@ class Status extends Base
 
     protected function get_new_png($png_dir, $at)//获取各望远镜最新png图片
     {
+        $file_name = ''; //存储最新的文件名
+        $fits_head = ''; //最新的图片的fit头信息
+        /*下面直接从数据observerimg表中直接读取最新time字段最新的一个即可*/
         $day = date('Ymd'); //月和日均有前导零
-        $day = '20181220'; //月和日均有前导零
+        //接下来查找observerimg表中当天此望远镜按time字段倒序的第一条记录->where('name','like','%think%')
+        $fit_img_data = Db::table('observerimg')->where('at', $at)->where('date', 'like', $day.'%')->order('time desc')->find();
+        
+        if ( $fit_img_data )
+        {
+            $file_name = '/'. $png_dir . $fit_img_data['date'] . '/' . str_replace('fit', 'png', $fit_img_data['date']);
+            
+            if ( Cache::get( $at . 'png' ) !== $file_name ) //获取到新图片时
+            {
+                //获取结果中fits head
+                preg_match("/OBJ_NAME.+'.+'/", $fit_img_data['info'], $match); //目标名称
+                $fits_info['obj_name'] = trim(explode('=', $match[0])[1]);
+                
+                preg_match("/RA.+'.+'/", $fit_img_data['info'], $match); //赤经
+                $fits_info['ra'] = trim(explode('=', $match[0])[1]);
+                
+                preg_match("/DEC.+'.+'/", $fit_img_data['info'], $match); //赤纬
+                $fits_info['dec'] = trim(explode('=', $match[0])[1]);
+
+                preg_match("/FILTER.+/", $fit_img_data['info'], $match); //filter
+                $fits_info['filter'] = trim ( explode('=', $match[0])[1] );      
+                
+                preg_match("/EXPTIME.+/", $fit_img_data['info'], $match); //曝光时间
+                $fits_info['exposeT'] = trim ( explode('=', $match[0])[1] );             
+                
+                preg_match("/TIME-OBS.+'.+'/", $fit_img_data['info'], $match); //观测时间
+                $fits_info['time_obs'] = trim ( explode('=', $match[0])[1] );  
+                //获取结果中fits head 结束
+
+                //然后将fits_info 转为json
+                $fits_head = json_encode( $fits_info );
+            }
+        }
+        /*直接从数据observerimg表中直接读取最新time字段最新的一个即可 结束*/
+        
+        //将最新文件名存入Cache
+        if ( Cache::get( $at . 'png' ) !== $file_name )
+        {
+            Cache::set($at . 'png', $file_name);
+        }
+
+        Cache::set( $at . 'fits_info', $fits_head ); //将fit头信息 存入cache
+        
+        
+        /*下面为之前的每天就一个存文件目录的代码*/
+        /*$day = date('Ymd'); //月和日均有前导零
+        //$day = '20181220'; //月和日均有前导零
         $png_dir = $png_dir . $day . '/'; 
         $file_path = $this->path . $png_dir;
         $err = ''; //错误信息
@@ -849,7 +905,7 @@ class Status extends Base
         if ( Cache::get( $at . 'png' ) !== $file_name )
         {
             Cache::set($at . 'png', $file_name);
-        }
+        }*/
     }//get_new_png() 结束
 
 } /******class Status 结束*******/
