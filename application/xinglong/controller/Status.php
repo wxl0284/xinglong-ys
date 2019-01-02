@@ -788,7 +788,7 @@ class Status extends Base
     protected function get_new_png($png_dir, $at)//获取各望远镜最新png图片
     {
         $file_name = ''; //存储最新的文件名
-        $fits_head = ''; //最新的图片的fit头信息
+        $fits_head = Cache::get($at . 'fits_info'); //最新的图片的fit头信息
         /*下面直接从数据observerimg表中直接读取最新time字段最新的一个即可*/
         $day = date('Ymd'); //月和日均有前导零
         //接下来查找observerimg表中当天此望远镜按time字段倒序的第一条记录->where('name','like','%think%')
@@ -796,7 +796,7 @@ class Status extends Base
         
         if ( $fit_img_data )
         {
-            $file_name = '/'. $png_dir . $fit_img_data['date'] . '/' . str_replace('fit', 'png', $fit_img_data['date']);
+            $file_name = '/'. $png_dir . $fit_img_data['date'] . '/' . str_replace('fit', 'png', $fit_img_data['name']);
             
             if ( Cache::get( $at . 'png' ) !== $file_name ) //获取到新图片时
             {
@@ -816,6 +816,9 @@ class Status extends Base
                 preg_match("/EXPTIME.+/", $fit_img_data['info'], $match); //曝光时间
                 $fits_info['exposeT'] = trim ( explode('=', $match[0])[1] );             
                 
+                preg_match("/DATE-OBS.+'.+'/", $fit_img_data['info'], $match); //日期
+                $fits_info['date'] = trim ( explode('=', $match[0])[1] );             
+                
                 preg_match("/TIME-OBS.+'.+'/", $fit_img_data['info'], $match); //观测时间
                 $fits_info['time_obs'] = trim ( explode('=', $match[0])[1] );  
                 //获取结果中fits head 结束
@@ -832,7 +835,10 @@ class Status extends Base
             Cache::set($at . 'png', $file_name);
         }
 
-        Cache::set( $at . 'fits_info', $fits_head ); //将fit头信息 存入cache
+        if ( $fits_head != Cache::get($at . 'fits_info') )
+        {
+            Cache::set( $at . 'fits_info', $fits_head ); //将fit头信息 存入cache
+        }
         
         
         /*下面为之前的每天就一个存文件目录的代码*/

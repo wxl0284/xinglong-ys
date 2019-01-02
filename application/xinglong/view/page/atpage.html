@@ -39,6 +39,7 @@
 						赤纬:{{fits_head.dec}}<br>
 						滤光片:{{fits_head.filter}}<br>
 						曝光时间:{{fits_head.exposeT}}<br>
+						日期:{{fits_head.date}}<br>
 						拍摄时间:{{fits_head.time_obs}}
 					  </div>
 					</div>
@@ -296,12 +297,12 @@
 				<form class='center' v-if='device_nav.gimbal_command == "speed_alter"'><!--速度修正-->
 					<table class='center center_mrg' id='speed_alter_tb'>
 						<tr>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="西北" :class='{speed_click: device_nav.speed_alter_btn=="n_w"}' @click='speed_alter_sbmt("n_w")' ></td>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="北" :class='{speed_click: device_nav.speed_alter_btn=="n"}' @click='speed_alter_sbmt("n")' ></td>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="东北" :class='{speed_click: device_nav.speed_alter_btn=="n_e"}' @click='speed_alter_sbmt("n_e")' ></td>
+							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="西北" :class='{speed_click: device_nav.speed_alter_btn=="n_w"}' @mousedown='speed_alter_sbmt("n_w")' @mouseup='speed_alter_sbmt("n_w", 0)' ></td>
+							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="北" :class='{speed_click: device_nav.speed_alter_btn=="n"}' @mousedown='speed_alter_sbmt("n")' @mouseup='speed_alter_sbmt("n", 0)' ></td>
+							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="东北" :class='{speed_click: device_nav.speed_alter_btn=="n_e"}' @mousedown='speed_alter_sbmt("n_e")' @mouseup='speed_alter_sbmt("n_e", 0)' ></td>
 						</tr>
 						<tr>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="西" :class='{speed_click: device_nav.speed_alter_btn=="w"}' @click='speed_alter_sbmt("w")' ></td>
+							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="西" :class='{speed_click: device_nav.speed_alter_btn=="w"}' @mousedown='speed_alter_sbmt("w")' @mousedup='speed_alter_sbmt("w", 0)'></td>
 							<td>
 								<select width='91%' v-model='gimbal_form.speed_alter.correction'>
 									<option value="-1">选择速度</option>
@@ -319,12 +320,12 @@
 									<option value="1.0">1度/s</option>
 								</select>
 							</td>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="东" :class='{speed_click: device_nav.speed_alter_btn=="e"}' @click='speed_alter_sbmt("e")' ></td>
+							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="东" :class='{speed_click: device_nav.speed_alter_btn=="e"}' @mousedown='speed_alter_sbmt("e")' @mouseup='speed_alter_sbmt("e", 0)'></td>
 						</tr>
 						<tr>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="西南" :class='{speed_click: device_nav.speed_alter_btn=="s_w"}' @click='speed_alter_sbmt("s_w")' ></td>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="南" :class='{speed_click: device_nav.speed_alter_btn=="s"}' @click='speed_alter_sbmt("s")' ></td>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="东南" :class='{speed_click: device_nav.speed_alter_btn=="s_e"}' @click='speed_alter_sbmt("s_e")' ></td>
+							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="西南" :class='{speed_click: device_nav.speed_alter_btn=="s_w"}' @mousedown='speed_alter_sbmt("s_w")' @mouseup='speed_alter_sbmt("s_w", 0)'></td>
+							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="南" :class='{speed_click: device_nav.speed_alter_btn=="s"}' @mousedown='speed_alter_sbmt("s")' @mouseup='speed_alter_sbmt("s", 0)' ></td>
+							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="东南" :class='{speed_click: device_nav.speed_alter_btn=="s_e"}' @mousedown='speed_alter_sbmt("s_e")' @mouseup='speed_alter_sbmt("s_e", 0)'></td>
 						</tr>
 					</table>
 			    </form><!--速度修正 结束-->
@@ -568,14 +569,14 @@
 					</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					增益档位：<select name="gear" style='width:60px;' v-model='ccd_form.set_gain.gear' >	
 						<option value="-1">请选择</option>
-						<option :value="v" v-for="v in ccd_config.gainnumber*1" >{{v}}x</option>
+						<option :value="k" v-for="(v,k) in ccd_config.gainnumber*1" >{{v}}x</option>
 					</select>
 					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='ccd_gain_sbmt' >
 				</form><!--设置增益 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "readout_speed"'><!--读出速度模式-->
 					读出速度（Mb/s）：<select style="width:80px" v-model='ccd_form.readout_speed_form.readout_mode'>
 						<option value="-1">请选择</option>
-						<option :value="k+1" v-for='(v, k) in readout_speed_Mode'>{{v}}</option>
+						<option :value="k" v-for='(v, k) in readout_speed_Mode'>{{v}}</option>
 						<!--<option value="1" v-if='readout_speed_Mode.A'>A</option>
 						<option value="2" v-if='readout_speed_Mode.B'>B</option>
 						<option value="3" v-if='readout_speed_Mode.C'>C</option>-->
@@ -585,7 +586,7 @@
 				<form class='center' v-if='device_nav.ccd_command == "transfer_speed"'><!--转移速度模式-->
 					转移速度（Mb/s）：<select style="width:80px" v-model='ccd_form.transfer_speed_form.transfer_mode'>
 						<option value="-1">请选择</option>
-						<option :value="k+1" v-for='(v, k) in transfer_speed_Mode'>{{v}}</option>
+						<option :value="k" v-for='(v, k) in transfer_speed_Mode'>{{v}}</option>
 						<!--<option value="1" v-if='transfer_speed_Mode.a'>a</option>
 						<option value="2" v-if='transfer_speed_Mode.b'>b</option>-->
 					</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -961,17 +962,17 @@
 		<br>
 		<div id='at60Res' class='center_mrg' style='width:92%;' v-if='device_nav.dev_click=="pic"'><!--观测图像 开始-->
 			<div id='bigPic' class='pos_r'>
-				<img :src='"/" + png_dir + big_img' style='width:1104px;' v-if='img4_data.length>0' >
+				<img :src='"/" + big_img["dir"] + big_img["name"]' style='width:1104px;' v-if='img4_data.length>0' >
 				<!--{if condition="$Think.session.role!=2"}<img class='pos_a' src='/static/images-1/download.png' style='top:680px;right:3px;cursor: pointer;'>{/if}-->
 			</div>
 			<div id='smallPic' class='pos_r'>
 				<!--<img id='pre' src='/static/images-1/left.jpg' @click='pre_4_pic()' >-->
-				<img class='mrgR' v-for='(v,k) in img4_data' :src='"/"+ png_dir + v' style='width:226px;height:154px;' @click='show_big_img(k)' >
+				<img class='mrgR' v-for='(v,k) in img4_data' :src='"/"+ v["dir"] + v["name"]' style='width:226px;height:154px;' @click='show_big_img(k)' >
 				<!--<img class='mrgR' src='"/" + png_dir + big_img' style='width:226px;height:154px;' @click='show_big_img(k)' >
 				<img class='mrgR' src='"/" + png_dir + big_img' style='width:226px;height:154px;' @click='show_big_img(k)' >
 				<img class='mrgR' src='"/" + png_dir + big_img' style='width:226px;height:154px;' @click='show_big_img(k)' >
-				<img class='mrgR' src='"/" + png_dir + big_img' style='width:226px;height:154px;' @click='show_big_img(k)' >-->
-				<!--<img id='next' class='pos_a' src='/static/images-1/right.jpg' @click='next_4_pic()' >-->
+				<img class='mrgR' src='"/" + png_dir + big_img' style='width:226px;height:154px;' @click='show_big_img(k)' >
+				<img id='next' class='pos_a' src='/static/images-1/right.jpg' @click='next_4_pic()' >-->
 			</div>
 			<a href="/whole_day_pic/{$at_aperture[$data['at_id']]}?day=today" class="display center" style="font-size:22px;" v-if='img4_data.length>0'>查看全天观测结果</a>
 			<!--<a v-else href="/whole_day_pic/{$at_aperture[$data['at_id']]}?day=today" style="display:block;margin:0 auto;width:50;text-align:center;">查询此望远镜其他日期观测图像</a>-->

@@ -226,12 +226,12 @@ class Gimbal extends Base
 
     protected function trackStar ($postData, $param) //跟踪恒星 指令
     {          
-        if ( !preg_match('/^\d{2}$/', $postData['rightAscension1']) || $postData['rightAscension1'] > 24 || $postData['rightAscension1'] < 0)
+        if ( !preg_match('/^\d{1,2}$/', $postData['rightAscension1']) || $postData['rightAscension1'] > 24 || $postData['rightAscension1'] < 0)
         {
         	return '赤经之小时参数超限!';
         }
         
-        if ( !preg_match('/^\d{2}$/', $postData['rightAscension2']) || $postData['rightAscension2'] > 59 || $postData['rightAscension2'] < 0)
+        if ( !preg_match('/^\d{1,2}$/', $postData['rightAscension2']) || $postData['rightAscension2'] > 59 || $postData['rightAscension2'] < 0)
         {
         	return '赤经之分钟参数超限!';
         }
@@ -253,12 +253,12 @@ class Gimbal extends Base
         }
         
         //处理赤纬数据
-        if ( !preg_match('/^\d{2}$/', $postData['declination1']) || $postData['declination1'] > 90 || $postData['declination1'] < -90)
+        if ( !preg_match('/^\d{1,2}$/', $postData['declination1']) || $postData['declination1'] > 90 || $postData['declination1'] < -90)
         {
         	return '赤纬之小时参数超限!';
         }
         
-        if ( !preg_match('/^\d{2}$/', $postData['declination2']) || $postData['declination2'] > 59 || $postData['declination2'] < 0)
+        if ( !preg_match('/^\d{1,2}$/', $postData['declination2']) || $postData['declination2'] > 59 || $postData['declination2'] < 0)
         {
         	return '赤纬之分钟参数超限!';
         }

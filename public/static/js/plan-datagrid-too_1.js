@@ -248,9 +248,13 @@ $('#atConfig').hover(
         {filterId:'V',name:'V'},
         {filterId:'R',name:'R'},
         {filterId:'I',name:'I'},
-        {filterId:'u',name:'u'},
+        {filterId:'N',name:'N'},
+        {filterId:'N',name:'N'},
+        {filterId:'U',name:'U'},
+        {filterId:'W',name:'W'},
         {filterId:'g',name:'g'},
         {filterId:'r',name:'r'},
+        {filterId:'u',name:'u'},
         {filterId:'i',name:'i'},
         {filterId:'z',name:'z'},];
 

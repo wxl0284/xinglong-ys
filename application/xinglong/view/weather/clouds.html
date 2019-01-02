@@ -12,7 +12,7 @@
     {load href='/static/css/common-1.css'}
     {load href='/static/js/weatherDetail.js'}
     <style>
-        .cloud_pic {width:48%; margin-left: 1.2%;}
+        .cloud_pic {width:48%; margin-left: 1.2%;display:inline-block;text-align:center}
     </style>
 </head>
 <body>
@@ -30,7 +30,10 @@
             <h3 style="text-align:center;">未获取到云量图片</h3>
         {else /}
             {foreach name="cloud_pic" item="v"}
-                <img src='/{$cloud_pic_dir}{$v}' class='cloud_pic'>
+              <div class='cloud_pic'>
+                 <img src='/{$cloud_pic_dir}{$v.file}' style='width:100%;'><br>
+                 <span>{$v.time}</span>
+              </div>
             {/foreach}
         {/if}
 	</div><br>

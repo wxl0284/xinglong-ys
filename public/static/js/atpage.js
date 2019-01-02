@@ -29,13 +29,13 @@ $(function () {
 			configData: configData, //configData是后端返回的json数据
 			ccd_config:configData.ccd[0], //此对象存储ccd的配置数据
 			ccd_name:'CCD1',
-			png_dir: '',
+			//png_dir: [], //存储每一个观测图片的目录
 			at_image:[], //存储所有获取的普通格式观测图像
 			img4_data: [], //存储截取的4个普通格式图片
 			at_image_dir:'', //各望远镜普通观测图像目录
 			at_fitsImg_dir:'', //各望远镜fits观测图像目录
 			next_pre_click:0, //向左或向右按钮点击的次数
-			big_img:'', //观测图像的大图名称
+			big_img:[], //观测图像的大图名称
 			new_png: '', //最新观测图片
 			fits_head:'', //fits head
 			device_nav: {//此对象中的数据用以区分是否给各子设备加上蓝色底框
@@ -306,13 +306,14 @@ $(function () {
 		},/*computed 结束*/
 		methods: {
 			plan_click: function () {
+				localStorage.setItem('page_pos', 'plan');
 				this.device_nav.dev_click = 'plan';
 				planInfo.removeClass('displayNo');
 				if ( table.datagrid('getRows').length < 1 )
 				{
 					table.datagrid('insertRow', {
 						index : 0, 
-						row:{},
+						row:{type:'0',epoch:1,bin:1},
 					});
 					
 					table.datagrid('beginEdit', 0); //将此新加的一行设为可编辑
@@ -321,6 +322,7 @@ $(function () {
 				}
 			},
 			gimbal_click: function () {
+				localStorage.setItem('page_pos', 'gimbal');
 				this.device_nav.dev_click = 'gimbal';
 				this.device_nav.gimbal_command = '';
 				planInfo.addClass('displayNo');
@@ -388,6 +390,7 @@ $(function () {
 				});
 			},/*转台之 连接 断开 找零 复位 停止 急停 结束*/
 			ccd_click: function () {
+				localStorage.setItem('page_pos', 'ccd');
 				this.device_nav.dev_click = 'ccd';
 				planInfo.addClass('displayNo');
 			},
@@ -405,18 +408,22 @@ $(function () {
 				}
 			},
 			filter_click: function () {
+				localStorage.setItem('page_pos', 'filter');
 				this.device_nav.dev_click = 'filter';
 				planInfo.addClass('displayNo');
 			},
 			sDome_click: function () {
+				localStorage.setItem('page_pos', 'sDome');
 				this.device_nav.dev_click = 'sDome';
 				planInfo.addClass('displayNo');
 			},
 			oDome_click: function () {
+				localStorage.setItem('page_pos', 'oDome');
 				this.device_nav.dev_click = 'oDome';
 				planInfo.addClass('displayNo');
 			},
 			focus_click: function () {
+				localStorage.setItem('page_pos', 'focus');
 				this.device_nav.dev_click = 'focus';
 				planInfo.addClass('displayNo');
 			},
@@ -433,6 +440,7 @@ $(function () {
 				planInfo.addClass('displayNo');
 			},
 			pic_click: function () {
+				localStorage.setItem('page_pos', 'image');
 				this.device_nav.dev_click = 'pic';
 				planInfo.addClass('displayNo');
 				var t = this;
@@ -447,11 +455,18 @@ $(function () {
 						if ( info.indexOf('img') !== -1 ) //返回了图像信息
 						{
 							let img_data = info.split('#');
+							t.at_image = $.parseJSON(img_data[1]);
+							
+							t.img4_data = t.at_image.slice(0,4); //截取前4个图片 赋值给img4_data
+							t.big_img = t.img4_data[0]; //将第一个图片，显示
+
+
+							/*之前的 代码 目录只有一个的情况
 							t.png_dir = img_data[2];
 							img_data = $.parseJSON(img_data[1]);
 							t.at_image = img_data; //将目录中所有图片信息赋值给at_image
 							t.img4_data = img_data.slice(0,4); //截取前4个图片 赋值给img4_data
-							t.big_img = t.img4_data[0]; //将第一个图片，显示
+							t.big_img = t.img4_data[0]; //将第一个图片，显示*/
 						}else{//为获取到图像
 							t.img4_data = []; //将页面原有图片清空
 							layer.alert(info, {
@@ -489,7 +504,7 @@ $(function () {
 			},
 			gimbal_track_star_Asc1: function (tip) {
 				var msg = '';
-				var patn = /^\d{2}$/;
+				var patn = /^\d{1, 2}$/;
 				var v = this.gimbal_form.trackStar.rightAscension1;
 				if ( !patn.test(v) || v > 24 || v < 0 )
 				{
@@ -503,7 +518,7 @@ $(function () {
 			},
 			gimbal_track_star_Asc2: function (tip) {
 				var msg = '';
-				var patn = /^\d{2}$/;
+				var patn = /^\d{1,2}$/;
 				var v = this.gimbal_form.trackStar.rightAscension2;
 				if ( !patn.test(v) || v > 59 || v < 0 )
 				{
@@ -538,7 +553,7 @@ $(function () {
 			},
 			gimbal_track_star_Dec1:function (tip) {
 				var msg = '';
-				var patn = /^-?\d{2}$/;
+				var patn = /^-?\d{1,2}$/;
 				var v = this.gimbal_form.trackStar.declination1;
 				if ( !patn.test(v) || v > 90 || v < -90 )
 				{
@@ -552,7 +567,7 @@ $(function () {
 			},
 			gimbal_track_star_Dec2:function (tip) {
 				var msg = '';
-				var patn = /^\d{2}$/;
+				var patn = /^\d{1,2}$/;
 				var v = this.gimbal_form.trackStar.declination2;
 				if ( !patn.test(v) || v > 59 || v < 0 )
 				{
@@ -837,14 +852,22 @@ $(function () {
 					});/*ajax 结束*/
 				}
 			},/**axis3Mode_sbmt 结束**/
-			speed_alter_sbmt:function (btn){
+			speed_alter_sbmt:function (btn, stop){
 				var that = this; //存储vue实例化的对象
-				if ( this.gimbal_form.speed_alter.correction == -1)
+
+				if ( this.gimbal_form.speed_alter.correction == -1 && stop === undefined )//未传入第2个参数时
 				{
 					layer.alert('未选择速度值!', {shade:false, closeBtn:0});return;
 				}
 
 				this.gimbal_form.speed_alter.axis = btn; //将按钮对应的方向 赋值给axis
+				
+				if ( stop === 0 )//鼠标松开 发送速度0
+				{
+					for (let i = 0; i < 10000000; i++) { i*1; i/1; i*1 } //延迟1秒多 再往下执行
+					this.gimbal_form.speed_alter.correction = '0';
+				}
+
 				$.ajax({
 					url: '/gimbal',
 					type: 'post',
@@ -2424,6 +2447,29 @@ $(function () {
 			},/*guide_focus_sbmt 结束*/
 		},/******methods 结束******/
 	});/***************vue js结束*****************/
+	/*定义一个值 标记页面当前在何位置 刷新页面后 还显示原来位置的页面*/
+	var current_page_pos = localStorage.getItem('page_pos');
+
+	switch (current_page_pos)
+	{
+		case 'gimbal'://转台
+			vm.gimbal_click(); break;
+		case 'ccd'://ccd
+			vm.ccd_click(); break;
+		case 'filter'://滤光片
+			vm.filter_click(); break;
+		case 'focus'://调焦器
+			vm.focus_click(); break;
+		case 'sDome'://随动圆顶
+			vm.sDome_click(); break;
+		case 'oDome'://全开圆顶
+			vm.oDome_click(); break;
+		case 'plan'://观测计划
+			vm.plan_click(); break;
+		case 'image'://观测图像
+			vm.pic_click(); break;
+	}
+	/*定义一个值 标记页面当前在何位置 刷新页面后 还显示原来位置的页面*/
 
 	var status_err = 0;
 	//var plan_cooper_i = 0; //控制弹窗数量和导入动作执行的次数
@@ -2684,45 +2730,4 @@ $(function () {
         });
      
     });//////////////////////////////////////////////////////////*/
-	
-//观测计划 执行模式 js /////////////////////////////////////
-	/*$('#modeSpan').hover(
-		function (){
-			$('#modeVal').show();
-			var planMode = $('#modeVal input');
-			//观测计划 若为single和singleLoop 隐藏‘下一个’按钮/////
-			if(planMode.eq(0).prop('checked') || planMode.eq(1).prop('checked'))
-			{
-				$('#planNext').hide();
-			}
-			
-		}, 
-		function (){
-			$('#modeVal').hide();
-		}
-	);*/
-//观测计划 执行模式 js结束 /////////////////////////////////////
-
-//观测计划 若为single和singleLoop 隐藏‘下一个’按钮///////////////
-	//var planMode = $('#modeVal input');
-	//console.log(planMode);return;
-	
-	/* if(planMode.eq(0).prop('checked') || planMode.eq(1).prop('checked'))
-	{
-		//layer.alert(planMode[0])
-		$('#planNext').hide();
-	}else if(planMode.eq(2).prop('checked') || planMode.eq(3).prop('checked')){
-		$('#planNext').show();
-	} 
-	$('#modeVal').on('click', 'input', function () {
-		if($(this).val() == 3 || $(this).val() == 4)
-		{
-			$('#planNext').show();
-		}
-		
-		if($(this).val() == 1 || $(this).val() == 2)
-		{
-			$('#planNext').hide();
-		}
-	});*///观测计划 若为single和singleLoop 隐藏‘下一个’按钮 结束/////////
 })

@@ -80,6 +80,7 @@ $(function (){
 
  /*每5分钟请求一次云量图片数据*/
  var cloud_pic = $('#cloud_pic'); //图片的img元素
+ var cloud_pic_time = $('#cloud_pic_time'); //时间显示
 
  function get_cloud_pic ()
  {
@@ -89,7 +90,9 @@ $(function (){
         success: function (info){
             if (info != '未获取到')
             {
-                cloud_pic.attr('src', '/' + info);
+                let data = eval( "(" + info + ")" );
+                cloud_pic.attr('src', '/' + data.file);
+                cloud_pic_time.html(data.file_time);
             }
         },//success结束
     })

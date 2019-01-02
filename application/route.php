@@ -114,7 +114,7 @@ Route::post('ToO_1_plan$', 'xinglong/Too/send_ToO_1_plan');
 Route::post('/changeplancooperimport$', 'xinglong/Status/changeimport');
 //ajax 将ToO计划表中import字段或giveup字段变为1 路由
 Route::post('/changeplantooimport$', 'xinglong/Status/changetooimport');
-//ajax 获取观测图像 路由
+//ajax 望远镜页面 观测图像 路由
 Route::post('get_image$', 'xinglong/Image/get_image');
 /*/ajax 观测图像 向右按钮 路由
 Route::post('next4$', 'xinglong/Image/next4_image');

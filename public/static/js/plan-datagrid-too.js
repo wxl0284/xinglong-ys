@@ -242,15 +242,19 @@ $('#atConfig').hover(
 		filterData[filterData_i].filterId = plan_filter_option[filterData_i];
 		filterData[filterData_i].name = plan_filter_option[filterData_i];
     }*/
-    var filterData = [
+	var filterData = [
         {filterId:'U',name:'U'},
         {filterId:'B',name:'B'},
         {filterId:'V',name:'V'},
         {filterId:'R',name:'R'},
         {filterId:'I',name:'I'},
-        {filterId:'u',name:'u'},
+        {filterId:'N',name:'N'},
+        {filterId:'N',name:'N'},
+        {filterId:'U',name:'U'},
+        {filterId:'W',name:'W'},
         {filterId:'g',name:'g'},
         {filterId:'r',name:'r'},
+        {filterId:'u',name:'u'},
         {filterId:'i',name:'i'},
         {filterId:'z',name:'z'},];
 

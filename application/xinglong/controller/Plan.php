@@ -145,7 +145,7 @@ class Plan extends Base
 					{
 						$plan["plan".$index]["gain"] = '0'; //增益 文件中无此参数 我给默认为1
 					}else{
-						$plan["plan".$index]["gain"] = '1';
+						$plan["plan".$index]["gain"] = '2';
 					}
 					
 					$plan["plan".$index]["bin"] = '1'; //bin 文件中无此参数 我给默认为0(即1*1)
@@ -308,6 +308,7 @@ class Plan extends Base
     //获取计划数据 验证并发送计划数据/////////////////////////////
 	protected function sendPlan ($postData)  //即原来的savePlan函数
 	{
+		//halt($postData);die();
 		//定义全局$sequence 此变量在packHead()函数中要使用
 		if (Cookie::has('sequence'))
 		{
@@ -337,7 +338,7 @@ class Plan extends Base
 			//验证目标类型
 			$type = $postData['planData'][$i]['type'];
 			
-			if( !preg_match('/^[0-9]$/', $type) && !in_array($type, ['恒星','太阳','月亮','彗星','行星','卫星','固定位置','本底','暗流','平场']) )
+			if( !(preg_match('/^[0-9]$/', $type) || in_array($type, ['恒星','太阳','月亮','彗星','行星','卫星','固定位置','本底','暗流','平场'])) )
 			{
 				$errMsg .= '第'. ($i+1) .'条计划:目标类型参数超限!<br>';
 			}
@@ -627,7 +628,7 @@ class Plan extends Base
 		return '观测计划发送完毕!';
     } //获取计划数据 验证并发送计划数据 结束////////////////////////////////////////
     
-    //观测计划的 开始 停止 下一个 ////////////////////////////////
+    //观测计划的 开始 停止////////////////////////////////
 	protected function planOption ($postData)
 	{	
 		//首先判断是否有权限执行
@@ -669,6 +670,7 @@ class Plan extends Base
 			$sendMsg .= pack('L', 0);
 			
 			$sendMsg = $headInfo . $sendMsg;
+			Cache::rm($postData['at_aperture']);//删除此望远镜计划的缓存
 			return '计划停止:' .udpSend($sendMsg, $this->ip, $this->port);
 		}elseif($postData['planOption'] == 'planNext'){
 			$sendMsg = pack('L', 3);

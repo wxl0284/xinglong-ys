@@ -1106,6 +1106,7 @@ class Page extends Base
                         if ( strpos($v, '.db') === false )
                         {
                             $file_name = '/'. $dir . $v;
+                            $vars['cloud_pic_time'] = date('Y-m-d H:i:s', $temp);
                         }
                     }
                 }
@@ -1149,7 +1150,8 @@ class Page extends Base
                         $file_time = $temp;
                         if ( strpos($v, '.db') === false )
                         {
-                            $file_name = '/'. $dir . $v;
+                            $file_name['file'] = '/'. $dir . $v;
+                            $file_name['file_time'] = date('Y-m-d H:i:s', $temp);
                         }
                     }
                 }
@@ -1160,7 +1162,7 @@ class Page extends Base
             $file_name = '未获取到';
         }
 
-        return $file_name;
+        return $file_name; json_encode($file_name);
     }//ajax 获取云量图片 结束
 
     public function more_cloud_pic ($date='') //云量相机 查看更多云量图片
@@ -1186,7 +1188,7 @@ class Page extends Base
 			$err = '读取文件异常';
         }
 
-        $file_nums = 0; //记录云量图片的数量
+
 
         if ( $err === '' ) //没有异常
         {
@@ -1212,7 +1214,16 @@ class Page extends Base
 
                 array_multisort($time, SORT_DESC, $res);//按时间降序排序
 
-                $file_name = $res;
+                //将每个图片的时间和图片名放在一个数组中
+                $cloud_pic_num = count($time);
+
+                for ($cloud_pic_i=0; $cloud_pic_i < $cloud_pic_num ; $cloud_pic_i ++)
+                { 
+                    $cloud_pics[$cloud_pic_i]['time'] = date('Y-m-d H:i:s', $time[$cloud_pic_i]);
+                    $cloud_pics[$cloud_pic_i]['file'] = $res[$cloud_pic_i];
+                }
+
+                $file_name= $cloud_pics;
 
             }else{//只有 . ..两个元素
                 $file_name = '未获取到';
@@ -1591,7 +1602,7 @@ class Page extends Base
             $day = $day[0] . $day[1] . $day[2];
             //将提交的日期2018/1/1转为20180101 结束
 
-            $res = Db::table('observerimg')->where('at', $at)->where('date', $day)->order('time', 'desc')->field('time, name')->select();
+            $res = Db::table('observerimg')->where('at', $at)->where('date', 'like', $day.'%')->order('time', 'desc')->select();
        
             if ( $res )
             {
@@ -1601,18 +1612,16 @@ class Page extends Base
                     $res[$k]['time'] = date('H:i:s', $v['time']);
                     $res[$k]['name'] = str_replace('fit', 'png', $v['name']);
                     $res[$k]['fit'] =  $v['name'];
-
-                    $time[$k] = $v['time'];//定义一个数组，其元素是图片的时间戳 用来按时间排序
+                    $res[$k]['pic_dir'] =  $v['date'];//表中date字段即为图片的最后一层目录
                 }
 
-                array_multisort($time, SORT_DESC, $res);//按时间降序排序
                 $vars['pic_data'] = json_encode( $res );
             }else{
                 $vars['pic_data'] = '无图片信息';
             }
 
-            $vars['pic_dir'] = $dir . $day .'/';
-            $vars['fits_dir'] = $fits_dir . $day .'/';
+            $vars['pic_dir'] = $dir;
+            $vars['fits_dir'] = $fits_dir;
             $vars['aperture'] = $aperture;
 
             return view('page/whole_day_img', $vars); //显示页面是base.php中有些信息读不到 回头找原因
@@ -1620,8 +1629,8 @@ class Page extends Base
             if ( $day == 'show_datebox' )
             {
                 $vars['pic_data'] = '仅显示datebox';
-                $vars['pic_dir'] = $dir . $day .'/';
-                $vars['fits_dir'] = $fits_dir . $day .'/';
+                $vars['pic_dir'] = $dir;
+                $vars['fits_dir'] = $fits_dir;
                 $vars['aperture'] = $aperture;
 
                 return view('page/whole_day_img', $vars);
@@ -1630,7 +1639,7 @@ class Page extends Base
             
                 $day = date('Ymd', time());
 
-                $res = Db::table('observerimg')->where('at', $at)->where('date', $day)->order('time', 'desc')->field('time, name')->select();
+                $res = Db::table('observerimg')->where('at', $at)->where('date', 'like', $day.'%')->order('time', 'desc')->select();
         
                 if ( $res )
                 {
@@ -1640,18 +1649,16 @@ class Page extends Base
                         $res[$k]['time'] = date('H:i:s', $v['time']);
                         $res[$k]['name'] = str_replace('fit', 'png', $v['name']);
                         $res[$k]['fit'] =  $v['name'];
-
-                        $time[$k] = $v['time'];//定义一个数组，其元素是图片的时间戳 用来按时间排序
+                        $res[$k]['pic_dir'] =  $v['date'];//表中date字段即为图片的最后一层目录
                     }
 
-                    array_multisort($time, SORT_DESC, $res);//按时间降序排序
                     $vars['pic_data'] = json_encode( $res );
                 }else{
                     $vars['pic_data'] = '无图片信息';
                 }
 
-                $vars['pic_dir'] = $dir . $day .'/';
-                $vars['fits_dir'] = $fits_dir . $day .'/';
+                $vars['pic_dir'] = $dir;
+                $vars['fits_dir'] = $fits_dir;
                 $vars['aperture'] = $aperture;
 
                 return view('page/whole_day_img', $vars); //显示页面是base.php中有些信息读不到 回头找原因
@@ -1761,7 +1768,7 @@ class Page extends Base
                 $per_file_data = file_get_contents( $this->path . $v );
 
                 if ( $per_file_data === false ) return 111;
-                $v = substr($v, strrpos($v, '/')+1); //仅获取fits图片名
+                $v = substr( $v, strrpos($v, '/')+1 ); //仅获取fits图片名
                 $zip->addFromString( $v, $per_file_data );
             }
             $zip->close();
