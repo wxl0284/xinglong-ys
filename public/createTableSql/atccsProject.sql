@@ -124,15 +124,18 @@ CREATE TABLE ccdconf(
      "cansetbaseline" character varying(5),
      "cansetoverscan" character varying(5),
      "attrversion" character varying(5),
-     "attrmodifytime" character varying(30)
+     "attrmodifytime" character varying(30),
+     "default_gain" character varying(30),/*默认增益*/
+     "default_bin" character varying(30),/*默认bin*/
+     "default_readout" character varying(30)/*默认读出速度*/
 );/*ccd的固定属性表 建表sql 结束*/
 
 /*滤光片的固定属性表 建表sql*/ 
 CREATE TABLE filterconf(
      "id" serial PRIMARY KEY,
-	 "filterid" character varying(20)NOT NULL, /*滤光片 id*/
-	 "ip" character varying(200),
-	 "name" character varying(200) NOT NULL,
+	"filterid" character varying(20)NOT NULL, /*滤光片 id*/
+	"ip" character varying(200),
+	"name" character varying(200) NOT NULL,
      "teleid" character varying(10) NOT NULL, /*对应atlist表中的id字段*/
      "numberoffilter" character varying(30),
      "filtersystem" character varying,

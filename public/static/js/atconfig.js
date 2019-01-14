@@ -102,7 +102,7 @@ $(function () {
                 issupportbaseline:2, issupportoverscan:2, issupportroi:2, canconnect:2, cansetcoolert:2,
                 cansetexposureparam:2, canstartexposure:2, canabortexposure:2, cansetgain:2, cansetreadoutspeedmode:2,
                 cansettransferspeedmode:2, cansetbin:2, cansetroi:2, cansetshutter:2, cansetfullframe:2, cansetem:2,
-                cannoisefilter:2, cansetbaseline:2, cansetoverscan:2,
+                cannoisefilter:2, cansetbaseline:2, cansetoverscan:2, default_readout:'-1', default_bin:'-1', default_gain:'-1',  
             }, //ccd的配置信息
             ccd_file: {}, //ccd_No1的上传的文件
             ccd_files:{}, //当前望远镜的所有ccd的文件数据
@@ -599,6 +599,9 @@ $(function () {
                                     if ( !info.ccd_data[0].coolermode ) info.ccd_data[0].coolermode = '0';
                                     if ( !info.ccd_data[0].gainnumber ) info.ccd_data[0].gainnumber = '0';
                                     if ( !info.ccd_data[0].shuttertype ) info.ccd_data[0].shuttertype = '0';
+                                    if ( info.ccd_data[0].default_readout === null ) info.ccd_data[0].default_readout = '-1';
+                                    if ( info.ccd_data[0].default_bin === null ) info.ccd_data[0].default_bin = '-1';
+                                    if ( info.ccd_data[0].default_gain === null ) info.ccd_data[0].default_gain = '-1';
 
                                     //that.ccd_config = info.ccd_data[0]; //将第一个ccd中的配置数据赋值给ccd_config
                                     //将ccd配置数据赋值给ccd_config,且避免将ccd_config内原有的初始属性值给删了
@@ -1398,6 +1401,9 @@ $(function () {
                     msg += this.check_gain_noise(false, i, 2); //验证噪声值
                 }
 
+                if ( this.ccd_config.default_readout == '-1' )   msg += '默认读出速度未选择<br>';
+                if ( this.ccd_config.default_gain == '-1' )      msg += '默认增益未选择<br>';
+
                 if ( msg !== '' )
                 {
                     layer.alert(msg, {shade:0,closeBtn:0});return;
@@ -1444,6 +1450,8 @@ $(function () {
                         gain_noise: that.gain_noise,
                         teleid: this.show_dev_form.teleid,
                         ccdno: this.show_dev_form.ccd_no,
+                        default_readout: this.ccd_config.default_readout,
+                        default_gain: this.ccd_config.default_readout,
                         fourData: tempData
                     },
                     success:  function (info) {
@@ -1514,7 +1522,8 @@ $(function () {
                 if ( t.bin.length < 1 )           msg += 'Bin未选择<br>';
                 if ( t.readoutmode.length < 1 )   msg += '读出模式未选择<br>';
                 if ( t.shuttertype == '0' )       msg += '快门类型未选择<br>';
-                if ( t.shuttermode.length < 1)    msg += '快门模式未选择<br>';
+                if ( t.shuttermode.length < 1 )   msg += '快门模式未选择<br>';
+                if ( t.default_bin == '-1' )       msg += '默认bin未选择<br>';
                 if ( !(t.issupportfullframe == '1' || t.issupportfullframe == '0') ) msg += '支持帧转移未选择<br>';
                 if ( !(t.issupportem == '1' || t.issupportem == '0') )   msg += '支持EM未选择<br>';
                 if ( !(t.issupportscmosnoisefilter == '1' || t.issupportscmosnoisefilter == '0') ) msg += '支持CMOS noise filter未选择<br>';

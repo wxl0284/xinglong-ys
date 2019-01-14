@@ -574,17 +574,14 @@
 					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='ccd_gain_sbmt' >
 				</form><!--设置增益 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "readout_speed"'><!--读出速度模式-->
-					读出速度（Mb/s）：<select style="width:80px" v-model='ccd_form.readout_speed_form.readout_mode'>
+					读出速度（MHz/s）：<select style="width:80px" v-model='ccd_form.readout_speed_form.readout_mode'>
 						<option value="-1">请选择</option>
 						<option :value="k" v-for='(v, k) in readout_speed_Mode'>{{v}}</option>
-						<!--<option value="1" v-if='readout_speed_Mode.A'>A</option>
-						<option value="2" v-if='readout_speed_Mode.B'>B</option>
-						<option value="3" v-if='readout_speed_Mode.C'>C</option>-->
 					</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='readout_speed_sbmt' ><br>
 				</form><!--读出速度模式 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "transfer_speed"'><!--转移速度模式-->
-					转移速度（Mb/s）：<select style="width:80px" v-model='ccd_form.transfer_speed_form.transfer_mode'>
+					转移速度（MHz/s）：<select style="width:80px" v-model='ccd_form.transfer_speed_form.transfer_mode'>
 						<option value="-1">请选择</option>
 						<option :value="k" v-for='(v, k) in transfer_speed_Mode'>{{v}}</option>
 						<!--<option value="1" v-if='transfer_speed_Mode.a'>a</option>

@@ -125,6 +125,7 @@
 		plan.one('change', function () {
 			var formData = new FormData(planForm[0]);
 			formData.append('aperture', aperture);
+			formData.append('at', at);//将望远镜主键id发给php 根据此at查默认的bin 读出速度及增益
 
 			$.ajax({
 				type: 'post',

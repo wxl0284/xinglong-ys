@@ -448,7 +448,7 @@
 						</td>
 						<td>制冷方式:</td>
 						<td>
-							<select id='ccdCoolerMode' name='coolermode' v-model='ccd_config.coolermode'>
+							<select name='coolermode' v-model='ccd_config.coolermode'>
 								<option value="0">请选择</option>
 								<option :value="v" v-for='v in confOption.coolerMode'>{{v}}</option>
 							</select>
@@ -489,13 +489,22 @@
 						</td>
 					</tr>
 					<tr>
-						<td>转移速度（MHz）:&nbsp;<input type='button' style='width:20%;font-size:1em;font-weight:normal;' value='增加' @click='t_spd++;'></td>
+						<td>转移速度（MHz）:<input type='button' style='width:20%;font-size:1em;font-weight:normal;' value='增加' @click='t_spd++;'></td>
 						<td colspan="5" class='border_td'>
 							<span  v-for='v in t_spd'>
 								{{v}}:<input type='text' :ref="'transSpd'+v" style='width:4.5%' name='transferspeed[]' v-model.number.trim='transferspeed[v-1]' @blur='check_readOut(true, v, 2)'>
 								<span v-if='t_spd>=1'>&nbsp;<input type='button' style='width:4.5%;font-size:1em;font-weight:normal;' value='删除' @click='delete_transferSpeed(v)'></span>
 							</span>
 							<span  v-if='t_spd==0'>无此配置</span>
+						</td>
+					</tr>
+					<tr>
+						<td>默认读出速度:</td>
+						<td colspan="5">
+							<select name='default_readout' v-model='ccd_config.default_readout'>
+								<option value="-1">请选择</option>
+								<option v-for="v in readoutspeed.length" :value="v-1">{{readoutspeed[v-1]}}（MHz）</option>
+							</select>
 						</td>
 					</tr>
 					<tr>
@@ -511,6 +520,15 @@
 						<td>增益档位:</td>
 						<td>
 							<input type='text' ref='gainN' name='gainnumber' placeholder="整数" v-model.trim.number='gain_num'>
+						</td>
+					</tr>
+					<tr>
+						<td>默认增益档位:</td>
+						<td colspan="5">
+							<select name='default_gain' v-model='ccd_config.default_gain'>
+								<option value="-1">请选择</option>
+								<option v-for="v in gain_num*1" :value="v-1">{{v}}档</option>
+							</select>
 						</td>
 					</tr>
 					<tr>
@@ -584,6 +602,15 @@
 								{{v}}<input type='checkbox' name='bin[]' :value="v" v-model='ccd_config.bin'>
 								</label>&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>
+						</td>
+					</tr>
+					<tr>
+						<td>默认BIN:</td>
+						<td colspan="5">
+							<select name='default_bin' v-model='ccd_config.default_bin'>
+								<option value="-1">请选择</option>
+								<option v-for="v in ccd_config.bin.length" :value="ccd_config.bin[v-1].split('*')[0]">{{ccd_config.bin[v-1]}}</option>
+							</select>
 						</td>
 					</tr>
 					<tr>

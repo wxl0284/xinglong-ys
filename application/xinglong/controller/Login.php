@@ -103,6 +103,6 @@ class Login extends Controller
         //Cookie::delete('url');
         Cookie::delete('sequence');
         //返回首页
-         return view('login');
+        return view('login');
     }//退出的方法  结束
 }

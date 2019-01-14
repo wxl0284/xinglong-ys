@@ -161,7 +161,7 @@ function data2Time ($data)
 	}
 	
 	$hour = (int) $data;
-	$msc = (int) ( ($data - $hour)*3600*1000 ); //转为微妙
+	$msc = (int) ( ($data - $hour)*3600*1000 ); //转为微秒
 	$min = (int) ( $msc/60000 );
 	$sec = (int) ( ($msc-$min*60000)/1000 );
 	$msec = '' . ($msc - $min * 60000 - $sec * 1000)/1000;  //得出0.8秒

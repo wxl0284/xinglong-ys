@@ -29,8 +29,15 @@ class Plan extends Base
        /* if ($this->ajaxAuthErr == 1)
         {//无权执行
             return '您无权限执行此操作!';
-        }*/
-		$aperture = input('post.aperture'); //标记是否为80望远镜，如果是将增益置为1
+		}*/
+		$postData = input();
+
+		if ( !isset($postData['at']) || empty($postData['at']) )
+		{
+			return '未收到望远镜id';
+		}
+		
+		$aperture = $postData['aperture']; //标记是否为80望远镜，如果是将增益置为1
 		//halt($aperture);
 		// 获取表单上传文件 
 		$file = request()->file('plan');
@@ -98,6 +105,33 @@ class Plan extends Base
 			$line = 0; //读取的第几行数据
 			$object_num = 0; //第几个观测目标
 
+			//检查每个目标数据的后半部分，是否符合6个参数或8个参数；前半部分是否6个参数
+			$param_num_err = ''; //标记参数
+
+			foreach ($fileData as $k => $v)
+			{
+				if ( strpos($v, '$') === false )//是数据的后半部分
+				{
+					$param_num = count( explode(',', $v) ); //后半部分参数个数
+					if ( $param_num != 7 || $param_num != 9 )
+					{
+						$param_num_err .= '计划文件第' . ($k + 1) . '行参数个数有误!<br>';
+					}
+				}else{
+					$param_num = count( explode(',', $v) ); //前半部分参数个数
+					if ( $param_num != 7 )
+					{
+						$param_num_err .= '计划文件第' . ($k + 1) . '行参数个数有误!<br>';
+					}
+				}
+			}
+			//查数据库中默认bin, 默认读出速度，默认增益档位
+			if ( $param_num_err !== '' )
+			{
+				return $param_num_err;
+			}
+			//检查每个目标数据的后半部分，是否符合6个参数或8个参数 结束
+
 			foreach ($fileData as $k => $v) //遍历每行数据 文件中数据的验证稍后再说（就在此遍历中验证每一条计划是否有错误）
 			{
 				$line ++;
@@ -116,9 +150,9 @@ class Plan extends Base
 
 					//接下来把刚组装的计划数据整理为页面所需的一个数组，并以json格式返回
 					$row = explode( ',', $data_perLine_onePlan[$index] );
-					
+					$row_param_num = count( $row ); //每行计划的总参数个数（11个或13个），若为13个，则$row[11]为增益档位，$row[12]为bin
+
 					$plan["plan".$index]["target"] = trim($row[0]); //目标名称
-					$plan["plan".$index]["type"] = '恒星';  //目标类型 默认为恒星
 					$plan["plan".$index]["type"] = '恒星';  //目标类型 默认为恒星
 					//处理赤经
 					$rightAscension = explode (':', trim($row[1]));
