@@ -1512,8 +1512,13 @@ $(function () {
                 msg += this.check_maxExposTime(false, t.minexposuretime, this.$refs.ccdMinExposureTime, t.maxexposuretime);
                 msg += this.check_intV(false, t.exposuretimeration, this.$refs.exposureTimeRation, 1);
                 msg += this.check_intV(false, t.fullwelldepth, this.$refs.fullWellDepth, 2);
-                msg += this.check_emV(false, t.emmaxvalue, this.$refs.emMaxValue);
-                msg += this.check_emV(false, t.emminvalue, this.$refs.emMinValue, t.emmaxvalue);
+               
+                if ( t.issupportem == 1)
+                {
+                    msg += this.check_emV(false, t.emmaxvalue, this.$refs.emMaxValue);
+                    msg += this.check_emV(false, t.emminvalue, this.$refs.emMinValue, t.emmaxvalue);
+                }
+               
                 msg += this.check_version(false, t.attrversion, this.$refs.ccd_version, 2);
 
                 if ( t.type == '0' )              msg += '探测器类型未选择<br>';

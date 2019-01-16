@@ -309,11 +309,16 @@ $(function () {
 				localStorage.setItem('page_pos', 'plan');
 				this.device_nav.dev_click = 'plan';
 				planInfo.removeClass('displayNo');
+				//console.log(table.datagrid());
+				//let t = table.datagrid();
+				//for (let i = 0; i < 20000000; i++) { i*1; }
+
+				//if ( table.datagrid() !== undefined && table.datagrid('getRows').length < 1 )
 				if ( table.datagrid('getRows').length < 1 )
 				{
 					table.datagrid('insertRow', {
 						index : 0, 
-						row:{type:'0',epoch:1,bin:1},
+						row:{type:'0',epoch:1,bin:1,readout:0,gain:0},
 					});
 					
 					table.datagrid('beginEdit', 0); //将此新加的一行设为可编辑
@@ -394,7 +399,7 @@ $(function () {
 				this.device_nav.dev_click = 'ccd';
 				planInfo.addClass('displayNo');
 			},
-			select_ccd:function (){//通过下拉选择获取各ccd配置数据
+			select_ccd: function (){//通过下拉选择获取各ccd配置数据
 				var v = this.device_nav.ccdNo;
 	
 				if ( v != -1) //如果下拉框不是 -1 将configData中相应的ccd配置数据赋值给ccd_config
@@ -557,7 +562,7 @@ $(function () {
 				var v = this.gimbal_form.trackStar.declination1;
 				if ( !patn.test(v) || v > 90 || v < -90 )
 				{
-					msg = '赤纬小时参数超限';
+					msg = '赤纬度参数超限';
 				}
 				if ( tip===true && msg !== '' )
 				{
@@ -1239,13 +1244,13 @@ $(function () {
 				var res = this.ccd_asc2(false);
 				if ( res === '' ) this.$refs.ccd_objAsc3.focus();
 			},
-			ccd_dec1:function (tip){ //拍摄目标赤纬之 小时
+			ccd_dec1:function (tip){ //拍摄目标赤纬之 度
 				var msg = '';
 				var patn = /^-?\d{2}$/;
 				var v = this.ccd_form.exposeParam.objectDeclination1;
 				if ( !patn.test(v) || v > 90 || v < -90 )
 				{
-					msg = '目标赤纬小时参数超限';
+					msg = '目标赤纬度参数超限';
 				}
 				if ( tip===true && msg !== '' )
 				{

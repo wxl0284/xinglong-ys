@@ -117,8 +117,8 @@ class Test extends Controller
 		}
 		/*如下是测试php-zip扩展 进行多文件压缩 结束*/
 
-		$fit_img_data = Db::table('observerimg')->where('at', 'at80')->where('date', 'like', '20181221q'.'%')->order('time desc')->find();
-		dump($fit_img_data);
+		$default_bin_read_gain = Db::table('ccdconf')->where('teleid', 25)->where('ccdno', 1)->field('default_bin, default_readout, default_gain')->find();
+		dump($default_bin_read_gain);
 	}
 	
 	public function valid ()

@@ -55,7 +55,7 @@
 	//赤经 的js事件 结束/////////////////////////////////////
 	
 	//赤纬 的js事件//////////////////////////////////
-	planInfo.on('keyup', 'td[field="declination1"] input.textbox-text', function () {//赤纬之小时 js事件
+	planInfo.on('keyup', 'td[field="declination1"] input.textbox-text', function () {//赤纬之度 js事件
 		var that = $(this);
 		var v = $.trim(that.val());
 		var patn = /^-?\d{1,2}$/;
@@ -257,6 +257,8 @@
 		gainOption[i] = {num:'', gain:''};
 		gainOption[i].num = i;
 		gainOption[i].gain = i;
+		let ii = i + 1;
+		gainOption[i].gain = ii + '档';
 	}//对变量gainOption进行赋值 结束
 
 	//将固定属性中的readoutspeed，对变量readOption进行赋值
@@ -269,7 +271,7 @@
 	{
 		readOption[i] = {num:'', speed:''};
 		readOption[i].num = i;
-		readOption[i].speed = ccd_readout_str[i];
+		readOption[i].speed = ccd_readout_str[i]+'Mhz';
 	}//对变量readOption进行赋值 结束
 
 	//var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true 是 ,false 否
@@ -372,16 +374,16 @@
 					},
 				},
 			},
-			{field:'exposureTime', title:'曝光时间<br>（秒）',  width:table_w*0.054,rowspan:2,
+			{field:'exposureTime', title:'曝光<br>时间<br>（秒）',  width:table_w*0.045,rowspan:2,
 				editor:{ type:'text' },
 			},
-			{field:'delayTime', title:'延迟<br>（秒）', width:table_w*0.034583335, rowspan:2,
+			{field:'delayTime', title:'延迟<br>（秒）', width:table_w*0.042083335, rowspan:2,
 				editor:{ type:'text' },
 			},
-			{field:'exposureCount', title:'曝光数量', width:table_w*0.054, rowspan:2, 
+			{field:'exposureCount', title:'曝光数', width:table_w*0.0405, rowspan:2, 
 				editor:{ type:'text' },
 			},
-			{field:'filter', title:'滤光片',  width:table_w*0.045666667, rowspan:2,
+			{field:'filter', title:'滤光片',  width:table_w*0.051666667, rowspan:2,
 				formatter:function(v){
 					for(let i=0; i<filterData.length; i++){
 						if (filterData[i].filterId == v) return filterData[i].name;
@@ -398,7 +400,7 @@
 					},
 				},
 			},
-			{field:'gain', title:'增益',  width:table_w*0.042166667, rowspan:2,
+			{field:'gain', title:'增益',  width:table_w*0.050166667, rowspan:2,
 				formatter:function(v){
 					for(let i=0; i < gainOption.length; i++){
 						if (gainOption[i].num == v) return gainOption[i].gain;
@@ -432,7 +434,7 @@
 					},
 				},
 			},
-			{field:'readout', title:'读出速度<br>（MHz）', width:table_w*0.057166667, rowspan:2,
+			{field:'readout', title:'读出速度', width:table_w*0.086166667, rowspan:2,
 				formatter:function(v){
 					for(let i=0; i < readOption.length; i++){
 						if (readOption[i].num == v) return readOption[i].speed;
@@ -455,18 +457,18 @@
 				}
 			},
 		],[
-			{field:'rightAscension1', width:table_w*0.0325, title:'时',
+			{field:'rightAscension1', width:table_w*0.028, title:'时',
 				editor:{ type:'numberbox' },
 			},
-			{field:'c1', width:table_w*0.013,
+			{field:'c1', width:table_w*0.011,
 				formatter:function(value,row,index){
 					return ':';
 				}
 			},
-			{field:'rightAscension2',  width:table_w*0.0325,title:'分',
+			{field:'rightAscension2',  width:table_w*0.028,title:'分',
 				editor:{ type:'numberbox' },
 			},
-			{field:'c2', width:table_w*0.013,
+			{field:'c2', width:table_w*0.011,
 				formatter:function(value,row,index){
 					return ':';
 				}
@@ -475,18 +477,18 @@
 				editor:{ type:'text' }
 			},
 	
-			{field:'declination1', width:table_w*0.0325, title:'度',
+			{field:'declination1', width:table_w*0.028, title:'度',
 				editor:{ type:'numberbox' }
 			},
-			{field:'c3', width:table_w*0.013,
+			{field:'c3', width:table_w*0.011,
 				formatter:function(value,row,index){
 					return ':';
 				}
 			},
-			{field:'declination2', width:table_w*0.0325, title:'分',
+			{field:'declination2', width:table_w*0.028, title:'分',
 				editor:{ type:'numberbox' },
 			},
-			{field:'c4', width:table_w*0.013,
+			{field:'c4', width:table_w*0.011,
 				formatter:function(value,row,index){
 					return ':';
 				}
@@ -543,7 +545,7 @@
 			
 		table.datagrid('insertRow', {
 			index : rowIndex+1, //在选中行后面 新加一空行
-			row:{type:'0',epoch:1,bin:1},
+			row:{type:'0',epoch:1,bin:1,readout:0,gain:0},
 		});
 		
 		table.datagrid('beginEdit', rowIndex+1); //将此新加的一行设为可编辑
@@ -817,16 +819,16 @@ var all_plans = aperture + 'all_plans';
 	{
 		var msg = ''; //错误提示
 		
-		for(var i = 0; i < n; i++)
+		for(let i = 0; i < n; i++)
 		{
-			var plan_target = $.trim( plans[i].target );
+			let plan_target = $.trim( plans[i].target );
 			let patn = /([\u4e00-\u9fa5]| )+/;
 			if ( patn.test(plan_target) || plan_target == '' || plan_target.length > 48 )
 			{
 				msg += '第' + (i+1) + '条目标名格式错误!<br>';
 			}
 
-			var plan_type = $.trim( plans[i].type );
+			let plan_type = $.trim( plans[i].type );
 			patn = /^[0-9]$/;
 			//console.log(plan_type);
 			if ( !(patn.test(plan_type) || ( $.inArray(plan_type, ['恒星','太阳','月亮','彗星','行星','卫星','固定位置','本底','暗流','平场']) !== -1))  )
@@ -834,42 +836,42 @@ var all_plans = aperture + 'all_plans';
 				msg += '第' + (i+1) + '条目标类型超限!<br>';
 			}
 
-			var asc1 = $.trim( plans[i].rightAscension1 );
+			let asc1 = $.trim( plans[i].rightAscension1 );
 			patn  = /^\+?\d{1,2}$/;
 			if ( !patn.test(asc1) || asc1 > 24 || asc1 < 0 || asc1 === '' )
 			{
 				msg += '第' + (i+1) + '条赤经小时参数超限!<br>';
 			}
 			
-			var asc2 = $.trim( plans[i].rightAscension2 );
+			let asc2 = $.trim( plans[i].rightAscension2 );
 			
 			if ( !patn.test(asc2) || asc2 > 59 || asc2 < 0 || asc2 === '' )
 			{
 				msg += '第' + (i+1) + '条赤经分钟参数超限!<br>';
 			}
 
-			var asc3 = $.trim( plans[i].rightAscension3 );
+			let asc3 = $.trim( plans[i].rightAscension3 );
 			
 			if ( !$.isNumeric(asc3) || asc3 >= 60 || asc3 < 0 || asc3 === '' )
 			{
 				msg += '第' + (i+1) + '条赤经秒参数超限!<br>';
 			}
 
-			var asc = asc1*1 + asc2*1/60 + asc3*1/3600;
+			let asc = asc1*1 + asc2*1/60 + asc3*1/3600;
 			if ( asc > 24 || asc < 0 )
 			{
 				msg += '第' + (i+1) + '条赤经参数超限!<br>';
 			}
 
-			var dec1 = $.trim( plans[i].declination1 );
+			let dec1 = $.trim( plans[i].declination1 );
 			patn = /^\+?-?\d{1,2}$/;
 
 			if ( !patn.test(dec1) || dec1 > 90 || dec1 < -90 || dec1 === '' )
 			{
-				msg += '第' + (i+1) + '条赤纬小时参数超限!<br>';
+				msg += '第' + (i+1) + '条赤纬度参数超限!<br>';
 			}
 
-			var dec2 = $.trim( plans[i].declination2 );
+			let dec2 = $.trim( plans[i].declination2 );
 			patn = /^\d{1,2}$/;
 
 			if ( !patn.test(dec2) || dec2 > 59 || dec2 < 0 || dec2 === '' )
@@ -877,20 +879,20 @@ var all_plans = aperture + 'all_plans';
 				msg += '第' + (i+1) + '条赤纬分钟参数超限!<br>';
 			}
 
-			var dec3 = $.trim( plans[i].declination3 );
+			let dec3 = $.trim( plans[i].declination3 );
 
 			if ( !$.isNumeric(dec3) || dec3 >= 60 || dec3 < 0 || dec3 === '')
 			{
 				msg += '第' + (i+1) + '条赤纬秒参数超限!<br>';
 			}
 
-			var dec = Math.abs(dec1) + dec2*1/60 + dec3*1/3600;
+			let dec = Math.abs(dec1) + dec2*1/60 + dec3*1/3600;
 			if ( dec > 90 || dec < 0 )
 			{
 				msg += '第' + (i+1) + '条赤纬参数超限!<br>';	
 			}
 
-			var plan_epoch = $.trim(plans[i].epoch).toLocaleLowerCase();
+			let plan_epoch = $.trim(plans[i].epoch).toLocaleLowerCase();
 
 			patn = /^[0-3]$/;
 			if ( !( patn.test(plan_epoch) || ( $.inArray(plan_epoch, ['real','j2000','b1950','j2050']) !== -1 ) ) )
@@ -898,55 +900,53 @@ var all_plans = aperture + 'all_plans';
 				msg += '第' + (i+1) + '条历元超限!<br>';
 			}
 
-			var plan_exposureTime = $.trim(plans[i].exposureTime);
+			let plan_exposureTime = $.trim(plans[i].exposureTime);
 
 			if ( !$.isNumeric(plan_exposureTime) || plan_exposureTime > configData.ccd[0].maxexposuretime*1 || plan_exposureTime < configData.ccd[0].minexposuretime*1 )
 			{
 				msg += '第' + (i+1) + '条曝光时间超限（'+ configData.ccd[0].minexposuretime + '~' +configData.ccd[0].maxexposuretime+'）!<br>';
 			}
 
-			var plan_delayTime = $.trim(plans[i].delayTime);
+			let plan_delayTime = $.trim(plans[i].delayTime);
 
 			if ( !$.isNumeric(plan_delayTime) || plan_delayTime < 0 )
 			{
 				msg += '第' + (i+1) + '条延迟时间超限!<br>';
 			}
 
-			var plan_expCount = $.trim(plans[i].exposureCount);
+			let plan_expCount = $.trim(plans[i].exposureCount);
 			patn = /^\d+$/;
 			if ( !patn.test(plan_expCount) || plan_expCount < 1 )
 			{
 				msg += '第' + (i+1) + '条曝光数量超限!<br>';
 			}
 
-			var plan_filter = $.trim(plans[i].filter);
-			//patn = /^[0-9]$/;
+			let plan_filter = $.trim(plans[i].filter);
+			
 			//if ( !patn.test(plan_filter) && ( $.inArray(plan_filter, plan_filter_option) == -1) )
 			if ( $.inArray(plan_filter, plan_filter_option) == -1 )
 			{
 				msg += '第' + (i+1) + '条滤光片超限!<br>';
 			}
 
-			/*var plan_gain = $.trim(plans[i].gain);
-			patn = /^\d+$/;
-			if ( !patn.test(plan_gain) || plan_gain < 1 )
+			let plan_gain = $.trim(plans[i].gain);
+			
+			if ( !( patn.test(plan_gain) && plan_gain >= 0 && plan_gain <= ccd_gain_val-1 ) )
 			{
 				msg += '第' + (i+1) + '条增益超限!<br>';
 			}
 
-			var plan_bin = $.trim(plans[i].bin);
-			patn = /^\d+$/;
-			if ( !patn.test(plan_bin) || plan_gain < 1 )
+			let plan_bin = $.trim(plans[i].bin);
+			if ( !( patn.test(plan_bin) && configData.ccd[0]['bin'].indexOf(plan_bin) !== -1 ) )
 			{
 				msg += '第' + (i+1) + '条bin超限!<br>';
 			}
 
-			var plan_readout = $.trim(plans[i].readout);
-			patn = /^\d+$/;
-			if ( !patn.test(plan_readout) || plan_gain < 1 )
+			let plan_readout = $.trim(plans[i].readout);
+			if ( !( patn.test(plan_readout) && plan_gain >= 0 && plan_gain <= ccd_readout_str_num-1 ) )
 			{
 				msg += '第' + (i+1) + '条读出速度超限!<br>';
-			}*/
+			}
 		}
 		return msg;
 	}/*plan_valid  结束*/
@@ -1347,7 +1347,7 @@ var all_plans = aperture + 'all_plans';
 	{
 		table.datagrid('insertRow', {
 			index : 0, 
-			row:{type:'0',epoch:1,bin:1},
+			row:{type:'0',epoch:1,bin:1,readout:0,gain:0},
 		});
 		
 		table.datagrid('beginEdit', 0); //将此新加的一行设为可编辑
@@ -1355,6 +1355,7 @@ var all_plans = aperture + 'all_plans';
 		table.datagrid('enableDnd');
 	}
  }//addPlans () 结束
+
  function delAll1(){
 	// table.datagrid({
 	// 	rowStyler: function (i=3) {

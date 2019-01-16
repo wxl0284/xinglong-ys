@@ -113,7 +113,8 @@ class Plan extends Base
 				if ( strpos($v, '$') === false )//是数据的后半部分
 				{
 					$param_num = count( explode(',', $v) ); //后半部分参数个数
-					if ( $param_num != 7 || $param_num != 9 )
+					//halt($param_num);
+					if ( !($param_num == 7 || $param_num == 9) )
 					{
 						$param_num_err .= '计划文件第' . ($k + 1) . '行参数个数有误!<br>';
 					}
@@ -126,6 +127,11 @@ class Plan extends Base
 				}
 			}
 			//查数据库中默认bin, 默认读出速度，默认增益档位
+			$default_bin_read_gain = Db::table('ccdconf')->where('teleid', $postData['at'])->where('ccdno', 1)->field('default_bin, default_readout, default_gain')->find();
+			if ( $default_bin_read_gain['default_bin'] === null ) $param_num_err .= '未配置默认bin<br>';
+			if ( $default_bin_read_gain['default_gain'] === null ) $param_num_err .= '未配置默认增益<br>';
+			if ( $default_bin_read_gain['default_readout'] === null ) $param_num_err .= '未配置默认读出速度';
+
 			if ( $param_num_err !== '' )
 			{
 				return $param_num_err;
@@ -175,14 +181,28 @@ class Plan extends Base
 					$plan["plan".$index]["delayTime"] = trim($row[9]); //延迟时间
 					$plan["plan".$index]["exposureCount"] = trim($row[10]); //曝光数量					
 					$plan["plan".$index]["filter"] = trim($row[7]); //滤光片
-					if ( $aperture == '80cm' )
+
+					if ( $row_param_num == 11 )//上传文件中无增益参数
+					{
+						$plan["plan".$index]["gain"] = $default_bin_read_gain['default_gain'];//取数据库默认增益
+					}else if ( $row_param_num == 13 ){//上传文件中有增益参数
+						$plan["plan".$index]["gain"] = trim($row[11]);
+					}
+					/*if ( $aperture == '80cm' )
 					{
 						$plan["plan".$index]["gain"] = '0'; //增益 文件中无此参数 我给默认为1
 					}else{
 						$plan["plan".$index]["gain"] = '2';
-					}
+					}*/
 					
-					$plan["plan".$index]["bin"] = '1'; //bin 文件中无此参数 我给默认为0(即1*1)
+					if ( $row_param_num == 11 )//上传文件中无bin参数
+					{
+						$plan["plan".$index]["bin"] = $default_bin_read_gain['default_bin'];//取数据库默认bin
+					}else if ( $row_param_num == 13 ){//上传文件中有bin参数
+						$plan["plan".$index]["bin"] = trim($row[12]);
+					}
+
+					//$plan["plan".$index]["bin"] = '1'; //bin 文件中无此参数 我给默认为0(即1*1)
 					$plan["plan".$index]["readout"] = trim($row[8]);; //读出速度
 					$plan["plan".$index]["id"] = $index + 1;
 					//整理数组 结束
@@ -342,7 +362,7 @@ class Plan extends Base
     //获取计划数据 验证并发送计划数据/////////////////////////////
 	protected function sendPlan ($postData)  //即原来的savePlan函数
 	{
-		//halt($postData);die();
+		halt($postData);die();
 		//定义全局$sequence 此变量在packHead()函数中要使用
 		if (Cookie::has('sequence'))
 		{
