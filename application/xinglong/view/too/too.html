@@ -13,6 +13,25 @@
 	{load href='/static/css/common-1.css'}
 	{load href='/static/css/atpage.css'}
 </head>
+<script>
+    var aperture = {$aperture}; //各口径数据
+    console.log(aperture);
+    var filter = {$filter}; //滤光片
+    filter = eval ( filter  ); //转为js对象
+    
+    //console.log(filter['60cm'], Object.getOwnPropertyNames(filter).length );
+    
+    var readout = {$readout}; //读出速度
+    readout = eval ( readout  ); //转为js对象
+
+    var bin = {$bin}; //bin数据
+    bin = eval ( bin  ); //转为js对象
+
+    var gain = {$gain}; //增益数据
+    gain = eval ( gain  ); //转为js对象
+    
+    //console.log( Object.getOwnPropertyNames(gain).length );
+</script>
 <body>
 	{include file="common/common"/}
 	<div id='all'>
@@ -60,7 +79,7 @@
    </div><!--观测计划表格 结束-->
     {load href='/static/js/plan-datagrid-too.js'}
     <!-- <div class="clear"></div> -->
-	<footer class='center clear' style='position: absolute; bottom: 0;width:100%;'>
+	<footer class='center clear' style='position: fixed; bottom: 0;width:100%;'>
 		<span>中科院国家天文台兴隆观测基地</span>
 	</footer>
 </body>

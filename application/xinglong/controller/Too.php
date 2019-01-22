@@ -24,13 +24,88 @@ class Too extends Base
 
     public function ToO ()  //显示协同计划页面
     {
-        return $this->fetch('too/too');
-	}
+		//先检查atlist表中记录的条数（即配置好的望远镜个数，若没有，则提示错误）
+		$tele_data = Db::table('atlist')->select();
+		$tele_num = count($tele_data);
+		
+		if ( $tele_num < 1 )
+		{
+			$this->error('未查到望远镜数据, 请先添加并配置望远镜');
+		}
+
+		//接下来 获取已添加的望远镜数据
+		//首先 获取已添加的各望远镜之口径
+		$aperture = array_column($tele_data, 'aperture'); // ['60cm', '80cm']
+		//获取各望远镜的滤光片数据
+		$filter_data = [];//存储各望远镜滤光片数据
+		$readout_data = [];//存储各望远镜读出速度
+		$bin_data = [];//存储各望远镜bin
+		$gain_data = [];//存储各望远镜增益
+		
+		$temp_filter = Db::table('filterconf')->column('filtersystem', 'teleid');
+		//接下来查各望远镜的读出速度、增益档位和bin的配置
+		$ccd_conf = Db::table('ccdconf')->select();
+		if ( !$ccd_conf )
+		{
+			$this->error('未查到ccd配置数据, 请去配置CCD');
+		}else{
+			foreach ($ccd_conf as $v) //循环取得各望远镜的读出速度的配置
+			{
+				$read_out[$v['teleid']] = explode('#',$v['readoutspeed']);
+			}
+
+			foreach ($ccd_conf as $v) //循环取得各望远镜bin的配置
+			{
+				$bin[$v['teleid']] = explode('#',$v['bin']);
+			}
+
+			foreach ($ccd_conf as $v) //循环取得各望远镜增益的配置
+			{
+				$gain[$v['teleid']] = $v['gainnumber'];
+			}
+		}
+		//接下来查各望远镜的读出速度、增益档位和bin的配置 结束
+
+		foreach ( $tele_data as $v )
+		{
+			if ( isset( $temp_filter[$v['id']] ) )//如果此望远镜已配置了滤光片数据
+			{//组成一个以口径为索引，滤光片名称为值的二维数组
+				$filter_arr = json_decode( $temp_filter[$v['id']], true );
+				$filter_data[$v['aperture']] = $filter_arr['filterName'];
+			}
+
+			if ( isset( $read_out[$v['id']] ) )//如果有读出速度数据
+			{//组成一个以口径为索引，读出速度为值的二维数组
+				$readout_data[$v['aperture']] = $read_out[$v['id']];
+			}
+
+			if ( isset( $bin[$v['id']] ) )//如果有bin数据
+			{//组成一个以口径为索引，bin为值的二维数组
+				$bin_data[$v['aperture']] = $bin[$v['id']];
+			}
+
+			if ( isset( $gain[$v['id']] ) )//如果有增益数据
+			{//组成一个以口径为索引，增益为值的二维数组
+				$gain_data[$v['aperture']] = $gain[$v['id']];
+			}
+		}
+		
+		//模板赋值
+		$vars['aperture'] = json_encode( $aperture ); //各望远镜口径
+		//$vars['filter'] = json_encode ( [] ); //滤光片名称
+		$vars['filter'] = json_encode ( $filter_data ); //滤光片名称
+		$vars['readout'] = json_encode ( $readout_data ); //读出速度
+		$vars['bin'] = json_encode ( $bin_data ); //bin
+		$vars['gain'] = json_encode ( $gain_data ); //增益
+
+		//获取各望远镜的滤光片数据 结束
+        return $this->fetch('too/too', $vars);
+	}//ToO ()结束
 	
 	public function ToO_1 ()  //显示ToO计划页面
     {
         return $this->fetch('too/too_1');
-    }
+    }//ToO_1 ()结束
 
     public function send_ToO_plan ()  //将协同计划数据存入plancooper表中
     {

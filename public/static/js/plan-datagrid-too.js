@@ -127,10 +127,51 @@ $('#atConfig').hover(
 		}	
 	})
 	//赤纬 的js事件//////////////////////////////////
-//观测计划的赤经和赤纬 js事件//////////////////////////////
-	var table = $('#dg'); //定义全局table 变量
-	var editRow = undefined;  //全局开关, 编辑的行
-	//var planForm = $('#imptPlan');
+//观测计划的赤经和赤纬 js事件 结束   /////////////////////
+
+//望远镜下拉框 js事件
+planInfo.on('focus', 'table.datagrid-btable td[field="at"] a', function () {
+	
+	if ( aperture.length < 1 )
+	{
+		layer.alert('请先添加并配置望远镜', {shade:0, closeBtn:0});return;
+	}
+
+	//检查aperture对应的各望远镜滤光片 读出速度 bin及增益档位是否已配置
+	let errMsg = ''; //记录错误信息
+	
+	for (let i = 0; i < aperture.length; i++)
+	{		
+		if ( filter[aperture[i]] === undefined || filter[aperture[i]].length < 1 ) //检查滤光片 是否设置
+		{
+			errMsg += aperture[i] + '望远镜滤光片还未配置<br>';
+		}
+
+		if ( readout[aperture[i]] === undefined || readout[aperture[i]].length < 1 ) //检查读出速度 是否设置
+		{
+			errMsg += aperture[i] + '望远镜读出速度还未配置<br>';
+		}
+
+		if ( bin[aperture[i]] === undefined || bin[aperture[i]].length < 1 ) //检查bin 是否设置
+		{
+			errMsg += aperture[i] + '望远镜读出Bin还未配置<br>';
+		}
+
+		if ( gain[aperture[i]] === undefined || gain[aperture[i]] < 1 ) //检查增益档位 是否设置
+		{
+			errMsg += aperture[i] + '望远镜读出Bin还未配置<br>';
+		}
+	}
+
+	if ( errMsg !== '' )
+	{
+		layer.alert(errMsg, {shade:0, closeBtn:0});
+	}
+})//望远镜下拉框 js事件 结束//////////////////////////
+
+var table = $('#dg'); //定义全局table 变量
+var editRow = undefined;  //全局开关, 编辑的行
+//var planForm = $('#imptPlan');
 	
 //导入计划文件 上传////////////////////////////////////////////
 	/*function importPlan ()
@@ -339,8 +380,8 @@ $('#atConfig').hover(
 					},
 				},
 			},
-			{title:'赤经', colspan:5, width:table_w*0.1375,halign:'center',},
-			{title:'赤纬', colspan:5, width:table_w*0.1375,halign:'center'},
+			{title:'赤经', colspan:5, width:table_w*0.13133333,halign:'center',},
+			{title:'赤纬', colspan:5, width:table_w*0.13133333,halign:'center'},
 			{field:'epoch', title:'历元',  width:table_w*0.055, rowspan:2,
 				formatter:function(value){
 					for(var i=0; i<epochData.length; i++){
@@ -358,16 +399,16 @@ $('#atConfig').hover(
 					},
 				},
 			},
-			{field:'exposureTime', title:'曝光时间<br>（秒）',  width:table_w*0.054,rowspan:2,
+			{field:'exposureTime', title:'曝光<br>时间<br>（秒）',  width:table_w*0.045,rowspan:2,
 				editor:{ type:'text' },
 			},
-			{field:'delayTime', title:'延迟<br>（秒）', width:table_w*0.048083335, rowspan:2,
+			{field:'delayTime', title:'延迟<br>（秒）', width:table_w*0.042083335, rowspan:2,
 				editor:{ type:'text' },
 			},
 			{field:'exposureCount', title:'曝光数', width:table_w*0.0405, rowspan:2, 
 				editor:{ type:'text' },
 			},
-            {field:'filter', title:'滤光片',  width:table_w*0.045666667, rowspan:2,
+            {field:'filter', title:'滤光片',  width:table_w*0.051666667, rowspan:2,
 				formatter:function(value){
 					for(var i=0; i<filterData.length; i++){
 						if (filterData[i].filterId == value) return filterData[i].name;
@@ -384,7 +425,7 @@ $('#atConfig').hover(
 					},
 				},
 			},
-			{field:'gain', title:'增益<br>（档）',  width:table_w*0.042166667, rowspan:2,
+			{field:'gain', title:'增益<br>（档）',  width:table_w*0.050166667, rowspan:2,
 				editor:{
 					type:'numberbox',
 				},
@@ -394,7 +435,7 @@ $('#atConfig').hover(
 					type:'numberbox',
 				},
 			},
-			{field:'readout', title:'读出速度<br>（MHz）', width:table_w*0.057166667, rowspan:2,
+			{field:'readout', title:'读出速度<br>（MHz）', width:table_w*0.086166667, rowspan:2,
 				editor:{ type:'numberbox' },
 			},
 			{field:'del', title:'增&nbsp;&nbsp;|&nbsp;&nbsp;删',  width:table_w*0.051266666, rowspan:2,
@@ -403,18 +444,18 @@ $('#atConfig').hover(
 				}
 			},
 		],[
-			{field:'rightAscension1', width:table_w*0.0325, title:'时',
+			{field:'rightAscension1', width:table_w*0.028, title:'时',
 				editor:{ type:'numberbox' },
 			},
-			{field:'c1', width:table_w*0.013,
+			{field:'c1', width:table_w*0.011,
 				formatter:function(value,row,index){
 					return ':';
 				}
 			},
-			{field:'rightAscension2',  width:table_w*0.0325,title:'分',
+			{field:'rightAscension2',  width:table_w*0.028,title:'分',
 				editor:{ type:'numberbox' },
 			},
-			{field:'c2', width:table_w*0.013,
+			{field:'c2', width:table_w*0.011,
 				formatter:function(value,row,index){
 					return ':';
 				}
@@ -423,18 +464,18 @@ $('#atConfig').hover(
 				editor:{ type:'text' }
 			},
 	
-			{field:'declination1', width:table_w*0.0325, title:'度',
+			{field:'declination1', width:table_w*0.028, title:'度',
 				editor:{ type:'numberbox' }
 			},
-			{field:'c3', width:table_w*0.013,
+			{field:'c3', width:table_w*0.011,
 				formatter:function(value,row,index){
 					return ':';
 				}
 			},
-			{field:'declination2', width:table_w*0.0325, title:'分',
+			{field:'declination2', width:table_w*0.028, title:'分',
 				editor:{ type:'numberbox' },
 			},
-			{field:'c4', width:table_w*0.013,
+			{field:'c4', width:table_w*0.011,
 				formatter:function(value,row,index){
 					return ':';
 				}

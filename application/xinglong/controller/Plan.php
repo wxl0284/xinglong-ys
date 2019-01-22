@@ -640,11 +640,11 @@ class Plan extends Base
 
 			//增益 gain
 			$gain = $postData['planData'][$i]['gain'];
-			if ( $this->at == 36 )
+			/*if ( $this->at == 36 )
 			{//如果是at80, 
 				$gain = '0'; //发送的增益默认为0
 			}
-			$sendMsg .= pack('S', $gain); 
+			$sendMsg .= pack('S', $gain);*/
 			
 			//bin
 			$bin = $postData['planData'][$i]['bin'];

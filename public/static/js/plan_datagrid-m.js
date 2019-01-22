@@ -177,13 +177,13 @@
 	//保存编辑（同时保存所有被添加和编辑的计划） /////////////////////////////////
 	function savePlan ()
 	{
-		var msg = '';
+		let msg = '';
 		table.datagrid('endEdit', editRow);
 		//table.datagrid('unselectRow', editRow);
 
 		//验证计划数据
 		let plans = table.datagrid ('getRows');
-		var n = plans.length
+		let n = plans.length
 
 		if ( n > 0 )
 		{
@@ -201,7 +201,7 @@
 			table.datagrid('enableDnd'); //编辑保存后启用拖放
 		}
 		table.datagrid('acceptChanges'); //接受数据改变
-	}
+	}//savePlan() 结束
 	
 	var targetType = [
 	{typeId:'0',name:'恒星'},
@@ -271,7 +271,7 @@
 	{
 		readOption[i] = {num:'', speed:''};
 		readOption[i].num = i;
-		readOption[i].speed = ccd_readout_str[i]+'Mhz';
+		readOption[i].speed = ccd_readout_str[i]+'MHz';
 	}//对变量readOption进行赋值 结束
 
 	//var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true 是 ,false 否
@@ -354,8 +354,8 @@
 					},
 				},
 			},
-			{title:'赤经', colspan:5, width:table_w*0.1375,halign:'center',},
-			{title:'赤纬', colspan:5, width:table_w*0.1375,halign:'center'},
+			{title:'赤经', colspan:5, width:table_w*0.13133333,halign:'center',},
+			{title:'赤纬', colspan:5, width:table_w*0.13133333,halign:'center'},
 			{field:'epoch', title:'历元',  width:table_w*0.055, rowspan:2,
 				formatter:function(value){
 					for(var i=0; i<epochData.length; i++){
@@ -742,13 +742,13 @@ var all_plans = aperture + 'all_plans';
 		table.datagrid('enableDnd'); //启用拖放
 		let plans = table.datagrid('getRows');	//选中所有记录
 		let n = plans.length;
-		if ( n< 1) 
+		if ( n < 1) 
 		{
 			planErr = 1;
 			layer.alert('请先导入计划或添加计划!', {shade:false, closeBtn:0});return;
 		}
 
-		var msg = plan_valid(plans, n);  //js验证数据
+		let msg = plan_valid(plans, n);  //js验证数据
 
 		if ( msg !== '')
 		{
@@ -817,7 +817,7 @@ var all_plans = aperture + 'all_plans';
 
 	function plan_valid(plans, n)
 	{
-		var msg = ''; //错误提示
+		let msg = ''; //错误提示
 		
 		for(let i = 0; i < n; i++)
 		{
@@ -1292,10 +1292,21 @@ var all_plans = aperture + 'all_plans';
  */
  function exportPlan (aLink)
  {
-	//先验证数据是否都已保存，页面是否有数据，暂时不做
+	//先验证数据是否都已保存，页面是否有数据
+	let msg = '';
+	table.datagrid('endEdit', editRow);
 	let extport_plan_data = table.datagrid('getRows');
 	let num = extport_plan_data.length;
 	if ( num < 1 ) { layer.alert('无数据可导出', { shade:0, closeBtn:0}); return; }
+	
+	msg = plan_valid (extport_plan_data, num);
+	
+	if ( msg !== '' )
+	{
+		layer.alert(msg, {shade:false, closeBtn:0});return;
+	}
+	//验证数据 结束
+
 	//直接将页面计划数据以文件下载的方式保存
 	let out_str = ''; //要写入文件的字串
 	let pre_target = ''; //前一个目标名（如果目标名有变化则另起一行开始新的记录）
@@ -1315,13 +1326,12 @@ var all_plans = aperture + 'all_plans';
 		if ( pre_target == temp['target'] ) //是同一个目标的数据，只把后段数据加入out_str
 		{
 			out_str += '0,' + temp['exposureTime'] + ',' + temp['filter'] + ','
-				   + temp['readout'] + ',' + temp['delayTime'] + ',' + temp['exposureCount'] + ',;\r\n';
+				   + temp['readout'] + ',' + temp['delayTime'] + ',' + temp['exposureCount'] + ',' + temp['gain'] + ',' + temp['bin'] + ',;\r\n';
 		}else{//是一个新目标的数据
-			out_str += '$,' + temp['target'] + ',' + temp['rightAscension1'] + ':'
-				   + temp['rightAscension2'] + ':' + temp['rightAscension3'] + ','
-				   + temp['declination1'] + ':' + temp['declination2'] + ':' + temp['declination3']
-				   + ',' + epoch + ',' + '1,;\r\n' + '0,' + temp['exposureTime'] + ',' + temp['filter'] + ','
-				   + temp['readout'] + ',' + temp['delayTime'] + ',' + temp['exposureCount'] + ',;\r\n';
+			out_str += '$,' + temp['target'] + ',' + temp['rightAscension1'] + ':' + temp['rightAscension2'] + ':'
+				   + temp['rightAscension3'] + ',' + temp['declination1'] + ':' + temp['declination2'] + ':' + temp['declination3']
+				   + ',' + epoch + ',' + '1,;\r\n' + '0,' + temp['exposureTime'] + ',' + temp['filter'] + ',' + temp['readout']
+				   + ',' + temp['delayTime'] + ',' + temp['exposureCount'] + ',' + temp['gain'] + ',' + temp['bin'] + ',;\r\n';
 		}
 
 		pre_target = temp['target'];//把当前的目标名存起来 用以比对目标名是否改变
