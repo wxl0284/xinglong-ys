@@ -15,11 +15,9 @@
 </head>
 <script>
     var aperture = {$aperture}; //各口径数据
-    console.log(aperture);
+
     var filter = {$filter}; //滤光片
     filter = eval ( filter  ); //转为js对象
-    
-    //console.log(filter['60cm'], Object.getOwnPropertyNames(filter).length );
     
     var readout = {$readout}; //读出速度
     readout = eval ( readout  ); //转为js对象
@@ -29,8 +27,6 @@
 
     var gain = {$gain}; //增益数据
     gain = eval ( gain  ); //转为js对象
-    
-    //console.log( Object.getOwnPropertyNames(gain).length );
 </script>
 <body>
 	{include file="common/common"/}
@@ -45,6 +41,7 @@
        <a class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="importData()">已提交的计划</a>
        <a class="easyui-linkbutton" iconCls="icon-do" plain="true" onclick="plan_executing()">正执行的计划</a>
        <a class="easyui-linkbutton" iconCls="icon-clear" plain="true" onclick="delAll()">全部删除</a> -->
+       <a class="easyui-linkbutton" iconCls="icon-clear" plain="true" onclick="dd()">全部删除</a>
        <a class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="savePlan()">保存</a>
        <a class="easyui-linkbutton" iconCls="icon-redo" plain="true" onclick="submitPlan()">提交计划</a>
       </div>

@@ -256,7 +256,6 @@
 	{
 		gainOption[i] = {num:'', gain:''};
 		gainOption[i].num = i;
-		gainOption[i].gain = i;
 		let ii = i + 1;
 		gainOption[i].gain = ii + '档';
 	}//对变量gainOption进行赋值 结束
@@ -297,8 +296,8 @@
 				if ( field != 'id' && field != 'del' ) {
 					table.datagrid('endEdit', editRow); //结束前一行编辑状态
 					table.datagrid('beginEdit', index); //对点击行 进行编辑
-					var ed = table.datagrid('getEditor', {index:index,field:field});
-					$(ed.target).focus();
+					let ed = table.datagrid('getEditor', {index:index,field:field});
+					ed.target.focus();
 					editRow = index;
 					table.datagrid('enableDnd'); //启用拖放
 				}
@@ -339,7 +338,7 @@
 			},
 			{field:'type', title:'目标类型', width:table_w*0.0653333333,rowspan:2,
 				formatter:function(v){
-					for(var i=0; i<targetType.length; i++){
+					for(let i=0; i<targetType.length; i++){
 						if (targetType[i].typeId == v) return targetType[i].name;
 					}
 					return v;
@@ -358,7 +357,7 @@
 			{title:'赤纬', colspan:5, width:table_w*0.13133333,halign:'center'},
 			{field:'epoch', title:'历元',  width:table_w*0.055, rowspan:2,
 				formatter:function(value){
-					for(var i=0; i<epochData.length; i++){
+					for(let i=0; i<epochData.length; i++){
 						if (epochData[i].epochId == value) return epochData[i].name;
 					}
 					return value;
