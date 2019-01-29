@@ -41,7 +41,6 @@
        <a class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="importData()">已提交的计划</a>
        <a class="easyui-linkbutton" iconCls="icon-do" plain="true" onclick="plan_executing()">正执行的计划</a>
        <a class="easyui-linkbutton" iconCls="icon-clear" plain="true" onclick="delAll()">全部删除</a> -->
-       <a class="easyui-linkbutton" iconCls="icon-clear" plain="true" onclick="dd()">全部删除</a>
        <a class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="savePlan()">保存</a>
        <a class="easyui-linkbutton" iconCls="icon-redo" plain="true" onclick="submitPlan()">提交计划</a>
       </div>
@@ -60,7 +59,7 @@
           执行模式:<select id='modeSpan'>
            <option value='1'>single</option>
            <option value='2'>single-loop</option>
-           <option value='3'>sequence</option>
+           <option value='3' selected="selected">sequence</option>
            <option value='4'>sequence-loop</option>
          </select>
            <!--<div id='planExe' class='pos_a'>

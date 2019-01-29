@@ -24,6 +24,19 @@ class Too extends Base
 
     public function ToO ()  //显示协同计划页面
     {
+		$vars = $this->get_too_data();
+		//获取各望远镜的滤光片数据 结束
+        return $this->fetch('too/too', $vars);
+	}//ToO ()结束
+	
+	public function ToO_1 ()  //显示ToO计划页面
+    {
+		$vars = $this->get_too_data();
+        return $this->fetch('too/too_1', $vars);
+    }//ToO_1 ()结束
+
+	protected function get_too_data () //ToO()、ToO_1()共用的方法
+	{
 		//先检查atlist表中记录的条数（即配置好的望远镜个数，若没有，则提示错误）
 		$tele_data = Db::table('atlist')->select();
 		$tele_num = count($tele_data);
@@ -98,14 +111,8 @@ class Too extends Base
 		$vars['bin'] = json_encode ( $bin_data ); //bin
 		$vars['gain'] = json_encode ( $gain_data ); //增益
 
-		//获取各望远镜的滤光片数据 结束
-        return $this->fetch('too/too', $vars);
-	}//ToO ()结束
-	
-	public function ToO_1 ()  //显示ToO计划页面
-    {
-        return $this->fetch('too/too_1');
-    }//ToO_1 ()结束
+		return $vars;
+	}//get_too_data() 结束
 
     public function send_ToO_plan ()  //将协同计划数据存入plancooper表中
     {

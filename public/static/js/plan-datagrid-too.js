@@ -251,10 +251,7 @@ planInfo.on('blur', 'table.datagrid-btable td[field="at"] input.textbox-text', f
 	
 	at_input_val = aperture_val;
 })
-function dd()
-{
-	console.log(filterData);
-}
+
 var table = $('#dg'); //定义全局table 变量
 var editRow = undefined;  //全局开关, 编辑的行
 //var planForm = $('#imptPlan');
@@ -346,7 +343,6 @@ var editRow = undefined;  //全局开关, 编辑的行
 		}
 		table.datagrid('acceptChanges'); //接受数据改变
 	}
-
 
 	//对变量at_name进行赋值
 	var at_name = [];
@@ -463,6 +459,7 @@ var editRow = undefined;  //全局开关, 编辑的行
 						valueField:'aperture',
 						textField:'name',
 						data:at_name,
+						editable: false
 					},
 
 				},
@@ -514,7 +511,7 @@ var editRow = undefined;  //全局开关, 编辑的行
 					},
 				},
 			},
-			{field:'gain', title:'增益<br>（档）',  width:table_w*0.050166667, rowspan:2,
+			{field:'gain', title:'增益<br>',  width:table_w*0.050166667, rowspan:2,
 				formatter:function(v){
 					for(let i=0; i < gainOption.length; i++){
 						if (gainOption[i].num == v) return gainOption[i].gain;

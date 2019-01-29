@@ -127,10 +127,133 @@ $('#atConfig').hover(
 		}	
 	})
 	//赤纬 的js事件//////////////////////////////////
-//观测计划的赤经和赤纬 js事件//////////////////////////////
-	var table = $('#dg'); //定义全局table 变量
-	var editRow = undefined;  //全局开关, 编辑的行
-	//var planForm = $('#imptPlan');
+//观测计划的赤经和赤纬 js事件 结束//////////////////////////////
+//望远镜下拉框 js事件
+planInfo.on('focus', 'table.datagrid-btable td[field="at"] a', function () {	
+	if ( aperture.length < 1 )
+	{
+		layer.alert('请先添加并配置望远镜,配置后刷新此页面', {shade:0, closeBtn:0});return;
+	}
+
+	//检查aperture对应的各望远镜滤光片 读出速度 bin及增益档位是否已配置
+	let errMsg = ''; //记录错误信息
+	
+	for (let i = 0; i < aperture.length; i++)
+	{		
+		if ( filter[aperture[i]] === undefined || filter[aperture[i]].length < 1 ) //检查滤光片 是否设置
+		{
+			errMsg += aperture[i] + '望远镜滤光片还未配置,配置后刷新此页面<br>';
+		}
+
+		if ( readout[aperture[i]] === undefined || readout[aperture[i]].length < 1 ) //检查读出速度 是否设置
+		{
+			errMsg += aperture[i] + '望远镜读出速度还未配置,配置后刷新此页面<br>';
+		}
+
+		if ( bin[aperture[i]] === undefined || bin[aperture[i]].length < 1 ) //检查bin 是否设置
+		{
+			errMsg += aperture[i] + '望远镜读出Bin还未配置,配置后刷新此页面<br>';
+		}
+
+		if ( gain[aperture[i]] === undefined || gain[aperture[i]] < 1 ) //检查增益档位 是否设置
+		{
+			errMsg += aperture[i] + '望远镜读出Bin还未配置,配置后刷新此页面<br>';
+		}
+	}
+
+	if ( errMsg !== '' )
+	{
+		layer.alert(errMsg, {shade:0, closeBtn:0});
+	}
+	
+})//望远镜下拉框 js事件 结束//////////////////////////
+
+var filterData = [];
+var binOption = [];
+var readOption = [];
+var gainOption = [];
+
+var at_input_val = null; //望远镜下拉选框的input元素之值
+
+planInfo.on('blur', 'table.datagrid-btable td[field="at"] input.textbox-text', function () {//望远镜下拉框blur事件
+	let t = $(this);
+	
+	let at_input = t.siblings('input[type="hidden"]');
+
+	let aperture_val = at_input.val();
+	//console.log(aperture_val);return;
+	if ( aperture_val != at_input_val ) //若望远镜有变化则将被选中望远镜的增益 bin 滤光片 读出速度重新赋值以供用户选择
+	{
+		let filter_data = filter[aperture_val];//too.html中的filter变量
+	
+		//对变量filterData进行赋值
+		filterData = [];
+		let n = filter_data.length;
+
+		for (let i = 0; i < n; i++)
+		{
+			filterData[i] = {filterId:'', name:''};
+			filterData[i].filterId = filter_data[i];
+			filterData[i].name = filter_data[i];
+		}//对变量filterData进行赋值 结束
+
+		let gain_data = gain[aperture_val];//too.html中的gain变量
+
+		//对变量gainOption进行赋值
+		gainOption = [];
+
+		for (let i = 0; i < gain_data; i++)
+		{
+			gainOption[i] = {num:'', gain:''};
+			gainOption[i].num = i;
+			let ii = i + 1;
+			gainOption[i].gain = ii + '档';
+		}//对变量gainOption进行赋值 结束
+
+		let bin_data = bin[aperture_val];//too.html中的bin变量 ["1*1", "2*2", "4*4"]
+		
+		//对变量binOption进行赋值
+		binOption = [];
+		let bin_i = bin_data.length;
+
+		for (let i = 0; i < bin_i; i++)
+		{
+			binOption[i] = {num:'', bin:''};
+			binOption[i].num = bin_data[i].split('*')[0];
+			binOption[i].bin = bin_data[i];
+		}//对变量binOption进行赋值 结束
+
+		let readout_data = readout[aperture_val];//too.html中的readout变量['5', '0.05']
+		
+		//对变量readOption进行赋值
+		readOption = [];
+		let r_i = filter_data.length;
+
+		for (let i = 0; i < r_i; i++)
+		{
+			readOption[i] = {num:'', speed:''};
+			readOption[i].num = i;
+			readOption[i].speed = readout_data[i]+'MHz';
+		}//对变量readOption进行赋值 结束
+
+		let editors = table.datagrid('getEditors', editRow);//取当前编辑行的editors
+		let filter_field  = editors[12].target;
+		let gain_field    = editors[13].target;
+		let bin_field  = editors[14].target;
+		let readout_field = editors[15].target;
+
+		filter_field.combobox("loadData", filterData);//为filter字段的下拉框选项加载filterData数据
+		bin_field.combobox("loadData", binOption);//为bin字段的下拉框选项加载binOption数据
+		gain_field.combobox("loadData", gainOption);//为gain字段的下拉框选项加载gainOption数据
+		readout_field.combobox("loadData", readOption);//为readout字段的下拉框选项加载readOption数据
+	}
+	
+	at_input_val = aperture_val;
+})//望远镜下拉框blur事件 结束
+
+var table = $('#dg'); //定义全局table 变量
+var editRow = undefined;  //全局开关, 编辑的行
+//var planForm = $('#imptPlan');
 	
 //导入计划文件 上传////////////////////////////////////////////
 	/*function importPlan ()
@@ -221,10 +344,17 @@ $('#atConfig').hover(
 	}
 
 	//datagrid 属性////////////////////////////////////////
-	var at_name = [
-	{typeId:'60cm',name:'AT60'},
-	{typeId:'80cm',name:'AT80'},
-	{typeId:'85cm',name:'AT85'}];
+
+	//对变量at_name进行赋值
+	var at_name = [];
+	var aperture_num = aperture.length;
+
+	for (let i = 0; i < aperture_num; i++)
+	{
+		at_name[i] = {aperture:'', name:''};
+		at_name[i].aperture = aperture[i];
+		at_name[i].name = 'AT' + aperture[i].replace('cm', '');
+	}//对变量at_name进行赋值 结束
 	
 	var epochData = [
 	{epochId:'0',name:'Real'},
@@ -233,30 +363,6 @@ $('#atConfig').hover(
 	{epochId:'3',name:'J2050'},];
 	
 	//将固定属性中的滤光片名称:u/v/b，对变量filterData进行赋值
-	/*var filterData = [];
-	var plan_filter_option = configData.filter.filtername;
-	var filterData_num = plan_filter_option.length;
-	for (var filterData_i = 0; filterData_i < filterData_num; filterData_i++)
-	{
-		filterData[filterData_i] = {filterId:'', name:''};
-		filterData[filterData_i].filterId = plan_filter_option[filterData_i];
-		filterData[filterData_i].name = plan_filter_option[filterData_i];
-    }*/
-    var filterData = [
-        {filterId:'U',name:'U'},
-        {filterId:'B',name:'B'},
-        {filterId:'V',name:'V'},
-        {filterId:'R',name:'R'},
-        {filterId:'I',name:'I'},
-        {filterId:'N',name:'N'},
-        {filterId:'N',name:'N'},
-        {filterId:'U',name:'U'},
-        {filterId:'W',name:'W'},
-        {filterId:'g',name:'g'},
-        {filterId:'r',name:'r'},
-        {filterId:'u',name:'u'},
-        {filterId:'i',name:'i'},
-        {filterId:'z',name:'z'},];
 
 	//var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true 是 ,false 否
 	var checked = []; //存储被选中的行索引
@@ -280,11 +386,27 @@ $('#atConfig').hover(
 			dragSelection: true, //拖拽所有选中的行，false只能拖拽单行
 			//在双击一个单元格的时候开始编辑并生成编辑器，然后定位到编辑器的输入框上
 			onDblClickCell: function(index,field,value){
-				if ( field != 'id' && field != 'del' ) {
+				if ( field != 'id' && field != 'del' )
+				{
 					table.datagrid('endEdit', editRow); //结束前一行编辑状态
 					table.datagrid('beginEdit', index); //对点击行 进行编辑
-					var ed = table.datagrid('getEditor', {index:index,field:field});
-					$(ed.target).focus();
+					let ed = table.datagrid('getEditor', {index:index,field:field});
+					
+					if ( field == 'filter' )
+					{
+						ed.target.combobox("loadData", filterData);
+					}else if( field == 'bin' )
+					{
+						ed.target.combobox("loadData", binOption);
+					}else if( field == 'readout' )
+					{
+						ed.target.combobox("loadData", readOption);
+					}else if( field == 'gain' )
+					{
+						ed.target.combobox("loadData", gainOption);
+					}
+					
+					ed.target.focus();
 					editRow = index;
 					table.datagrid('enableDnd'); //启用拖放
 				}
@@ -325,25 +447,30 @@ $('#atConfig').hover(
             },
 			{field:'at', title:'望远镜', width:table_w*0.0653333333,rowspan:2,
 				formatter:function(value){
-					for(var i=0; i<at_name.length; i++){
-						if (at_name[i].typeId == value) return at_name[i].name;
+					for(let i=0; i<at_name.length; i++){
+						if (at_name[i].aperture == value)
+						{
+							return at_name[i].name;
+						}
 					}
 					return value;
 				},
 				editor:{
 					type:'combobox',
 					options:{
-						valueField:'typeId',
+						valueField:'aperture',
 						textField:'name',
 						data:at_name,
+						editable: false
 					},
+
 				},
 			},
 			{title:'赤经', colspan:5, width:table_w*0.13133333,halign:'center',},
 			{title:'赤纬', colspan:5, width:table_w*0.13133333,halign:'center'},
 			{field:'epoch', title:'历元',  width:table_w*0.055, rowspan:2,
 				formatter:function(value){
-					for(var i=0; i<epochData.length; i++){
+					for(let i=0; i<epochData.length; i++){
 						if (epochData[i].epochId == value) return epochData[i].name;
 					}
 					return value;
@@ -354,7 +481,8 @@ $('#atConfig').hover(
 					options:{
 						valueField:'epochId',
 						textField:'name',
-						data:epochData
+						data:epochData,
+						editable: false
 					},
 				},
 			},
@@ -369,7 +497,7 @@ $('#atConfig').hover(
 			},
             {field:'filter', title:'滤光片',  width:table_w*0.051666667, rowspan:2,
 				formatter:function(value){
-					for(var i=0; i<filterData.length; i++){
+					for(let i=0; i<filterData.length; i++){
 						if (filterData[i].filterId == value) return filterData[i].name;
 					}
 					return value;
@@ -381,21 +509,60 @@ $('#atConfig').hover(
 						valueField:'filterId',
 						textField:'name',
 						data:filterData,
+						editable: false
 					},
 				},
 			},
 			{field:'gain', title:'增益<br>',  width:table_w*0.050166667, rowspan:2,
+				formatter:function(v){
+					for(let i=0; i < gainOption.length; i++){
+						if (gainOption[i].num == v) return gainOption[i].gain;
+					}
+					return v;
+				},
 				editor:{
-					type:'numberbox',
+					type:'combobox',
+					options:{
+						valueField:'num',
+						textField:'gain',
+						data:gainOption,
+						editable: false,
+					},
 				},
 			},
 			{field:'bin',  title:'Bin', width:table_w*0.062750002, rowspan:2,
+				formatter:function(v){
+					for(let i=0; i < binOption.length; i++){
+						if (binOption[i].num == v) return binOption[i].bin;
+					}
+					return v;
+				},
 				editor:{
-					type:'numberbox',
+					type:'combobox',
+					options:{
+						valueField:'num',
+						textField:'bin',
+						data:binOption,
+						editable: false
+					},
 				},
 			},
 			{field:'readout', title:'读出速度<br>', width:table_w*0.086166667, rowspan:2,
-				editor:{ type:'numberbox' },
+				formatter:function(v){
+					for(let i=0; i < readOption.length; i++){
+						if (readOption[i].num == v) return readOption[i].speed;
+					}
+					return v;
+				},
+				editor:{
+					type:'combobox',
+					options:{
+						valueField:'num',
+						textField:'speed',
+						data:readOption,
+						editable: false,
+					},
+				},
 			},
 			{field:'del', title:'增&nbsp;&nbsp;|&nbsp;&nbsp;删',  width:table_w*0.051266666, rowspan:2,
 				formatter:function(value,row,index){

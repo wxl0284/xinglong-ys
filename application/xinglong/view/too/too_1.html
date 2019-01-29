@@ -13,6 +13,21 @@
 	{load href='/static/css/common-1.css'}
 	{load href='/static/css/atpage.css'}
 </head>
+<script>
+    var aperture = {$aperture}; //各口径数据
+
+    var filter = {$filter}; //滤光片
+    filter = eval ( filter  ); //转为js对象
+    
+    var readout = {$readout}; //读出速度
+    readout = eval ( readout  ); //转为js对象
+
+    var bin = {$bin}; //bin数据
+    bin = eval ( bin  ); //转为js对象
+
+    var gain = {$gain}; //增益数据
+    gain = eval ( gain  ); //转为js对象
+</script>
 <body>
 	{include file="common/common"/}
 	<div id='all'>
@@ -44,7 +59,7 @@
          执行模式:<select id='modeSpan'>
            <option value='1'>single</option>
            <option value='2'>single-loop</option>
-           <option value='3'>sequence</option>
+           <option value='3' selected="selected">sequence</option>
            <option value='4'>sequence-loop</option>
          </select>
            <!--<div id='planExe' class='pos_a'>
@@ -60,7 +75,7 @@
    </div><!--观测计划表格 结束-->
     {load href='/static/js/plan-datagrid-too_1.js'}
     <!-- <div class="clear"></div> -->
-	<footer class='center clear' style='position: absolute; bottom: 0;width:100%;'>
+	<footer class='center clear' style='position: fixed; bottom: 0;width:100%;'>
 		<span>中科院国家天文台兴隆观测基地</span>
 	</footer>
 </body>
