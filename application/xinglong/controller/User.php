@@ -36,13 +36,19 @@ class User extends Base
 		return view('add');
     }//显示 添加用户页面 结束
     
-    //添加用户////////////////////////////////////////////////////
+    //ajax 添加用户///////////////////////////
 	public function doadd ()
 	{
+		//首先判断是否已登录
+		if ($this->ajaxAuthErr == 'not_log')
+		{
+			return '请先登录再进行操作!';
+		}
+
 		//权限的判断
 		if (Session::get('role') != 1)
 		{
-			 return '您无权添加用户';
+			return '您无权添加用户';
 		}
 		
 		$inputData = input(); //获取表单数据
@@ -116,6 +122,12 @@ class User extends Base
     //编辑用户 /////////////////////////////////////////////////////
 	public function doEdit ()
 	{
+		//首先判断是否已登录
+		if ($this->ajaxAuthErr == 'not_log')
+		{
+			return '请先登录再进行操作!';
+		}
+
 		$inputData = input(); //获取表单数据
 		$id = $inputData['id'];
 		$username = $inputData['username'];
@@ -231,9 +243,15 @@ class User extends Base
 		return view('editPasswd');
     }
     
-    //执行密码修改  /////////////////////////////
+    //ajax 执行密码修改  //////////////////
 	public function editPasswd ()
 	{
+		//首先判断是否已登录
+		if ($this->ajaxAuthErr == 'not_log')
+		{
+			return '请先登录再进行操作!';
+		}
+
 		$inputData = input(); //获取表单数据
 		$username = $inputData['username'];
 		$passwd = $inputData['passwd'];

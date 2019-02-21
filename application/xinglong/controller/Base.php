@@ -8,26 +8,40 @@ use think\Db;
 //共用的控制器基类
 class Base extends Controller
 {
-    //定义ajax请求无权限时的错误标识
-    protected $ajaxAuthErr = 0; //ajax请求时 （提示未登录、无权限等不同情况，赋给不同的值）
+    protected $ajaxAuthErr = 0; //ajax请求无权限时的错误标识（提示未登录、无权限等不同情况，赋给不同的值）
+    protected $userId = ''; //登录用户的id, 在被继承的控制器中赋值给$user
+    protected $userName = ''; //登录用户的用户名
 
-    //_initialize方法进行登陆及权限的验证,暂时不写
-    protected function _initialize ()
+    protected function _initialize () //最先执行的方法
 	{
-        //查询望远镜列表，并进行模板赋值
-        $this->get_atList();
+        $this->get_atList();//查询望远镜列表，并进行模板赋值
 
-        // $route = $this->request->routeInfo()['route']; //即: 'xinglong/gimbal/sendCommand'
-        // $param = input(); //请求参数
-        // halt($param);
+        //检查是否已登录
+        if ( !Session::has('login') )//未登录
+        {
+            if ( $this->request->isAjax() === false ) //非ajax请求
+            {
+                $this->error('请先登录再进行其他操作', '/');
+            }else{//ajax请求
+                $this->ajaxAuthErr = 'not_log';
+            }
+           
+        }else{//已登录,获取用户的id
+            $this->userId = Session::get('userId');
+            $this->userName = Session::get('login'); //便于后面的方法中直接使用用户名，而不用再查数据库
+        }//检查是否已登录 结束
 
-    //    $m = $this->request->module(); //模块
-    //    $c = $this->request->controller();  //控制器
-    //    $a = $this->request->action(); //方法
-    //    halt($m . '/' . $c . '/' . $a);
-        //$this->success('新增成功', 'At60/index');
-        //$this->redirect('At80/index');
-        // $aa = $this->request->isAjax();
+        //然后 检查用户的权限 暂时不写
+
+        //halt($this->userId);
+
+        /* $route = $this->request->routeInfo()['route']; //即: 'xinglong/gimbal/sendCommand'
+        $param = input(); //请求参数
+        halt($param);
+
+        $this->success('新增成功', 'At60/index');
+        $this->redirect('At80/index');
+        $aa = $this->request->isAjax();*/
     }//_initialize方法 结束
 
     /*查询望远镜列表，并进行模板赋值*/

@@ -86,9 +86,15 @@ class Page extends Base
         return view('config', $vars);  //之前配置页面的模板文件是page/config-0.html
     }//望远镜配置页面 结束
 
-    //ajax请求 判断14个动态增减的固定是否已添加够 并获取相应望远镜的配置数据/////////
+    //ajax请求 判断16个动态增减的固定是否已添加够 并获取相应望远镜的配置数据/////////
     public function config()
     {
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+
         //首先判断是否有权限执行
        /* if ($this->ajaxAuthErr == 1)
         {//无权执行
@@ -462,6 +468,12 @@ class Page extends Base
     //执行添加望远镜 /////////
     public function at_doadd()
     {
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {
@@ -564,6 +576,12 @@ class Page extends Base
     //执行编辑望远镜数据  /////////
     public function at_doedit()
     {  
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {
@@ -1125,6 +1143,12 @@ class Page extends Base
 
     public function ajax_get_cloud_pic () //ajax 获取云量图片
     {
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+
         $cloud_pic_dir = config('cloud_pic_dir');
         $dir = date('Y/n/j', time()); //$dir格式：2018/2/29
         $dir = $cloud_pic_dir. $dir .'/';
@@ -1162,7 +1186,7 @@ class Page extends Base
             $file_name = '未获取到';
         }
 
-        return $file_name; json_encode($file_name);
+        return json_encode($file_name);
     }//ajax 获取云量图片 结束
 
     public function more_cloud_pic ($date='') //云量相机 查看更多云量图片
@@ -1668,9 +1692,12 @@ class Page extends Base
 
     public function down_fits_pic () //下载单个fits图片
     {
-		/**
-         *  ajax验证 若无权限 return 0;
-         * */
+		//首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+
         $postData = input('param');
         $postData = json_decode($postData, true);
         //验证参数
@@ -1701,9 +1728,12 @@ class Page extends Base
 
     public function down_multi_fit () //ajax 一次下载多个fit图片
     {
-        /**
-         *  ajax验证 若无权限 return 0;
-         * */
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+        
         $postData = input('param');
         $postData = json_decode($postData, true);
 

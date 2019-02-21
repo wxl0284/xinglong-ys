@@ -46,17 +46,17 @@ return $head2; pack完成的二进制数据
 
 function packHead2 ($user=1,$plan=0,$at=0,$device=0,$sequence=0,$operation=0)
 {
-    $head2 = pack('L', $user);   //uint32 unsigned int
+    $head2 = pack('L', $user);  //uint32 unsigned int
 
-    $head2 .= pack('L', $plan);   
+    $head2 .= pack('L', $plan); 
 
-    $head2 .= pack('S', $at); 
+    $head2 .= pack('S', $at);
 
-    $head2 .= pack('S', $device);   
+    $head2 .= pack('S', $device);
 
-    $head2 .= pack('L', $sequence);  
+    $head2 .= pack('L', $sequence);
 
-    $head2 .= pack('L', $operation);      //uint32
+    $head2 .= pack('L', $operation);     //uint32
 
     return $head2;
 }///////////////////////////////////////////////////////

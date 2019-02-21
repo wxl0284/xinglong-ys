@@ -706,6 +706,12 @@ class Status extends Base
     //ajax 将协同计划表中import字段变为1 导入时
     public function changeimport()
     {
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+
         $postData = input();
         
         switch ( $postData['at_aperture'] )
@@ -747,6 +753,12 @@ class Status extends Base
     //ajax 将协同计划表中import字段或giveup字段变为1
     public function changetooimport()
     {
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+        
         $postData = input();
         
         switch ( $postData['at_aperture'] )

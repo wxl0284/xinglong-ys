@@ -18,7 +18,6 @@ class Too extends Base
     protected $magic = 439041101;  //转台对应序号
     protected $version = 1;  //版本号
     protected $plan = 0;  //计划
-    protected $user = 0;  //操作者
     protected $ip = '';  //中控通信 ip
     protected $port = '';  //中控通信 port
 
@@ -116,6 +115,12 @@ class Too extends Base
 
     public function send_ToO_plan ()  //将协同计划数据存入plancooper表中
     {
+		//首先判断是否已登录
+		if ($this->ajaxAuthErr == 'not_log')
+		{
+			return '请先登录再进行操作!';
+		}
+
         //halt($planData['plan_filter_option']);
 		//定义全局$sequence 此变量在packHead()函数中要使用
 		/*if (Cookie::has('sequence'))
@@ -403,7 +408,13 @@ class Too extends Base
 	
 	public function send_ToO_1_plan ()  //保存ToO计划数据
     {
-        //halt($planData['plan_filter_option']);
+		//首先判断是否已登录
+		if ($this->ajaxAuthErr == 'not_log')
+		{
+			return '请先登录再进行操作!';
+		}
+		
+		//halt($planData['plan_filter_option']);
 		//定义全局$sequence 此变量在packHead()函数中要使用
 		/*if (Cookie::has('sequence'))
 		{

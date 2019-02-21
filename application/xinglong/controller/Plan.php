@@ -18,13 +18,18 @@ class Plan extends Base
     protected $magic = 439041101;  //转台对应序号
     protected $version = 1;  //版本号
     protected $plan = 0;  //计划
-    protected $user = 0;  //操作者
     protected $ip = '';  //中控通信 ip
     protected $port = '';  //中控通信 port
 
     //导入计划文件//////////////////////////////////////////////
 	public function importPlan ()
 	{
+		//首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+		}
+		
 		//首先判断是否有权限执行
        /* if ($this->ajaxAuthErr == 1)
         {//无权执行
@@ -252,10 +257,15 @@ class Plan extends Base
 		}		
     }//导入计划文件 结束////////////////////////////////////////
 
-    //观测计划 根据提交的参数 调用函数
-    public function sendData ()
+    public function sendData () //观测计划 根据提交的参数 调用函数
     {
-        //首先判断是否有权限执行
+		//首先判断是否已登录
+		if ($this->ajaxAuthErr == 'not_log')
+		{
+			return '请先登录再进行操作!';
+		}
+
+		//首先判断是否有权限执行
        /* if ($this->ajaxAuthErr == 1)
         {//无权执行
             return '您无权限执行此操作!';
@@ -362,7 +372,7 @@ class Plan extends Base
     //获取计划数据 验证并发送计划数据/////////////////////////////
 	protected function sendPlan ($postData)  //即原来的savePlan函数
 	{
-		halt($postData);die();
+		//halt($postData);die();
 		//定义全局$sequence 此变量在packHead()函数中要使用
 		if (Cookie::has('sequence'))
 		{
@@ -552,7 +562,7 @@ class Plan extends Base
 			$sendMsg = pack('L', $i+1);  //每条计划的tag unsigned int 
 			
 			$sendMsg .= pack('S', $this->at);
-            $sendMsg .= pack('a48', $this->user); //user
+            $sendMsg .= pack('a48', $this->userName); //登录的用户名
 			$sendMsg .= pack('a48', '02'); //project
 			
 			$target = $postData['planData'][$i]['target']; //目标名		
@@ -682,9 +692,14 @@ class Plan extends Base
 		return '观测计划发送完毕!';
     } //获取计划数据 验证并发送计划数据 结束////////////////////////////////////////
     
-    //观测计划的 开始 停止////////////////////////////////
-	protected function planOption ($postData)
+	protected function planOption ($postData) //观测计划的 开始 停止
 	{	
+		//首先判断是否已登录
+		if ($this->ajaxAuthErr == 'not_log')
+		{
+			return '请先登录再进行操作!';
+		}
+
 		//首先判断是否有权限执行
        /* if ($this->ajaxAuthErr == 1)
         {//无权执行
@@ -739,7 +754,7 @@ class Plan extends Base
 
 	/*ajax 请求  是否有观测计划在执行*/
 	protected function get_plan ($postData, $at)
-	{		
+	{
 		$plan_table = ''; //中控之 各望远镜的观测计划表
 
 		switch ($at)
@@ -825,6 +840,5 @@ class Plan extends Base
 		}catch(\Exception $e){
 			return '查询正在执行计划遇异常!';
 		}*/
-	}
-	/****ajax 请求  是否有观测计划在执行 结束*******/
+	}/****ajax 请求  是否有观测计划在执行 结束*******/
 }

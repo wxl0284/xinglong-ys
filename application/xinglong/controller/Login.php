@@ -8,24 +8,12 @@ use think\Cookie;
 
 //共用的控制器基类
 class Login extends Controller
-{
-    //定义ajax请求无权限时的错误标识
-    //protected $ajaxAuthErr = 0;
-
-    //protected function _initialize ()
-	//{
-        // echo $this->request->controller();
-        // echo $this->request->action();
-        //$this->success('新增成功', 'At60/index');
-        //$this->redirect('At80/index');
-        // $aa = $this->request->isAjax();
-    //}
-    
+{    
     //显示登陆页面
     public function index ()
     {
-        //如果已登录，直接去首页
-		if (Session::has('login'))
+        
+		if ( Session::has('login') ) //如果已登录，直接去首页
 		{
 			$this->redirect('/front');
 		}else {//未登录
@@ -87,6 +75,7 @@ class Login extends Controller
         //登录成功，写入session, 跳转至主页面
         Session::set('login', $userData[0]['username']);
         Session::set('role', $userData[0]['role']);
+        Session::set('userId', $userData[0]['id']);
         //cookie中已有之前的url,则跳转回此url
         
         $this->redirect('/front'); //去首页
@@ -98,6 +87,7 @@ class Login extends Controller
         //清空session 和cookie
         Session::delete('login');
         Session::delete('role');
+        Session::delete('userId');
         Session::delete('sunRise');
         Session::delete('sunSet');
         //Cookie::delete('url');

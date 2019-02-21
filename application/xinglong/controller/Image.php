@@ -14,6 +14,12 @@ class Image extends Base
 
     public function get_image()
     {
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+
         //首先判断是否有权限执行
        /* if ($this->ajaxAuthErr == 1)
         {//无权执行
@@ -82,7 +88,6 @@ class Image extends Base
         }else{
             return '未获取到观测图片';
         }
-        
         
         
         //halt($this->file_path . $this->at_image_dir . $day);

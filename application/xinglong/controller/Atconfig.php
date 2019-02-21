@@ -13,6 +13,12 @@ class Atconfig extends Base
     /*获取转台配置项表单 存入表atlist中*/
     public function gimbal_config()
     {
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {
@@ -218,6 +224,12 @@ class Atconfig extends Base
 
     public function ccd_config() /*获取ccd配置项表单 存入表ccdconf中*/
     {   
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {
@@ -519,6 +531,11 @@ class Atconfig extends Base
     //将vue对象中gain_noise数据对象存入ccdconf表中gain_noise字段中（以json字符串的形式）
     public function gainNoiseConfig ()
     {
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {
@@ -613,6 +630,12 @@ class Atconfig extends Base
 
     public function filter_config() /*获取滤光片配置项表单 存入表filterconf中*/
     {
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {
@@ -837,6 +860,12 @@ class Atconfig extends Base
 
     public function slaveDome_config()  /*获取随动圆顶配置项表单 存入表sdomeconf中*/
     {
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {
@@ -1027,6 +1056,12 @@ class Atconfig extends Base
 
     public function oDome_config()   /*获取全开圆顶配置项表单 存入表odomeconf中*/
     {
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {
@@ -1217,6 +1252,12 @@ class Atconfig extends Base
     
     public function focus_config() /*获取调焦器配置项表单 存入表focusconf中*/
     {
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {
@@ -1409,6 +1450,12 @@ class Atconfig extends Base
     /*获取导星望远镜配置项表单 存入表guideconf中 结束*/
     public function guideScope_config()
     {  
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {
@@ -1619,6 +1666,11 @@ class Atconfig extends Base
      //各设备文件下载 ，此方法用路由请求
      public function downLoadFlie ($dir, $filename)
      {
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {

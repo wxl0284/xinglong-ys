@@ -16,7 +16,6 @@ class Opendome extends Base
     protected $magic = 439041101;  //转台对应序号
     protected $version = 1;  //版本号
     protected $plan = 0;  //计划
-    protected $user = 0;  //操作者
     protected $ip = '';  //中控通信 ip
     protected $port = '';  //中控通信 port
     protected $command_length = [//各指令长度
@@ -31,6 +30,12 @@ class Opendome extends Base
     //接收参数，根据不同参数，向不同望远镜的全开圆顶发指令
     public function sendCommand ()
     {
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+
         //首先判断是否有权限执行
        /* if ($this->ajaxAuthErr == 1)
         {//无权执行
@@ -121,7 +126,7 @@ class Opendome extends Base
     {
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
+        $headInfo .= packHead2 ($this->userId,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
         $sendMsg = pack('S', $connect);  //unsigned short
        
@@ -139,7 +144,7 @@ class Opendome extends Base
     {
         $headInfo = packHead($this->magic,$this->version,$this->msg,$this->command_length[$param],$this->sequence,$this->at,$this->device);
 
-        $headInfo .= packHead2 ($this->user,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
+        $headInfo .= packHead2 ($this->userId,$this->plan,$this->at,$this->device,$this->sequence,$this->operation[$param]);
 
         $sendMsg = pack('S', $openDome);    //unsigned short
     

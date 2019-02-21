@@ -5,6 +5,7 @@ use app\xinglong\controller\Base;
 // use think\Cache;
 // use think\Session;
 use think\Db;
+
 class Conf extends Base
 {
     //显示要配置的各固定属性入口页
@@ -16,6 +17,12 @@ class Conf extends Base
     //添加 配置的各固定属性
     public function conf_add ()
     {
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {
@@ -135,6 +142,12 @@ class Conf extends Base
     //删除不需要的 配置的各固定属性
     public function delete_conf ()
     {
+        //首先判断是否已登录
+        if ($this->ajaxAuthErr == 'not_log')
+        {
+            return '请先登录再进行操作!';
+        }
+        
         //判断ajax 请求时 是否有权限
         // if ($this->ajaxAuthErr == 1)
         // {
