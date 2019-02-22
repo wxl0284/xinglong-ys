@@ -35,7 +35,7 @@ class Plan extends Base
         {//无权执行
             return '您无权限执行此操作!';
 		}*/
-		$postData = input();
+		$postData = $this->input; //获取提交数据
 
 		if ( !isset($postData['at']) || empty($postData['at']) )
 		{
@@ -271,8 +271,7 @@ class Plan extends Base
             return '您无权限执行此操作!';
         }*/
 
-        //接受表单数据
-        $postData = input ();
+        $postData = $this->input; //接受表单数据
         //验证数据
         // if (!$postData['at'])
         // {//未接收到望远镜编号
@@ -332,7 +331,6 @@ class Plan extends Base
 				return '提交的望远镜参数有误!';
         }
 
-        //$command = input('command'); //获取提交的指令
         //根据不同参数 调用相应方法
         if ( $postData['command'] == 1 ) //验证计划的数据，并发送计划数据
         {      

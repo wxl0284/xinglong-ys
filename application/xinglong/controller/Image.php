@@ -32,7 +32,7 @@ class Image extends Base
         $err = ''; //错误提示
         //$fits_dir = config('at_fits_dir');
 
-        $postData = input();
+        $postData = $this->input; //接收提交数据
 		
         if ( !isset($postData['at_aperture']) || empty($postData['at_aperture']) )
         {

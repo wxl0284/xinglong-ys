@@ -8,14 +8,15 @@ use think\Db;
 //共用的控制器基类
 class Base extends Controller
 {
-    protected $ajaxAuthErr = 0; //ajax请求无权限时的错误标识（提示未登录、无权限等不同情况，赋给不同的值）
+    protected $ajaxAuthErr = ''; //ajax请求无权限时的错误标识（提示未登录、无权限等不同情况，赋给不同的值）
     protected $userId = ''; //登录用户的id, 在被继承的控制器中赋值给$user
     protected $userName = ''; //登录用户的用户名
+    protected $input = []; //提交的参数
 
     protected function _initialize () //最先执行的方法
 	{
         $this->get_atList();//查询望远镜列表，并进行模板赋值
-
+        //dump(Session::has('login'));die();
         //检查是否已登录
         if ( !Session::has('login') )//未登录
         {
@@ -31,6 +32,8 @@ class Base extends Controller
             $this->userName = Session::get('login'); //便于后面的方法中直接使用用户名，而不用再查数据库
         }//检查是否已登录 结束
 
+        $this->input = input(); //获取提交的参数
+        dump( $this->input['at_aperture'] );die();
         //然后 检查用户的权限 暂时不写
 
         //halt($this->userId);

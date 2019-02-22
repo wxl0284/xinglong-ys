@@ -24,7 +24,7 @@ class Atconfig extends Base
         // {
         //     return '您无权执行此操作!';
         // }
-        $postData = input();
+        $postData = $this->input;
         
         //处理表单数据，若无轴3，则轴3相关input框禁用，则将$postData轴3相关之置为空字符串
         if ( $postData['haveaxis3'] == 0 && !isset($postData['maxaxis3speed']) )
@@ -236,7 +236,7 @@ class Atconfig extends Base
         //     return '您无权执行此操作!';
         // }
 
-        $postData = input();
+        $postData = $this->input;
     
        //处理表单数据中若干个 复选框
        /*处理 读出模式*/
@@ -542,7 +542,7 @@ class Atconfig extends Base
         //     return '您无权执行此操作!';
         // }
 
-        $postData = input();
+        $postData = $this->input;
         //halt($postData);
         if ( !isset( $postData['gain_noise'], $postData['teleid'], $postData['ccdno'] ) || count($postData['gain_noise']) < 1 )
         {//表单数据内无gain_noise，或$postData['gain_noise']内无数据
@@ -608,7 +608,7 @@ class Atconfig extends Base
         //     return '您无权执行此操作!';
         // }
 
-        $postData = input();
+        $postData = $this->input;
 
         if ( count($postData) < 4 ) return '请求参数有误';
 
@@ -642,7 +642,7 @@ class Atconfig extends Base
         //     return '您无权执行此操作!';
         // }
 
-       $postData = input();
+       $postData = $this->input;
        
        $errMsg = ''; //定义错误提示
        
@@ -872,7 +872,7 @@ class Atconfig extends Base
         //     return '您无权执行此操作!';
         // }
 
-        $postData = input();
+        $postData = $this->input;
 
         $postData['attrmodifytime'] = date ('Y-m-d'); //属性更新时间
 
@@ -1068,7 +1068,7 @@ class Atconfig extends Base
         //     return '您无权执行此操作!';
         // }
 
-        $postData = input();
+        $postData = $this->input;
 
         $postData['attrmodifytime'] = date ('Y-m-d');  //属性更新时间
 
@@ -1264,7 +1264,7 @@ class Atconfig extends Base
         //     return '您无权执行此操作!';
         // }
 
-        $postData = input();
+        $postData = $this->input;
 
         $postData['attrmodifytime'] = date ('Y-m-d');   //属性更新时间
 
@@ -1462,7 +1462,7 @@ class Atconfig extends Base
         //     return '您无权执行此操作!';
         // }
 
-        $postData = input();
+        $postData = $this->input;
         $errMsg = ''; //定义错误提示
 
         //处理焦点类型--焦距

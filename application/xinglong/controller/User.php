@@ -10,7 +10,7 @@ class User extends Base
     //用户管理首页
 	public function index ()
 	{
-		if($keyword = input('keyword'))
+		if($keyword = $this->input['keyword'])
 		{
 			
 		}else{
@@ -51,7 +51,7 @@ class User extends Base
 			return '您无权添加用户';
 		}
 		
-		$inputData = input(); //获取表单数据
+		$inputData = $this->input; //接收提交数据
 		$username = $inputData['username'];
 		$passwd = $inputData['passwd'];
 		$rePasswd = $inputData['rePasswd'];
@@ -128,7 +128,7 @@ class User extends Base
 			return '请先登录再进行操作!';
 		}
 
-		$inputData = input(); //获取表单数据
+		$inputData = $this->input; //接收提交数据
 		$id = $inputData['id'];
 		$username = $inputData['username'];
 		$passwd = $inputData['password'];
@@ -204,7 +204,7 @@ class User extends Base
     //禁用  用户
 	public function off ()
 	{	
-		if($id = input('id'))
+		if($id = $this->input['id'])
 		{
 			$res = Db::table('atccsuser')->where('id', $id)
 				 ->update(['status' => 2]);
@@ -222,7 +222,7 @@ class User extends Base
     //启用  用户////////////////
 	public function on ()
 	{		
-		if($id = input('id'))
+		if($id = $this->input['id'])
 		{
 			$res = Db::table('atccsuser')->where('id', $id)
 				 ->update(['status' => 1]);
@@ -252,7 +252,7 @@ class User extends Base
 			return '请先登录再进行操作!';
 		}
 
-		$inputData = input(); //获取表单数据
+		$inputData = $this->input; //获取表单数据
 		$username = $inputData['username'];
 		$passwd = $inputData['passwd'];
 		$passwdNew = $inputData['passwdNew'];

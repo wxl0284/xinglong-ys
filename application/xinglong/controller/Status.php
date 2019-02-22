@@ -25,7 +25,7 @@ class Status extends Base
 
         $png_dir = config('at_pic_dir');
        //首先 判断需要获取哪个望远镜状态信息
-       switch ( input('at_aperture') ) { //根据望远镜口径，给 $this->$at及$this->at_num赋值
+       switch ( $this->input['at_aperture'] ) { //根据望远镜口径，给 $this->$at及$this->at_num赋值
         case '50cm':
             $this->at = 50;
             $this->at_num = 38;
@@ -712,7 +712,7 @@ class Status extends Base
             return '请先登录再进行操作!';
         }
 
-        $postData = input();
+        $postData = $this->input; //获取提交的数据
         
         switch ( $postData['at_aperture'] )
         { //根据望远镜口径，给 $this->$at及$this->at_num赋值
@@ -759,7 +759,7 @@ class Status extends Base
             return '请先登录再进行操作!';
         }
         
-        $postData = input();
+        $postData = $this->input; //获取提交的数据
         
         switch ( $postData['at_aperture'] )
         { //根据望远镜口径，给 $this->$at及$this->at_num赋值

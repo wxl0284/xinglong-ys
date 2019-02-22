@@ -42,9 +42,8 @@ class Opendome extends Base
             return '您无权限执行此操作!';
         }*/
 
-        //接受表单数据
-        $postData = input ();
-        //halt($postData);
+        $postData = $this->input; //接受表单数据
+     
         //验证数据
         if (!$postData['at'])
         {//未接收到望远镜编号

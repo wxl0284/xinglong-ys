@@ -101,7 +101,7 @@ class Page extends Base
             return '您无权限执行此操作!';
         }*/
 
-        $id = input('id'); //获取相应望远镜的id 在atlist表中此$id对应id字段,其他表中对应teleid字段
+        $id = $this->input['id']; //获取相应望远镜的id 在atlist表中此$id对应id字段,其他表中对应teleid字段
         if ( !$id ) return '提交的数据有误! 请重新提交!';
         /*如下开始
         *判断数据表'confoption'内19个动态增减的固定属性是否已全部添加，
@@ -480,7 +480,7 @@ class Page extends Base
         //     return '您无权执行此操作!';
         // }
 
-        $postData = input();
+        $postData = $this->input; //获取提交数据
         if (!$postData)
         {
             return '提交数据失败!';
@@ -588,7 +588,7 @@ class Page extends Base
         //     return '您无权执行此操作!';
         // }
 
-        $postData = input();
+        $postData = $this->input; //获取提交数据
         if (!$postData)
         {
             return '提交数据失败!';
@@ -1698,7 +1698,7 @@ class Page extends Base
             return '请先登录再进行操作!';
         }
 
-        $postData = input('param');
+        $postData = $this->input['param'];
         $postData = json_decode($postData, true);
         //验证参数
         if ( !isset($postData['file_name']) || strlen($postData['file_name']) < 10 )
@@ -1734,7 +1734,7 @@ class Page extends Base
             return '请先登录再进行操作!';
         }
         
-        $postData = input('param');
+        $postData = $this->input['param'];
         $postData = json_decode($postData, true);
 
         //验证提交的望远镜口径参数

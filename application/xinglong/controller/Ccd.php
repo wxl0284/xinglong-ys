@@ -73,7 +73,7 @@ class Ccd extends Base
         }*/
 
         //接受表单数据
-        $postData = input ();   //halt($postData);
+        $postData = $this->input;   //halt($postData);
         //验证数据
         if (!$postData['at'])
         {//未接收到望远镜编号

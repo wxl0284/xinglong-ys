@@ -28,7 +28,7 @@ class Conf extends Base
         // {
         //     return '您无权执行此操作!';
         // }
-        $postData = input();
+        $postData = $this->input;
         if (!$postData['conf_val'])
         {
             return '数据提交失败,请重新提交!';
@@ -126,7 +126,7 @@ class Conf extends Base
         // {
         //     return '您无权执行此操作!';
         // }
-        $postData = input(); //获取表单数据  
+        $postData = $this->input; //获取表单数据  
         //读取固定属性的值
         $res = Db::table('confoption')->where('conf', $postData['conf'])->select();
         //halt($res);
@@ -154,7 +154,7 @@ class Conf extends Base
         //     return '您无权执行此操作!';
         // }
 
-        $id = input('id');
+        $id = $this->input['id'];
         $res = Db::table('confoption')->delete($id);
         if ($res)
         {

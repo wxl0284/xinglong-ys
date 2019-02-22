@@ -132,7 +132,7 @@ class Too extends Base
 			$this->sequence = 0;
 		}*/
         
-		$postData = input();
+		$postData = $this->input; //接收提交数据
 		
 		//halt($postData['planData']);
 		$num = count ( $postData['planData'] );
@@ -425,7 +425,7 @@ class Too extends Base
 			$this->sequence = 0;
 		}*/
         
-		$postData = input();
+		$postData = $this->input; //接收提交数据
 		
 		//halt($postData['planData']);
 		$num = count ( $postData['planData'] );
@@ -489,7 +489,7 @@ class Too extends Base
 			$this->sequence = 0;
 		}
         
-        $postData = input();
+        $postData = $this->input; //接收提交数据
         $this->msg = 9; //指令类型
         $length =28 + 16; //数据长度
                
