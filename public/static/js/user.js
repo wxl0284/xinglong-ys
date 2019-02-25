@@ -23,14 +23,79 @@ $(function () {
    );
 
    var form = $('#fm');
+   var name = form.find('input[name="username"]'); //用户名
+   var pass = form.find('input[name="passwd"]'); //密码
+   var repass = form.find('input[name="rePasswd"]'); //确认密码
+   var textIpt = form.find('input.ipt');
+   var patn = /[\w-]{6,12}/; //数字 字母 下划线及中划线
+
+   name.blur(function () {//用户名校验
+        let that = $(this);
+        let v = $.trim(that.val());
+        let err = 0;
+
+        if (!patn.test(v))
+        {
+            err = 1;
+            layer.tips('须为6-12位字母数字中划及下划线', that, {tips : 2,tipsMore: true});
+        }
+
+        that.data('err', err);
+   });
+
+   pass.blur(function () {//密码校验
+        let that = $(this);
+        let v = $.trim(that.val());
+        let err = 0;
+
+        if ( !patn.test(v))
+        {
+            err = 1;
+            layer.tips('须为6-12位字母数字中划及下划线', that, {tips : 2,tipsMore: true});
+        }
+
+        that.data('err', err);
+   });
+
+   repass.blur(function () {//确认密码校验
+        let that = $(this);
+        let v0 = $.trim(pass.val());
+        let v = $.trim(that.val());
+        let err = 0;
+
+        if ( v != v0 ) //确认密码与密码不一致
+        {
+            err = 1;
+            layer.tips('两次密码不一致', that, {tips : 2,tipsMore: true});
+        }
+
+        that.data('err', err);
+  });
+
 
     $('#btn').click(function (){
-        
-        var formData = new FormData(form[0]);
+        let err = 0;
+        let username = $.trim(name.val());
+        let password = $.trim(pass.val());
+        let repasswd = $.trim(repass.val());
+
+        textIpt.each(function () {
+            $(this).blur();
+            err += $(this).data('err');
+        });
+
+        if (err > 0){
+            return;  //数据输入有误 不提交
+        }
+
         $.ajax({
             type: 'post',
             url: '/user/doadd',
-            data: formData,
+            data: {
+                username : username,
+                passwd : password,
+                rePasswd : repasswd,
+            },
             processData : false,
             contentType : false,  
             success:  function (info) {

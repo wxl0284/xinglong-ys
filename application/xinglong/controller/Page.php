@@ -502,51 +502,65 @@ class Page extends Base
         //验证望远镜名
         if ( !$this->check_name( $postData['atname']) )
         {
-            $errMsg .=  '望远镜名格式错误!<br>';
+            $errMsg .=  '名称须不少于2个字符!<br>';
         }
 
         //验证望远镜观测站
         if ( !$this->check_address( $postData['address']) )
         {
-            $errMsg .=  '望远镜所属观测站格式错误!<br>';
+            $errMsg .=  '地址须不少于2个字符!<br>';
         }
 
         //验证望远镜观 经度
         if ( !$this->check_longitude( $postData['longitude']) )
         {
-            $errMsg .=  '望远镜经度格式错误!<br>';
+            $errMsg .=  '经度须在-180和180之间!<br>';
         }
 
         //验证望远镜观 纬度
         if ( !$this->check_latitude( $postData['latitude']) )
         {
-            $errMsg .=  '望远镜纬度格式错误!<br>';
+            $errMsg .=  '纬度须在-90和90之间!<br>';
         }
 
         //验证望远镜观 海拔
         if ( !$this->check_altitude( $postData['altitude']) )
         {
-            $errMsg .=  '望远镜海拔格式错误!<br>';
+            $errMsg .=  '海拔须在-1000和6000之间!<br>';
         }
 
         //验证望远镜观 口径
-        // if ( !$this->check_aperture( $postData['aperture']) )
-        // {
-        //     $errMsg .= '望远镜口径格式错误!<br>';
-        // }
+        if ( !$this->check_aperture( $postData['aperture']) )
+        {
+            $errMsg .= '口径不能为空!<br>';
+        }
 
         if ($errMsg != '')
         {
             return $errMsg;
         }/*验证望远镜添加表单的数据 结束*/
 
-        //查询新提交的望远镜id或望远镜名 是否在数据表中唯一
+        //查询新提交的望远镜名 是否在atlist表中唯一
         $old = Db::table('atlist')->where('atname', $postData['atname'])->find();
         
         if ($old)
         {
-            return '望远镜名称重复,请重新填写!';
+            $errMsg .= '望远镜名称重复,请重新填写!<br>';
         }
+
+        //查询新提交的望远镜口径 是否在atlist表中唯一
+        $old = Db::table('atlist')->where('aperture', $postData['aperture'])->find();
+        
+        if ($old)
+        {
+            $errMsg .= '望远镜口径重复,请重新填写!';
+        }
+
+        if ( $errMsg != '' )
+        {
+            return $errMsg;
+        }
+
         //执行数据添加
         $res = Db::table('atlist')->insert($postData);
         if ($res)
@@ -565,7 +579,7 @@ class Page extends Base
         $res = Db::table('atlist')->where('id', $at)->find();
         if (!$res)
         {
-           $this->error('读取数据失败!');
+           $this->error('读取望远镜数据失败!');
         }else{
             $vars['atData'] = $res;
             return view ('atedit', $vars);
@@ -605,37 +619,37 @@ class Page extends Base
         //验证望远镜名
         if ( !$this->check_name( $postData['atname']) )
         {
-            $errMsg .=  '望远镜名格式错误!<br>';
+            $errMsg .=  '名称须不少于2个字符!<br>';
         }
 
         //验证望远镜观测站
         if ( !$this->check_address( $postData['address']) )
         {
-            $errMsg .=  '望远镜所属观测站格式错误!<br>';
+            $errMsg .=  '地址须不少于2个字符!<br>';
         }
 
         //验证望远镜观 经度
         if ( !$this->check_longitude( $postData['longitude']) )
         {
-            $errMsg .=  '望远镜经度格式错误!<br>';
+            $errMsg .=  '经度须在-180和180之间!<br>';
         }
 
         //验证望远镜观 纬度
         if ( !$this->check_latitude( $postData['latitude']) )
         {
-            $errMsg .=  '望远镜纬度格式错误!<br>';
+            $errMsg .=  '纬度须在-90和90之间!<br>';
         }
 
         //验证望远镜观 海拔
         if ( !$this->check_altitude( $postData['altitude']) )
         {
-            $errMsg .=  '望远镜海拔格式错误!<br>';
+            $errMsg .=  '海拔须在-1000和6000之间!<br>';
         }
 
         //验证望远镜观 口径
         // if ( !$this->check_aperture( $postData['aperture']) )
         // {
-        //     $errMsg .= '望远镜口径格式错误!<br>';
+        //     $errMsg .= '口径不能为空!<br>';
         // }
 
         if ($errMsg != '')
@@ -1383,16 +1397,17 @@ class Page extends Base
     }/*验证望远镜名 海拔 结束*/
 
     /*验证望远镜 口径*/
-    // protected function check_aperture ($aperture)
-    // {
-    //     //合法格式：216.0
-    //     if ( !is_numeric($aperture) )
-    //     {
-    //         return false;
-    //     }else{
-    //         return true;
-    //     }
-    // }/*验证望远镜名 口径 结束*/
+    protected function check_aperture ($aperture)
+    {
+        $arr = ['50cm', '60cm', '80cm', '85cm', '100cm', '126cm', '216cm']; //口径的选项
+        
+        if ( !isset($aperture) || ( isset($aperture) && !in_array($aperture, $arr, true) ) )
+        {
+            return false;
+        }else{
+            return true;
+        }
+    }/*验证望远镜名 口径 结束*/
 
     /*获取16个动态增减的固定属性 数据*/
     protected function get_16confOption ()

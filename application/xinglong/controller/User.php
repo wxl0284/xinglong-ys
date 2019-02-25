@@ -7,12 +7,11 @@ use think\Session;
 //用户管理的控制器
 class User extends Base
 {
-    //用户管理首页
-	public function index ()
+	public function index () //用户管理首页
 	{
-		if($keyword = $this->input['keyword'])
+		if( isset($this->input['keyword']) )
 		{
-			
+			$keyword = $this->input['keyword'];
 		}else{
 			$keyword = '';
 		}
@@ -33,6 +32,8 @@ class User extends Base
     //显示 添加用户页面
 	public function add ()
 	{
+		//检查atlist表中是否已有望远镜 若无望远镜 则提示添加望远镜
+		$at =Db::table('atlist')->
 		return view('add');
     }//显示 添加用户页面 结束
     
@@ -52,10 +53,12 @@ class User extends Base
 		}
 		
 		$inputData = $this->input; //接收提交数据
+
 		$username = $inputData['username'];
 		$passwd = $inputData['passwd'];
 		$rePasswd = $inputData['rePasswd'];
-		$role = $inputData['role'];
+		//$role = $inputData['role'];
+		
 		//验证数据
 		$result	= $this->validate(
             [

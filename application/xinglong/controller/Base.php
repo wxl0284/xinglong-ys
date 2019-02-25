@@ -33,7 +33,7 @@ class Base extends Controller
         }//检查是否已登录 结束
 
         $this->input = input(); //获取提交的参数
-        dump( $this->input['at_aperture'] );die();
+        //dump( $this->input['at_aperture'] );die();
         //然后 检查用户的权限 暂时不写
 
         //halt($this->userId);

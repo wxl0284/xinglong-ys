@@ -27,5 +27,5 @@ td {text-align:right;padding-right:22px;border:0;padding-bottom:9px;}
 #btn {margin-left:50px;width:100px;height:30px;background-color:#fff;
 	 font-size:17px;color:#3479c5;}
 
-footer {position:absolute;bottom:0px;width:100%}
+footer {position:fixed;bottom:0px;width:100%}
 

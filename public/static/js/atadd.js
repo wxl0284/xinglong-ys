@@ -33,7 +33,7 @@ $(function () {
     var longitude = atForm.find('input[name="longitude"]'); //经度
     var latitude = atForm.find('input[name="latitude"]'); //纬度
     var altitude = atForm.find('input[name="altitude"]'); //海拔
-    //var aperture = atForm.find('input[name="aperture"]'); //口径
+    var aperture = atForm.find('select[name="aperture"]'); //口径
 
     //各input框的blur
     //验证望远镜id 之blur
@@ -54,92 +54,100 @@ $(function () {
 
     //验证望远镜名 之blur
     atName.blur(function () {
-        var v = $.trim($(this).val());
+        let t = $(this);
+        let v = $.trim(t.val());
 		//var patn = /^\d(\d|\.)*m望远镜+$/;
-		var err = 0;
+		let err = 0;
 		
 		if ( v.length < 2 )
 		{
 			err = 1;
-			layer.tips('望远镜名格式错误!', $(this), {tipsMore: true});
+			layer.tips('名称须不少于2个字符!', t, {tipsMore: true});
 		}		
-		$(this).data('err', err);
+		t.data('err', err);
     });
 
      //验证望远镜地址 之blur
      address.blur(function () {
-        var v = $.trim($(this).val());
-		var err = 0;
+        let t = $(this);
+        let v = $.trim(t.val());
+		let err = 0;
 		
 		if ( v.length < 2 )
 		{
 			err = 1;
-			layer.tips('望远镜地址格式错误!', $(this), {tipsMore: true});
+			layer.tips('地址须不少于2个字符!', t, {tipsMore: true});
 		}		
-		$(this).data('err', err);
+		t.data('err', err);
     });//验证望远镜地址 之blur 结束
 
     //验证望远镜经度 之blur
     longitude.blur(function () {
-        var v = $.trim($(this).val());
+        let t = $(this);
+        let v = $.trim(t.val());
         //v1 = v.replace('°', ''); //将字符°替换为空串
-		var err = 0;
+		let err = 0;
 		
 		if ( !$.isNumeric(v) || v > 180 || v < -180 )
 		{
 			err = 1;
-			layer.tips('经度格式错误!', $(this), {tipsMore: true});
+			layer.tips('经度须在-180和180之间!', t, {tipsMore: true});
 		}		
-		$(this).data('err', err);
+		t.data('err', err);
     });//验证望远镜经度 之blur 结束
 
     //验证望远镜纬度 之blur
     latitude.blur(function () {
-        var v = $.trim($(this).val());
+        let t = $(this);
+        let v = $.trim(t.val());
         //v1 = v.replace('°', ''); //将字符°替换为空串
-		var err = 0;
+		let err = 0;
 		
 		if ( !$.isNumeric(v) || v > 90 || v < -90 )
 		{
 			err = 1;
-			layer.tips('纬度格式错误!', $(this), {tipsMore: true});
+			layer.tips('纬度须在-90和90之间!', t, {tipsMore: true});
 		}		
-		$(this).data('err', err);
+		t.data('err', err);
     });//验证望远镜纬度 之blur 结束
 
     //验证望远镜海拔 之blur
     altitude.blur(function () {
-        var v = $.trim($(this).val());
+        let t = $(this);
+        let v = $.trim(t.val());
         //v1 = v.replace('m', ''); //将字符m 替换为空串
-		var err = 0;
+		let err = 0;
 		
 		if ( !$.isNumeric(v) || v > 6000 || v < -1000 )
 		{
 			err = 1;
-			layer.tips('海拔格式错误!', $(this), {tipsMore: true});
+			layer.tips('海拔须在-1000和6000之间!', t, {tipsMore: true});
 		}		
-		$(this).data('err', err);
+		t.data('err', err);
     });//验证望远镜海拔 之blur 结束
 
     //验证望远镜口径 之blur
-    // aperture.blur(function () {
-    //     var v = $.trim($(this).val());
-    //     //v1 = v.replace('cm', ''); //将字符m 替换为空串
-	// 	var err = 0;
+    aperture.blur(function () {
+        let t = $(this);
+        let v = $.trim(t.val());
+        //v1 = v.replace('cm', ''); //将字符m 替换为空串
+		let err = 0;
 		
-	// 	if ( !$.isNumeric(v) )
-	// 	{
-	// 		err = 1;
-	// 		layer.tips('口径格式错误!', $(this), {tipsMore: true});
-	// 	}		
-	// 	$(this).data('err', err);
-    // });//验证望远镜口径 之blur 结束
+		if ( v == '0' )
+		{
+			err = 1;
+			layer.tips('口径不能为空!', t, {tipsMore: true});
+		}		
+		t.data('err', err);
+    });//验证望远镜口径 之blur 结束
 
     //提交按钮 点击事件
     atForm.find('input[type="button"]').click(function () {
-        var err = 0; //输入错误标识
+        let t = $(this);
+        let err = 0; //输入错误标识
         //验证每个input输入框
-        var input = atForm.find('input[type="text"]');
+        let input = atForm.find('input[type="text"], select');//查找input和select
+        
         input.each(function () {
 			$(this).blur();
 			err += $(this).data('err');
@@ -147,11 +155,6 @@ $(function () {
    
 		if (err > 0){
 			return;  //指令输入有误 不提交
-        }
-        
-        if ( atName.val() === '0' )
-        {
-            layer.tips('请选择望远镜名称', atName, {tipsMore:true}); return;
         }
 
         var formData = new FormData(atForm[0]); //转为js-dom对象

@@ -79,33 +79,5 @@
 	<footer class='center clear'>
 		<span>中科院国家天文台兴隆观测基地</span>
 	</footer>
-	<script>
-		$(function () {
-			$('#btn').click(function (){
-				var form = $('#fm');
-				var formData = new FormData(form[0]);
-				$.ajax({
-					type: 'post',
-					url: '/xinglong/user/doadd',
-					data: formData,
-					processData : false,
-					contentType : false,  
-		            success:  function (info) {
-		                alert(info);
-						if (info.indexOf('登录') !== -1)
-						{
-							location.href = '/';
-						}else if (info.indexOf('用户成功') !== -1)
-						{
-							location.href = '/xinglong/user';
-						}
-		            },
-		            error:  function () {
-		               alert('网络异常,请重新提交');
-		            },
-				});
-			});
-		})
-	</script>
 </body>
 </html>
