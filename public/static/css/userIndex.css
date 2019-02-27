@@ -14,9 +14,9 @@ header div div {border:1px solid #fff; font-size:14px; text-align:center;
 
 header div div a {color:#eaf1f9;}*/
 
-#user {width:900px; text-align:center; margin: 0 auto;}
+#user {width:1000px; text-align:center; margin: 0 auto;}
 
-#user table {margin:0 auto;width:898px;border-collapse: collapse;}
+#user table {margin:0 auto;width:100%;border-collapse: collapse;}
 
 td{width:200px;border:1px solid #ccc;height:30px;}
 

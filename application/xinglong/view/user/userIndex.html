@@ -23,11 +23,13 @@
 			{if condition="isset($userList)"}
 		  <table>
 			   <tr id='t1'>
-				  <td>用户序号</td><td>用户名</td><td>权限</td><td>操作</td>
+				  <td>用户序号</td> <td>用户名</td> <td>权限</td> <td>可查看的望远镜</td> <td>可操作的望远镜</td> <td>操作</td>
 				 </tr>
 						{volist name='userList' id='user'}
 						<tr>
-							<td>{$user.id}</td><td>{$user.username}</td><td>{$user.description}</td>
+							<td>{$user.id}</td> <td>{$user.username}</td> <td>{$user.description}</td>
+							<td>{$user.look}</td>
+							<td>{$user.operate}</td> 
 							<td>
 							<a href="{:url('xinglong/user/edit', ['id'=>$user.id])}">编辑&nbsp;&nbsp;</a>
 							{if condition="$user.role != 1"}

@@ -17,37 +17,33 @@
 			<table>
 				<tr>
 				   <td>用户名</td><td><input class='border ipt' type='text' name='username' placeholder='6-12位字母数字_及-'/></td>
-				</tr>
+				</tr><br>
 				<tr>
 					<td>密 码</td><td><input class='border ipt' type='password' name='passwd' placeholder='6-12位字母数字_及-'/></td>
 				</tr>
 				<tr>
 					<td>确认密码</td><td><input class='border ipt' type='password' name='rePasswd' placeholder='6-12位字母数字_及-'/></td>
 				</tr>
-				<!-- <tr><td>用户权限</td>
-					<td>
-					    <select class='border ipt' name="role">
-						   <option value="2">普通用户</option>
-						   <option value="3">操作者</option>
-						   <option value="4">科学家</option>
-					    </select>
+				<tr><td>可查看</td>
+					<td class='border' style='width:330px;border-radius: 4px;' id='look'>
+							{volist name="at" id="v"}
+							   <label class='fl'>&nbsp;<input type='checkbox' name='look[]' value="{$v.aperture}">{$v.atname}&nbsp;&nbsp;</label>
+							{/volist}						
 					</td>
 				</tr>
-				<tr><td>可操作望远镜</td>
-					<td>
-						<select class='border ipt' name="a">
-							<option value="2">60cm</option>
-							<option value="3">80cm</option>
-							<option value="4">85cm</option>
-						</select>
+				<tr><td>可操作</td>
+					<td class='border' style='width:330px;border-radius: 4px;' id='op'>
+						{volist name="at" id="v"}
+						  <label class='fl'>&nbsp;<input type='checkbox' name='operate[]' value="{$v.aperture}">{$v.atname}&nbsp;&nbsp;</label>
+						{/volist}
 					</td>
-				</tr> -->
+				</tr>
 				<tr>
 					<td colspan='2' class='center'><input class='border1' id='btn' type='button' value='确认提交' /></td>
 				</tr> 
 			</table>
 		  </form>
-    </div><br />
+    </div><br><br>
 	<footer class='center clear'>
 		<span>中科院国家天文台兴隆观测基地</span>
 	</footer>

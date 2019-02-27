@@ -26,6 +26,10 @@ $(function () {
    var name = form.find('input[name="username"]'); //用户名
    var pass = form.find('input[name="passwd"]'); //密码
    var repass = form.find('input[name="rePasswd"]'); //确认密码
+   var look = form.find('input[name="look[]"]'); //可查看的望远镜
+   var operate = form.find('input[name="operate[]"]'); //可操作的望远镜
+   var op = $('#op');
+   var lk = $('#look');
    var textIpt = form.find('input.ipt');
    var patn = /[\w-]{6,12}/; //数字 字母 下划线及中划线
 
@@ -74,28 +78,53 @@ $(function () {
 
 
     $('#btn').click(function (){
-        let err = 0;
-        let username = $.trim(name.val());
-        let password = $.trim(pass.val());
-        let repasswd = $.trim(repass.val());
 
+        let err = 0;
         textIpt.each(function () {
             $(this).blur();
             err += $(this).data('err');
         });
 
-        if (err > 0){
+        let check = 0;
+    
+        for (let i=0; i<look.length; i++)
+        {
+            if ( look[i].checked )
+            {
+                check ++;
+            }
+        }
+
+        if ( check == 0 )
+        {
+            layer.tips('请选择此用户能查看的望远镜!', lk, {tips : 2,tipsMore: true});
+        }
+
+        /*let check2 = 0;
+    
+        for (let i=0; i<operate.length; i++)
+        {
+            if ( operate[i].checked )
+            {
+                check2 ++;
+            }
+        }
+
+        if ( check2 == 0 )
+        {
+            layer.tips('请选择此用户能操作的望远镜!', op, {tips : 2,tipsMore: true});
+        }*/
+
+        if ( err > 0  || check == 0 ){
             return;  //数据输入有误 不提交
         }
+
+        let form_data = new FormData(form[0]); //获取表单数据
 
         $.ajax({
             type: 'post',
             url: '/user/doadd',
-            data: {
-                username : username,
-                passwd : password,
-                rePasswd : repasswd,
-            },
+            data: form_data,
             processData : false,
             contentType : false,  
             success:  function (info) {
@@ -109,7 +138,7 @@ $(function () {
                             location.href = '/';
                         }else if (info.indexOf('用户成功') !== -1)
                         {
-                            location.href = '/xinglong/user';
+                            location.href = '/user';
                         }
                     },
                 });

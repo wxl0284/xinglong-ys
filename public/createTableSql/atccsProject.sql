@@ -3,9 +3,11 @@
      "id" SERIAL PRIMARY KEY,
      "username" character varying(100) NOT NULL,
      "password" character varying(200) NOT NULL,
-     "status" integer NOT NULL,
-     "role" integer NOT NULL,
-     "description" character varying(200) NOT NULL
+     "status" integer NOT NULL,/*1为正常 2为禁用*/
+     "role" integer NOT NULL,/*1为管理员 2为普通用户 3为操作者 4为科学家*/
+     "description" character varying(200),
+     "look" character varying,/*可以查看的望远镜口径*/
+     "operate" character varying,/*可以操作的望远镜口径*/
  );
 /*用户表 建表sql*/
 
