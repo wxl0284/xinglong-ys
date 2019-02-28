@@ -15,75 +15,94 @@ class User extends Base
 		}else{
 			$keyword = '';
 		}
+		//halt(input());
+		//根据当前页码 显示用户的编号
+		if ( isset($this->input['page']) ) //提交参数中有页码
+		{
+			$cur_page = $this->input['page']; //当前页码
+		}else{//无页码
+			$cur_page = 1;
+		}
 		
-		$userList = Db::table('atccsuser')->where('username', 'like', '%'.$keyword.'%')->order('id asc')->paginate(10, false, ['query' => ['keyword' => $keyword]]);
+		$num_per_page = 10; //每页显示的条数
+
+		$userList = Db::table('atccsuser')->where('username', 'like', '%'.$keyword.'%')->order('id asc')->paginate($num_per_page, false, ['query' => ['keyword' => $keyword]]);
 		$user_num = count($userList);
-		halt($userList);
+		
 		//查询atlist表 获取各口径对应的望远镜名称
 		$apertureData = Db::table('atlist')->column('atname', 'aperture'); //以aperture为索引, 如['60cm'=>'60cm望远镜', '80cm'=>'80cm望远镜',]
 		
 		if ( $user_num > 0 )
 		{
-			if ( $apertureData )
-			{//已添加过望远镜数据信息
-				foreach ( $userList as $k => $v )
+			$userList->each(function ($item, $key) use ($apertureData, $cur_page, $num_per_page)
+			{
+				if ( $apertureData ) //有望远镜口径数据
 				{
-					if ( $v['role'] == '1' )//是管理员 可以查看和操作所有望远镜
+					if ( $item['role'] == '1' )//是管理员 可以查看和操作所有望远镜
 					{
-						//$userList[$k]['look'] = '全部';
-						//$userList[$k]['operate'] = '全部';
+						$item['look'] = '全部';
+						$item['operate'] = '全部';
 					}else{//普通用户
+
+						$temp = '';
+						$temp1 = '';
+
 						foreach ( $apertureData as $kk => $vv ) //$kk表示口径值
 						{
 							//先处理此用户可查看的望远镜
-							$temp = '';
-
-							if ( !empty( $vv['look'] ) )
+							
+							if ( !empty( $item['look'] ) )
 							{
-								if ( strpos( $vv['look'], $kk ) !== false ) //atlist中的某口径值在$v['look']
+								if ( strpos( $item['look'], $kk ) !== false ) //atlist中的某口径值在$v['look']
 								{
 									$temp .= $vv . ',';
 								} 
 							}else{
 								$temp = '无';
 							}
-
-							$vv['look'] = $temp;
-
-							if ( $vv['look'] !== '无' )
-							{
-								$vv['look'] = rtrim( $vv['look'], ','); //删除最后一个','
-							}
-
+							
+							
+							
 							//再处理此用户可操作的望远镜
-							$temp = '';
 
-							if ( !empty( $vv['operate'] ) )
+							if ( !empty( $item['operate'] ) )
 							{
-								if ( strpos( $vv['operate'], $kk ) !== false ) //atlist中的某口径值在$v['operate']
+								if ( strpos( $item['operate'], $kk ) !== false ) //atlist中的某口径值在$v['operate']
 								{
-									$temp .= $vv . ',';
+									$temp1 .= $vv . ',';
 								} 
 							}else{
-								$temp = '无';
+								$temp1 = '无';
 							}
-
-							$vv['operate'] = $temp;
-
-							if ( $vv['operate'] !== '无' )
-							{
-								$vv['operate'] = rtrim( $vv['operate'], ','); //删除最后一个','
-							}
+							
 						}//foreach 口径数据结束
-					}
-				}//foreach 用户 结束
-			}else{
-				$v['look'] = '暂无望远镜数据';
-				$v['operate'] = '暂无望远镜数据';
-			}
-		}
-		//查询atlist表 获取各口径对应的望远镜名称结束
-		//halt($userList);
+
+						$item['look'] = $temp;
+
+						if ( $item['look'] !== '无' )
+						{
+							$item['look'] = rtrim( $item['look'], ','); //删除最后一个','
+						}
+
+						$item['operate'] = $temp1;
+
+						if ( $item['operate'] !== '无' )
+						{
+							$item['operate'] = rtrim( $item['operate'], ','); //删除最后一个','
+						}
+
+					} // else 普通用户 结束
+				}else{//无望远镜口径数据
+					$item['look'] = '暂无望远镜数据';
+					$item['operate'] = '暂无望远镜数据';
+				}
+
+				$item['num'] = $num_per_page * ( $cur_page - 1) + $key + 1;
+
+				return $item;
+			});//循环每条记录 结束
+		}	
+		
 		if ( $user_num > 0 )
 		{
 			$vars['userList'] = $userList;

@@ -21,13 +21,13 @@
 			<input class='border1' type='submit' value='查询'> 
 			</form><br><br>
 			{if condition="isset($userList)"}
-		  <table>
+		  <table style="table-layout:fixed;">
 			   <tr id='t1'>
-				  <td>用户序号</td> <td>用户名</td> <td>权限</td> <td>可查看的望远镜</td> <td>可操作的望远镜</td> <td>操作</td>
+				  <td width="5%">序号</td> <td width="11%">用户名</td> <td width="10%">权限</td> <td style="word-wrap:break-word">可查看的望远镜</td> <td style="word-wrap:break-word">可操作的望远镜</td> <td width="9%">操作</td>
 				 </tr>
 						{volist name='userList' id='user'}
 						<tr>
-							<td>{$user.id}</td> <td>{$user.username}</td> <td>{$user.description}</td>
+							<td>{$user.num}</td> <td>{$user.username}</td> <td>{$user.description}</td>
 							<td>{$user.look}</td>
 							<td>{$user.operate}</td> 
 							<td>
