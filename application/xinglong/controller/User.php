@@ -267,17 +267,38 @@ class User extends Base
 	public function edit ($id)
 	{
 		$userData = Db::table('atccsuser')->where('id', $id)->find();
+		
+		//从atlist表中查望远镜口径数据
+		$aperture = Db::table('atlist')->column('atname', 'aperture'); //以aperture为索引, 如['60cm'=>'60cm望远镜', '80cm'=>'80cm望远镜',]
+
 		if ($userData)
 		{
-            $vars['userData'] = $userData;
-		}else{
+			/*检查此用户 可查看或操作的望远镜口径数据（如果用户可操作60cm和80cm望远镜，而此时atlist表中仅有60cm口径，
+			则只在页面显示可操作60cm望远镜，编辑用户数据提交后，用户表中operate字段就没有80cm数据了），若从atlist表中未
+			查到望远镜口径数据则提示用户先添加望远镜（可以暂不配置望远镜固定属性）*/
+			if ( 有口径数据 )
+			{
+				/*foreach ($aperture as $k => $v)
+				{
+					//如果某口径值在$userData的look和operate中，则在页面中显示可以查看和操作的望远镜
+
+				}*/
+
+				//页面赋值
+				$vars['userData'] = $userData;
+				$vars['aperture'] = $aperture;
+
+				return view('edit',$vars);
+			}else{
+				$this->error('请先添加望远镜（可暂不配置固定属性），再编辑用户!');
+			}
+
+		}else{//未查到此用户数据
 			$this->error('网络异常，请再次点击编辑!');
 		}
-		
-		return view('edit',$vars);
     }//显示编辑用户页面 结束
     
-    //编辑用户 /////////////////////////////////////////////////////
+    //编辑用户 ///////////////////////////////
 	public function doEdit ()
 	{
 		//首先判断是否已登录
