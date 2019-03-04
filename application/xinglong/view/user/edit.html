@@ -14,43 +14,47 @@
 	{include file="common/common"/}
 	<div id='all'>
 		<form id='fm' class='center_mrg'>
-			<input type='hidden' name='id' value='{$userData.id}' />
+			<input type='hidden' name='id' value='{$userData.id}'>
+			<input type='hidden' name='role' value='{$userData.role}'>
 			<table>
 				<tr>
-				   <td>用户名</td><td><input class='border ipt text' type='text' name='username' value='{$userData.username}'/></td>
+				   <td>用户名</td><td><input class='border ipt text' type='text' name='username' value='{$userData.username}' placeholder='6-12位字母数字_及-'></td>
 				</tr>
 				<tr>
-					<td>密 码</td><td><input class='border ipt text' type='password' name='password' placeholder='置空为不修改' /></td>
+					<td>密 码</td><td><input class='border ipt text' type='password' name='password' placeholder='置空为不修改'></td>
 				</tr>
-				{if condition="$userData.role !== 1"}
-				<tr><td>用户权限</td>
-					<td>
-					    <select class='border ipt' name="role" style='width:212px; height:32px;'>
-						   <option value="2" {if condition="$userData.role == 2"}
-						   selected='selected' {/if}
-						   >普通用户</option>
-						   <option value="3" {if condition="$userData.role == 3"}
-						   selected='selected' {/if}>操作者</option>
-						   <option value="4" {if condition="$userData.role == 4"}
-						   selected='selected' {/if}>科学家</option>
-					   </select>
-					</td>
-				</tr>
-				{else/}
-				<tr><td>用户权限</td>
-					<td>
-					    <select class='border ipt' name="role" style='width:212px; height:32px;'>>
-						   <option value="1">管理员</option>
-					   </select>
-					</td>
-				</tr>
-				{/if}
 				<tr>
-					<td colspan='2' class='center'><input class='border1' id='btn' type='button' value='确认提交' /></td>
+					<td>可查看</td>
+					{if condition="$userData.role == '1'"}<td class='border' style='width:330px;border-radius: 4px;text-align: center;'>全部望远镜</td>
+					{else /}<td class='border' style='width:330px;border-radius: 4px;' id='look'>
+						{foreach name="aperture" item="v"}
+							<label class="fl">
+								&nbsp;<input  type='checkbox' name='look[]' value='{$key}' {if condition="is_string($userData.look) && strpos($userData.look, $key) !== false"}checked="checked"{/if}>{$v}&nbsp;&nbsp;
+							</label>
+						{/foreach}
+					</td>
+					{/if}
+				</tr>
+				<tr>
+					<td>可操作</td>
+					{if condition="$userData.role == '1'"}<td class='border' style='width:330px;border-radius: 4px;text-align: center;'>全部望远镜</td>
+					{else /} <td class='border' style='width:330px;border-radius: 4px;'>
+						{foreach name="aperture" item="v"}
+							<label class="fl">
+									&nbsp;<input type='checkbox' name='operate[]' value='{$key}' {if condition="is_string($userData.operate) && strpos($userData.operate, $key) !== false"}checked="checked"{/if}>{$v}&nbsp;&nbsp;
+							</label>
+						{/foreach}
+					</td>
+					{/if}
+				</tr>
+				<tr>
+					<td colspan='2' class='center'>
+						<input class='border1' id='btn' type='button' value='确认提交'>
+					</td>
 				</tr> 
 			</table>
 		  </form>
-    </div>
+    </div><br><br>
 	<footer class='center clear'>
 		<span>中科院国家天文台兴隆观测基地</span>
 	</footer>

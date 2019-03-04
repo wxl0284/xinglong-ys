@@ -263,20 +263,20 @@ class User extends Base
 		}
     }//添加用户  结束/////////////////////
     
-    //显示编辑用户页面 ////////////////////////////
+    //显示编辑用户页面 ////////////////////
 	public function edit ($id)
 	{
 		$userData = Db::table('atccsuser')->where('id', $id)->find();
 		
 		//从atlist表中查望远镜口径数据
 		$aperture = Db::table('atlist')->column('atname', 'aperture'); //以aperture为索引, 如['60cm'=>'60cm望远镜', '80cm'=>'80cm望远镜',]
-
+		
 		if ($userData)
 		{
 			/*检查此用户 可查看或操作的望远镜口径数据（如果用户可操作60cm和80cm望远镜，而此时atlist表中仅有60cm口径，
 			则只在页面显示可操作60cm望远镜，编辑用户数据提交后，用户表中operate字段就没有80cm数据了），若从atlist表中未
 			查到望远镜口径数据则提示用户先添加望远镜（可以暂不配置望远镜固定属性）*/
-			if ( 有口径数据 )
+			if ( $aperture )
 			{
 				/*foreach ($aperture as $k => $v)
 				{
@@ -294,13 +294,13 @@ class User extends Base
 			}
 
 		}else{//未查到此用户数据
-			$this->error('网络异常，请再次点击编辑!');
+			$this->error('网络异常, 未查到该用户数据!');
 		}
     }//显示编辑用户页面 结束
     
     //编辑用户 ///////////////////////////////
 	public function doEdit ()
-	{
+	{//halt($this->input);die();
 		//首先判断是否已登录
 		if ($this->ajaxAuthErr == 'not_log')
 		{
@@ -308,7 +308,7 @@ class User extends Base
 		}
 
 		$inputData = $this->input; //接收提交数据
-		$id = $inputData['id'];
+		/*$id = $inputData['id'];
 		$username = $inputData['username'];
 		$passwd = $inputData['password'];
 		$role = $inputData['role'];
@@ -325,57 +325,119 @@ class User extends Base
 		}elseif ($role == 1)
 		{
 			$des = '科学家';
+		}*/
+
+		/*验证数据*/
+		$errMsg = ''; //记录错误提示
+
+		if ( !isset($inputData['username']) || !preg_match('/^[\w-]{6,12}$/', $inputData['username']) )
+		{//验证用户名
+			$errMsg .= '用户名须为6-12位字母数字_或-!<br>';
+		}
+
+		if ( !isset($inputData['password']) || ( !empty($inputData['password']) && !preg_match('/^[\w-]{6,12}$/', $inputData['password'])) )
+		{//验证密码
+			$errMsg .= '密码须为6-12位字母数字_或-!<br>';
+		}
+
+		//如果不是管理员 检查该用户能查看的望远镜是否有选择（若无选择，则提示错误）
+		if ( !isset($inputData['role']) )
+		{//未收到role这个数据
+			$errMsg .= '提交数据有误!<br>';
+		}else{
+			if ( $inputData['role'] == '2' ) //此用户是普通用户
+			{//则验证是否有 可查看的望远镜口径值被提交上来
+				$apertures = ['50cm', '60cm', '80cm', '85cm', '100cm', '126cm', '216cm']; //全部可选的口径值
+
+				if ( !isset($inputData['look']) )
+				{//验证可查看的望远镜口径
+
+					$errMsg .= '未收到可查看的望远镜口径!<br>';
+				}elseif( is_array($inputData['look']) )
+				{
+					foreach ( $inputData['look'] as $v ) 
+					{  
+						if ( in_array($v, $apertures, true) )
+						{
+							continue;
+						}else{
+							$errMsg .= '可查看的望远镜口径数据有误!<br>'; break;
+						}
+					}
+				}
+
+				//如果有可操作望远镜口径被提交上来 则验证
+				if ( isset($inputData['operate']) && is_array($inputData['operate']) )
+				{
+					foreach ( $inputData['operate'] as $vv ) 
+					{  
+						if ( in_array($vv, $apertures, true) )
+						{
+							continue;
+						}else{
+							$errMsg .= '可操作的望远镜口径数据有误!<br>'; break;
+						}
+					}
+				}
+			}//验证普通用户 结束
 		}
 
 		//验证用户名唯一
-		$user = Db::table('atccsuser')->where('id', $id)->value('username');
-		if(!$user)
+		if ( !isset($inputData['id']) || !is_string($inputData['id']) )
 		{
-			return '网络异常，请重新提交数据!';
+			$errMsg .= '提交的数据有误!<br>';
+		}else{
+			//检查此用户名是否重复
+			$user = Db::table('atccsuser')->where('id', '<>', $inputData['id'])->column('username');
+			//halt($user);die();
+			if ( $user && in_array($inputData['username'], $user) )
+			{
+				$errMsg .= '用户名重复!';
+			}
 		}
 
-		//验证数据
-		$result	= $this->validate(
-            [
-                '用户名' =>	$username,
-            ],
-            [
-                '用户名' =>	'require|max:12|min:6|alphaDash',
-			],
-		    ['用户名'=>['alphaDash'=>'用户名只能数字字母_及-','min'=>'用户名长度最少须6位','max'=>'用户名长度最多12位','require'=>'用户名不能为空'],]);
-		
-        if(true	!==	$result)    //验证失败 输出错误信息
-        { 
-            return $result;
-        }
-		
-		//验证密码
-		if($passwd) //有提交的密码
+		/*验证数据 结束*/
+		if ( $errMsg !== '' )
 		{
-			if (!preg_match('/[\w-]{6,12}/', $passwd))
-			{
-				return '密码须是6-12位数字字母_及-!';
-			}else{
-				$passwd = md5($passwd);
-			}
-		}else{//没有密码提交 用原来的密码
-			$passwd = Db::table('atccsuser')->where('id', $id)->value('password');
-			if(!$passwd)
-			{
-				return '网络异常，请重新提交数据!';
-			}
+			return $errMsg;
+		}
+
+		//接下来获取并处理数据 进行update
+		if ( isset($this->input['look']) ) //可查看的望远镜口径
+		{
+			$this->input['look'] = implode(',', $this->input['look']);
+		}else{
+			$this->input['look'] = null;
+		}
+
+		if ( isset($this->input['operate']) ) //可操作的望远镜口径
+		{
+			$this->input['operate'] = implode(',', $this->input['operate']);
+		}else{
+			$this->input['operate'] = null;
+		}
+
+		if ( $this->input['password'] ) //提交了新密码时
+		{
+			$this->input['password'] = md5($this->input['password']);
+		}else{//未提交新密码 则使用原密码
+			$this->input['password'] = Db::table('atccsuser')->where('id', $this->input['id'])->value('password');
 		}
 		
 		//更新数据
-		$res = Db::table('atccsuser')->where('id', $id)
-			->update(['username'=>$username, 'password'=>$passwd, 'role'=>$role, 'description'=>$des,]);
-		//halt($res);
+		$res = Db::table('atccsuser')->where('id', $this->input['id'])
+			->update(
+				['username' => $this->input['username'],
+				'password' => $this->input['password'],
+				'role' => $this->input['role'],
+				'look' => $this->input['look'],
+				'operate' => $this->input['operate'],
+				]);
+	
 		if ($res)
 		{
-			//$this->success('编辑用户成功!', '/xinglong/user');
 			return '编辑用户成功!';
 		}else{
-			//$this->error('编辑用户失败!');
 			return '编辑用户失败,请重新操作!';
 		}
     }//用户编辑 结束///////////////////
