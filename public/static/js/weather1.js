@@ -13,28 +13,6 @@ $(function (){
         }
    );
    
-   //显示导航栏望远镜列表////////////////////////   
-   var ul = $('#atListUl');
-   $('#atList').hover(
-        function (){
-            ul.show();
-        }, 
-       function (){		
-			ul.hide();
-        } 
-   );
-   
-    //各望远镜配置 js事件
-   var configList = $('#atConfigList');
-   $('#atConfig').hover(
-        function (){
-            configList.show();
-        }, 
-       function (){		
-			configList.hide();
-        } 
-   );//////////////////////////////////
- //航栏望远镜列表//////////////////////////////////
  //ajax 1分钟请求一次气象信息
  var sec = $('#sec');
  var temperature = $('#temperature');

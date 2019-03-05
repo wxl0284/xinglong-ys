@@ -76,6 +76,8 @@ class Login extends Controller
         Session::set('login', $userData[0]['username']);
         Session::set('role', $userData[0]['role']);
         Session::set('userId', $userData[0]['id']);
+        Session::set('look', $userData[0]['look']); //可查看的望远镜口径
+        Session::set('operate', $userData[0]['operate']); //可操作的望远镜口径
         //cookie中已有之前的url,则跳转回此url
         
         $this->redirect('/front'); //去首页
@@ -88,6 +90,8 @@ class Login extends Controller
         Session::delete('login');
         Session::delete('role');
         Session::delete('userId');
+        Session::delete('look');
+        Session::delete('operate');
         Session::delete('sunRise');
         Session::delete('sunSet');
         //Cookie::delete('url');

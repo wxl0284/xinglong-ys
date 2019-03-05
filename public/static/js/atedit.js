@@ -1,27 +1,5 @@
 /*编辑望远镜页面 js*/
-$(function () {        
-    //显示导航栏望远镜列表///////////////////////////////////// 
-       var ul = $('#atListUl');
-       $('#atList').hover(
-            function (){
-                ul.show();
-            }, 
-           function (){		
-                ul.hide();
-            } 
-       );
-       
-        //各望远镜配置 js事件
-       var configList = $('#atConfigList');
-       $('#atConfig').hover(
-            function (){
-                configList.show();
-            }, 
-           function (){		
-                configList.hide();
-            } 
-       );
-    //望远镜列表js代码结束/////////////////////////////////
+$(function () {
     //提交望远镜的数据
     var atForm = $('#form');
     //var atId = atForm.find('input[name="atid"]'); //望远镜id

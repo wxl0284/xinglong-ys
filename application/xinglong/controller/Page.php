@@ -960,7 +960,7 @@ class Page extends Base
 				}
             }
             
-        }//天气预报获取ok////////////////////////////////////////
+        }//天气预报获取ok////////////////////
 		
         //白天 天气数据模板赋值
         if (isset($day))
@@ -1002,13 +1002,6 @@ class Page extends Base
         if (isset($weatherError))
         {
            $vars['weatherError'] = $weatherError;
-        }
-
-        //读取望远镜列表 将已添加的望远镜显示在下拉框中
-        $atList = Db::table('atlist')->order('id', 'asc')->field('id, atname')->select();
-        if ($atList)
-        {
-            $vars['atList'] = $atList;
         }
       		
         return view('front', $vars);

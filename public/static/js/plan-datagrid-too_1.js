@@ -1,25 +1,5 @@
-//显示导航栏望远镜列表   
-var ul = $('#atListUl');
-$('#atList').hover(
-	function (){
-		ul.show();
-	}, 
-	function (){		
-		ul.hide();
-	} 
-);  
-//各望远镜配置 js事件
-var configList = $('#atConfigList');
-$('#atConfig').hover(
-	function (){
-		configList.show();
-	}, 
-	function (){		
-		configList.hide();
-	} 
-);
-//观测计划的赤经和赤纬 js事件//////////////////////////////
-	//赤经 的js事件//////////////////////////////////
+//观测计划的赤经和赤纬 js事件/////////////////////////
+	//赤经 的js事件////////////////////////////////
 	var planInfo = $('#planInfo');
 
 	planInfo.on('keyup', 'td[field="rightAscension1"] input.textbox-text', function () {//赤经之小时 js事件

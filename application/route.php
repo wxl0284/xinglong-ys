@@ -1,7 +1,7 @@
 <?php
 use think\Route;
 
-//登陆页 路由
+//显示登陆页 路由
 Route::get('/$', 'xinglong/login/index');
 //执行登陆 路由
 Route::post('login$', 'xinglong/login/dologin');

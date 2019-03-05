@@ -1,18 +1,5 @@
 /*望远镜配置页面 js*/
 $(function () {
-    //显示导航栏望远镜列表///////////////////////////////////// 
-       var ul = $('#atListUl');
-       $('#atList').hover(
-            function (){  ul.show();}, 
-           function (){ ul.hide();}
-       );
-
-        //各望远镜配置 js事件
-       var configList = $('#atConfigList');
-       $('#atConfig').hover(
-            function (){ configList.show(); }, 
-           function (){ configList.hide(); } 
-       );
 /************* 读取16个动态增减的配置数据 *************/
     window.onfocus = function () {//此处需对转台和导星镜的焦点类型及其焦距焦比进行处理
         var share_conf_data = localStorage.getItem('share_conf_data');

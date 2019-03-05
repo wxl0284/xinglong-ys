@@ -26,4 +26,6 @@ return [
         'hostport'        => '5432',    
         //'hostport'        => '3306',     
     ],
+
+    'url_route_must'      => true, //强制使用路由
 ];

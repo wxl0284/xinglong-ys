@@ -5,16 +5,16 @@
        <div id='atList' class='pos_a'>
              望远镜列表
              {if condition="isset($atList)"}
-             <ul id='atListUl' class='center displayNo'>
-                {volist name="atList" id="vo"}
-                 <li><a href='{:url("xinglong/page/at_page", ["at"=>$vo.id])}' target='_blank'>{$vo.atname}</a></li>
-                 <hr>
-                {/volist}
-             </ul>
+                  <ul id='atListUl' class='center displayNo'>
+                     {foreach name="atList" item="v"}
+                     <li><a href='{:url("xinglong/page/at_page", ["at"=>$v.id])}' target='_blank' apert='{$v.aperture}'>{$v.atname}</a></li>
+                     <hr>
+                     {/foreach}
+                  </ul>
              {else /}
-             <ul id='atListUl' class='center displayNo'>
-                <li>无望远镜</li>
-            </ul>
+                  <ul id='atListUl' class='center displayNo'>
+                     <li>无望远镜</li>
+                  </ul>
              {/if}
         </div>
         <div id='atConfig' class='pos_a'>
@@ -24,9 +24,9 @@
                 {if condition="$Think.session.role!=2"}
                 <hr>
                 <li><a href='{:url("/atadd")}' target='_blank'>添加望远镜</a></li>
+                {/if}
                 <hr>
                 <li><a href='{:url("/atconfig")}' target='_blank'>配置望远镜</a></li>
-                {/if}
              </ul>
         </div>
         
@@ -49,3 +49,60 @@
         <div class='pos_a' style="width:78px;"><a href="{:url('/logout')}">&nbsp;&nbsp;&nbsp;退出&nbsp;&nbsp;&nbsp;</a></div> 
      </div>
  </header>
+ <!--下面这段js是处理头部导航栏鼠标悬停下拉和登录用户若无权查看某望远镜就将望远镜下拉列表的望远镜名变灰且无法点击且提示无权查看-->
+ <script>
+   var user_role = "{$Think.session.role}"; //注：1为管理员 2为普通用户
+   var user_can_look = "{$Think.session.look}"; //注：60cm,80cm
+   var user_can_operate = "{$Think.session.operate}"; //注：60cm,80cm
+   //console.log(user_can_look);
+
+   $(function () {
+      //显示导航栏望远镜列表   
+      let ul = $('#atListUl');
+
+      $('#atList').hover(
+         function ()//显示望远镜ul列表
+         {
+            ul.show();
+            
+            let ul_a = ul.find('a'); //望远镜ul内的各望远镜a连接
+            //console.log(ul_a);
+
+            //若不是管理员 将该用户不可查看的望远镜字体变灰 无法点击
+            if ( user_role == '2' )
+            {
+               let aperture = ''; //存储ul内a元素代表的各望远镜口径值
+               
+               ul_a.each(function(){
+                  aperture = this.getAttribute('apert');
+                  if ( user_can_look.indexOf(aperture) === -1 )
+                  {
+                     this.onclick = function () 
+                     {
+                        return false;//禁止跳转
+                     }
+
+                     this.setAttribute('title', '您无权查看');
+                     this.style.color = '#cccccc';
+                  }
+               });//遍历ul_a 结束
+            }
+            //若不是管理员 将该用户不可查看的望远镜字体变灰 无法点击 结束
+
+         },
+
+         function ()//隐藏望远镜ul列表
+         {
+            ul.hide();
+         }
+      );
+      
+      //望远镜配置 js事件
+      let configList = $('#atConfigList');
+
+      $('#atConfig').hover(
+         function (){ configList.show(); },
+         function (){ configList.hide(); }
+      );
+})
+ </script>

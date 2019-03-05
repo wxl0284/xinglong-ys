@@ -1,27 +1,5 @@
 /*用户管理首页 js*/
 $(function () {
-	//显示导航栏望远镜列表   
-   var ul = $('#atListUl');
-   $('#atList').hover(
-        function (){
-            ul.show();
-        }, 
-       function (){		
-			ul.hide();
-        } 
-   );
-   
-   //各望远镜配置 js事件
-   var configList = $('#atConfigList');
-   $('#atConfig').hover(
-        function (){
-            configList.show();
-        }, 
-       function (){		
-			configList.hide();
-        } 
-   );
-
    var form = $('#fm');
    var name = form.find('input[name="username"]'); //用户名
    var pass = form.find('input[name="passwd"]'); //密码
