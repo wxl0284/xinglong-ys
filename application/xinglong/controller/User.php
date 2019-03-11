@@ -136,10 +136,10 @@ class User extends Base
 			return '请先登录再进行操作!';
 		}
 
-		//权限的判断
-		if (Session::get('role') != 1)
+		//判断是否有权限
+		if ($this->ajaxAuthErr == 'no_auth')
 		{
-			return '您无权添加用户';
+			return '您无权进行此操作!';
 		}
 		
 		$inputData = $this->input; //接收提交数据
@@ -299,12 +299,18 @@ class User extends Base
     }//显示编辑用户页面 结束
     
     //编辑用户 ///////////////////////////////
-	public function doEdit ()
+	public function doedit ()
 	{//halt($this->input);die();
 		//首先判断是否已登录
 		if ($this->ajaxAuthErr == 'not_log')
 		{
 			return '请先登录再进行操作!';
+		}
+
+		//判断是否有权限
+		if ($this->ajaxAuthErr == 'no_auth')
+		{
+			return '您无权进行此操作!';
 		}
 
 		$inputData = $this->input; //接收提交数据

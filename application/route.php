@@ -9,17 +9,17 @@ Route::post('login$', 'xinglong/login/dologin');
 Route::get('logout$', 'xinglong/login/logout');
 //显示各望远镜操控页面 路由
 Route::get('atpage/:at$', 'xinglong/page/at_page', [], ['at'=>'\d{1,}']);
-//首页 路由
+//登陆后的首页 路由
 Route::get('front$', 'xinglong/page/front');
 //用户管理及用户查询 路由
 Route::any('user$', 'xinglong/user/index');
 //显示用户添加页面 路由
 Route::get('user/add$', 'xinglong/user/add');
-//添加用户 路由
+//添加用户 路由 ajax
 Route::post('user/doadd$', 'xinglong/user/doadd');
 //显示用户编辑页面 路由
 Route::get('user/edit/:id$', 'xinglong/user/edit', [], ['id'=>'\d+']);
-//进行用户编辑 路由
+//进行用户编辑 路由 ajax
 Route::post('user/doEdit$', 'xinglong/user/doedit');
 //禁用用户 路由
 Route::get('user/off/:id$', 'xinglong/user/off');
@@ -51,13 +51,13 @@ Route::post('opendome$', 'xinglong/opendome/sendCommand');
 Route::post('filter$', 'xinglong/filter/sendCommand');
 //导入观测计划 路由
 Route::post('importplan$', 'xinglong/plan/importPlan');
-//观测计划之发送和开始执行 路由
+//观测计划之发送（提交）和开始执行 路由
 Route::post('plan$', 'xinglong/plan/sendData');
 //显示添加望远镜页面 路由
 Route::get('atadd$', 'xinglong/page/at_add');
 //显示望远镜列表 路由
 Route::get('atlist$', 'xinglong/page/atlist');
-//执行添加望远镜 路由
+//ajax 执行添加望远镜 路由
 Route::post('at_doadd$', 'xinglong/page/at_doadd');
 //显示望远镜编辑页面 路由
 Route::get('atedit/:at$', 'xinglong/page/at_edit', [], ['at'=>'\d{1,}']);
@@ -71,7 +71,7 @@ Route::get('conf_option$', 'xinglong/conf/index');
 Route::post('conf_option_add$', 'xinglong/conf/conf_add');
 //获取：动态增减的固定属性列表 路由
 Route::post('get_conf$', 'xinglong/conf/get_conf');
-//删除：动态增减的固定属性列表 路由
+//删除：动态增减的固定属性 路由
 Route::post('del_conf$', 'xinglong/conf/delete_conf');
 
 /*配置各望远镜固定属性 路由*/
@@ -101,34 +101,34 @@ Route::post('guideScope_config$', 'xinglong/atconfig/guideScope_config');
 Route::get('download/:dir/:filename$', 'xinglong/atconfig/downLoadFlie');
 /*配置各望远镜固定属性 结束*/
 //计划之 显示协同观测页面 ToO 路由
-Route::get('ToO$', 'xinglong/Too/ToO');
+Route::get('ToO$', 'xinglong/too/ToO');
 //计划之 显示ToO计划页面 路由
-Route::get('ToO_1$', 'xinglong/Too/ToO_1');
+Route::get('ToO_1$', 'xinglong/too/ToO_1');
 //页面 提交协同观测 ToO 路由
-Route::post('ToO_plan$', 'xinglong/Too/send_ToO_plan');
+Route::post('ToO_plan$', 'xinglong/too/send_ToO_plan');
 //页面 提交ToO观测 ToO 路由
-Route::post('ToO_1_plan$', 'xinglong/Too/send_ToO_1_plan');
+Route::post('ToO_1_plan$', 'xinglong/too/send_ToO_1_plan');
 //页面 提交协同观测 ToO 之开始或停止 路由
 // Route::post('ToO_start_stop$', 'xinglong/Too/start_stop_ToO');
 //ajax 将协同计划表中import字段或giveup字段变为1 路由
-Route::post('/changeplancooperimport$', 'xinglong/Status/changeimport');
+Route::post('/changeplancooperimport$', 'xinglong/status/changeimport');
 //ajax 将ToO计划表中import字段或giveup字段变为1 路由
-Route::post('/changeplantooimport$', 'xinglong/Status/changetooimport');
-//ajax 望远镜页面 观测图像 路由
-Route::post('get_image$', 'xinglong/Image/get_image');
+Route::post('/changeplantooimport$', 'xinglong/status/changetooimport');
+//ajax 望远镜页面 显示观测图像 路由
+Route::post('get_image$', 'xinglong/image/get_image');
 /*/ajax 观测图像 向右按钮 路由
 Route::post('next4$', 'xinglong/Image/next4_image');
 /ajax 观测图像 向左按钮 路由
 Route::post('pre4$', 'xinglong/Image/pre4_image');*/
 
 //查看更多云量相机图片 路由
-Route::get('/weather/clouds', 'xinglong/Page/more_cloud_pic');
-//ajax 获云量图像 路由
-Route::post('get_cloud_pic$', 'xinglong/Page/ajax_get_cloud_pic');
+Route::get('/weather/clouds', 'xinglong/page/more_cloud_pic');
+//ajax 获取云量图像 路由
+Route::post('get_cloud_pic$', 'xinglong/page/ajax_get_cloud_pic');
 //显示 全天观测图片 路由
-Route::get('/whole_day_pic/:aperture$', 'xinglong/Page/whole_day_pic');
+Route::get('/whole_day_pic/:aperture$', 'xinglong/page/whole_day_pic');
 //ajax 全天观测图片 下载多个图片 路由
-Route::post('/down_multi_fit$', 'xinglong/Page/down_multi_fit');
+Route::post('/down_multi_fit$', 'xinglong/page/down_multi_fit');
 //ajax 下载当前一个fits图片 路由
 Route::post('/down_fits_pic$', 'xinglong/page/down_fits_pic');
 

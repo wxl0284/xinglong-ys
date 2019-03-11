@@ -22,7 +22,7 @@
 		<h3 id='atSelect' class='center border'>配置望远镜
 			<select id='atNo' style='width:auto;' v-model='show_dev_form.teleid' @change='select_at' >
 				<option value="0" >请选择望远镜</option>
-				{volist name="atList" id="vo"}
+				{volist name="all_at" id="vo"}
 					<option value="{$vo.id}">{$vo.atname}</option>
 				{/volist}
 			</select>

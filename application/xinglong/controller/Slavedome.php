@@ -47,12 +47,11 @@ class Slavedome extends Base
             return '请先登录再进行操作!';
         }
 
-        //首先判断是否有权限执行
-       /* if ($this->ajaxAuthErr == 1)
-        {//无权执行
-            return '您无权限执行此操作!';
-        }*/
-
+       //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
        
         $postData = $this->input; //接受表单数据
         //验证数据

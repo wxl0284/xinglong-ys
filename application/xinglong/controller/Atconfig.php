@@ -19,11 +19,12 @@ class Atconfig extends Base
             return '请先登录再进行操作!';
         }
 
-        //判断ajax 请求时 是否有权限
-        // if ($this->ajaxAuthErr == 1)
-        // {
-        //     return '您无权执行此操作!';
-        // }
+       //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
+        
         $postData = $this->input;
         
         //处理表单数据，若无轴3，则轴3相关input框禁用，则将$postData轴3相关之置为空字符串
@@ -230,11 +231,11 @@ class Atconfig extends Base
             return '请先登录再进行操作!';
         }
 
-        //判断ajax 请求时 是否有权限
-        // if ($this->ajaxAuthErr == 1)
-        // {
-        //     return '您无权执行此操作!';
-        // }
+        //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
 
         $postData = $this->input;
     
@@ -536,11 +537,12 @@ class Atconfig extends Base
         {
             return '请先登录再进行操作!';
         }
-        //判断ajax 请求时 是否有权限
-        // if ($this->ajaxAuthErr == 1)
-        // {
-        //     return '您无权执行此操作!';
-        // }
+
+        //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
 
         $postData = $this->input;
         //halt($postData);
@@ -636,11 +638,11 @@ class Atconfig extends Base
             return '请先登录再进行操作!';
         }
 
-        //判断ajax 请求时 是否有权限
-        // if ($this->ajaxAuthErr == 1)
-        // {
-        //     return '您无权执行此操作!';
-        // }
+       //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
 
        $postData = $this->input;
        
@@ -866,11 +868,11 @@ class Atconfig extends Base
             return '请先登录再进行操作!';
         }
 
-        //判断ajax 请求时 是否有权限
-        // if ($this->ajaxAuthErr == 1)
-        // {
-        //     return '您无权执行此操作!';
-        // }
+        //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
 
         $postData = $this->input;
 
@@ -1062,11 +1064,11 @@ class Atconfig extends Base
             return '请先登录再进行操作!';
         }
 
-        //判断ajax 请求时 是否有权限
-        // if ($this->ajaxAuthErr == 1)
-        // {
-        //     return '您无权执行此操作!';
-        // }
+        //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
 
         $postData = $this->input;
 
@@ -1258,11 +1260,11 @@ class Atconfig extends Base
             return '请先登录再进行操作!';
         }
 
-        //判断ajax 请求时 是否有权限
-        // if ($this->ajaxAuthErr == 1)
-        // {
-        //     return '您无权执行此操作!';
-        // }
+        //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
 
         $postData = $this->input;
 
@@ -1456,11 +1458,11 @@ class Atconfig extends Base
             return '请先登录再进行操作!';
         }
 
-        //判断ajax 请求时 是否有权限
-        // if ($this->ajaxAuthErr == 1)
-        // {
-        //     return '您无权执行此操作!';
-        // }
+        //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
 
         $postData = $this->input;
         $errMsg = ''; //定义错误提示

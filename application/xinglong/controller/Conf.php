@@ -23,11 +23,12 @@ class Conf extends Base
             return '请先登录再进行操作!';
         }
 
-        //判断ajax 请求时 是否有权限
-        // if ($this->ajaxAuthErr == 1)
-        // {
-        //     return '您无权执行此操作!';
-        // }
+        //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
+        
         $postData = $this->input;
         if (!$postData['conf_val'])
         {
@@ -148,11 +149,11 @@ class Conf extends Base
             return '请先登录再进行操作!';
         }
         
-        //判断ajax 请求时 是否有权限
-        // if ($this->ajaxAuthErr == 1)
-        // {
-        //     return '您无权执行此操作!';
-        // }
+        //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
 
         $id = $this->input['id'];
         $res = Db::table('confoption')->delete($id);

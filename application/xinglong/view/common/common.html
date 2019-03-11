@@ -7,7 +7,7 @@
              {if condition="isset($atList)"}
                   <ul id='atListUl' class='center displayNo'>
                      {foreach name="atList" item="v"}
-                     <li><a href='{:url("xinglong/page/at_page", ["at"=>$v.id])}' target='_blank' apert='{$v.aperture}'>{$v.atname}</a></li>
+                     <li><a href='{:url("xinglong/page/at_page", ["at"=>$v.id])}' apert='{$v.aperture}'>{$v.atname}</a></li>
                      <hr>
                      {/foreach}
                   </ul>
@@ -20,19 +20,19 @@
         <div id='atConfig' class='pos_a'>
              配置望远镜
              <ul id='atConfigList' class='center displayNo'>
-                <li><a href='{:url("/atlist")}' target='_blank'>望远镜列表</a></li>
+                <li><a href='{:url("/atlist")}'>望远镜列表</a></li>
                 {if condition="$Think.session.role!=2"}
                 <hr>
-                <li><a href='{:url("/atadd")}' target='_blank'>添加望远镜</a></li>
+                <li><a href='{:url("/atadd")}'>添加望远镜</a></li>
                 {/if}
                 <hr>
-                <li><a href='{:url("/atconfig")}' target='_blank'>配置望远镜</a></li>
+                <li><a href='{:url("/atconfig")}'>配置望远镜</a></li>
              </ul>
         </div>
         
         {if condition="$Think.session.role!=2"}
-            <a href='{:url("/ToO")}' style="position: relative;left: 33%;color:#eaf1f9; cursor: pointer;" target='_blank'>协同观测</a>&nbsp;&nbsp;
-            <a href='{:url("/ToO_1")}' style="position: relative;left: 33%;color:#eaf1f9; cursor: pointer;" target='_blank'>ToO观测</a>
+            <a href='{:url("/ToO")}' style="position: relative;left: 33%;color:#eaf1f9; cursor: pointer;">协同观测</a>&nbsp;&nbsp;
+            <a href='{:url("/ToO_1")}' style="position: relative;left: 33%;color:#eaf1f9; cursor: pointer;">ToO观测</a>
         {/if}
        <!-- <a href="{:url('/xinglong/result')}" class='pos_r' id='res'>观测结果</a> -->
         <p class='pos_a'>
@@ -54,7 +54,6 @@
    var user_role = "{$Think.session.role}"; //注：1为管理员 2为普通用户
    var user_can_look = "{$Think.session.look}"; //注：60cm,80cm
    var user_can_operate = "{$Think.session.operate}"; //注：60cm,80cm
-   //console.log(user_can_look);
 
    $(function () {
       //显示导航栏望远镜列表   
@@ -72,10 +71,10 @@
             if ( user_role == '2' )
             {
                let aperture = ''; //存储ul内a元素代表的各望远镜口径值
-               
+
                ul_a.each(function(){
                   aperture = this.getAttribute('apert');
-                  if ( user_can_look.indexOf(aperture) === -1 )
+                  if ( user_can_look.indexOf(aperture) === -1 && user_can_operate.indexOf(aperture) === -1 )
                   {
                      this.onclick = function () 
                      {
@@ -105,4 +104,5 @@
          function (){ configList.hide(); }
       );
 })
+
  </script>

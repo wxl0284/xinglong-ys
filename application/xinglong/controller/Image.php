@@ -19,12 +19,11 @@ class Image extends Base
         {
             return '请先登录再进行操作!';
         }
-
-        //首先判断是否有权限执行
-       /* if ($this->ajaxAuthErr == 1)
-        {//无权执行
-            return '您无权限执行此操作!';
-        }*/
+        //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
 
         $png_dir = config('at_pic_dir');
         $day = date("Ymd", time());//月 日有前导零
@@ -72,8 +71,6 @@ class Image extends Base
                 return '提交的望远镜参数有误!';
         }
         
-        
-
         $fit_img_data = Db::table('observerimg')->where('at', $observeimg_at)->where('date', 'like', $day.'%')->order('time desc')->select();
         
         if ( $fit_img_data )

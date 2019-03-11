@@ -121,6 +121,12 @@ class Too extends Base
 			return '请先登录再进行操作!';
 		}
 
+		//判断是否有权限
+		if ($this->ajaxAuthErr == 'no_auth')
+		{
+			return '您无权进行此操作!';
+		}
+
         //halt($planData['plan_filter_option']);
 		//定义全局$sequence 此变量在packHead()函数中要使用
 		/*if (Cookie::has('sequence'))
@@ -412,6 +418,12 @@ class Too extends Base
 		if ($this->ajaxAuthErr == 'not_log')
 		{
 			return '请先登录再进行操作!';
+		}
+
+		//判断是否有权限
+		if ($this->ajaxAuthErr == 'no_auth')
+		{
+			return '您无权进行此操作!';
 		}
 		
 		//halt($planData['plan_filter_option']);

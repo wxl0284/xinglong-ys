@@ -81,7 +81,7 @@ class Page extends Base
             $this->error('还未添加望远镜，3秒后自动跳转至添加望远镜页面!', 'xinglong/page/at_add');
         }
 
-        $vars['atList'] = $atList;
+        $vars['all_at'] = $atList;
 
         return view('config', $vars);  //之前配置页面的模板文件是page/config-0.html
     }//望远镜配置页面 结束
@@ -474,11 +474,11 @@ class Page extends Base
             return '请先登录再进行操作!';
         }
 
-        //判断ajax 请求时 是否有权限
-        // if ($this->ajaxAuthErr == 1)
-        // {
-        //     return '您无权执行此操作!';
-        // }
+       //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
 
         $postData = $this->input; //获取提交数据
         if (!$postData)
@@ -596,11 +596,11 @@ class Page extends Base
             return '请先登录再进行操作!';
         }
 
-        //判断ajax 请求时 是否有权限
-        // if ($this->ajaxAuthErr == 1)
-        // {
-        //     return '您无权执行此操作!';
-        // }
+        //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
 
         $postData = $this->input; //获取提交数据
         if (!$postData)
@@ -1705,6 +1705,11 @@ class Page extends Base
         {
             return '请先登录再进行操作!';
         }
+		//判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
 
         $postData = $this->input['param'];
         $postData = json_decode($postData, true);
@@ -1740,6 +1745,11 @@ class Page extends Base
         if ($this->ajaxAuthErr == 'not_log')
         {
             return '请先登录再进行操作!';
+        }
+        //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
         }
         
         $postData = $this->input['param'];

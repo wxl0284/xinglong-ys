@@ -19,7 +19,7 @@ var vm = new Vue({//vue 实例化
 				//验证口径、要下载的文件数量是否>2 日期格式
 			//验证提交的参数 结束
 			let param = {//提交的参数
-				//aperture: aperture,
+				aperture: aperture,//把口径值提及 方便在base.php中判断权限
 				files: t.multi_down, //将要下载的文件名提交
 				//day: date_str, //日期
 			};
@@ -83,6 +83,7 @@ var vm = new Vue({//vue 实例化
 			
 			let param = {//提交的参数
 				file_name: file_path_name,//要下载的fits文件路径及文件名
+				aperture: aperture,//把口径值提及 方便在base.php中判断权限
 			};
 			var xhr = new XMLHttpRequest();
 			xhr.open('POST', url, true);    // 也可以使用POST方式，true表示异步

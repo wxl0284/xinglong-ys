@@ -623,6 +623,7 @@
 	var planErr = 0; //观测计划发送时的错误标识
 	var checked_plans = []; //被选中的计划的行索引
 	$('#planModes').on('click', 'button', function () {
+		if ( !can_operate ) { return } //此用户无权限操作此望远镜时 return
 		var self = $(this);
 		//获取模式值
 		var modeVal = modeSpan.val();

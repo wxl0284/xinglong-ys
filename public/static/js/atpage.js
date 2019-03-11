@@ -5,6 +5,7 @@ $(function () {
 	var vm = new Vue({//vue 实例化
 		el: '#all',
 		data: {
+			vue_operate: can_operate, //can_operate为atpage.html中的全局变量
 			configData: configData, //configData是后端返回的json数据
 			ccd_config:configData.ccd[0], //此对象存储ccd的配置数据
 			ccd_name:'CCD1',

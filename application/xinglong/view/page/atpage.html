@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset='utf-8'>
-    <title>{$at_name[$data['at_id']]}</title>
+   <meta charset='utf-8'>
+   <title>{$at_name[$data['at_id']]}</title>
 	{load href='/static/plugin/easyui-1.3.5/jquery.min.js'}
 	{load href='/static/plugin/layer/layer.js'}
 	{load href='/static/plugin/easyui-1.3.5/themes/default/easyui.css'}
@@ -16,15 +16,27 @@
 	<script>
 		var at = "{$data['at_id']}"; //atlist表中的主键id
 		var aperture = "{$at_aperture[$data['at_id']]}"; //即添加望远镜时的口径值
-		var configData =  {$data['configData']}; //各子设备的配置数据
+		var configData = {$data['configData']}; //各子设备的配置数据
 		var too_import = false;//判断是否点击了too导入 若点击时置为false 让停止指令不弹窗
 	</script>
-	
 </head>
 <body>
 	{include file="common/common"/}
+	<script>
+		/*此段js 根据上面的变量 apertture以及common/common文件中的变量 user_can_operate 
+		 计算出当前用户是否可以操作当前的望远镜
+		*/
+		var can_operate = true; //初始值
+		if ( user_role == '2' )
+		{
+				if ( user_can_operate.indexOf(aperture) === -1 )
+				{
+					can_operate = false; //即 不能操作此望远镜
+				}
+		}
+	</script>
 	<div id='all'>
-        <div class='pos_r'><!--重要信息区域 开始-->
+      <div class='pos_r'><!--重要信息区域 开始-->
 			<div id='atPic'>
 				<!--<a class='pos_a border1 more inline center' id='takeOverBtn'>接管</a>-->
 				<div style='width:528px;height:264px;' >
@@ -105,15 +117,15 @@
 					  </td>
 					  <td>当前方位:<span id='azmiuth'>{{gimbal_status.azmiuth}}</span>
 					  </td>
-                    </tr>
-                    <tr>
+					</tr>
+					<tr>
 					  <td>目标名:<span id='trackObjectName'>{{gimbal_status.trackObjectName}}</span>
 					  </td>
 					  <td>当前赤纬:<span id='declination'>{{gimbal_status.declination}}</span>
 					  </td>
 					  <td>当前俯仰:<span id='elevation'>{{gimbal_status.elevation}}</span>
 					  </td>
-                    </tr>
+          </tr>
 					<tr>
 					  <td>目标赤经:<span id='targetRightAscension'>{{gimbal_status.targetRightAscension}}</span>
 					  </td>
@@ -123,7 +135,7 @@
 					  </td>
 					  <!-- <td>镜盖状态:<span id='coverStatus'>{{gimbal_status.coverStatus}}</span>
 					  </td> -->
-                    </tr>
+        </tr>
 					<tr>
 					  <td>目标赤纬:<span id='targetDeclination'>{{gimbal_status.targetDeclination}}</span>
 					  </td>
@@ -135,7 +147,7 @@
 					<tr>
 					  <td>圆顶位置:<span >{{sDome_status.domePosition}}</span>
 					  </td>
-                    </tr>
+          </tr>
 				</table>
 			</div>
 		</div><!--重要信息区域 结束-->
@@ -186,7 +198,7 @@
 
         <div id='devsNav'><!--望远镜子设备导航:js用code/public/static/js/dev1.js-->
             <table>
-                <tr>
+              <tr>
 				  <td><a :class='{borderBtm: device_nav.dev_click=="plan"}' @click='plan_click' >观测计划</a></td>
 				  <td><a :class='{borderBtm: device_nav.dev_click=="pic"}' @click='pic_click' >观测图像</a></td>
 				  <td v-if='configData.has_gimbal'><a :class='{borderBtm: device_nav.dev_click=="gimbal"}' @click='gimbal_click' >转台</a></td>
@@ -209,7 +221,7 @@
 		</div><!--望远镜子设备导航结束-->
 	
 		  <div id='gimbalInfo' v-if='device_nav.dev_click=="gimbal"'><!--转台指令和属性-->
-             <nav class='center'><!--转台指令 导航-->
+         <nav class='center'><!--转台指令 导航-->
 			    <span :class='{active: device_nav.gimbal_command=="trackStar"}' @click ='device_nav.gimbal_command="trackStar"' v-if='configData.gimbal.cantrackstar==1'>跟踪恒星</span>
 				<span :class='{active: device_nav.gimbal_command=="setObjName"}' @click ='device_nav.gimbal_command="setObjName"' v-if='configData.gimbal.cansetobjectname==1'>设置目标名称</span>
 				<span :class='{active: device_nav.gimbal_command=="slewAzEl"}' @click ='device_nav.gimbal_command="slewAzEl"' v-if='configData.gimbal.canslewazel==1'>指向固定位置</span>	
@@ -224,14 +236,14 @@
 				<span>跟踪卫星</span>
 				<span>属性设置</span>
 			 </nav>
-			 <div class='border2'><!--转台指令和可变属性-->
+			 <div class='border2'><!--转台指令和可变属性 :disbable='vue_operate==false' -->
 				<div id='btnsGimbal' class='center_mrg center BtnsDiv'>
-				   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} id='gimbalConnect' v-if='configData.gimbal.canconnect==1' :class='{btnClick: device_nav.gimbal_btn=="connect"}' @click='gimbal_btn_command(1)' class='border1 btnCommand' type='button' value='连接望远镜'>
-				   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} id='gimbalDisConnect' v-if='configData.gimbal.canconnect==1' :class='{btnClick: device_nav.gimbal_btn=="disConnect"}' @click='gimbal_btn_command(2)' class='border1 btnCommand' type='button' value='断开望远镜'>		
-                   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} id='gimbalFindhome' v-if='configData.gimbal.canfindhome==1' :class='{btnClick: device_nav.gimbal_btn=="findhome"}' @click='gimbal_btn_command(3)' class='border1 btnCommand' type='button' value='找  零'>
-                   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} id='gimbalPark' v-if='configData.gimbal.canpark==1' :class='{btnClick: device_nav.gimbal_btn=="park"}' @click='gimbal_btn_command(4)' class='border1 btnCommand' type='button' value='复 位'>		
-                   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} id='gimbalStop' v-if='configData.gimbal.canstop==1' :class='{btnClick: device_nav.gimbal_btn=="stop"}' @click='gimbal_btn_command(5)' class='border1 btnCommand' type='button' value='停 止'>	 
-                   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} id='gimbalEmergenceStop' v-if='configData.gimbal.canemergencystop==1' :class='{btnClick: device_nav.gimbal_btn=="emergstop"}' @click='gimbal_btn_command(6)' class='border1 btnCommand' type='button' value='急 停'>
+				  <input :disabled='vue_operate==false' id='gimbalConnect' v-if='configData.gimbal.canconnect==1' :class='{btnClick: device_nav.gimbal_btn=="connect"}' @click='gimbal_btn_command(1)' class='border1 btnCommand' type='button' value='连接望远镜'>
+				  <input :disabled='vue_operate==false' id='gimbalDisConnect' v-if='configData.gimbal.canconnect==1' :class='{btnClick: device_nav.gimbal_btn=="disConnect"}' @click='gimbal_btn_command(2)' class='border1 btnCommand' type='button' value='断开望远镜'>		
+					<input :disabled='vue_operate==false' id='gimbalFindhome' v-if='configData.gimbal.canfindhome==1' :class='{btnClick: device_nav.gimbal_btn=="findhome"}' @click='gimbal_btn_command(3)' class='border1 btnCommand' type='button' value='找  零'>
+					<input :disabled='vue_operate==false' id='gimbalPark' v-if='configData.gimbal.canpark==1' :class='{btnClick: device_nav.gimbal_btn=="park"}' @click='gimbal_btn_command(4)' class='border1 btnCommand' type='button' value='复 位'>		
+					<input :disabled='vue_operate==false' id='gimbalStop' v-if='configData.gimbal.canstop==1' :class='{btnClick: device_nav.gimbal_btn=="stop"}' @click='gimbal_btn_command(5)' class='border1 btnCommand' type='button' value='停 止'>	 
+					<input :disabled='vue_operate==false' id='gimbalEmergenceStop' v-if='configData.gimbal.canemergencystop==1' :class='{btnClick: device_nav.gimbal_btn=="emergstop"}' @click='gimbal_btn_command(6)' class='border1 btnCommand' type='button' value='急 停'>
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
 				<form class='center' v-if='device_nav.gimbal_command == "trackStar"'><!--跟踪恒星-->
@@ -259,7 +271,7 @@
 						<option value="2">月亮</option>
 						<option value="3">彗星</option>
 					</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='trackStar_sbmt' >
+					<br><input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='trackStar_sbmt' >
 				</form>
 				<form class='center' v-if='device_nav.gimbal_command == "setObjName"'><!--设置目标名称-->
 					目标名称：<input type="text" ref='objName' v-model.trim='gimbal_form.objName.objectName' @blur='obj_name_check(true)' placeholder='48位不能有汉字及空格'>
@@ -273,36 +285,36 @@
 								<option value="5">卫星</option>
 								<option value="6">固定位置</option>
 						</select>
-					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交目标名称" @click='obj_name_sbmt' >
+					<br><input type="button" :disabled='vue_operate==false' class='margin_10' value="提交目标名称" @click='obj_name_sbmt' >
 			    </form><!--设置目标名称 结束-->
 				<form class='center' v-if='device_nav.gimbal_command == "slewAzEl"'><!--指向固定位置-->
 					方位：<input type="text" ref='azimuth' v-model.trim='gimbal_form.slewAzEl.azimuth' @blur='azimuth_check(true)' placeholder='0-360'>
-            		俯仰：<input id='elevationV' type="text" ref='elevation' v-model.trim='gimbal_form.slewAzEl.elevation' @blur='elevation_check(true)' :placeholder='configData.gimbal.minelevation+"~360"'>
-					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='slewAzEl_sbmt' >
+          俯仰：<input id='elevationV' type="text" ref='elevation' v-model.trim='gimbal_form.slewAzEl.elevation' @blur='elevation_check(true)' :placeholder='configData.gimbal.minelevation+"~360"' >
+					<br> <input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='slewAzEl_sbmt' >
 				</form><!--指向固定位置 结束-->
 				<form class='center' v-if='device_nav.gimbal_command == "slewDerotator"'><!--轴3指向固定位置-->
 					轴3指向固定位置：<input id='slewDerotatorV' type="text" ref='slewDerotator' v-model.trim='gimbal_form.slewDerotator.slewDerotator' @blur='slewDerotator_check(true)' placeholder='0~360'>
-					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='slewDerotator_sbmt' >
+					<br><input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='slewDerotator_sbmt' >
 				</form><!--轴3指向固定位置 结束-->
 				<form class='center' v-if='device_nav.gimbal_command == "axis3Mode"'><!--轴3工作模式-->
 					模式：<select id='at60Axis3' name="mode" style='width:11%;' v-model='gimbal_form.axis3_mode.mode' >
 					<option value="-1">请选择</option>
-                    <option value="0">不消旋</option>
-                    <option value="1">偏差消旋</option>
-                    <option value="2">始终指向同一角度</option>
+					<option value="0">不消旋</option>
+					<option value="1">偏差消旋</option>
+					<option value="2">始终指向同一角度</option>
 					</select>
 					<span v-if='gimbal_form.axis3_mode.mode==2'>起偏角：<input  type="text" name='polarizingAngle' ref='polar_Angle' v-model.trim='gimbal_form.axis3_mode.polarizingAngle' placeholder='0~360' @blur='polar_Angle_check(true)' ></span>
-					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='axis3Mode_sbmt' >
+					<br><input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='axis3Mode_sbmt' >
 				</form><!--轴3工作模式 结束-->
 				<form class='center' v-if='device_nav.gimbal_command == "speed_alter"'><!--速度修正-->
 					<table class='center center_mrg' id='speed_alter_tb'>
 						<tr>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="西北" :class='{speed_click: device_nav.speed_alter_btn=="n_w"}' @mousedown='speed_alter_sbmt("n_w")' @mouseup='speed_alter_sbmt("n_w", 0)' ></td>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="北" :class='{speed_click: device_nav.speed_alter_btn=="n"}' @mousedown='speed_alter_sbmt("n")' @mouseup='speed_alter_sbmt("n", 0)' ></td>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="东北" :class='{speed_click: device_nav.speed_alter_btn=="n_e"}' @mousedown='speed_alter_sbmt("n_e")' @mouseup='speed_alter_sbmt("n_e", 0)' ></td>
+							<td><input type="button":disabled='vue_operate==false' value="西北" :class='{speed_click: device_nav.speed_alter_btn=="n_w"}' @mousedown='speed_alter_sbmt("n_w")' @mouseup='speed_alter_sbmt("n_w", 0)' ></td>
+							<td><input type="button" :disabled='vue_operate==false' value="北" :class='{speed_click: device_nav.speed_alter_btn=="n"}' @mousedown='speed_alter_sbmt("n")' @mouseup='speed_alter_sbmt("n", 0)' ></td>
+							<td><input type="button" :disabled='vue_operate==false' value="东北" :class='{speed_click: device_nav.speed_alter_btn=="n_e"}' @mousedown='speed_alter_sbmt("n_e")' @mouseup='speed_alter_sbmt("n_e", 0)' ></td>
 						</tr>
 						<tr>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="西" :class='{speed_click: device_nav.speed_alter_btn=="w"}' @mousedown='speed_alter_sbmt("w")' @mousedup='speed_alter_sbmt("w", 0)'></td>
+							<td><input type="button" :disabled='vue_operate==false' value="西" :class='{speed_click: device_nav.speed_alter_btn=="w"}' @mousedown='speed_alter_sbmt("w")' @mousedup='speed_alter_sbmt("w", 0)'></td>
 							<td>
 								<select width='91%' v-model='gimbal_form.speed_alter.correction'>
 									<option value="-1">选择速度</option>
@@ -320,12 +332,12 @@
 									<option value="1.0">1度/s</option>
 								</select>
 							</td>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="东" :class='{speed_click: device_nav.speed_alter_btn=="e"}' @mousedown='speed_alter_sbmt("e")' @mouseup='speed_alter_sbmt("e", 0)'></td>
+							<td><input type="button" :disabled='vue_operate==false' value="东" :class='{speed_click: device_nav.speed_alter_btn=="e"}' @mousedown='speed_alter_sbmt("e")' @mouseup='speed_alter_sbmt("e", 0)' ></td>
 						</tr>
 						<tr>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="西南" :class='{speed_click: device_nav.speed_alter_btn=="s_w"}' @mousedown='speed_alter_sbmt("s_w")' @mouseup='speed_alter_sbmt("s_w", 0)'></td>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="南" :class='{speed_click: device_nav.speed_alter_btn=="s"}' @mousedown='speed_alter_sbmt("s")' @mouseup='speed_alter_sbmt("s", 0)' ></td>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="东南" :class='{speed_click: device_nav.speed_alter_btn=="s_e"}' @mousedown='speed_alter_sbmt("s_e")' @mouseup='speed_alter_sbmt("s_e", 0)'></td>
+							<td><input type="button" :disabled='vue_operate==false' value="西南" :class='{speed_click: device_nav.speed_alter_btn=="s_w"}' @mousedown='speed_alter_sbmt("s_w")' @mouseup='speed_alter_sbmt("s_w", 0)' ></td>
+							<td><input type="button" :disabled='vue_operate==false' value="南" :class='{speed_click: device_nav.speed_alter_btn=="s"}' @mousedown='speed_alter_sbmt("s")' @mouseup='speed_alter_sbmt("s", 0)' ></td>
+							<td><input type="button" :disabled='vue_operate==false' value="东南" :class='{speed_click: device_nav.speed_alter_btn=="s_e"}' @mousedown='speed_alter_sbmt("s_e")' @mouseup='speed_alter_sbmt("s_e", 0)' ></td>
 						</tr>
 					</table>
 			    </form><!--速度修正 结束-->
@@ -336,17 +348,17 @@
 					<option value="3" v-if='configData.gimbal.haveaxis3==1' >轴3</option>
 					</select>
 					速度：<input type="text" ref='speed_fixed' v-model.trim='gimbal_form.speed_fixed.speed' :placeholder="'<='+configData.gimbal['maxaxis'+gimbal_form.speed_fixed.axis+'speed']" @blur='speed_fixed_check(true)' >
-					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='speed_fixed_sbmt' >
+					<br><input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='speed_fixed_sbmt' >
 				</form><!--恒速运动 结束-->
 				<form class='center' v-if='device_nav.gimbal_command == "position_alter"'><!--位置修正-->
 					<table class='center center_mrg' id='speed_alter_tb'>
 						<tr>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="西北" :class='{speed_click: device_nav.pos_alter_btn=="n_w"}' @click='position_alter_sbmt("n_w")' ></td>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="北" :class='{speed_click: device_nav.pos_alter_btn=="n"}' @click='position_alter_sbmt("n")' ></td>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="东北" :class='{speed_click: device_nav.pos_alter_btn=="n_e"}' @click='position_alter_sbmt("n_e")' ></td>
+							<td><input type="button" :disabled='vue_operate==false' value="西北" :class='{speed_click: device_nav.pos_alter_btn=="n_w"}' @click='position_alter_sbmt("n_w")' ></td>
+							<td><input type="button" :disabled='vue_operate==false' value="北" :class='{speed_click: device_nav.pos_alter_btn=="n"}' @click='position_alter_sbmt("n")' ></td>
+							<td><input type="button" :disabled='vue_operate==false' value="东北" :class='{speed_click: device_nav.pos_alter_btn=="n_e"}' @click='position_alter_sbmt("n_e")' ></td>
 						</tr>
 						<tr>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="西" :class='{speed_click: device_nav.pos_alter_btn=="w"}' @click='position_alter_sbmt("w")' ></td>
+							<td><input type="button" :disabled='vue_operate==false' value="西" :class='{speed_click: device_nav.pos_alter_btn=="w"}' @click='position_alter_sbmt("w")' ></td>
 							<td>
 								<select width='91%' v-model='gimbal_form.position_alter.correction'>
 									<option value="-1">选择偏移量</option>
@@ -364,19 +376,19 @@
 									<option value="1.0">1度</option>
 								</select>
 							</td>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="东" :class='{speed_click: device_nav.pos_alter_btn=="e"}' @click='position_alter_sbmt("e")' ></td>
+							<td><input type="button" :disabled='vue_operate==false' value="东" :class='{speed_click: device_nav.pos_alter_btn=="e"}' @click='position_alter_sbmt("e")' ></td>
 						</tr>
 						<tr>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="西南" :class='{speed_click: device_nav.pos_alter_btn=="s_w"}' @click='position_alter_sbmt("s_w")' ></td>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="南" :class='{speed_click: device_nav.pos_alter_btn=="s"}' @click='position_alter_sbmt("s")' ></td>
-							<td><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="东南" :class='{speed_click: device_nav.pos_alter_btn=="s_e"}' @click='position_alter_sbmt("s_e")' ></td>
+							<td><input type="button" :disabled='vue_operate==false' value="西南" :class='{speed_click: device_nav.pos_alter_btn=="s_w"}' @click='position_alter_sbmt("s_w")' ></td>
+							<td><input type="button" :disabled='vue_operate==false' value="南" :class='{speed_click: device_nav.pos_alter_btn=="s"}' @click='position_alter_sbmt("s")' ></td>
+							<td><input type="button" :disabled='vue_operate==false' value="东南" :class='{speed_click: device_nav.pos_alter_btn=="s_e"}' @click='position_alter_sbmt("s_e")' ></td>
 						</tr>
 					</table>
 				</form><!--位置修正 结束-->
 				<form class='center' v-if='device_nav.gimbal_command == "cover_op"'><!--镜盖操作-->
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type='button' value="打 开" :class='{speed_click: device_nav.cover_btn=="open"}' @click='cover_sbmt("open")' >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type='button' value="关 闭" :class='{speed_click: device_nav.cover_btn=="close"}' @click='cover_sbmt("close")' >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type='button' value="停 止" :class='{speed_click: device_nav.cover_btn=="stop"}' @click='cover_sbmt("stop")' ><br><br>
+					<input type='button' :disabled='vue_operate==false' value="打 开" :class='{speed_click: device_nav.cover_btn=="open"}' @click='cover_sbmt("open")' >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type='button' :disabled='vue_operate==false' value="关 闭" :class='{speed_click: device_nav.cover_btn=="close"}' @click='cover_sbmt("close")' >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type='button' :disabled='vue_operate==false' value="停 止" :class='{speed_click: device_nav.cover_btn=="stop"}' @click='cover_sbmt("stop")' ><br><br>
 				</form><!--镜盖操作 结束-->
 				<form class='center' v-if='device_nav.gimbal_command == "setFocusType"'><!--焦点切换镜-->
 					焦点切换镜：<select name="setFocusType" style='width:6%;' v-model='gimbal_form.setFocusType.focusType' >
@@ -386,10 +398,10 @@
 						<option value="3">3</option>
 						<option value="-1">停</option>
 					</select>
-					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='setFocusType_sbmt' >
+					<br><input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='setFocusType_sbmt' >
 				</form><!--焦点切换镜 结束-->
 				<form class='center' v-if='device_nav.gimbal_command == "saveSyncData"'><!--保存同步数据-->
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" value="是" style="width:5%;" :class='{speed_click: device_nav.save_data_btn=="1"}' @click='save_data_sbmt(1)' >
+					<input type="button" :disabled='vue_operate==false' value="是" style="width:5%;" :class='{speed_click: device_nav.save_data_btn=="1"}' @click='save_data_sbmt(1)' >
 					<br><br>
 				</form><!--保存同步数据 结束-->
 			  <hr style='width:98%;' class='center_mrg'><br>
@@ -445,7 +457,7 @@
 	   
 	   <div id='ccdInfo' v-if='device_nav.dev_click=="ccd"'><!--ccd 指令和属性-->	   
 			<nav class='center'><!--ccd指令 导航-->
-			    <span :class='{active: device_nav.ccd_command=="coolTemp"}' @click ='device_nav.ccd_command="coolTemp"' v-if='ccd_config.cansetcoolert==1' >制冷温度</span>
+			  <span :class='{active: device_nav.ccd_command=="coolTemp"}' @click ='device_nav.ccd_command="coolTemp"' v-if='ccd_config.cansetcoolert==1' >制冷温度</span>
 				<span :class='{active: device_nav.ccd_command=="exposeParam"}' @click ='device_nav.ccd_command="exposeParam"' v-if='ccd_config.cansetexposureparam==1' >曝光策略</span>
 				<span :class='{active: device_nav.ccd_command=="start_expose"}' @click ='device_nav.ccd_command="start_expose"' v-if='ccd_config.canstartexposure==1' >开始曝光</span>
 				<span :class='{active: device_nav.ccd_command=="set_gain"}' @click ='device_nav.ccd_command="set_gain"' v-if='ccd_config.cansetgain==1' >设置增益</span>
@@ -462,15 +474,15 @@
 			</nav>
 			<div class='border2'><!--ccd 指令和可变属性-->
 				<div id='btnsCCD' class='center_mrg center BtnsDiv'>
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} id='ccdConnect' v-if='ccd_config.canconnect==1' :class='{btnClick: device_nav.ccd_btn=="connect"}' class='border1 btnCommand' type='button' value='连接CCD' @click='ccd_btn_command(1)' >
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} id='ccdDisConnect' v-if='ccd_config.canconnect==1' :class='{btnClick: device_nav.ccd_btn=="disConnect"}' class='border1 btnCommand' type='button' value='断开CCD' @click='ccd_btn_command(2)' >					
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} id='ccdStopExpose' v-if='ccd_config.canstopexposure==1' :class='{btnClick: device_nav.ccd_btn=="stop_expose"}' class='border1 btnCommand' type='button' value='停止曝光' @click='ccd_btn_command(3)' >					
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} id='ccdAbortExpose' v-if='ccd_config.canabortexposure==1' :class='{btnClick: device_nav.ccd_btn=="abort_expose"}' class='border1 btnCommand' type='button' value='终止曝光' @click='ccd_btn_command(4)' >
+					<input id='ccdConnect' v-if='ccd_config.canconnect==1' :class='{btnClick: device_nav.ccd_btn=="connect"}' class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='连接CCD' @click='ccd_btn_command(1)' >
+					<input id='ccdDisConnect' v-if='ccd_config.canconnect==1' :class='{btnClick: device_nav.ccd_btn=="disConnect"}' class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='断开CCD' @click='ccd_btn_command(2)' >					
+					<input id='ccdStopExpose' v-if='ccd_config.canstopexposure==1' :class='{btnClick: device_nav.ccd_btn=="stop_expose"}' class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='停止曝光' @click='ccd_btn_command(3)' >					
+					<input id='ccdAbortExpose' v-if='ccd_config.canabortexposure==1' :class='{btnClick: device_nav.ccd_btn=="abort_expose"}' class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='终止曝光' @click='ccd_btn_command(4)' >
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
 				<form class='center' v-if='device_nav.ccd_command == "coolTemp"' ><!--设置制冷温度-->
 					<input id='ccdTemperature' type="text" ref='ccd_cool' :placeholder='ccd_config.lowcoolert +"~20"' v-model.trim='ccd_form.coolTemp.temp' @blur='ccd_cool(true)' >
-					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='ccd_cool_sbmt' >
+					<br><input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='ccd_cool_sbmt' >
 				</form><!--设置制冷温度 结束-->
 				<form id='exposStratic' class='center' v-if='device_nav.ccd_command == "exposeParam"' ><!--曝光策略-->
 					<span>数据有效标志位：<input type="text" ref='validFlag' v-model.trim='ccd_form.exposeParam.validFlag' placeholder='整数' @blur='ccd_validFlag(true)' ></span>
@@ -549,7 +561,7 @@
 					<span>望远镜赤纬：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.telescopeDeclination' readonly='readonly'></span>
 					<span>焦距：<input type="text" placeholder='小数' v-model.trim='ccd_form.exposeParam.focusLength' ></span>
 					<span>帧数：<input type="text" name='frameNum' placeholder='整数' v-model.trim='ccd_form.exposeParam.frameNum' @blur='ccd_exposeNum(true)' ></span>
-					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='ccd_exposeParam_sbmt' >
+					<br><input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='ccd_exposeParam_sbmt' >
 				</form><!--曝光策略 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "start_expose"'><!--开始曝光-->
 					是否读取帧序号：<label>是
@@ -559,7 +571,7 @@
 						<input type="radio" value="0" v-model='ccd_form.start_expose.isReadFrameSeq' >
 					</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					帧序号：<input type="text">
-					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='ccd_startExpose_sbmt' >
+					<br><input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='ccd_startExpose_sbmt' >
 				</form><!--开始曝光 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "set_gain"'><!--设置增益-->
 					增益模式：<select name="mode" style='width:auto;' v-model='ccd_form.set_gain.mode'> 
@@ -571,14 +583,14 @@
 						<option value="-1">请选择</option>
 						<option :value="k" v-for="(v,k) in ccd_config.gainnumber*1" >{{v}}x</option>
 					</select>
-					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='ccd_gain_sbmt' >
+					<br><input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='ccd_gain_sbmt' >
 				</form><!--设置增益 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "readout_speed"'><!--读出速度模式-->
 					读出速度（MHz/s）：<select style="width:80px" v-model='ccd_form.readout_speed_form.readout_mode'>
 						<option value="-1">请选择</option>
 						<option :value="k" v-for='(v, k) in readout_speed_Mode'>{{v}}</option>
 					</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='readout_speed_sbmt' ><br>
+					<input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='readout_speed_sbmt' ><br>
 				</form><!--读出速度模式 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "transfer_speed"'><!--转移速度模式-->
 					转移速度（MHz/s）：<select style="width:80px" v-model='ccd_form.transfer_speed_form.transfer_mode'>
@@ -587,7 +599,7 @@
 						<!--<option value="1" v-if='transfer_speed_Mode.a'>a</option>
 						<option value="2" v-if='transfer_speed_Mode.b'>b</option>-->
 					</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='transfer_speed_sbmt' ><br>
+					<input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='transfer_speed_sbmt' ><br>
 				</form><!--转移速度模式 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "set_bin"'><!--设置bin-->
 					<!-- BinX：<select style='width:60px;' v-model='ccd_form.set_bin_form.binX' >
@@ -602,14 +614,14 @@
 							<option value="-1">请选择</option>
 							<option :value="v" v-for="v in bin" >{{v}}</option>
 						</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='set_bin_sbmt' ><br>
+					<input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='set_bin_sbmt' ><br>
 				</form><!--设置bin 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "set_roi"'><!--set_roi-->
 					X：<input type="text" ref='x' v-model.trim='ccd_form.set_roi_form.startX' :placeholder='"整数:"+"0~"+ccd_config.xpixel' @blur='ccd_roi_x(true)' >
 					Y：<input type="text" ref='y' v-model.trim='ccd_form.set_roi_form.startY' :placeholder='"整数:"+"0~"+ccd_config.ypixel' @blur='ccd_roi_y(true)' >
 					Width：<input type="text" ref='w' v-model.trim='ccd_form.set_roi_form.imageW' :placeholder='"整数:"+"与X之和<="+ccd_config.xpixel' @blur='ccd_roi_w(true)' >
 					Height：<input type="text" ref='h' v-model.trim='ccd_form.set_roi_form.imageH' :placeholder='"整数:"+"与Y之和<="+ccd_config.ypixel' @blur='ccd_roi_h(true)' >
-					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='set_roi_sbmt' >
+					<br><input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='set_roi_sbmt' >
 				</form><!--set_roi 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "set_shutter"'><!--设置快门-->
 					快门模式：<select style='width:118px;' v-model='ccd_form.set_shutter_form.shutter' >			
@@ -617,48 +629,48 @@
 						<option value="0" v-if='shutter_Mode.GlobalShutter' >GlobalShutter</option>
 						<option value="1" v-if='shutter_Mode.RollingShutter' >RollingShutter</option>
 					</select>
-					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='set_shutter_sbmt' >
+					<br><input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='set_shutter_sbmt' >
 				</form><!--设置快门 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "set_frame"'><!--设置帧转移-->
 					帧转移：<label>是：<input type="radio" value="1" v-model='ccd_form.set_frame_form.frame' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<label>否：<input type="radio" value="0" v-model='ccd_form.set_frame_form.frame' ></label>
-					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='set_frame_sbmt' >
+					<br><input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='set_frame_sbmt' >
 				</form><!--设置帧转移 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "set_em"'><!--设置EM-->
 					EM：<label>是：<input type="radio" value="1" v-model='ccd_form.set_em_form.em' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<label>否：<input type="radio" value="0" v-model='ccd_form.set_em_form.em' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<span v-if='ccd_form.set_em_form.em == 1' >Em值：<input type="text" ref='em' v-model.trim='ccd_form.set_em_form.emV' :placeholder="'整数:'+ccd_config.emminvalue+'~'+ccd_config.emmaxvalue" @blur='ccd_em_check(true)' ></span>
-					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='set_em_sbmt' >
+					<br><input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='set_em_sbmt' >
 				</form><!--设置EM 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "set_cmos"'><!--cmos-->
 					CMOS noise filter：<label>是：<input type="radio" value="1" v-model='ccd_form.set_cmos_form.isNoiseFilter' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<label>否：<input type="radio" value="0" v-model='ccd_form.set_cmos_form.isNoiseFilter' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='set_cmos_sbmt' ><br>
+					<input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='set_cmos_sbmt' ><br>
 				</form><!--cmos 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "set_baseLine"'><!--设置base line-->
 					BaseLine：<label>是：<input type="radio" value="1" v-model='ccd_form.set_baseLine_form.isBaseLine' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<label>否：<input type="radio" value="0" v-model='ccd_form.set_baseLine_form.isBaseLine' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<span v-if='ccd_form.set_baseLine_form.isBaseLine == 1' >baseLine值：<input type="text" ref='base' v-model.trim='ccd_form.set_baseLine_form.baseLineV' placeholder="整数" @blur='ccd_baseLine_check(true)' ></span>
-					<br><input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='set_baseLine_sbmt' >
+					<br><input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='set_baseLine_sbmt' >
 				</form><!--设置base line 结束-->
 				<form class='center' v-if='device_nav.ccd_command == "over_scan"'><!--over scan-->
 					OverScan：<label>是：<input type="radio" value="1" v-model='ccd_form.overScan_form.over_scan' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<label>否：<input type="radio" value="0" v-model='ccd_form.overScan_form.over_scan' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='overScan_sbmt' >
+					<input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='overScan_sbmt' >
 				</form><!--over scan 结束-->
 			  <hr style='width:98%;' class='center_mrg'><br>
 			  <div><!--CCD可变属性-->
-                <span class='propT'>CCD可变属性:</span><br><br>
+          <span class='propT'>CCD可变属性:</span><br><br>
 				 <ul class='properUl'>
-                    <li class='li fl'>当前状态:<span id='ccdStatus_1'>{{ccd_status.ccdCurStatus}}</span></li>
-                    <li class='li fl'>错误标识:<span id='baseLine'>{{ccd_status.errorString}}</span></li>
-                    <li class='li fl'>错误状态:<span id='readMode'>{{ccd_status.ccdError}}</span></li>
-                    <li class='li fl'>警告状态:<span id='ObserveBand'>{{ccd_status.ccdWarning}}</span></li>
-                    <li class='li fl'>总帧数:<span id='TargetRightAscension'>{{ccd_status.frameTotal}}</span></li>
-                    <li class='li fl'>当前帧数:<span id='TargetDeclination'>{{ccd_status.frameSequence}}</span></li>
-                </ul>
-               <div class='clear'></div>
-             </div><!--CCD 可变属性结束-->
+						<li class='li fl'>当前状态:<span id='ccdStatus_1'>{{ccd_status.ccdCurStatus}}</span></li>
+						<li class='li fl'>错误标识:<span id='baseLine'>{{ccd_status.errorString}}</span></li>
+						<li class='li fl'>错误状态:<span id='readMode'>{{ccd_status.ccdError}}</span></li>
+						<li class='li fl'>警告状态:<span id='ObserveBand'>{{ccd_status.ccdWarning}}</span></li>
+						<li class='li fl'>总帧数:<span id='TargetRightAscension'>{{ccd_status.frameTotal}}</span></li>
+						<li class='li fl'>当前帧数:<span id='TargetDeclination'>{{ccd_status.frameSequence}}</span></li>
+				</ul>
+      <div class='clear'></div>
+      </div><!--CCD 可变属性结束-->
 		  </div><!--CCD 指令和可变属性 结束-->
 		 <div class='border2'><!--ccd 固定属性-->
 			<br><span class='propT'>CCD固定属性:</span><br><br>
@@ -676,54 +688,54 @@
 				<li class='li fl' style='width:578px;'>增益模式:<span>{{ccd_config.gainmode}}</span></li>
 				<li class='li fl' style='width:578px;'>接口类型:<span>{{ccd_config.interfacetype}}</span></li>
 				<li class='li fl' style='width:578px;'>曝光触发模式:<span>{{ccd_config.exposetriggermode}}</span></li>
-             </ul>
-           <div class='clear'></div>
+      </ul>
+      <div class='clear'></div>
 		 </div><!--ccd固定属性 结束-->
 	   </div><!--ccd 结束-->
 	   <div id='focusInfo' v-if='device_nav.dev_click=="focus"' ><!--调焦器指令和属性 -->
 			<nav class='center'><!--调焦器指令 导航-->
-			    <span v-if='configData.focus.cansetposition==1' :class='{active: device_nav.focus_command=="objPos"}' @click='device_nav.focus_command="objPos"' >设置目标位置</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span v-if='configData.focus.cansetposition==1' :class='{active: device_nav.focus_command=="objPos"}' @click='device_nav.focus_command="objPos"' >设置目标位置</span>&nbsp;&nbsp;&nbsp;&nbsp;
 				<span v-if='configData.focus.cansetspeed==1' :class='{active: device_nav.focus_command=="focus_speed"}' @click='device_nav.focus_command="focus_speed"' >设置恒速转动</span>&nbsp;&nbsp;&nbsp;&nbsp;
 				<span v-if='configData.focus.canenabletemperturecompensate==1' :class='{active: device_nav.focus_command=="focus_tempa"}'  @click='device_nav.focus_command="focus_tempa"' >使能温度补偿</span>&nbsp;&nbsp;&nbsp;&nbsp;
 				<span v-if='configData.focus.cansettemperturecompensatecoefficient==1' :class='{active: device_nav.focus_command=="temperature_e"}'  @click='device_nav.focus_command="temperature_e"' >温度补偿系数</span>
 			</nav>
 			<div class='border2'><!--调焦器 指令和可变属性-->
 				<div id='btnsFocus' class='center_mrg center BtnsDiv'>
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} v-if='configData.focus.canconnect==1' :class='{btnClick: device_nav.focus_btn=="connect"}' class='border1 btnCommand' type='button' value='连接调焦器' @click='focus_btn_command(1)' >
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} v-if='configData.focus.canconnect==1' :class='{btnClick: device_nav.focus_btn=="disConnect"}' class='border1 btnCommand' type='button' value='断开调焦器' @click='focus_btn_command(2)' >
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} v-if='configData.focus.canfindhome==1' :class='{btnClick: device_nav.focus_btn=="findhome"}' class='border1 btnCommand' type='button' value='找 零' @click='focus_btn_command(3)' >
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} v-if='configData.focus.canstop==1' :class='{btnClick: device_nav.focus_btn=="stop"}' class='border1 btnCommand' type='button' value='停止运动' @click='focus_btn_command(4)' >
+					<input v-if='configData.focus.canconnect==1' :class='{btnClick: device_nav.focus_btn=="connect"}' class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='连接调焦器' @click='focus_btn_command(1)' >
+					<input v-if='configData.focus.canconnect==1' :class='{btnClick: device_nav.focus_btn=="disConnect"}' class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='断开调焦器' @click='focus_btn_command(2)' >
+					<input v-if='configData.focus.canfindhome==1' :class='{btnClick: device_nav.focus_btn=="findhome"}' class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='找 零' @click='focus_btn_command(3)' >
+					<input v-if='configData.focus.canstop==1' :class='{btnClick: device_nav.focus_btn=="stop"}' class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='停止运动' @click='focus_btn_command(4)' >
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
 				<form class='center' v-if='device_nav.focus_command=="objPos"'><!--调焦器 设置目标位置-->
 					目标位置：<input type="text" ref='focus_pos' v-model.trim='focus_form.objPos_form.pos' :placeholder='configData.focus.minvalue+"~"+configData.focus.maxvalue' @blur='focus_objPos_check(true)' >&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='focus_objPos_sbmt' >
+					<input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='focus_objPos_sbmt' >
 				</form><!--调焦器 设置目标位置 结束-->
 				<form class='center' v-if='device_nav.focus_command=="focus_speed"'><!--调焦器恒速转动-->
 					转动速度：<input type="text" ref='focus_speed' v-model.trim='focus_form.fixSpeed_form.speed' :placeholder='"<="+configData.focus.maxspeed' @blur='focus_speed_check(true)' >&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='focus_speed_sbmt' >
+					<input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='focus_speed_sbmt' >
 				</form><!--调焦器恒速转动  结束-->
 				<form class='center' v-if='device_nav.focus_command=="focus_tempa"'><!--使能温度补偿-->
 					温度补偿：<label>是：<input type="radio" value="1" v-model='focus_form.tempera_form.enable' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<label>否：<input type="radio" value="0" v-model='focus_form.tempera_form.enable' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='tempera_enable_sbmt' >
+					<input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='tempera_enable_sbmt' >
 				</form><!--	使能温度补偿  结束-->
 				<form class='center' v-if='device_nav.focus_command=="temperature_e"'><!--温度补偿系数-->
 					补偿系数：<input type="text" ref='coefficient' v-model.trim='focus_form.temperatureE_form.coefficient' @blur='temperature_coef_check(true)' >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='temperature_e_sbmt' >
+					<input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='temperature_e_sbmt' >
 				</form><!--	温度补偿系数  结束-->
 				<br><hr style='width:98%;' class='center_mrg'><br>
 			<div><!--调焦器 可变属性-->
                 <span class='propT'>调焦器可变属性:</span><br><br>
 				 <ul class='properUl'>
 					<li class='li fl'>找零状态:&nbsp;&nbsp;<span id='focusIsHomed'>{{focus_status.focusIsHomed}}</span></li>
-                   <!--<li class='li fl'>当前位置:&nbsp;&nbsp;<span id='curPos'></span></li>
-                   <li class='li fl'>目标位置:&nbsp;&nbsp;<span id='targetPosition'></span></li>                   
-                   <li class='li fl'>是否进行温度补偿:&nbsp;&nbsp;<span id='compens'></span></li>
-                   <li class='li fl'>温度补偿系数:&nbsp;&nbsp;<span id='compensX'></span></li>-->
-                </ul>
-               <div class='clear'></div>
-             </div><!--调焦器 可变属性结束-->
+					<!--<li class='li fl'>当前位置:&nbsp;&nbsp;<span id='curPos'></span></li>
+					<li class='li fl'>目标位置:&nbsp;&nbsp;<span id='targetPosition'></span></li>                   
+					<li class='li fl'>是否进行温度补偿:&nbsp;&nbsp;<span id='compens'></span></li>
+					<li class='li fl'>温度补偿系数:&nbsp;&nbsp;<span id='compensX'></span></li>-->
+			  </ul>
+      <div class='clear'></div>
+      </div><!--调焦器 可变属性结束-->
 		 </div><!--调焦器 指令和可变属性 结束-->
 		 <div class='border2'><!--调焦器 固定属性-->
 			<br><span class='propT'>调焦器固定属性:</span><br><br>
@@ -735,44 +747,44 @@
 			   <li class='li fl'>支持找零:&nbsp;&nbsp;
 				 <span v-if='configData.focus.canfindhome==1' >是</span>
 				 <span v-else >否</span>
-				</li>    
-			   <li class='li fl'>可否温度补偿:&nbsp;&nbsp;
+				</li>
+			<li class='li fl'>可否温度补偿:&nbsp;&nbsp;
 				<span v-if='configData.focus.canenabletemperturecompensate==1' >是</span>
 				<span v-else >否</span>
 			   </li>
-             </ul>
-           <div class='clear'></div>
+      </ul>
+        <div class='clear'></div>
 		 </div><!--调焦器 固定属性 结束-->
 	   </div><!--调焦器 结束-->
 	   <div v-if='device_nav.dev_click=="sDome"' ><!--随动圆顶指令和属性-->
 			<nav class='center'><!--随动圆顶指令 导航-->
-			    <span v-if='configData.sDome.cansetdomepositin==1' :class='{active: device_nav.sDome_command=="objPos"}' @click='device_nav.sDome_command="objPos"' >设置目标方位</span>&nbsp;&nbsp;&nbsp;&nbsp;
+			  <span v-if='configData.sDome.cansetdomepositin==1' :class='{active: device_nav.sDome_command=="objPos"}' @click='device_nav.sDome_command="objPos"' >设置目标方位</span>&nbsp;&nbsp;&nbsp;&nbsp;
 				<span v-if='configData.sDome.cansetrotatespeed==1' :class='{active: device_nav.sDome_command=="rotate"}' @click='device_nav.sDome_command="rotate"' >设置转动速度</span>&nbsp;&nbsp;&nbsp;&nbsp;
 				<span v-if='configData.sDome.cansetshadeposition==1' :class='{active: device_nav.sDome_command=="shadePos"}' @click='device_nav.sDome_command="shadePos"' >设置风帘位置</span>&nbsp;&nbsp;&nbsp;&nbsp;
 				<span v-if='configData.sDome.cansetshadeposition==1' :class='{active: device_nav.sDome_command=="shadeAction"}' @click='device_nav.sDome_command="shadeAction"' >控制风帘运动</span>
 			</nav>
 			<div class='border2'><!--随动圆顶 指令和可变属性-->
 				<div id='btnsSlaveD' class='center_mrg center BtnsDiv'>
-				   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} class='border1 btnCommand' type='button' value='连接圆顶' v-if='configData.sDome.canconnect==1' :class='{btnClick: device_nav.sDome_btn=="connect"}' @click='sDome_btn_command(1)' >
-				   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} class='border1 btnCommand' type='button' value='断开圆顶' v-if='configData.sDome.canconnect==1' :class='{btnClick: device_nav.sDome_btn=="disConnect"}' @click='sDome_btn_command(2)' >
-				   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} class='border1 btnCommand' type='button' value='停止运动' v-if='configData.sDome.canstop==1' :class='{btnClick: device_nav.sDome_btn=="stop"}' @click='sDome_btn_command(3)' >
-				   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} class='border1 btnCommand' type='button' value='打开天窗' v-if='configData.sDome.canopenshutter==1' :class='{btnClick: device_nav.sDome_btn=="open"}' @click='sDome_btn_command(4)' >
-				   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} class='border1 btnCommand' type='button' value='关闭天窗' v-if='configData.sDome.canopenshutter==1' :class='{btnClick: device_nav.sDome_btn=="close"}' @click='sDome_btn_command(5)' >
+				  <input class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='连接圆顶' v-if='configData.sDome.canconnect==1' :class='{btnClick: device_nav.sDome_btn=="connect"}' @click='sDome_btn_command(1)' >
+				  <input class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='断开圆顶' v-if='configData.sDome.canconnect==1' :class='{btnClick: device_nav.sDome_btn=="disConnect"}' @click='sDome_btn_command(2)' >
+				  <input class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='停止运动' v-if='configData.sDome.canstop==1' :class='{btnClick: device_nav.sDome_btn=="stop"}' @click='sDome_btn_command(3)' >
+				  <input class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='打开天窗' v-if='configData.sDome.canopenshutter==1' :class='{btnClick: device_nav.sDome_btn=="open"}' @click='sDome_btn_command(4)' >
+				  <input class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='关闭天窗' v-if='configData.sDome.canopenshutter==1' :class='{btnClick: device_nav.sDome_btn=="close"}' @click='sDome_btn_command(5)' >
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
-				<form  class='center' v-if='device_nav.sDome_command=="objPos"' ><!--目标方位-->
+				<form class='center' v-if='device_nav.sDome_command=="objPos"' ><!--目标方位-->
 					目标方位：<input type="text" ref='objPos' v-model.trim='sDome_form.objPos_form.position' placeholder='[0, 360)' @blur='sDome_objPos_check(true)' >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='sDome_objPos_sbmt' >
+					<input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='sDome_objPos_sbmt' >
 				</form><!--目标方位 结束-->
-				<form  class='center' v-if='device_nav.sDome_command=="rotate"' ><!--转动速度-->
+				<form class='center' v-if='device_nav.sDome_command=="rotate"' ><!--转动速度-->
 					转动速度：<input type="text" ref='rotate' v-model.trim='sDome_form.rotateSpeed_form.speed' :placeholder='"<="+configData.sDome.maxspeed' @blur='sDome_rotate_check(true)' >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='sDome_rotate_sbmt' >
+					<input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='sDome_rotate_sbmt' >
 				</form><!--转动速度 结束-->
-				<form  class='center' v-if='device_nav.sDome_command=="shadePos"' ><!--风帘位置-->
+				<form class='center' v-if='device_nav.sDome_command=="shadePos"' ><!--风帘位置-->
 					风帘位置：<input type="text" ref='shade' v-model.trim='sDome_form.shadePos_form.position' placeholder='[0-90]' @blur='sDome_shade_check(true)' >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='sDome_shade_sbmt' >
+					<input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='sDome_shade_sbmt' >
 				</form><!--风帘位置 结束-->
-				<form  class='center' v-if='device_nav.sDome_command=="shadeAction"' ><!--风帘运动-->
+				<form class='center' v-if='device_nav.sDome_command=="shadeAction"' ><!--风帘运动-->
 					运动方向：<select style='width:90px;' v-model='sDome_form.shadeAction_form.action' >
 								<option value="-1">请选择</option>
 								<option value="1">向上</option>
@@ -780,19 +792,19 @@
 								<option value="3">停止</option>
 						</select>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='sDome_action_sbmt' >
+					<input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='sDome_action_sbmt' >
 				</form><!--风帘运动 结束-->
 				<br><hr style='width:98%;' class='center_mrg'><br>
 			<div><!--随动圆顶 可变属性-->
-                <span class='propT'>随动圆顶可变属性:</span><br><br>
+          <span class='propT'>随动圆顶可变属性:</span><br><br>
 				 <ul class='properUl'>
-                    <li class='li fl'>当前状态:&nbsp;&nbsp;<span id='domeStatus_1'></span></li>
+           <li class='li fl'>当前状态:&nbsp;&nbsp;<span id='domeStatus_1'></span></li>
 				   <li class='li fl'>天窗状态:&nbsp;&nbsp;<span id='scuttle'></span></li>
-                   <!--<li class='li fl'>风帘状态:&nbsp;&nbsp;<span id='shadeStatus'></span></li>
-                   <li class='li fl'>错误标识:&nbsp;&nbsp;<span id='errorStr'></span></li>-->
-                </ul>
-               <div class='clear'></div>
-             </div><!--随动圆顶 可变属性结束-->
+            <!--<li class='li fl'>风帘状态:&nbsp;&nbsp;<span id='shadeStatus'></span></li>
+            <li class='li fl'>错误标识:&nbsp;&nbsp;<span id='errorStr'></span></li>-->
+        </ul>
+        <div class='clear'></div>
+        </div><!--随动圆顶 可变属性结束-->
 		 </div><!--随动圆顶 指令和可变属性 结束-->
 		<div class='border2'><!--随动圆顶 固定属性-->
 			<br><span class='propT'>随动圆顶固定属性:</span><br><br>
@@ -811,30 +823,30 @@
 				<span v-if='configData.sDome.canconnect==1'>是</span>
 				<span v-else>否</span>
 				</li>
-             </ul>
-           <div class='clear'></div>
+      </ul>
+        <div class='clear'></div>
 		 </div><!--随动圆顶 固定属性 结束-->
 	   </div><!--随动圆顶 结束-->
 
 	   <div v-if='device_nav.dev_click=="oDome"'><!--全开圆顶指令和属性-->
 			<div class='border2'><!--全开圆顶 指令和可变属性-->
 				<div id='oDome_command' class='center_mrg center BtnsDiv'>
-				   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} class='border1 btnCommand' type='button' value='连接圆顶' v-if='configData.oDome.canconnect==1' :class='{btnClick: device_nav.oDome_btn=="connect"}' @click='oDome_btn_command(1)' >
-				   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} class='border1 btnCommand' type='button' value='断开圆顶' v-if='configData.oDome.canconnect==1' :class='{btnClick: device_nav.oDome_btn=="disConnect"}' @click='oDome_btn_command(2)' >
-				   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} class='border1 btnCommand' type='button' value='打开' v-if='configData.oDome.canopendome==1' :class='{btnClick: device_nav.oDome_btn=="open"}' @click='oDome_btn_command(3)' >
-				   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} class='border1 btnCommand' type='button' value='关闭' v-if='configData.oDome.canopendome==1' :class='{btnClick: device_nav.oDome_btn=="close"}' @click='oDome_btn_command(4)' >
-				   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} class='border1 btnCommand' type='button' value='停止运动' v-if='configData.oDome.canopendome==1' :class='{btnClick: device_nav.oDome_btn=="stop"}' @click='oDome_btn_command(5)' >
+						<input class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='连接圆顶' v-if='configData.oDome.canconnect==1' :class='{btnClick: device_nav.oDome_btn=="connect"}' @click='oDome_btn_command(1)' >
+				   <input class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='断开圆顶' v-if='configData.oDome.canconnect==1' :class='{btnClick: device_nav.oDome_btn=="disConnect"}' @click='oDome_btn_command(2)' >
+				   <input class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='打开' v-if='configData.oDome.canopendome==1' :class='{btnClick: device_nav.oDome_btn=="open"}' @click='oDome_btn_command(3)' >
+				   <input class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='关闭' v-if='configData.oDome.canopendome==1' :class='{btnClick: device_nav.oDome_btn=="close"}' @click='oDome_btn_command(4)' >
+				   <input class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='停止运动' v-if='configData.oDome.canopendome==1' :class='{btnClick: device_nav.oDome_btn=="stop"}' @click='oDome_btn_command(5)' >
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
 			<div><!--全开圆顶 可变属性-->
-                <span class='propT'>全开圆顶可变属性:</span><br><br>
+          <span class='propT'>全开圆顶可变属性:</span><br><br>
 				 <ul class='properUl'>
-                    <li class='li fl'>当前状态:&nbsp;&nbsp;<span id='oDomeCurPos'></span></li>
-                   <!--<li class='li fl'>错误标识:&nbsp;&nbsp;<span id='oDomeErrStatus'></span></li>
-                   <li class='li fl'>错误状态:&nbsp;&nbsp;<span id='oDomeErrType'></span></li>-->
-                </ul>
-               <div class='clear'></div>
-             </div><!--全开圆顶 可变属性结束-->
+						<li class='li fl'>当前状态:&nbsp;&nbsp;<span id='oDomeCurPos'></span></li>
+						<!--<li class='li fl'>错误标识:&nbsp;&nbsp;<span id='oDomeErrStatus'></span></li>
+						<li class='li fl'>错误状态:&nbsp;&nbsp;<span id='oDomeErrType'></span></li>-->
+          </ul>
+            <div class='clear'></div>
+      </div><!--全开圆顶 可变属性结束-->
 		 </div><!--全开圆顶 指令和可变属性 结束-->
 		<div class='border2'><!--全开圆顶 固定属性-->
 			<br><span class='propT'>全开圆顶固定属性:</span><br><br>
@@ -848,23 +860,23 @@
 				<span v-if='configData.oDome.canconnect==1'>是</span>
 				<span v-else>否</span>
 				</li>
-             </ul>
-           <div class='clear'></div>
+      </ul>
+      <div class='clear'></div>
 		 </div><!--全开圆顶 固定属性 结束-->
 	   </div><!--全开圆顶 结束-->
 
 	   <div id='filterInfo' v-if='device_nav.dev_click=="filter"' ><!--滤光片指令和属性-->
 			<div class='border2'><!--滤光片 指令和可变属性-->
 				<div id='btnsFilter' class='center_mrg center BtnsDiv' style='width:850px;'>
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} v-if='configData.filter.canconnect==1' :class='{btnClick: device_nav.filter_btn=="connect"}' class='border1 btnCommand' type='button' value='连接滤光片' @click='filter_btn_command(1)' >&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} v-if='configData.filter.canconnect==1' :class='{btnClick: device_nav.filter_btn=="disConnect"}' class='border1 btnCommand' type='button' value='断开滤光片' @click='filter_btn_command(2)' >&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} v-if='configData.filter.canfindhome==1' :class='{btnClick: device_nav.filter_btn=="findhome"}' class='border1 btnCommand' type='button' value='找 零' @click='filter_btn_command(3)' >&nbsp;&nbsp;&nbsp;&nbsp;
+					<input v-if='configData.filter.canconnect==1' :class='{btnClick: device_nav.filter_btn=="connect"}' class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='连接滤光片' @click='filter_btn_command(1)' >&nbsp;&nbsp;&nbsp;&nbsp;
+					<input v-if='configData.filter.canconnect==1' :class='{btnClick: device_nav.filter_btn=="disConnect"}' class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='断开滤光片' @click='filter_btn_command(2)' >&nbsp;&nbsp;&nbsp;&nbsp;
+					<input v-if='configData.filter.canfindhome==1' :class='{btnClick: device_nav.filter_btn=="findhome"}' class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='找 零' @click='filter_btn_command(3)' >&nbsp;&nbsp;&nbsp;&nbsp;
 					<span v-if='configData.filter.cansetfilterposition==1'>
 						滤光片位置：<select id='filterPosi' v-model='filter_form.filter_position.filter_pos' class='border1 btnCommand' style='width:90px;color:#000;border:1px solid #7a7a7a;' >
 							    <option value="-1">请选择</option>
 							    <option v-for='n in configData.filter.filtername.length' :value='n-1' >{{configData.filter.filtername[n-1]}}</option>
 						</select>&nbsp;&nbsp;
-					    <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} :class='{hover: device_nav.filterPos_btn=="hover"}' class='border submitBtn' type='button' value='提交滤光片位置' @click='filterPos_sbmt' @mouseover='device_nav.filterPos_btn="hover"' @mouseleave='device_nav.filterPos_btn=""' >
+					    <input :class='{hover: device_nav.filterPos_btn=="hover"}' class='border submitBtn' type='button' :disabled='vue_operate==false' value='提交滤光片位置' @click='filterPos_sbmt' @mouseover='device_nav.filterPos_btn="hover"' @mouseleave='device_nav.filterPos_btn=""' >
 					</span>
 				</div><br>
 			<hr style='width:98%;' class='center_mrg'><br>
@@ -890,13 +902,13 @@
 							<td>插槽{{n}}</td> <td>{{configData.filter.filterType[n-1]}}</td> <td>{{configData.filter.filtername[n-1]}}</td> <td>{{configData.filter.filterComp[n-1]}}</td>
 						</tr>
 					</table>
-				</li>   
+				</li>
 				<li class='li fl'>可否设置滤光片位置:&nbsp;&nbsp;
 				<span v-if='configData.filter.cansetfilterposition==1' >是</span>
 				<span v-else>否</span>
 				</li>
 			</ul>
-           <div class='clear'></div>
+      <div class='clear'></div>
 		 </div><!--滤光片 固定属性 结束-->
 	   </div><!--滤光片 结束-->
 	   <div v-if="device_nav.dev_click=='guide'" > <!--导星镜指令和属性-->
@@ -906,11 +918,11 @@
 			</nav>
 			<div class='border2'><!--导星镜 指令和可变属性-->
 				<div id='btnsSlaveD' class='center_mrg center BtnsDiv'>
-				   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} class='border1 btnCommand' type='button' value='连接导星镜' v-if='configData.guide.canconnect==1' :class='{btnClick: device_nav.guide_btn=="connect"}' @click='guide_btn_command(1)' >
-				   <input {if condition="$Think.session.role==2"}disabled='disabled'{/if} class='border1 btnCommand' type='button' value='断开导星镜' v-if='configData.guide.canconnect==1' :class='{btnClick: device_nav.guide_btn=="disConnect"}' @click='guide_btn_command(2)' >
+				   <input class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='连接导星镜' v-if='configData.guide.canconnect==1' :class='{btnClick: device_nav.guide_btn=="connect"}' @click='guide_btn_command(1)' >
+				   <input class='border1 btnCommand' type='button' :disabled='vue_operate==false' value='断开导星镜' v-if='configData.guide.canconnect==1' :class='{btnClick: device_nav.guide_btn=="disConnect"}' @click='guide_btn_command(2)' >
 				</div><br>
 				<hr style='width:98%;' class='center_mrg'><br>
-				<form  class='center' v-if='device_nav.guide_command=="coverAction"' ><!--镜盖操作-->
+				<form class='center' v-if='device_nav.guide_command=="coverAction"' ><!--镜盖操作-->
 					运动方向：<select style='width:90px;' v-model='guide_form.coverAction_form.action' >
 								<option value="-1">请选择</option>
 								<option value="1">向上</option>
@@ -918,12 +930,12 @@
 								<option value="3">停止</option>
 						</select>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='guide_action_sbmt' >
+					<input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='guide_action_sbmt' >
 				</form><!--镜盖操作 结束-->
-				<form  class='center' v-if='device_nav.guide_command=="autoFocus"' ><!--自动对焦-->
+				<form class='center' v-if='device_nav.guide_command=="autoFocus"' ><!--自动对焦-->
 					自动对焦：<label>是：<input type="radio" value="1" v-model='guide_form.autoFocus_form.enable' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<label>否：<input type="radio" value="0" v-model='guide_form.autoFocus_form.enable' ></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input {if condition="$Think.session.role==2"}disabled='disabled'{/if} type="button" class='margin_10' value="提交指令" @click='guide_focus_sbmt' >
+					<input type="button" :disabled='vue_operate==false' class='margin_10' value="提交指令" @click='guide_focus_sbmt' >
 				</form><!--自动对焦 结束-->
 				<br><hr style='width:98%;' class='center_mrg'><br>
 			</div>
@@ -932,7 +944,7 @@
 			<ul class='properUl'>
 				<!--
 					<li class='li fl'>焦点类型:&nbsp;&nbsp;<span>{{configData.guide.opticalstructure}}</span></li>
-			    	<li class='li fl'>焦点类型:&nbsp;&nbsp;<span>{{configData.guide.focuslength}}</span></li>
+			    <li class='li fl'>焦点类型:&nbsp;&nbsp;<span>{{configData.guide.focuslength}}</span></li>
 				-->
 			   <li class='li fl'>使能自动对焦:&nbsp;&nbsp;
 				<span v-if='configData.guide.canenableautofocus==1' >是</span>
@@ -951,13 +963,13 @@
 							<td>{{configData.guide.focus[n-1]}}</td> <td>{{configData.guide.focus_length[n-1]}}</td>
 						</tr>
 					</table>
-				</li>   
+				</li> 
 			</ul>
-           <div class='clear'></div>
+    <div class='clear'></div>
 		 </div><!--导星镜 固定属性 结束-->
 	   </div>	<!--导星镜 结束-->
 		<br>
-		<div id='at60Res' class='center_mrg' style='width:92%;' v-if='device_nav.dev_click=="pic"'><!--观测图像 开始-->
+		<div id='at60Res' class='center_mrg' style='width:92%;' v-if='device_nav.dev_click=="pic"' > <!--观测图像 开始-->
 			<div id='bigPic' class='pos_r'>
 				<img :src='"/" + big_img["dir"] + big_img["name"]' style='width:1104px;' v-if='img4_data.length>0' >
 				<!--{if condition="$Think.session.role!=2"}<img class='pos_a' src='/static/images-1/download.png' style='top:680px;right:3px;cursor: pointer;'>{/if}-->
@@ -981,14 +993,14 @@
 			 <table id="dg" title="计划表格" style='text-align: center;'> 
 			 </table>
 			<div id="toolbar">
-			<a class="easyui-linkbutton" iconCls="icon-more" plain="true" {if condition="$Think.session.role!=2"}onclick="importPlan()"{/if}>导入计划文件</a>
+			<a class="easyui-linkbutton" iconCls="icon-more" plain="true" onclick="if(can_operate){importPlan()}">导入计划文件</a>
 			<a class="easyui-linkbutton" iconCls="icon-out" plain="true" onclick="exportPlan(this)" download="plan_data.strat">导出至文件</a>
 			<a class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="savePlan()">保存</a>
-			<a class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="addPlans()">编辑计划</a>
+			<a class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="if(can_operate){addPlans()}">编辑计划</a>
 			<a class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="importData()">已提交的计划</a>
 			<a class="easyui-linkbutton" iconCls="icon-do" plain="true" onclick="plan_executing()">正执行的计划</a>
-			<a class="easyui-linkbutton" iconCls="icon-clear" plain="true" onclick="delAll()">全部删除</a>
-           </div>
+			<a class="easyui-linkbutton" iconCls="icon-clear" plain="true" onclick="if(can_operate){delAll()}">全部删除</a>
+      </div>
 		   <!--观测计划的模式按钮-->
 		   <div id='planModes' class='pos_a'>
 				<select id="sortPlanOrder" class='pos_r' style='left:-8%'>
@@ -1008,8 +1020,8 @@
 			    <option value='4'>sequence-loop</option>
 			  </select>
 				<div id='planExe' class='pos_a'>
-					<button id='planStart' {if condition="$Think.session.role==2"}disabled='disabled'{/if} >开始</button>
-					<button id='planStop' {if condition="$Think.session.role==2"}disabled='disabled'{/if} >停止</button>
+					<button id='planStart' >开始</button><!--在plan_datagrid-m内对应的点击事件中判断 can_operate -->
+					<button id='planStop' >停止</button><!--在plan_datagrid-m内对应的点击事件中判断 can_operate -->
 				</div>
 		   </div>
 		   <!--观测计划的模式按钮 结束-->

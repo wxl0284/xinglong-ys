@@ -712,6 +712,12 @@ class Status extends Base
             return '请先登录再进行操作!';
         }
 
+        //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
+
         $postData = $this->input; //获取提交的数据
         
         switch ( $postData['at_aperture'] )
@@ -758,7 +764,12 @@ class Status extends Base
         {
             return '请先登录再进行操作!';
         }
-        
+        //判断是否有权限
+        if ($this->ajaxAuthErr == 'no_auth')
+        {
+            return '您无权进行此操作!';
+        }
+
         $postData = $this->input; //获取提交的数据
         
         switch ( $postData['at_aperture'] )
