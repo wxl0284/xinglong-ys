@@ -139,7 +139,7 @@ class Too extends Base
 		}*/
         
 		$postData = $this->input; //接收提交数据
-		
+		//halt($postData); die();
 		//halt($postData['planData']);
 		$num = count ( $postData['planData'] );
 		for ($i=0; $i < $num; $i++)
@@ -176,9 +176,13 @@ class Too extends Base
 			$postData['planData'][$i]['exposuretime'] = $postData['planData'][$i]['exposureTime'];
 			$postData['planData'][$i]['delaytime'] = $postData['planData'][$i]['delayTime'];
 			$postData['planData'][$i]['giveup'] = '0'; /*后期此字段要改为默认为0*/
+			$postData['planData'][$i]['import'] = '0'; /*后期此字段要改为默认为0*/
+			$postData['planData'][$i]['time'] = time();
+			$postData['planData'][$i]['submiter'] = $this->userName; //当前用户 （有权限提交协同计划的用户）
+
 		}
 
-		$res = Db::table('plancooper')->strict(false)->insertAll($postData['planData']);
+		$res = Db::table('plancooper')->strict(false)->insertAll($postData['planData']);//存入协同计划表
 
 		if ( $res )
 		{
@@ -475,6 +479,9 @@ class Too extends Base
 			$postData['planData'][$i]['exposuretime'] = $postData['planData'][$i]['exposureTime'];
 			$postData['planData'][$i]['delaytime'] = $postData['planData'][$i]['delayTime'];
 			$postData['planData'][$i]['giveup'] = '0'; /*后期此字段要改为默认为0*/
+			$postData['planData'][$i]['import'] = '0'; /*后期此字段要改为默认为0*/
+			$postData['planData'][$i]['time'] = time();
+			$postData['planData'][$i]['submiter'] = $this->userName; //当前用户 （有权限提交协同计划的用户）
 		}
 
 		$res = Db::table('plantoo')->strict(false)->insertAll($postData['planData']);

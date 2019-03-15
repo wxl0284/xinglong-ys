@@ -257,7 +257,8 @@ CREATE TABLE devipid(
 
 CREATE TABLE plancooper (/*协同计划表*/
   "id" BIGSERIAL NOT NULL PRIMARY KEY,
-  "user" character varying,
+  "submiter" character varying,
+  "time" character varying,
   "project" character varying,
   "target" character varying,
   "filter" character varying,
@@ -278,7 +279,8 @@ CREATE TABLE plancooper (/*协同计划表*/
 
   CREATE TABLE plantoo (/*ToO计划表*/
   "id" BIGSERIAL NOT NULL PRIMARY KEY,
-  "user" character varying,
+  "submiter" character varying,
+  "time" character varying,
   "project" character varying,
   "target" character varying,
   "filter" character varying,
@@ -295,6 +297,6 @@ CREATE TABLE plancooper (/*协同计划表*/
   "delaytime" character varying,
   "import" character varying,
   "exemode" character varying,
-  "giveup" character varying/*放弃*/);
+  "giveup" character varying/*放弃 默认0，不导入后改为1*/);
 
 "C:\Program Files (x86)\pgAdmin 4\v1\runtime\pgAdmin4.exe"   //执行 postgres命令行

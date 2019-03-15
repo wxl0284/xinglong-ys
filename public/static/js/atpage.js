@@ -2539,8 +2539,11 @@ $(function () {
 						if ( info.plan_cooper.data != '无协同计划' )	//有协同计划数据
 						{
 							localStorage.setItem('cooper', ++cooper);//将cooper加1
+							let user = info.plan_cooper.submiter; //计划提交者
+							let t = info.plan_cooper.time; //计划提交时间
+							let s = '用户'+ user + '于'+ t + '提交协同观测计划，导入此页面请点确定';
 
-							layer.alert('查到协同观测计划，要导入此页面请点确定', {
+							layer.alert(s, {
 								shade:false,
 								closeBtn:1,
 								type:1,//alert默认是0，此时设为1,可防止被其他alert覆盖冲掉
@@ -2548,7 +2551,6 @@ $(function () {
 								yes:function (n){//点击确定
 									vm.plan_click();
 									let  plan_cooper = info.plan_cooper.data;
-									console.log(plan_cooper);
 									let cooper_arr = [];
 									let ii = 0;
 
@@ -2602,8 +2604,11 @@ $(function () {
 						if ( info.plan_too.data != '无ToO计划' )	//有ToO计划数据
 						{
 							localStorage.setItem('too', ++too);//将too加1
+							let user = info.plan_cooper.submiter; //计划提交者
+							let t = info.plan_cooper.time; //计划提交时间
+							let s = '用户'+ user + '于'+ t + '提交协同观测计划，导入此页面请点确定';
 
-							layer.alert('查到ToO观测计划，要导入此页面请点确定', {
+							layer.alert(s, {
 								shade:false,
 								type: 1,
 								closeBtn:1,

@@ -104,9 +104,9 @@ Route::get('download/:dir/:filename$', 'xinglong/atconfig/downLoadFlie');
 Route::get('ToO$', 'xinglong/too/ToO');
 //计划之 显示ToO计划页面 路由
 Route::get('ToO_1$', 'xinglong/too/ToO_1');
-//页面 提交协同观测 ToO 路由
+//页面 提交协同观测计划 路由
 Route::post('ToO_plan$', 'xinglong/too/send_ToO_plan');
-//页面 提交ToO观测 ToO 路由
+//页面 提交ToO观测计划  路由
 Route::post('ToO_1_plan$', 'xinglong/too/send_ToO_1_plan');
 //页面 提交协同观测 ToO 之开始或停止 路由
 // Route::post('ToO_start_stop$', 'xinglong/Too/start_stop_ToO');

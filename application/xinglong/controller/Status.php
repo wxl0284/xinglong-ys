@@ -620,7 +620,6 @@ class Status extends Base
         $data = Db::table('plancooper')->where('at', $at_num)->where('import', '0')->where('giveup', '0')->order('id asc')->select();
         //halt($data);
         if ($data) //将计划数据转为
-        //if (false) //将计划数据转为
         {
             foreach ($data as $k => $v)
             {
@@ -653,6 +652,8 @@ class Status extends Base
    
             $status['data'] = $temp;
             $status['exemode'] = $data[0]['exemode']; //执行模式
+            $status['submiter'] = $data[0]['submiter']; //协同计划数据提交者
+            $status['time'] = date('Y-m-d H:i:s', $data[0]['time']); //协同计划数据提交的事件
         }else{//无协同计划数据
             $status['data'] = '无协同计划';
         }
@@ -695,8 +696,9 @@ class Status extends Base
             }
    
             $status['data'] = $temp;
-            //halt($status['data']);
             $status['exemode'] = $data[0]['exemode']; //执行模式
+            $status['submiter'] = $data[0]['submiter']; //协同计划数据提交者
+            $status['time'] = date('Y-m-d H:i:s', $data[0]['time']); //协同计划数据提交的事件
         }else{//无ToO计划数据
             $status['data'] = '无ToO计划';
         }

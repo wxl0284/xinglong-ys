@@ -107,9 +107,10 @@
 		}	
 	})
 	//赤纬 的js事件//////////////////////////////////
-//观测计划的赤经和赤纬 js事件 结束//////////////////////////////
+//观测计划的赤经和赤纬 js事件 结束//////////////////////
+var at_select_ele = null; //望远镜下拉选择框的元素
 //望远镜下拉框 js事件
-planInfo.on('focus', 'table.datagrid-btable td[field="at"] a', function () {	
+planInfo.on('focus', 'table.datagrid-btable td[field="at"]', function () {	
 	if ( aperture.length < 1 )
 	{
 		layer.alert('请先添加并配置望远镜,配置后刷新此页面', {shade:0, closeBtn:0});return;
@@ -144,6 +145,82 @@ planInfo.on('focus', 'table.datagrid-btable td[field="at"] a', function () {
 	if ( errMsg !== '' )
 	{
 		layer.alert(errMsg, {shade:0, closeBtn:0});
+	}else{//无错误 就获取望远镜下拉框原来被display:none的元素
+		at_select_ele = $('.combo-panel.panel-body.panel-body-noheader:eq(0)').find('div');
+
+		at_select_ele.click(function (e) {
+			let aperture = 	e.target.innerHTML; //获取口径值
+				
+			let filter_data = filter[aperture];//too.html中的filter变量
+		
+			//对变量filterData进行赋值
+			filterData = [];
+			let n = filter_data.length;
+
+			for (let i = 0; i < n; i++)
+			{
+				filterData[i] = {filterId:'', name:''};
+				filterData[i].filterId = filter_data[i];
+				filterData[i].name = filter_data[i];
+			}//对变量filterData进行赋值 结束
+
+			let gain_data = gain[aperture];//too.html中的gain变量
+
+			//对变量gainOption进行赋值
+			gainOption = [];
+
+			for (let i = 0; i < gain_data; i++)
+			{
+				gainOption[i] = {num:'', gain:''};
+				gainOption[i].num = i;
+				let ii = i + 1;
+				gainOption[i].gain = ii + '档';
+			}//对变量gainOption进行赋值 结束
+
+			let bin_data = bin[aperture];//too.html中的bin变量 ["1*1", "2*2", "4*4"]
+			
+			//对变量binOption进行赋值
+			binOption = [];
+			let bin_i = bin_data.length;
+
+			for (let i = 0; i < bin_i; i++)
+			{
+				binOption[i] = {num:'', bin:''};
+				binOption[i].num = bin_data[i].split('*')[0];
+				binOption[i].bin = bin_data[i];
+			}//对变量binOption进行赋值 结束
+
+			let readout_data = readout[aperture];//too.html中的readout变量['5', '0.05']
+			
+			//对变量readOption进行赋值
+			readOption = [];
+			let r_i = readout_data.length;
+
+			for (let i = 0; i < r_i; i++)
+			{
+				readOption[i] = {num:'', speed:''};
+				readOption[i].num = i;
+				readOption[i].speed = readout_data[i]+'MHz';
+			}//对变量readOption进行赋值 结束
+
+			let editors = table.datagrid('getEditors', editRow);//取当前编辑行的editors
+			let epoch_field  = editors[8].target;
+			let filter_field  = editors[12].target;
+			let gain_field    = editors[13].target;
+			let bin_field  = editors[14].target;
+			let readout_field = editors[15].target;
+
+			filter_field.combobox("loadData", filterData);//为filter字段的下拉框选项加载filterData数据
+			bin_field.combobox("loadData", binOption);//为bin字段的下拉框选项加载binOption数据
+			gain_field.combobox("loadData", gainOption);//为gain字段的下拉框选项加载gainOption数据
+			readout_field.combobox("loadData", readOption);//为readout字段的下拉框选项加载readOption数据
+
+			epoch_field.combobox('setValue', 1); //为历元下拉框赋值
+			filter_field.combobox('setValue', filter[aperture][0]); //为滤光片下拉框赋值(赋的值为真实滤光片名称)
+			bin_field.combobox('setValue', '1'); //为bin下拉框赋值('1'代表1*1的*号前数字)
+			gain_field.combobox('setValue', '0'); //为增益下拉框赋值('0'代表序号)
+			readout_field.combobox('setValue', '0'); //为readout下拉框赋值('0'代表序号)
+		})
 	}
 	
 })//望远镜下拉框 js事件 结束//////////////////////////
@@ -152,84 +229,6 @@ var filterData = [];
 var binOption = [];
 var readOption = [];
 var gainOption = [];
-
-var at_input_val = null; //望远镜下拉选框的input元素之值
-
-planInfo.on('blur', 'table.datagrid-btable td[field="at"] input.textbox-text', function () {//望远镜下拉框blur事件
-	let t = $(this);
-	
-	let at_input = t.siblings('input[type="hidden"]');
-
-	let aperture_val = at_input.val();
-	//console.log(aperture_val);return;
-	if ( aperture_val != at_input_val ) //若望远镜有变化则将被选中望远镜的增益 bin 滤光片 读出速度重新赋值以供用户选择
-	{
-		let filter_data = filter[aperture_val];//too.html中的filter变量
-	
-		//对变量filterData进行赋值
-		filterData = [];
-		let n = filter_data.length;
-
-		for (let i = 0; i < n; i++)
-		{
-			filterData[i] = {filterId:'', name:''};
-			filterData[i].filterId = filter_data[i];
-			filterData[i].name = filter_data[i];
-		}//对变量filterData进行赋值 结束
-
-		let gain_data = gain[aperture_val];//too.html中的gain变量
-
-		//对变量gainOption进行赋值
-		gainOption = [];
-
-		for (let i = 0; i < gain_data; i++)
-		{
-			gainOption[i] = {num:'', gain:''};
-			gainOption[i].num = i;
-			let ii = i + 1;
-			gainOption[i].gain = ii + '档';
-		}//对变量gainOption进行赋值 结束
-
-		let bin_data = bin[aperture_val];//too.html中的bin变量 ["1*1", "2*2", "4*4"]
-		
-		//对变量binOption进行赋值
-		binOption = [];
-		let bin_i = bin_data.length;
-
-		for (let i = 0; i < bin_i; i++)
-		{
-			binOption[i] = {num:'', bin:''};
-			binOption[i].num = bin_data[i].split('*')[0];
-			binOption[i].bin = bin_data[i];
-		}//对变量binOption进行赋值 结束
-
-		let readout_data = readout[aperture_val];//too.html中的readout变量['5', '0.05']
-		
-		//对变量readOption进行赋值
-		readOption = [];
-		let r_i = filter_data.length;
-
-		for (let i = 0; i < r_i; i++)
-		{
-			readOption[i] = {num:'', speed:''};
-			readOption[i].num = i;
-			readOption[i].speed = readout_data[i]+'MHz';
-		}//对变量readOption进行赋值 结束
-
-		let editors = table.datagrid('getEditors', editRow);//取当前编辑行的editors
-		let filter_field  = editors[12].target;
-		let gain_field    = editors[13].target;
-		let bin_field  = editors[14].target;
-		let readout_field = editors[15].target;
-
-		filter_field.combobox("loadData", filterData);//为filter字段的下拉框选项加载filterData数据
-		bin_field.combobox("loadData", binOption);//为bin字段的下拉框选项加载binOption数据
-		gain_field.combobox("loadData", gainOption);//为gain字段的下拉框选项加载gainOption数据
-		readout_field.combobox("loadData", readOption);//为readout字段的下拉框选项加载readOption数据
-	}
-	
-	at_input_val = aperture_val;
-})//望远镜下拉框blur事件 结束
 
 var table = $('#dg'); //定义全局table 变量
 var editRow = undefined;  //全局开关, 编辑的行
@@ -333,7 +332,8 @@ var editRow = undefined;  //全局开关, 编辑的行
 	{
 		at_name[i] = {aperture:'', name:''};
 		at_name[i].aperture = aperture[i];
-		at_name[i].name = 'AT' + aperture[i].replace('cm', '');
+		at_name[i].name = aperture[i];
+		//at_name[i].name = 'AT' + aperture[i].replace('cm', '');
 	}//对变量at_name进行赋值 结束
 	
 	var epochData = [
@@ -371,20 +371,12 @@ var editRow = undefined;  //全局开关, 编辑的行
 					table.datagrid('endEdit', editRow); //结束前一行编辑状态
 					table.datagrid('beginEdit', index); //对点击行 进行编辑
 					let ed = table.datagrid('getEditor', {index:index,field:field});
-					
-					if ( field == 'filter' )
-					{
-						ed.target.combobox("loadData", filterData);
-					}else if( field == 'bin' )
-					{
-						ed.target.combobox("loadData", binOption);
-					}else if( field == 'readout' )
-					{
-						ed.target.combobox("loadData", readOption);
-					}else if( field == 'gain' )
-					{
-						ed.target.combobox("loadData", gainOption);
-					}
+					let editors = table.datagrid('getEditors', index); //取得当前点击行的editors
+
+					editors[12].target.combobox("loadData", filterData);//为filter字段的下拉框选项加载filterData数据
+					editors[14].target.combobox("loadData", binOption);//为bin字段的下拉框选项加载binOption数据
+					editors[13].target.combobox("loadData", gainOption);//为gain字段的下拉框选项加载gainOption数据
+					editors[15].target.combobox("loadData", readOption);//为readout字段的下拉框选项加载readOption数据
 					
 					ed.target.focus();
 					editRow = index;
@@ -615,18 +607,25 @@ var editRow = undefined;  //全局开关, 编辑的行
 	function delPlan1(target) //删除行
 	{	
 		table.datagrid('endEdit', editRow); //结束编辑状态
-		layer.confirm('确定删除？', {icon: 3, title:'提示',shade:0}, function(index){
-			var rowIndex = getrow(target);
-			if ( isNaN(rowIndex) ) { rowIndex = editRow };
-			table.datagrid('endEdit', rowIndex); //结束编辑状态
-			table.datagrid('uncheckRow', rowIndex); //取消勾选
-			table.datagrid('unselectRow', rowIndex); //取消选中
-			checked.splice( checked.indexOf(rowIndex), 1); //将此行索引从checked删除
-			table.datagrid('deleteRow', rowIndex);
-			editRow = undefined;
-			table.datagrid('enableDnd');
-			layer.close(index);
-		});	
+
+		let num  = table.datagrid('getRows').length;
+		
+		if ( num == 1 ){
+			layer.alert('只有一行数据了, 别删了', {shade:0,closeBtn:0});
+		}else{
+			layer.confirm('确定删除？', {icon: 3, title:'提示',shade:0}, function(index){
+				let rowIndex = getrow(target);
+				if ( isNaN(rowIndex) ) { rowIndex = editRow };
+				table.datagrid('endEdit', rowIndex); //结束编辑状态
+				table.datagrid('uncheckRow', rowIndex); //取消勾选
+				table.datagrid('unselectRow', rowIndex); //取消选中
+				checked.splice( checked.indexOf(rowIndex), 1); //将此行索引从checked删除
+				table.datagrid('deleteRow', rowIndex);
+				editRow = undefined;
+				table.datagrid('enableDnd');
+				layer.close(index);
+			});	
+		}
 	}
 
 	function delAll(target) //删除全部行
@@ -635,6 +634,7 @@ var editRow = undefined;  //全局开关, 编辑的行
 			table.datagrid({ data:[] }); //执行删除
 			checked = []; //清空被选中的行索引
 			clearInterval ( plan_execute_i ); //关闭查询执行哪条计划的定时器
+			plan_execute_i = undefined;
 			editRow = undefined;
 			layer.close(index);
 		});
@@ -642,14 +642,22 @@ var editRow = undefined;  //全局开关, 编辑的行
 
 	function add(target) //增加计划行
 	{	
-		var rowIndex = getrow(target); //当前行索引
+		let rowIndex = getrow(target); //当前行索引
 		table.datagrid('endEdit', editRow);
 			
+		let plans = table.datagrid('getRows');	//选中所有记录
+		let current_line = plans[rowIndex]; //当前行的数据
+
 		table.datagrid('insertRow', {
 			index : rowIndex+1, //在选中行后面 新加一空行
-			row:{},
+			row:{
+				target : current_line.target, rightAscension1 : current_line.rightAscension1, rightAscension2 : current_line.rightAscension2,
+				rightAscension3 : current_line.rightAscension3,	declination1 : current_line.declination1, declination2 : current_line.declination2,
+				declination3 : current_line.declination3, epoch : current_line.epoch, exposureTime : current_line.exposureTime, delayTime : current_line.delayTime,
+				exposureCount : current_line.exposureCount, 
+			},//将当前行的数据赋值给新加的行
 		});
-		
+
 		table.datagrid('beginEdit', rowIndex+1); //将此新加的一行设为可编辑
 
 		editRow = rowIndex +1;
@@ -826,25 +834,27 @@ var editRow = undefined;  //全局开关, 编辑的行
 //保存并提交计划 ////////////////////////////////////////////
 	function submitPlan ()
 	{
-		var exeMode = $('#modeSpan').val();
+		let exeMode = $('#modeSpan').val();
 		table.datagrid('endEdit', editRow);
 		table.datagrid('unselectRow', editRow);
 		table.datagrid('enableDnd'); //启用拖放
-		var plans = table.datagrid('getRows');	//选中所有记录
-		var n = plans.length;
-
-		if ( n< 1) 
+		let plans = table.datagrid('getRows');	//选中所有记录
+		let n = plans.length;
+		let msg = ''; //记录错误
+	
+		savePlan(); //执行保存按钮的事件函数
+		if ( n< 1)
 		{
-			planErr = 1;
-			layer.alert('请先导入计划或添加计划!', {shade:false, closeBtn:0});
+			msg += '您未添加计划!';
 		}
 
-		/*var msg = plan_valid(plans, n);  //js验证数据
+		msg += plan_valid(plans, n);  //js验证数据
 
 		if ( msg !== '')
 		{
+			planErr = 1;
 			layer.alert(msg, {shade:false, closeBtn:0});return;
-        }*/
+        }
         
 		/*将计划数据存入本地
 		var all_plans_data = JSON.stringify( table.datagrid('getRows') ); //转为字符串
@@ -902,63 +912,70 @@ var editRow = undefined;  //全局开关, 编辑的行
 	* return： 错误提示
 	*/
 
-	/*function plan_valid(plans, n)
+	function plan_valid(plans, n)
 	{
-		var msg = ''; //错误提示
+		let msg = ''; //错误提示
 		
-		for(var i = 0; i < n; i++)
+		for(let i = 0; i < n; i++)
 		{
-			var plan_target = $.trim( plans[i].target );
-			var patn = /([\u4e00-\u9fa5]| )+/;
+			let plan_target = $.trim( plans[i].target );
+			let patn = /([\u4e00-\u9fa5]| )+/;
 			if ( patn.test(plan_target) || plan_target == '' || plan_target.length > 48 )
 			{
 				msg += '第' + (i+1) + '条目标名格式错误!<br>';
 			}
 
-			var plan_type = $.trim( plans[i].type );
+			/*let plan_type = $.trim( plans[i].type );
 			patn = /^[0-9]$/;
 
 			if ( !patn.test(plan_type) && ( $.inArray(plan_type, ['恒星','太阳','月亮','彗星','行星','卫星','固定位置','本底','暗流','平场']) == -1)  )
 			{
 				msg += '第' + (i+1) + '条目标类型超限!<br>';
+			}*/
+
+			let at = $.trim( plans[i].at ); //此值在验证滤光片 bin 读出速度 增益挡位时要用
+
+			if ( $.inArray(at, aperture) == -1 ) /*此条计划的口径值不在too.html的aperture变量中*/
+			{
+				msg += '第' + (i+1) + '条望远镜数据无效!<br>';
 			}
 
-			var asc1 = $.trim( plans[i].rightAscension1 );
+			let asc1 = $.trim( plans[i].rightAscension1 );
 			patn  = /^\d{1,2}$/;
 			if ( !patn.test(asc1) || asc1 > 24 || asc1 < 0 || asc1 === '' )
 			{
 				msg += '第' + (i+1) + '条赤经小时参数超限!<br>';
 			}
 			
-			var asc2 = $.trim( plans[i].rightAscension2 );
+			let asc2 = $.trim( plans[i].rightAscension2 );
 			
 			if ( !patn.test(asc2) || asc2 > 59 || asc2 < 0 || asc2 === '' )
 			{
 				msg += '第' + (i+1) + '条赤经分钟参数超限!<br>';
 			}
 
-			var asc3 = $.trim( plans[i].rightAscension3 );
+			let asc3 = $.trim( plans[i].rightAscension3 );
 			
 			if ( !$.isNumeric(asc3) || asc3 >= 60 || asc3 < 0 || asc3 === '' )
 			{
 				msg += '第' + (i+1) + '条赤经秒参数超限!<br>';
 			}
 
-			var asc = asc1*1 + asc2*1/60 + asc3*1/3600;
+			let asc = asc1*1 + asc2*1/60 + asc3*1/3600;
 			if ( asc > 24 || asc < 0 )
 			{
 				msg += '第' + (i+1) + '条赤经参数超限!<br>';
 			}
 
-			var dec1 = $.trim( plans[i].declination1 );
-			patn = /^-?\d{1,2}$/;
+			let dec1 = $.trim( plans[i].declination1 );
+			patn = /^\+?-?\d{1,2}$/;
 
 			if ( !patn.test(dec1) || dec1 > 90 || dec1 < -90 || dec1 === '' )
 			{
-				msg += '第' + (i+1) + '条赤纬小时参数超限!<br>';
+				msg += '第' + (i+1) + '条赤纬度参数超限!<br>';
 			}
 
-			var dec2 = $.trim( plans[i].declination2 );
+			let dec2 = $.trim( plans[i].declination2 );
 			patn = /^\d{1,2}$/;
 
 			if ( !patn.test(dec2) || dec2 > 59 || dec2 < 0 || dec2 === '' )
@@ -966,79 +983,79 @@ var editRow = undefined;  //全局开关, 编辑的行
 				msg += '第' + (i+1) + '条赤纬分钟参数超限!<br>';
 			}
 
-			var dec3 = $.trim( plans[i].declination3 );
+			let dec3 = $.trim( plans[i].declination3 );
 
 			if ( !$.isNumeric(dec3) || dec3 >= 60 || dec3 < 0 || dec3 === '')
 			{
 				msg += '第' + (i+1) + '条赤纬秒参数超限!<br>';
 			}
 
-			var dec = Math.abs(dec1) + dec2*1/60 + dec3*1/3600;
+			let dec = Math.abs(dec1) + dec2*1/60 + dec3*1/3600;
 			if ( dec > 90 || dec < 0 )
 			{
 				msg += '第' + (i+1) + '条赤纬参数超限!<br>';	
 			}
 
-			var plan_epoch = $.trim(plans[i].epoch).toLocaleLowerCase();
+			let plan_epoch = $.trim(plans[i].epoch).toLocaleLowerCase();
 			patn = /^[0-3]$/;
 
-			if ( !patn.test(plan_epoch) && ( $.inArray(plan_epoch, ['real','j2000','b1950','j2050']) == -1)  )
+			if ( !( patn.test(plan_epoch) || ( $.inArray(plan_epoch, ['real','j2000','b1950','j2050']) !== -1 ) ) )
 			{
 				msg += '第' + (i+1) + '条历元超限!<br>';
 			}
 
-			var plan_exposureTime = $.trim(plans[i].exposureTime);
+			let plan_exposureTime = $.trim(plans[i].exposureTime);
 
-			if ( !$.isNumeric(plan_exposureTime) || plan_exposureTime > configData.ccd[0].maxexposuretime*1 || plan_exposureTime < configData.ccd[0].minexposuretime*1 )
+			if ( !$.isNumeric(plan_exposureTime) || plan_exposureTime <= 0 ||  plan_exposureTime > 65535 )
 			{
-				msg += '第' + (i+1) + '条曝光时间超限（'+ configData.ccd[0].minexposuretime + '~' +configData.ccd[0].maxexposuretime+'）!<br>';
+				msg += '第' + (i+1) + '条曝光时间超限!<br>';
 			}
 
-			var plan_delayTime = $.trim(plans[i].delayTime);
+			let plan_delayTime = $.trim(plans[i].delayTime);
 
 			if ( !$.isNumeric(plan_delayTime) || plan_delayTime < 0 )
 			{
 				msg += '第' + (i+1) + '条延迟时间超限!<br>';
 			}
 
-			var plan_expCount = $.trim(plans[i].exposureCount);
+			let plan_expCount = $.trim(plans[i].exposureCount);
 			patn = /^\d+$/;
 			if ( !patn.test(plan_expCount) || plan_expCount < 1 )
 			{
 				msg += '第' + (i+1) + '条曝光数量超限!<br>';
 			}
 
-			var plan_filter = $.trim(plans[i].filter);
-			//patn = /^[0-9]$/;
-			//if ( !patn.test(plan_filter) && ( $.inArray(plan_filter, plan_filter_option) == -1) )
-			if ( $.inArray(plan_filter, plan_filter_option) == -1 )
+			let plan_filter = $.trim(plans[i].filter);
+			
+			if ( $.inArray(plan_filter, filter[at]) == -1 )
 			{
 				msg += '第' + (i+1) + '条滤光片超限!<br>';
 			}
 
-			/*var plan_gain = $.trim(plans[i].gain);
+			let plan_gain = $.trim(plans[i].gain);
 			patn = /^\d+$/;
-			if ( !patn.test(plan_gain) || plan_gain < 1 )
+			if ( !( patn.test(plan_gain) && plan_gain <= (gain[at] - 1) ) )
 			{
 				msg += '第' + (i+1) + '条增益超限!<br>';
 			}
 
-			var plan_bin = $.trim(plans[i].bin);
+			let plan_bin = $.trim(plans[i].bin);
 			patn = /^\d+$/;
-			if ( !patn.test(plan_bin) || plan_gain < 1 )
+			if ( !( patn.test(plan_bin) && $.inArray( plan_bin+'*'+plan_bin, bin[at] ) !== -1 ) )
 			{
 				msg += '第' + (i+1) + '条bin超限!<br>';
 			}
 
-			var plan_readout = $.trim(plans[i].readout);
+			let plan_readout = $.trim(plans[i].readout);
 			patn = /^\d+$/;
-			if ( !patn.test(plan_readout) || plan_gain < 1 )
+			if ( $.inArray(plan_readout, readout[at]) == -1 )
+			if ( !( patn.test(plan_readout) && plan_readout <= ( readout[at].length-1 ) ) )
 			{
 				msg += '第' + (i+1) + '条读出速度超限!<br>';
 			}
 		}
 		return msg;
-	} plan_valid  结束*/
+	}//plan_valid  结束
 	
 //数据验证函数 /////////////////////////////////////////////
 	/*function valid ()
